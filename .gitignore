@@ -1,0 +1,7 @@
+.svn
+/node_modules
+/dist/*
+/build/*
+.DS_Store
+target/*
+npm-debug.log

@@ -1,0 +1,101 @@
+<mountpoints xmlns="http://provisioning.streamtheworld.com/player/livestream-1.8">
+    <mountpoint tags="low">
+        <status>
+            <status-code>200</status-code>
+            <status-message>OK</status-message>
+        </status>
+
+        <transports>
+            <transport>http</transport>
+            <transport mountSuffix="/HLS/playlist.m3u8">hls</transport>
+            <transport mountSuffix="/HLSTS/playlist.m3u8">hlsts</transport>
+        </transports>
+
+        <metadata>
+            <shoutcast-v1 enabled="true" mountSuffix="_SC"/>
+            <shoutcast-v2 enabled="false" mountSuffix="_SC"/>
+            <sse-sideband enabled="true" streamSuffix="_SC" metadataSuffix="_SBM"/>
+        </metadata>
+
+        <servers>
+            <server sid="15653">
+                <ip>15653.live.streamtheworld.com</ip>
+                <ports>
+                    <port type="http">80</port>
+                    <port type="http">443</port>
+                    <port type="http">3690</port>
+                </ports>
+            </server>
+        </servers>
+
+        <metrics>
+            <tag name="uuid"/>
+        </metrics>
+
+        <mount>ADP_PLAYERS</mount>
+        <format>FLV</format>
+
+        <bitrate>128000</bitrate>
+
+        <media-format container="flv" cuepoints="stwcue" trackScheme="audio-adaptive">
+            <audio index="0" samplerate="44100" codec="aaclc" bitrate="256000" channels="2"/>
+            <audio index="1" samplerate="44100" codec="aaclc" bitrate="128000" channels="2"/>
+            <audio index="2" samplerate="44100" codec="heaacv1" bitrate="64000" channels="2"/>
+        </media-format>
+
+        <authentication>0</authentication>
+        <timeout>0</timeout>
+        <send-page-url>0</send-page-url>
+
+    </mountpoint>
+
+    <mountpoint>
+        <status>
+            <status-code>200</status-code>
+            <status-message>OK</status-message>
+        </status>
+
+        <transports>
+            <transport>http</transport>
+            <transport mountSuffix="/HLS/playlist.m3u8">hls</transport>
+            <transport mountSuffix="/HLSTS/playlist.m3u8">hlsts</transport>
+        </transports>
+
+        <metadata>
+            <shoutcast-v1 enabled="true" mountSuffix="_SC"/>
+            <shoutcast-v2 enabled="false" mountSuffix="_SC"/>
+            <sse-sideband enabled="true" streamSuffix="_SC" metadataSuffix="_SBM"/>
+        </metadata>
+
+        <servers>
+            <server sid="15653">
+                <ip>15653.live.streamtheworld.com</ip>
+                <ports>
+                    <port type="http">80</port>
+                    <port type="http">443</port>
+                    <port type="http">3690</port>
+                </ports>
+            </server>
+        </servers>
+
+        <metrics>
+            <tag name="uuid"/>
+        </metrics>
+
+        <mount>ADP_PLAYERS</mount>
+        <format>FLV</format>
+
+        <bitrate>448000</bitrate>
+
+        <media-format container="flv" cuepoints="stwcue" trackScheme="audio-adaptive">
+            <audio index="0" samplerate="44100" codec="aaclc" bitrate="256000" channels="2"/>
+            <audio index="1" samplerate="44100" codec="aaclc" bitrate="128000" channels="2"/>
+            <audio index="2" samplerate="44100" codec="heaacv1" bitrate="64000" channels="2"/>
+        </media-format>
+
+        <authentication>0</authentication>
+        <timeout>0</timeout>
+        <send-page-url>0</send-page-url>
+
+    </mountpoint>
+</mountpoints>

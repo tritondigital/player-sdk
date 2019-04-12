@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<live_stream_config version="1.8" xmlns="http://provisioning.streamtheworld.com/player/livestream-1.8">
+    <mountpoints>
+        <mountpoint>
+            <status>
+                <status-code>453</status-code>
+                <status-message>Forbidden (Content Access Denied)</status-message>
+            </status>
+            <mount>TARGETSPOT_MOUNT</mount>
+            <alternate-content>
+                <mount>MORGANFMAAC</mount>
+            </alternate-content>
+        </mountpoint>
+    </mountpoints>
+</live_stream_config>

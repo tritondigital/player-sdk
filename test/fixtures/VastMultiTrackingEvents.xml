@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VAST version="2.0.1">
+    <Ad id="Y206YWQ9MTM4NzMxJmNzPTEyMzY0NTEmdHU9MA">
+        <InLine>
+            <AdSystem version="3.0">
+                <![CDATA[TritonDigitalCampaignManager]]>
+            </AdSystem>
+            <AdTitle>
+                <![CDATA[TRACK ME IF YOU CAN!]]>
+            </AdTitle>
+            <Impression id="ImpressionConfirmationURL">
+                <![CDATA[https://alloybox.preprod01.streamtheworld.net/ondemand/impression?cat=cm-ondemand-filler&cid=Y206YWQ9MTM4NzMxJmM9MTIzNTUzMSZhPTEyMjIzMjEmY3M9MTIzNjQ1MSZ0dT0x&stid=55951&lsid=cookie:mee&cb=-546922192]]>
+            </Impression>
+            <Impression>
+                <![CDATA[http://audio-tracker-1.trackme.com]]>
+            </Impression>
+            <Impression>
+                <![CDATA[http://audio-tracker-2.trackme.com]]>
+            </Impression>
+            <Impression>
+                <![CDATA[http://audio-tracker-3.trackme.com]]>
+            </Impression>
+            <Creatives>
+                <Creative sequence="1">
+                    <Linear>
+                        <Duration>00:00:14.262</Duration>
+                        <MediaFiles>
+                            <MediaFile delivery="progressive" type="audio/mpeg" width="0" height="0">
+                                <![CDATA[http://cmodmedia.preprod.streamtheworld.net/media/cm-audio/cm:9d39e397-e992-4c51-8e63-d46c1129125d.mp3]]>
+                            </MediaFile>
+                        </MediaFiles>
+                    </Linear>
+                </Creative>
+                <Creative sequence="1">
+                    <CompanionAds>
+                        <Companion height="90" width="728">
+                            <StaticResource creativeType="image/jpeg">
+                                <![CDATA[http://cmodmedia.preprod.streamtheworld.net/media/cm-image/cm:1202101.jpg]]>
+                            </StaticResource>
+                            <TrackingEvents>
+                                <Tracking event="creativeView">
+                                    <![CDATA[http://LBoard-tracker-1.trackme.com]]>
+                                </Tracking>
+                            </TrackingEvents>
+                            <CompanionClickThrough>
+                                <![CDATA[https://alloybox.preprod01.streamtheworld.net/ondemand/clicktrack?cat=cm-ondemand-filler&cid=Y206YWQ9MTM4NzMxJmM9MTIwMzY4MSZhPTEyMDIxMDEmY3M9MTIzNjQ1MSZ0dT0w&stid=55951&lsid=cookie:mee&cb=-546922192&redir=http%3A%2F%2FLBoard-tracker.clickme.com]]>
+                            </CompanionClickThrough>
+                            <AltText>
+                                <![CDATA[Test Creative Unit]]>
+                            </AltText>
+                        </Companion>
+                        <Companion height="90" width="728">
+                            <HTMLResource>
+                                <![CDATA[
+            <img width="0" height="0" src="http://LBoard-tracker-1.trackme.com" style="display:none" /><img width="0" height="0" src="http://LBoard-tracker-2.trackme.com" style="display:none" /><img width="0" height="0" src="http://LBoard-tracker-3.trackme.com" style="display:none" /><a target="_blank" href="https://alloybox.preprod01.streamtheworld.net/ondemand/clicktrack?cat=cm-ondemand-filler&amp;cid=Y206YWQ9MTM4NzMxJmM9MTIwMzY4MSZhPTEyMDIxMDEmY3M9MTIzNjQ1MSZ0dT0w&amp;stid=55951&amp;lsid=cookie:mee&amp;cb=-546922192&amp;redir=http%3A%2F%2FLBoard-tracker.clickme.com"><img alt='Test Creative Unit' border="0" src="https://alloybox.preprod01.streamtheworld.net/ondemand/viewtrack?cat=cm-ondemand-filler&amp;cid=Y206YWQ9MTM4NzMxJmM9MTIwMzY4MSZhPTEyMDIxMDEmY3M9MTIzNjQ1MSZ0dT0w&amp;stid=55951&amp;lsid=cookie:mee&amp;cb=-546922192&amp;redir=http://cmodmedia.preprod.streamtheworld.net/media/cm-image/cm:1202101.jpg"/></a>
+    ]]>
+                            </HTMLResource>
+                        </Companion>
+                        <Companion height="90" width="728">
+                            <IFrameResource>
+                                <![CDATA[https://alloybox.preprod01.streamtheworld.net/ondemand/creative?cat=cm-ondemand-filler&cid=Y206YWQ9MTM4NzMxJmM9MTIwMzY4MSZhPTEyMDIxMDEmY3M9MTIzNjQ1MSZ0dT0w&fmt=htmlPage&stid=55951&lsid=cookie:mee&cb=-546922192]]>
+                            </IFrameResource>
+                        </Companion>
+                        <Companion height="250" width="300">
+                            <StaticResource creativeType="image/gif">
+                                <![CDATA[http://cmodmedia.preprod.streamtheworld.net/media/cm-image/cm:1202091.gif]]>
+                            </StaticResource>
+                            <TrackingEvents>
+                                <Tracking event="creativeView">
+                                    <![CDATA[http://MRectangle-tracker-1.trackme.com]]>
+                                </Tracking>
+                                <Tracking event="creativeView">
+                                    <![CDATA[http://MRectangle-tracker-2.trackme.com]]>
+                                </Tracking>
+                                <Tracking event="creativeView">
+                                    <![CDATA[http://MRectangle-tracker-3.trackme.com]]>
+                                </Tracking>
+                                <Tracking event="creativeView">
+                                    <![CDATA[http://MRectangle-tracker-4.trackme.com]]>
+                                </Tracking>
+                                <Tracking event="creativeView">
+                                    <![CDATA[http://MRectangle-tracker-5.trackme.com]]>
+                                </Tracking>
+                                <Tracking event="creativeView">
+                                    <![CDATA[https://alloybox.preprod01.streamtheworld.net/ondemand/viewtrack?cat=cm-ondemand-filler&cid=Y206YWQ9MTM4NzMxJmM9MTIwMzY3MSZhPTEyMDIwOTEmY3M9MTIzNjQ1MSZ0dT0w&stid=55951&lsid=cookie:mee&cb=-546922192]]>
+                                </Tracking>
+                            </TrackingEvents>
+                            <CompanionClickThrough>
+                                <![CDATA[https://alloybox.preprod01.streamtheworld.net/ondemand/clicktrack?cat=cm-ondemand-filler&cid=Y206YWQ9MTM4NzMxJmM9MTIwMzY3MSZhPTEyMDIwOTEmY3M9MTIzNjQ1MSZ0dT0w&stid=55951&lsid=cookie:mee&cb=-546922192&redir=http%3A%2F%2FMRectangle-tracker.clickme.com]]>
+                            </CompanionClickThrough>
+                            <AltText>
+                                <![CDATA[Test Creative Unit]]>
+                            </AltText>
+                        </Companion>
+                        <Companion height="250" width="300">
+                            <HTMLResource>
+                                <![CDATA[
+            <img width="0" height="0" src="http://MRectangle-tracker-1.trackme.com" style="display:none" /><img width="0" height="0" src="http://MRectangle-tracker-2.trackme.com" style="display:none" /><img width="0" height="0" src="http://MRectangle-tracker-3.trackme.com" style="display:none" /><img width="0" height="0" src="http://MRectangle-tracker-4.trackme.com" style="display:none" /><img width="0" height="0" src="http://MRectangle-tracker-5.trackme.com" style="display:none" /><a target="_blank" href="https://alloybox.preprod01.streamtheworld.net/ondemand/clicktrack?cat=cm-ondemand-filler&amp;cid=Y206YWQ9MTM4NzMxJmM9MTIwMzY3MSZhPTEyMDIwOTEmY3M9MTIzNjQ1MSZ0dT0w&amp;stid=55951&amp;lsid=cookie:mee&amp;cb=-546922192&amp;redir=http%3A%2F%2FMRectangle-tracker.clickme.com"><img alt='Test Creative Unit' border="0" src="https://alloybox.preprod01.streamtheworld.net/ondemand/viewtrack?cat=cm-ondemand-filler&amp;cid=Y206YWQ9MTM4NzMxJmM9MTIwMzY3MSZhPTEyMDIwOTEmY3M9MTIzNjQ1MSZ0dT0w&amp;stid=55951&amp;lsid=cookie:mee&amp;cb=-546922192&amp;redir=http://cmodmedia.preprod.streamtheworld.net/media/cm-image/cm:1202091.gif"/></a>
+    ]]>
+                            </HTMLResource>
+                        </Companion>
+                        <Companion height="250" width="300">
+
+                             <StaticResource creativeType="image/gif">
+                                <![CDATA[http://cmodmedia.preprod.streamtheworld.net/media/cm-image/cm:1202091.gif]]>
+                            </StaticResource>
+                            <TrackingEvents />
+                        </Companion>
+                    </CompanionAds>
+                </Creative>
+            </Creatives>
+        </InLine>
+    </Ad>
+</VAST>

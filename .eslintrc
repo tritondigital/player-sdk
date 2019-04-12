@@ -1,0 +1,27 @@
+{
+    "globals":{
+      "swfobject": true,
+      "sinon": true
+    },
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "mocha": true,
+        "amd": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "comma-spacing": [2, {"before": false, "after": true}],
+        "space-in-parens": [2, "always", { "exceptions": [ "empty"] }],
+        "array-bracket-spacing": [2, "always"],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "no-console":0
+    }
+}

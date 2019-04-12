@@ -1,0 +1,127 @@
+<mountpoints>
+    <mountpoint>
+        <status>
+            <status-code>200</status-code>
+            <status-message>OK</status-message>
+        </status>
+
+        <transports>
+            <transport>http</transport>
+            <transport  mountSuffix="/HLSTS/playlist.m3u8">hlsts</transport>
+        </transports>
+
+        <metadata>
+            <shoutcast-v1 enabled="true" mountSuffix="_SC"/>
+            <shoutcast-v2 enabled="false" mountSuffix="_SC"/>
+            <sse-sideband enabled="true" streamSuffix="_SC" metadataSuffix="_SBM"/>
+        </metadata>
+
+        <servers>
+            <server sid="6083">
+                <ip>6083.live.streamtheworld.com</ip>
+                <ports>
+                    <port type="http">80</port>
+                    <port type="http">3690</port>
+                    <port type="http">443</port>
+                </ports>
+            </server>
+            <server sid="13753">
+                <ip>13753.live.streamtheworld.com</ip>
+                <ports>
+                    <port type="http">80</port>
+                    <port type="http">443</port>
+                    <port type="http">3690</port>
+                </ports>
+            </server>
+            <server sid="14573">
+                <ip>14573.live.streamtheworld.com</ip>
+                <ports>
+                    <port type="http">80</port>
+                    <port type="http">443</port>
+                    <port type="http">3690</port>
+                </ports>
+            </server>
+        </servers>
+
+        <metrics>
+            <tag name="uuid"/>
+        </metrics>
+
+        <mount>HLS_PLAYERSAAC</mount>
+        <format>FLV</format>
+
+        <bitrate>80000</bitrate>
+
+        <media-format container="flv" cuepoints="stwcue" trackScheme="audio">
+            <audio index="0" samplerate="22050" codec="aaclc" bitrate="80000" channels="2"/>
+        </media-format>
+
+        <authentication>0</authentication>
+        <timeout>0</timeout>
+        <send-page-url>0</send-page-url>
+
+    </mountpoint>
+
+    <mountpoint>
+        <status>
+            <status-code>200</status-code>
+            <status-message>OK</status-message>
+        </status>
+
+        <transports>
+            <transport>http</transport>
+            <transport>hls</transport>
+        </transports>
+
+        <metadata>
+            <shoutcast-v1 enabled="true" mountSuffix="_SC"/>
+            <shoutcast-v2 enabled="false" mountSuffix="_SC"/>
+            <sse-sideband enabled="true" streamSuffix="_SC" metadataSuffix="_SBM"/>
+        </metadata>
+
+        <servers>
+            <server sid="6083">
+                <ip>6083.live.streamtheworld.com</ip>
+                <ports>
+                    <port type="http">80</port>
+                    <port type="http">3690</port>
+                    <port type="http">443</port>
+                </ports>
+            </server>
+            <server sid="13753">
+                <ip>13753.live.streamtheworld.com</ip>
+                <ports>
+                    <port type="http">80</port>
+                    <port type="http">443</port>
+                    <port type="http">3690</port>
+                </ports>
+            </server>
+            <server sid="14573">
+                <ip>14573.live.streamtheworld.com</ip>
+                <ports>
+                    <port type="http">80</port>
+                    <port type="http">443</port>
+                    <port type="http">3690</port>
+                </ports>
+            </server>
+        </servers>
+
+        <metrics>
+            <tag name="uuid"/>
+        </metrics>
+
+        <mount>HLS_PLAYERSAAC</mount>
+        <format>FLV</format>
+
+        <bitrate>128000</bitrate>
+
+        <media-format container="flv" cuepoints="stwcue" trackScheme="audio">
+            <audio index="0" samplerate="22050" codec="aaclc" bitrate="128000" channels="2"/>
+        </media-format>
+
+        <authentication>0</authentication>
+        <timeout>0</timeout>
+        <send-page-url>0</send-page-url>
+
+    </mountpoint>
+</mountpoints>

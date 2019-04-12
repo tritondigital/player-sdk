@@ -1,0 +1,21 @@
+{
+        "gettingStationInformation": "Obtendo informações da estação...",
+        "paused": "Em Pausa",
+        "onAir": "No Ar",
+        "disconnected": "Desconectado",
+        "streamUnavailable": "Streaming não disponível",
+        "buffering": "Em Buffer",
+        "connecting": "Conexão com stream ao vivo em andamento...",
+        "reconnecting": "Conexão com stream ao vivo em andamento...",
+        "seekfailed": "Operação impossível",
+        "seekinvalidtime": "Operação impossível: hora inválida",
+        "ended": "Terminou",
+        "pause":"Pausa",
+        "play":"Tocando",
+        "stop":"Interrompido",
+        "error":"Erro",
+        "streamGeoBlocked": "Infelizmente, este conteúdo não está disponível na sua área",
+        "stationNotFound": "Estação não encontrada",
+        "flashPluginOutOfDate": "A versão detectada do seu plug-in Flash está desatualizada. A versão mínima necessária é: 10.2.0",
+        "browserNotSupported": "Seu navegador não oferece suporte para o recurso HTML5"
+}
