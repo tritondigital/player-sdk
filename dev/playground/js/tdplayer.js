@@ -33,7 +33,7 @@ if ( getUrlVars()['platformid'] ) {
 } 
 
 
-var tech = getUrlVars()[ 'tech' ] || 'flash_html5';
+var tech = getUrlVars()[ 'tech' ] || 'html5';
 var sbm = getUrlVars()[ 'sbm' ] == 'false' ? false : true;
 var aSyncCuePointFallback = getUrlVars()[ 'aSyncCuePointFallback' ] == 'false' ? false : true;
 var hls = getUrlVars()[ 'hls' ] == 'false' ? false : true;
@@ -85,6 +85,8 @@ function initPlayer() {
 		break;
 
 	}
+
+	playerServicesRegion = playerServicesRegion == 'us' ? '' : playerServicesRegion;
 
 	/* TD player configuration object used to create player instance */
 	var tdSdkConfig = {
@@ -293,7 +295,7 @@ function configurePlayerServicesRegionButtons() {
 	$('#playerservices_region_' + playerServicesRegion ).button( 'toggle' );
 
 	$( "#playerservices_region_us" ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=';
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=us';
 	} );
 	$( "#playerservices_region_eu" ).click( function () {
 		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=eu';
