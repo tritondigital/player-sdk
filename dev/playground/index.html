@@ -11,10 +11,10 @@
     <style media="screen">
 
         label{
-            display:inherit !important;
+          display:inherit !important;
         }
         .btn-info, .btn-danger{
-            margin-bottom:10px;
+          margin-bottom:10px;
         }
 
     </style>
@@ -24,127 +24,127 @@
 
 <div class="container">
 
-    <h3 class="muted">Triton Digital JavaScript Player SDK Reference - Version @tdversion@</h3>
+<h3 class="muted">Triton Digital JavaScript Player SDK Reference - Version @tdversion@</h3>
 
-    <p>
-        <a href="userreg.php?platformid=<?php echo $platformid; ?>">User Registration playground</a>
-    </p>
+<p>
+    <a href="userreg.php?platformid=<?php echo $platformid; ?>">User Registration playground</a>
+</p>
 
-    <p>
-        The JavaScript SDK allows users to embed a chromeless live stream player via JavaScript.<br>
-        The player UI interface and skinning can be done in HTML/CSS.
-    </p>
+<p>
+    The JavaScript SDK allows users to embed a chromeless live stream player via JavaScript.<br>
+    The player UI interface and skinning can be done in HTML/CSS.
+</p>
 
-    <div><p><span class="label label-important"><b>Note:</b> On iOS / Android devices, the audio level is always under the user’s physical control. The volume property is not settable in JavaScript.
+<div><p><span class="label label-important"><b>Note:</b> On iOS / Android devices, the audio level is always under the user’s physical control. The volume property is not settable in JavaScript.
     <br>Limitation: The autoplay feature is disabled on mobile (iOS, Android) with Html5. You must call the play function only after the result of a user action.
 </span></p></div>
 
-    <div class="container" style="background-color: #f5f5f5; padding: 20px;">
-        <div class="well">
+<div class="container" style="background-color: #f5f5f5; padding: 20px;">
+    <div class="well">
+        <p>
+            <b>Technology</b>
+        </p>
+        <div class="btn-group" data-toggle="buttons-radio">
+            <button id="tech_flash_html5_button" type="button" class="btn btn-primary">Flash w/HTML5 fallback</button>
+            <button id="tech_html5_flash_button" type="button" class="btn btn-primary">HTML5 w/Flash fallback</button>
+            <button id="tech_flash_button" type="button" class="btn btn-primary">Flash only</button>
+            <button id="tech_html5_button" type="button" class="btn btn-primary">HTML5 only</button>
+        </div>
+        <div>&nbsp;</div>
+
+        <div ng-if="tech != 'flash' " >
             <p>
-                <b>Technology</b>
+                <b>Side-Band Metadata</b>
             </p>
-            <div class="btn-group" data-toggle="buttons-radio">
-                <button id="tech_flash_html5_button" type="button" class="btn btn-primary">Flash w/HTML5 fallback</button>
-                <button id="tech_html5_flash_button" type="button" class="btn btn-primary">HTML5 w/Flash fallback</button>
-                <button id="tech_flash_button" type="button" class="btn btn-primary">Flash only</button>
-                <button id="tech_html5_button" type="button" class="btn btn-primary">HTML5 only</button>
+            <div class="btn-group btn-toggle">
+                <button id="sbm_active_button" class="btn btn-sm btn-default">ON</button>
+                <button id="sbm_inactive_button" class="btn btn-sm btn-default">OFF</button>
             </div>
             <div>&nbsp;</div>
+            <p>
+                <b>Now Playing API fallback</b>
+            </p>
+            <div class="btn-group btn-toggle">
+                <button id="np_active_button" class="btn btn-sm btn-default">ON</button>
+                <button id="np_inactive_button" class="btn btn-sm btn-default">OFF</button>
+            </div>
 
-            <div ng-if="tech != 'flash' " >
-                <p>
-                    <b>Side-Band Metadata</b>
-                </p>
-                <div class="btn-group btn-toggle">
-                    <button id="sbm_active_button" class="btn btn-sm btn-default">ON</button>
-                    <button id="sbm_inactive_button" class="btn btn-sm btn-default">OFF</button>
-                </div>
-                <div>&nbsp;</div>
-                <p>
-                    <b>Now Playing API fallback</b>
-                </p>
-                <div class="btn-group btn-toggle">
-                    <button id="np_active_button" class="btn btn-sm btn-default">ON</button>
-                    <button id="np_inactive_button" class="btn btn-sm btn-default">OFF</button>
-                </div>
+            <div>&nbsp;</div>
+            <p>
+                <b>HLS</b>
+            </p>
+            <div class="btn-group btn-toggle">
+                <button id="hls_active_button" class="btn btn-sm btn-default">ON</button>
+                <button id="hls_inactive_button" class="btn btn-sm btn-default">OFF</button>
+            </div>
 
-                <div>&nbsp;</div>
-                <p>
-                    <b>HLS</b>
-                </p>
-                <div class="btn-group btn-toggle">
-                    <button id="hls_active_button" class="btn btn-sm btn-default">ON</button>
-                    <button id="hls_inactive_button" class="btn btn-sm btn-default">OFF</button>
-                </div>
+            <div>&nbsp;</div>
+            <p>
+                <b>Audio Adaptive</b>
+            </p>
+            <div class="btn-group btn-toggle">
+                <button id="audioadaptive_active_button" class="btn btn-sm btn-default">ON</button>
+                <button id="audioadaptive_inactive_button" class="btn btn-sm btn-default">OFF</button>
+            </div>
 
-                <div>&nbsp;</div>
-                <p>
-                    <b>Audio Adaptive</b>
-                </p>
-                <div class="btn-group btn-toggle">
-                    <button id="audioadaptive_active_button" class="btn btn-sm btn-default">ON</button>
-                    <button id="audioadaptive_inactive_button" class="btn btn-sm btn-default">OFF</button>
-                </div>
-
-                <div>&nbsp;</div>
-                <p>
-                    <b>Player Services Region</b>
-                </p>
-                <div class="btn-group" data-toggle="buttons-radio">
-                    <button id="playerservices_region_us" type="button" class="btn btn-primary">US</button>
-                    <button id="playerservices_region_eu" type="button" class="btn btn-primary">EU</button>
-                    <button id="playerservices_region_ap" type="button" class="btn btn-primary">AP</button>
-                </div>
+	        <div>&nbsp;</div>
+            <p>
+                <b>Player Services Region</b>
+           </p>
+           <div class="btn-group" data-toggle="buttons-radio">
+                <button id="playerservices_region_us" type="button" class="btn btn-primary">US</button>
+                <button id="playerservices_region_eu" type="button" class="btn btn-primary">EU</button>
+                <button id="playerservices_region_ap" type="button" class="btn btn-primary">AP</button>
             </div>
         </div>
+    </div>
 
-        <div class="well" style="display:none">
-            <p>
-                <b>GDPR</b>
-            </p>
-            <p>
-                <b>GA Active</b>
-            </p>
-            <div class="btn-group btn-toggle">
-                <button id="gaactive_true" class="btn btn-sm btn-default">True</button>
-                <button id="gaactive_false" class="btn btn-sm btn-default">False</button>
-            </div>
-            <div>&nbsp;</div>
-            <p>
-                <b>Allow Personalised Ads</b>
-            </p>
-            <div class="btn-group btn-toggle">
-                <button id="allow_personalised_ads_true" class="btn btn-sm btn-default">True</button>
-                <button id="allow_personalised_ads_false" class="btn btn-sm btn-default">False</button>
-            </div>
-            <div>&nbsp;</div>
-            <p>
-                <b>Transparency and Consent</b>
-            </p>
-            <div class="btn-group btn-toggle">
-                <button id="tcf_true" class="btn btn-sm btn-default">Enable</button>
-                <button id="tcf_false" class="btn btn-sm btn-default">Disable</button>
-            </div>
+    <div class="well" style="display:none">
+        <p>
+            <b>GDPR</b>
+        </p>
+        <p>
+            <b>GA Active</b>
+        </p>
+        <div class="btn-group btn-toggle">
+            <button id="gaactive_true" class="btn btn-sm btn-default">True</button>
+            <button id="gaactive_false" class="btn btn-sm btn-default">False</button>
+        </div>
+        <div>&nbsp;</div>
+        <p>
+            <b>Allow Personalised Ads</b>
+        </p>
+        <div class="btn-group btn-toggle">
+            <button id="allow_personalised_ads_true" class="btn btn-sm btn-default">True</button>
+            <button id="allow_personalised_ads_false" class="btn btn-sm btn-default">False</button>
+        </div>
+        <div>&nbsp;</div>
+        <p>
+            <b>Transparency and Consent</b>
+        </p>
+        <div class="btn-group btn-toggle">
+            <button id="tcf_true" class="btn btn-sm btn-default">Enable</button>
+            <button id="tcf_false" class="btn btn-sm btn-default">Disable</button>
+        </div>
+    </div>
+
+    <div class="well">
+        <p>
+            <b>MediaPlayer / Live Streaming</b>
+        </p>
+        <div class="input-append">
+            <input class="span2" placeholder="Enter a Station" id="stationUser" type="text">
+            <input class="span6" placeholder="Enter Tracking parameters, comma-separated (id:demo,csegid:123456)" id="stationUserTrackingParameters" type="text">
+            <button class="btn" type="button" id="playStreamByUserStationButton">Play Live Stream</button>
+        </div>
+        <div class="input-append">
+            <input class="span10" placeholder="Enter a media url (audio/video)" id="streamUrlUser" type="text">
+            <button class="btn" type="button" id="playUrlButton">Play url</button>
         </div>
 
-        <div class="well">
-            <p>
-                <b>MediaPlayer / Live Streaming</b>
-            </p>
-            <div class="input-append">
-                <input class="span2" placeholder="Enter a Station" id="stationUser" type="text">
-                <input class="span6" placeholder="Enter Tracking parameters, comma-separated (id:demo,csegid:123456)" id="stationUserTrackingParameters" type="text">
-                <button class="btn" type="button" id="playStreamByUserStationButton">Play Live Stream</button>
-            </div>
-            <div class="input-append">
-                <input class="span10" placeholder="Enter a media url (audio/video)" id="streamUrlUser" type="text">
-                <button class="btn" type="button" id="playUrlButton">Play url</button>
-            </div>
 
 
-
-            <div>&nbsp;</div>
+        <div>&nbsp;</div>
 
 
             <p ng-if="platformid == 'prod' || platformid == 'local' || platformid == 'build' ">
@@ -155,28 +155,28 @@
                 BASIC_CONFIG (live audio) <input class="btn btn-primary" type="button" data-action="play-live" data-station="BASIC_CONFIG" value="player.play( { station:'BASIC_CONFIG' } )"/>
             </p>
 
-            <p>
-                <input class="btn btn-primary" type="button" id="stopButton" value="player.stop()"/>
-                <input class="btn btn-primary" type="button" id="pauseButton" value="player.pause()"/>
-                <input class="btn btn-primary" type="button" id="resumeButton" value="player.resume()"/>
-                <input class="btn btn-primary" type="button" id="seekLiveButton" value="player.seekLive()"/>
-                <input class="btn btn-primary" type="button" id="flowAds" value="player.flowAds()"/>
-            </p>
-            <p>
-                <input class="btn btn-primary" type="button" id="setVolume50Button" value="player.setVolume(.5)"/>
-                <input class="btn btn-primary" type="button" id="muteButton" value="player.mute()"/>
-                <input class="btn btn-primary" type="button" id="unMuteButton" value="player.unMute()"/>
-            </p>
-        </div>
+        <p>
+            <input class="btn btn-primary" type="button" id="stopButton" value="player.stop()"/>
+            <input class="btn btn-primary" type="button" id="pauseButton" value="player.pause()"/>
+            <input class="btn btn-primary" type="button" id="resumeButton" value="player.resume()"/>
+            <input class="btn btn-primary" type="button" id="seekLiveButton" value="player.seekLive()"/>
+            <input class="btn btn-primary" type="button" id="flowAds" value="player.flowAds()"/>
+        </p>
+        <p>
+            <input class="btn btn-primary" type="button" id="setVolume50Button" value="player.setVolume(.5)"/>
+            <input class="btn btn-primary" type="button" id="muteButton" value="player.mute()"/>
+            <input class="btn btn-primary" type="button" id="unMuteButton" value="player.unMute()"/>
+        </p>
+    </div>
 
-        <div class="well">
-            <p>
-                <b>Podcast Player</b>
-                <input class="span10" placeholder="Enter a file url (audio)" id="fileUrl" type="text" value="http://c.espnradio.com/s:5L8r1/audio/2437468/espnucf_2015-02-17-131808.64k.mp3" style="visibility:hidden">
-            </p>
+    <div class="well">
+        <p>
+            <b>Podcast Player</b>
+            <input class="span10" placeholder="Enter a file url (audio)" id="fileUrl" type="text" value="http://c.espnradio.com/s:5L8r1/audio/2437468/espnucf_2015-02-17-131808.64k.mp3" style="visibility:hidden">
+        </p>
 
-            <div>
-                <div style="float:left"><img src="http://assets.espn.go.com/i/espnradio/logos/championship_drive_rece_davis_300x300.jpg" style="vertical-align: middle;border:0px;width:115px;height:115px;margin-right:10px;margin-bottom:10px" /></div>
+        <div>
+            <div style="float:left"><img src="http://assets.espn.go.com/i/espnradio/logos/championship_drive_rece_davis_300x300.jpg" style="vertical-align: middle;border:0px;width:115px;height:115px;margin-right:10px;margin-bottom:10px" /></div>
 
                 <b>Championship Drive with Rece Davis</b><br/>
                 ESPN<br/>
@@ -184,227 +184,227 @@
                 Episode 96 - Tue, 17 Feb 2015<br/>
                 Duration : 51:21<br/>
                 &nbsp;
-            </div>
-            <div id="filestatus"><p><span class="label label-success">Status:</span></p></div>
-            <div id="fileloadpercent"><p><span class="label"></span></p></div>
-            <div id="filetime"><p><span class="label">00:00/00:00</span></p></div>
-            <p>
-                <button class="btn btn-primary" type="button" id="playFileButton">Play File</button>
-                <button class="btn btn-primary" type="button" id="pauseFileButton">Pause File</button>
-                <button class="btn btn-primary" type="button" id="resumeFileButton">Resume File</button>
-                <button class="btn btn-primary" type="button" id="stopFileButton">Stop File</button>
-                <button class="btn btn-primary" type="button" id="backFileButton">Back 15 sec</button>
-                <button class="btn btn-primary" type="button" id="jumpFileButton">Jump 15 sec</button>
-            </p>
         </div>
-
-
-
-        <div class="well">
-            <p>
-                <b style="font-size:130%">MediaPlayer / Ads</b>
-
-            </p>
-            <label style="font-weight:bold;">Auto Start</label>
-            <button id="stream_auto_start_true" type="button" class="btn btn-primary ">Auto Start Stream</button>&nbsp;<button id="podcast_auto_start_true" type="button" class="btn btn-primary ">Auto Start Podcast</button>&nbsp;<button  id="stream_auto_start_false" type="button" class="btn btn-primary active">No</button>
-            <br/><br/>
-
-            <div class="form-group">
-                <label style="font-weight:bold;">IMA</label>
-                <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=')" value="Single Inline Linear"/>
-                <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=')" value="Single Skippable Linear"/>
-                <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirectlinear&correlator=')" value="Single Redirect Linear"/>
-                <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirecterror&correlator=')" value="Single Redirect Broken"/>
-                <input class="form-control btn btn-danger" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirecterror&nofb=1&correlator=')" value="Single Redirect Error"/>
-                <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinearvpaid&correlator=')" value="Single VPAID Linear Flash"/>
-                <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpreonly&cmsid=496&vid=short_onecue&correlator=')" value="VMAP Preroll"/>
-                <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpreonlybumper&cmsid=496&vid=short_onecue&correlator=')" value="VMAP Preroll With Bumper"/>
-            </div>
-            <br>
-
-            <p>
-                <label style="font-weight:bold;">Triton Ad Platform (TAP)</label>
-
-                <input class="btn btn-info" type="button" id="playTapAdButton" value="player.playAd( 'tap', { type:'preroll', format:'vast', stationId:77583 } )"/>
-                <input class="btn btn-info" type="button" id="playTapAdButtonWithTrackingParameters" value="player.playAd( 'tap', { type:'preroll', format:'vast', stationId:77583, trackingParameters:{ ttag: 'demo' } } )"/>
-            </p>
-            <p>
-                <label style="font-weight:bold;">Triton RunSpot Ad - station id 3168</label>
-
-                <input class="btn btn-info" type="button" id="playRunSpotAdButton" value="player.playAd( 'vastAd', { sid:3168 } )"/>
-            </p>
-
-            <p>
-                <label style="font-weight:bold;">DAAST </label>
-
-                <input class="btn btn-info" type="button" onClick="playVastAd('http://proserv.tritondigital.com/vast/daast1.xml')"  value="DAAST example"/>
-
-            </p>
-
-            <p>
-                <label style="font-weight:bold;">Vast Ad </label>
-
-                <input class="btn btn-info" type="button" id="playVastAdButton" value="player.playAd( 'vastAd', { url:'http://VAST_URL_HERE'} )"/>
-
-                <input class="btn btn-info" type="button" onClick="playVastAd('http://proserv.tritondigital.com/vast/vast-openx.xml')"  value="Vast OpenX"/>
-
-            </p>
-            <!--<p>
-                Bloom / AdGear
-                <input class="btn btn-info" type="button" id="playBloomAdButton" value="player.playAd( 'bloom', { id: 4974 } )"/>
-            </p>-->
-            <p>
-                <label style="font-weight:bold;">Static Media Ad</label>
-
-                <input class="btn btn-info" type="button" id="playMediaAdButton" value="player.playAd( 'mediaAd', { mediaUrl: 'http://MEDIA_FILE_URL', linkUrl:'http://www.geico.com/' } )"/>
-            </p>
-
-
-
-            <p>
-                <label style="font-weight:bold;">Player Ad Actions</label>
-
-                <input class="btn btn-info" type="button" id="skipAdButton" value="player.skipAd()"/>
-
-                <input ng-if="isLocal" class="btn btn-info" type="button" id="destroyAdButton" value="player.destroyAd()"/>
-
-            </p>
-
-
-
-            <div class="input-append">
-                <input class="span4" placeholder="Enter a RunSpot Station Id (example: 3168)" id="runSpotId" type="text">
-                <button class="btn" type="button" id="playRunSpotAdByIdButton">Play Triton RunSpot Ad</button>
-            </div>
-
-            <div class="input-append">
-                <input type="text" class="span10" rows="4" placeholder="Enter a VAST/DAAST tag Url (http://...) " id="vastAdUrl" type="text" />
-
-                <button class="btn" type="button" id="playVastAdByUrlButton">Play Vast Ad</button>
-            </div>
-
-            <div class="input-append">
-                <textarea class="span10" rows="4" placeholder="Enter a VAST/DAAST XML (<VAST>...</VAST>)" id="vastAdRawXML" type="text"></textarea>
-                <button class="btn" type="button" id="playVastAdByRawXMLButton">Play XML Vast Ad</button>
-            </div>
-        </div>
-
-
-
-
-
-        <div id="status"><p><span class="label label-success">Loading...</span></p></div>
-        <div id="techInfo"><p><span class="label label-info"></span></p></div>
-
-        <div id="nowPlaying" style="float:left; width:330px; height:250px;">
-            <div id="trackInfo">
-                <p><span class="label label-info">Now Playing</span></p>
-            </div>
-            <div id="npeInfo"></div>
-        </div>
-
-        <!-- Player placeholder -->
-        <div id="td_container" style="background-color:#000;color:#fff;border:1px dashed black; float:left; width:300px; height:250px;">Player</div>
-
-
-        <div id="bigbox" style="text-align:center; border:1px dashed black; margin-left:5px; float:left; background-color: #FFFFFF; width: 300px; height: 250px;">
-            <div id="td_synced_bigbox">Synced Bigbox (300x250)</div>
-            <div id="td_adserver_bigbox"></div>
-        </div>
-
-        <div id="leaderboard" style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 728px; height: 90px;">
-            <div id="td_synced_leaderboard">Synced Leaderboard (728x90)</div>
-            <div id="td_adserver_leaderboard"></div>
-        </div>
-
-        <br style="clear: both;">
-
-        <br style="clear: both;">
-
-        <input class="btn" type="button" id="clearDebug" value="Clear"/>
-        <textarea style="float: left;" class="span10" rows="20" placeholder="Debug information..." id="debugInformation" type="text"></textarea>
-
-        <br style="clear: both;">
-
-        <div class="well">
-            <p>
-                <b>Now Playing Enhanced (NPE):</b>
-            </p>
-            <div class="btn-group">
-                <input class="btn btn-inverse" type="button" id="getArtistButton" value="Get artist info"/>
-            </div>
-        </div>
-
-
-        <div class="well">
-            <p>
-                <b>NowPlayingApi</b>
-            </p>
-            <div class="btn-group">
-                <div class="input-append">
-                    <input class="span2" placeholder="Enter a Callsign" id="songHistoryCallsignUser" type="text">
-                    <select id="songHistoryConnectionTypeSelect" name="songHistoryConnectionTypeSelect">
-                        <option value="normalConnection">normalConnection</option>
-                        <option value="hdConnection">hdConnection (AAC)</option>
-                    </select>
-                    <button class="btn" type="button" id="fetchSongHistoryByUserCallsignButton">Get Song History</button>
-                </div>
-            </div>
-        </div>
-        <div class="well">
-            <b>PlayerWebAdmin</b>
-            <p>
-            <div class="btn-group">
-                <div class="input-append">
-                    <input class="span2" placeholder="Enter a Callsign" id="pwaCallsign" type="text">
-                    <input class="span2" placeholder="Enter a streamid" id="pwaStreamId" type="text">
-                    <button class="btn" type="button" id="pwaButton">Get PlayerWebAdmin configuration</button>
-                </div>
-            </div>
-            </p>
-        </div>
-
-
-        <div class="well">
-            <p>
-                <b>UserRegistration / MediaPlayer / Selective bitrate</b>
-            </p>
-            <p class="input-append">
-                <input class="span2" id="userVid" type="text" value="9E88AFB2A54741B79718E9D82FA9476C">
-                <input class="span3" id="userTags" type="text" value="tdas-reg">
-                <input class="span3" id="userTagsHash" type="text" value="3b6d5debe26eac9fcf67edc6fcd3e9887319fc5b">
-                <input class="btn btn-primary" type="button" id="loginButton" value="Log-in (enableHQ)"/>
-                <input class="btn btn-primary" type="button" id="logoutButton" value="Log-out (disableHQ)"/>
-            </p>
-            <p>
-                <input class="btn btn-primary" type="button" id="activateLowButton" value="player.MediaPlayer.activateLow()"/>
-                <input class="btn btn-primary" type="button" id="deactivateLowButton" value="player.MediaPlayer.deactivateLow()"/>
-            </p>
-            <p>
-                Has HQ ? <span id="hasHQ">N/A</span><br>
-                Is HQ ? <span id="isHQ">N/A</span><br>
-                Has Low ? <span id="hasLow">N/A</span><br>
-                Is Low ? <span id="isLow">N/A</span>
-            </p>
-        </div>
-
-        <br style="clear: both;">
-
-        <!-- asyncData is a placeholder for Song History, Pwa configuration, Npe metadata -->
-        <div id="asyncData"></div>
-
-
+        <div id="filestatus"><p><span class="label label-success">Status:</span></p></div>
+        <div id="fileloadpercent"><p><span class="label"></span></p></div>
+        <div id="filetime"><p><span class="label">00:00/00:00</span></p></div>
+        <p>
+            <button class="btn btn-primary" type="button" id="playFileButton">Play File</button>
+            <button class="btn btn-primary" type="button" id="pauseFileButton">Pause File</button>
+            <button class="btn btn-primary" type="button" id="resumeFileButton">Resume File</button>
+            <button class="btn btn-primary" type="button" id="stopFileButton">Stop File</button>
+            <button class="btn btn-primary" type="button" id="backFileButton">Back 15 sec</button>
+            <button class="btn btn-primary" type="button" id="jumpFileButton">Jump 15 sec</button>
+        </p>
     </div>
 
-    <script src="js/jquery-1.7.2.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
 
-    <!-- tdplayer.js is specific to this index.html page, it is NOT required and is only there for a demo on how to integrate the TD SDK in a page -->
-    <script src="js/tdplayer.js"></script>
 
-    <script src="js/jquery-ui-1.8.18.custom.min.js"></script>
-    <script src="js/jquery.smooth-scroll.min.js"></script>
-    <script src="js/lightbox.js"></script>
+    <div class="well">
+        <p>
+            <b style="font-size:130%">MediaPlayer / Ads</b>
+
+        </p>
+        <label style="font-weight:bold;">Auto Start</label>
+        <button id="stream_auto_start_true" type="button" class="btn btn-primary ">Auto Start Stream</button>&nbsp;<button id="podcast_auto_start_true" type="button" class="btn btn-primary ">Auto Start Podcast</button>&nbsp;<button  id="stream_auto_start_false" type="button" class="btn btn-primary active">No</button>
+        <br/><br/>
+
+        <div class="form-group">
+          <label style="font-weight:bold;">IMA</label>
+          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=')" value="Single Inline Linear"/>
+          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=')" value="Single Skippable Linear"/>
+          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirectlinear&correlator=')" value="Single Redirect Linear"/>
+          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirecterror&correlator=')" value="Single Redirect Broken"/>
+          <input class="form-control btn btn-danger" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirecterror&nofb=1&correlator=')" value="Single Redirect Error"/>
+          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinearvpaid&correlator=')" value="Single VPAID Linear Flash"/>
+          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpreonly&cmsid=496&vid=short_onecue&correlator=')" value="VMAP Preroll"/>
+          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpreonlybumper&cmsid=496&vid=short_onecue&correlator=')" value="VMAP Preroll With Bumper"/>
+        </div>
+        <br>
+
+        <p>
+          <label style="font-weight:bold;">Triton Ad Platform (TAP)</label>
+
+            <input class="btn btn-info" type="button" id="playTapAdButton" value="player.playAd( 'tap', { type:'preroll', format:'vast', stationId:77583 } )"/>
+            <input class="btn btn-info" type="button" id="playTapAdButtonWithTrackingParameters" value="player.playAd( 'tap', { type:'preroll', format:'vast', stationId:77583, trackingParameters:{ ttag: 'demo' } } )"/>
+        </p>
+        <p>
+          <label style="font-weight:bold;">Triton RunSpot Ad - station id 3168</label>
+
+            <input class="btn btn-info" type="button" id="playRunSpotAdButton" value="player.playAd( 'vastAd', { sid:3168 } )"/>
+        </p>
+
+        <p>
+            <label style="font-weight:bold;">DAAST </label>
+
+            <input class="btn btn-info" type="button" onClick="playVastAd('http://proserv.tritondigital.com/vast/daast1.xml')"  value="DAAST example"/>
+
+        </p>
+
+        <p>
+            <label style="font-weight:bold;">Vast Ad </label>
+
+            <input class="btn btn-info" type="button" id="playVastAdButton" value="player.playAd( 'vastAd', { url:'http://VAST_URL_HERE'} )"/>
+
+            <input class="btn btn-info" type="button" onClick="playVastAd('http://proserv.tritondigital.com/vast/vast-openx.xml')"  value="Vast OpenX"/>
+
+        </p>
+        <!--<p>
+            Bloom / AdGear
+            <input class="btn btn-info" type="button" id="playBloomAdButton" value="player.playAd( 'bloom', { id: 4974 } )"/>
+        </p>-->
+        <p>
+          <label style="font-weight:bold;">Static Media Ad</label>
+
+            <input class="btn btn-info" type="button" id="playMediaAdButton" value="player.playAd( 'mediaAd', { mediaUrl: 'http://MEDIA_FILE_URL', linkUrl:'http://www.geico.com/' } )"/>
+        </p>
+
+
+
+        <p>
+          <label style="font-weight:bold;">Player Ad Actions</label>
+
+            <input class="btn btn-info" type="button" id="skipAdButton" value="player.skipAd()"/>
+
+            <input ng-if="isLocal" class="btn btn-info" type="button" id="destroyAdButton" value="player.destroyAd()"/>
+
+        </p>
+
+
+
+        <div class="input-append">
+            <input class="span4" placeholder="Enter a RunSpot Station Id (example: 3168)" id="runSpotId" type="text">
+            <button class="btn" type="button" id="playRunSpotAdByIdButton">Play Triton RunSpot Ad</button>
+        </div>
+
+        <div class="input-append">
+            <input type="text" class="span10" rows="4" placeholder="Enter a VAST/DAAST tag Url (http://...) " id="vastAdUrl" type="text" />
+
+            <button class="btn" type="button" id="playVastAdByUrlButton">Play Vast Ad</button>
+        </div>
+
+        <div class="input-append">
+            <textarea class="span10" rows="4" placeholder="Enter a VAST/DAAST XML (<VAST>...</VAST>)" id="vastAdRawXML" type="text"></textarea>
+            <button class="btn" type="button" id="playVastAdByRawXMLButton">Play XML Vast Ad</button>
+        </div>
+    </div>
+
+
+
+
+
+    <div id="status"><p><span class="label label-success">Loading...</span></p></div>
+    <div id="techInfo"><p><span class="label label-info"></span></p></div>
+
+    <div id="nowPlaying" style="float:left; width:330px; height:250px;">
+        <div id="trackInfo">
+            <p><span class="label label-info">Now Playing</span></p>
+        </div>
+        <div id="npeInfo"></div>
+    </div>
+
+    <!-- Player placeholder -->
+    <div id="td_container" style="background-color:#000;color:#fff;border:1px dashed black; float:left; width:300px; height:250px;">Player</div>
+
+
+    <div id="bigbox" style="text-align:center; border:1px dashed black; margin-left:5px; float:left; background-color: #FFFFFF; width: 300px; height: 250px;">
+        <div id="td_synced_bigbox">Synced Bigbox (300x250)</div>
+        <div id="td_adserver_bigbox"></div>
+    </div>
+
+    <div id="leaderboard" style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 728px; height: 90px;">
+        <div id="td_synced_leaderboard">Synced Leaderboard (728x90)</div>
+        <div id="td_adserver_leaderboard"></div>
+    </div>
+
+    <br style="clear: both;">
+
+    <br style="clear: both;">
+
+    <input class="btn" type="button" id="clearDebug" value="Clear"/>
+    <textarea style="float: left;" class="span10" rows="20" placeholder="Debug information..." id="debugInformation" type="text"></textarea>
+
+    <br style="clear: both;">
+
+    <div class="well">
+        <p>
+            <b>Now Playing Enhanced (NPE):</b>
+        </p>
+        <div class="btn-group">
+            <input class="btn btn-inverse" type="button" id="getArtistButton" value="Get artist info"/>
+        </div>
+    </div>
+
+
+    <div class="well">
+        <p>
+            <b>NowPlayingApi</b>
+        </p>
+        <div class="btn-group">
+            <div class="input-append">
+                <input class="span2" placeholder="Enter a Callsign" id="songHistoryCallsignUser" type="text">
+                <select id="songHistoryConnectionTypeSelect" name="songHistoryConnectionTypeSelect">
+                    <option value="normalConnection">normalConnection</option>
+                    <option value="hdConnection">hdConnection (AAC)</option>
+                </select>
+                <button class="btn" type="button" id="fetchSongHistoryByUserCallsignButton">Get Song History</button>
+            </div>
+        </div>
+    </div>
+    <div class="well">
+        <b>PlayerWebAdmin</b>
+        <p>
+        <div class="btn-group">
+            <div class="input-append">
+                <input class="span2" placeholder="Enter a Callsign" id="pwaCallsign" type="text">
+                <input class="span2" placeholder="Enter a streamid" id="pwaStreamId" type="text">
+                <button class="btn" type="button" id="pwaButton">Get PlayerWebAdmin configuration</button>
+            </div>
+        </div>
+        </p>
+    </div>
+
+
+    <div class="well">
+        <p>
+            <b>UserRegistration / MediaPlayer / Selective bitrate</b>
+        </p>
+        <p class="input-append">
+            <input class="span2" id="userVid" type="text" value="9E88AFB2A54741B79718E9D82FA9476C">
+            <input class="span3" id="userTags" type="text" value="tdas-reg">
+            <input class="span3" id="userTagsHash" type="text" value="3b6d5debe26eac9fcf67edc6fcd3e9887319fc5b">
+            <input class="btn btn-primary" type="button" id="loginButton" value="Log-in (enableHQ)"/>
+            <input class="btn btn-primary" type="button" id="logoutButton" value="Log-out (disableHQ)"/>
+        </p>
+        <p>
+            <input class="btn btn-primary" type="button" id="activateLowButton" value="player.MediaPlayer.activateLow()"/>
+            <input class="btn btn-primary" type="button" id="deactivateLowButton" value="player.MediaPlayer.deactivateLow()"/>
+        </p>
+        <p>
+            Has HQ ? <span id="hasHQ">N/A</span><br>
+            Is HQ ? <span id="isHQ">N/A</span><br>
+            Has Low ? <span id="hasLow">N/A</span><br>
+            Is Low ? <span id="isLow">N/A</span>
+        </p>
+    </div>
+
+    <br style="clear: both;">
+
+    <!-- asyncData is a placeholder for Song History, Pwa configuration, Npe metadata -->
+    <div id="asyncData"></div>
+
+
+</div>
+
+<script src="js/jquery-1.7.2.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<!-- tdplayer.js is specific to this index.html page, it is NOT required and is only there for a demo on how to integrate the TD SDK in a page -->
+<script src="js/tdplayer.js"></script>
+
+<script src="js/jquery-ui-1.8.18.custom.min.js"></script>
+<script src="js/jquery.smooth-scroll.min.js"></script>
+<script src="js/lightbox.js"></script>
 
 </div>
 
@@ -412,85 +412,85 @@
 
 <div id="footer">
     <div class="container">
-        <p class="muted credit">&copy; Triton Digital 2019</p>
+        <p class="muted credit">&copy; Triton Digital 2017</p>
     </div>
 </div>
 
 <script type="text/javascript">
-    var pg = angular.module('playground', []);
+var pg = angular.module('playground', []);
 
-    pg.controller('pgController', function($scope, $location){
+pg.controller('pgController', function($scope, $location){
 
-        $scope.isLocal = false;
-        $scope.platformid = 'prod';
+	$scope.isLocal = false;
+	$scope.platformid = 'prod';
 
-        if (getUrlVars()['platformid']) {
-            $scope.platformid =  getUrlVars()['platformid'];
-        } else if ( $location.$$host == 'localhost' ){
-            $scope.isLocal = true;
-            $scope.platformid = 'local';
-        }
-
-        $scope.apiBaseUrl = 'sdk.listenlive.co/web/';
-        $scope.tdplayerapiUrl = null;
-        $scope.apiVersion = '2.9';
-
-        $scope.tech = getUrlVars()['tech'] || 'flash_html5' ;
-        $scope.sbm = getUrlVars()['sbm'] == 'false' ? false : true;
-        $scope.aSyncCuePointFallback = getUrlVars()['aSyncCuePointFallback'] == 'false' ? false : true;
-        $scope.hls = getUrlVars()['hls'] == 'false' ? false : true;
-        $scope.audioAdaptive = getUrlVars()['audioAdaptive'] == 'true' ? true : false;
-        $scope.streamAutoStart = false;
-        $scope.GAActive = getUrlVars()['gaactive'] == "true" ? true : false ;
-        $scope.GADebug = getUrlVars()['gadebug'] == "true" ? true : false ;
-        $scope.tcfFramework = getUrlVars()['tcfFramework'] == "true" ? true : false;
-
-        $scope.tdSdkApiUrl = '//'+$scope.apiBaseUrl + $scope.apiVersion+ '/td-sdk.min.js';
-
-        if ( $location.absUrl().indexOf('web/v/') !== -1 ) {
-
-            var sdkBuildVersion = $location.absUrl().match(/(\d+\.)?(\d+\.)?(\*|\d+)(\-)(\d){1,4}/)[0];
-
-            $scope.apiBaseUrl = 'sdk.listenlive.co/web/v/' + sdkBuildVersion;
-            $scope.tdSdkApiUrl = '//'+$scope.apiBaseUrl + '/td-sdk.min.js';
-        }
-
-        if ( $scope.platformid == 'build'){
-            $scope.tdSdkApiUrl = '../../dist/td-sdk.min.js';
-        } else if (  $scope.platformid == 'local'){
-            $scope.tdSdkApiUrl = './td-sdk.js';
-        }
-
-        if($scope.tcfFramework){
-            $.getScript("js/gdpr.js", function(data, textStatus, jqxhr) {
-                console.log(data); //data returned
-                console.log(textStatus); //success
-                console.log(jqxhr.status); //200
-                console.log('Load was performed.');
-            });
-        }
-
-
-        $.getScript( $scope.tdSdkApiUrl )
-            .done(function(script, textStatus){
-                initPlayer();
-            })
-
-    });
-
-
-    function getUrlVars()
-    {
-        var vars = [], hash;
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-        for(var i = 0; i < hashes.length; i++)
-        {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
-            vars[hash[0]] = hash[1];
-        }
-        return vars;
+	if (getUrlVars()['platformid']) {
+		$scope.platformid =  getUrlVars()['platformid'];
+	} else if ( $location.$$host == 'localhost' ){
+        $scope.isLocal = true;
+		$scope.platformid = 'local';
     }
+
+    $scope.apiBaseUrl = 'sdk.listenlive.co/web/';
+    $scope.tdplayerapiUrl = null;
+    $scope.apiVersion = '2.9';
+
+    $scope.tech = getUrlVars()['tech'] || 'flash_html5' ;
+    $scope.sbm = getUrlVars()['sbm'] == 'false' ? false : true;
+    $scope.aSyncCuePointFallback = getUrlVars()['aSyncCuePointFallback'] == 'false' ? false : true;
+    $scope.hls = getUrlVars()['hls'] == 'false' ? false : true;
+    $scope.audioAdaptive = getUrlVars()['audioAdaptive'] == 'true' ? true : false;
+    $scope.streamAutoStart = false;
+    $scope.GAActive = getUrlVars()['gaactive'] == "true" ? true : false ;
+    $scope.GADebug = getUrlVars()['gadebug'] == "true" ? true : false ;
+    $scope.tcfFramework = getUrlVars()['tcfFramework'] == "true" ? true : false;
+
+    $scope.tdSdkApiUrl = '//'+$scope.apiBaseUrl + $scope.apiVersion+ '/td-sdk.min.js';
+
+  if ( $location.absUrl().indexOf('web/v/') !== -1 ) {
+
+        var sdkBuildVersion = $location.absUrl().match(/(\d+\.)?(\d+\.)?(\*|\d+)(\-)(\d){1,4}/)[0];
+
+        $scope.apiBaseUrl = 'sdk.listenlive.co/web/v/' + sdkBuildVersion;
+        $scope.tdSdkApiUrl = '//'+$scope.apiBaseUrl + '/td-sdk.min.js';
+  }
+
+  if ( $scope.platformid == 'build'){
+        $scope.tdSdkApiUrl = '../../dist/td-sdk.min.js';
+  } else if (  $scope.platformid == 'local'){
+        $scope.tdSdkApiUrl = './td-sdk.js';
+  }
+
+if($scope.tcfFramework){
+    $.getScript("js/gdpr.js", function(data, textStatus, jqxhr) {
+    console.log(data); //data returned
+    console.log(textStatus); //success
+    console.log(jqxhr.status); //200
+    console.log('Load was performed.');
+});
+}
+
+
+  $.getScript( $scope.tdSdkApiUrl )
+    .done(function(script, textStatus){
+        initPlayer();
+  })
+
+});
+
+
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
 
 
 </script>
