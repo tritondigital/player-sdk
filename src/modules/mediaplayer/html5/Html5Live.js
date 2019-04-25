@@ -248,17 +248,15 @@ define( [
 		},
 
 		pause: function () {
-			this.isPaused = false;
-			MediaElement.stop();
+			this.isPaused = true;
+			MediaElement.pause();
 		},
 
 		stop: function () {
-
 			MediaElement.stop();
 		},
 
 		resume: function () {
-
 			MediaElement.resume();
 		},
 
