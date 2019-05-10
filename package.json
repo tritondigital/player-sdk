@@ -1,6 +1,6 @@
 {
   "name": "td-sdk",
-  "version": "2.9.28",
+  "version": "2.9.29",
   "description": "TD SDK",
   "main": "index.js",
   "homepage": "http://player.listenlive.co/api/",

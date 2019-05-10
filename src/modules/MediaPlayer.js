@@ -96,6 +96,19 @@ define( [
 			console.log( 'mediaPlayer::constructor' );
 
 			this.inherited( arguments );
+			var self = this;
+			if(typeof (__cmp) === 'function'){
+				console.log( 'techModule::__cmp' );
+				__cmp('getConsentData', null, function(consentData) {
+					self.consentData = consentData;
+					if ( self.config.idSync != undefined ) {
+						self._loadIdSync( self.config.idSync );
+					}					
+				});
+			}else if ( this.config.idSync != undefined ) {
+				this._loadIdSync( this.config.idSync );
+			}	
+			
 
 			this.liveStreamConfig = null;
 			this.streamingConnections = null;
@@ -137,9 +150,7 @@ define( [
 			this._isPlaying = false;
 			this.fallbackTried = false;
 
-			if ( this.config.idSync != undefined ) {
-				this._loadIdSync( this.config.idSync );
-			}
+			
 
 			this.api = {
 				play: lang.hitch( this, this._play ),
@@ -902,7 +913,12 @@ define( [
 			//return if no required param passed
 			if ( queryParam == undefined ) return;
 
-			queryParam = ( config.gdpr != undefined && config.gdpr.toString().match(/^[0,1]$/g) ) ? queryParam + '&gdpr=' + config.gdpr : queryParam;
+			if(this.consentData){
+				config.gdpr = (this.consentData.gdprApplies) ? 1 : 0;
+				config.gdpr_consent = this.consentData.consentData;
+			}
+
+			queryParam = ( config.gdpr && config.gdpr.toString().match(/^[0,1]$/g) ) ? queryParam + '&gdpr=' + config.gdpr : queryParam;
 			
 			queryParam = ( config.gdpr_consent ) ? queryParam + '&gdpr_consent=' + config.gdpr_consent : queryParam;
 

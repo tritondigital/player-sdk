@@ -240,21 +240,8 @@ define( [
 		 * @param {Connection} connection
 		 * @private
 		 */
-		__connect: function ( connection ) {
-			var self = this;
-			if ( connection == null ) return;
-			if(typeof (__cmp) === 'function'){
-				console.log( 'techModule::__cmp' );
-				__cmp('getConsentData', null, function(consentData) {
-					self.consentData = consentData;
-					self._connect(connection);
-				});
-			}else{
-				this._connect(connection);
-			}
-		},
-
-		_connect: function( connection ){
+		__connect: function ( connection ) {			
+			if ( connection == null ) return;			
 			var self = this;
 			this.connection = connection;
 
@@ -286,11 +273,6 @@ define( [
 			}
 
 			var params = this._currentLiveApiParams.trackingParameters || {};
-
-			if(this.consentData){
-				params.gdpr = (this.consentData.gdprApplies) ? 1 : 0;
-				params.gdpr_consent = this.consentData.consentData;
-			}
 
 			if ( this.lowActivated && this.connection.isAudioAdaptive )
 				params.utags = 'low-bw';
