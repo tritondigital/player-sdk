@@ -902,6 +902,10 @@ define( [
 			//return if no required param passed
 			if ( queryParam == undefined ) return;
 
+			queryParam = ( config.gdpr != undefined && config.gdpr.toString().match(/^[0,1]$/g) ) ? queryParam + '&gdpr=' + config.gdpr : queryParam;
+			
+			queryParam = ( config.gdpr_consent ) ? queryParam + '&gdpr_consent=' + config.gdpr_consent : queryParam;
+
 			//adding Demographic Targeting from advertising guide params
 			//dob String formatted as YYYY-MM-DD
 			var dob = (config.dob && !isNaN( Date.parse(config.dob) ) ) ? new Date( config.dob.replace(/-/g,'/') ) : null
