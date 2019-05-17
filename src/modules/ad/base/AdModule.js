@@ -122,9 +122,9 @@ define([
             this.html5Node = e.html5Node;
 
             if( e.code == 'MEDIA_STARTED' ) {
-
-                this.emit( this.AD_MODULE_PLAYBACK_START, { id:this.playerNode, type:e.adServerType, error:false } );
-
+                if(this.html5Node.currentTime == 0){
+                	this.emit( this.AD_MODULE_PLAYBACK_START, { id:this.playerNode, type:e.adServerType, error:false } );
+                }                
             }
             else if( e.code == 'MEDIA_TIME_UPDATE' ) {
 
