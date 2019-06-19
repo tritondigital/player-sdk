@@ -1,6 +1,6 @@
 {
   "name": "td-sdk",
-  "version": "2.9.29",
+  "version": "2.9.30",
   "description": "TD SDK",
   "main": "index.js",
   "homepage": "http://player.listenlive.co/api/",
@@ -30,9 +30,11 @@
     "strip-loader": "^0.1.2",
     "swfobject": "^2.2.1",
     "webpack": "^1.15.0",
+    "whatwg-fetch": "^3.0.0",
     "xmldoc": "^0.5.1"
   },
   "devDependencies": {
+    "babel-polyfill": "^6.26.0",
     "compression": "^1.7.1",
     "eslint": "^2.13.1",
     "eslint-config-airbnb": "^9.0.1",

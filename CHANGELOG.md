@@ -1,4 +1,8 @@
 # Release notes:
+#2.9.30 (June 13 2019)
+### Bug Fixes
+- Fix CORS issue when confirming the VAST impression
+
 ## v2.9.29 (May 14 2019)
 ### Features
 - Add GDPR parameters to idSync object

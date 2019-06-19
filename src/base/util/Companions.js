@@ -10,7 +10,7 @@ define([
     'dojo/request',
     'sdk/base/util/XhrProvider'
 ], function (declare, lang, on, Evented, array, dom, domConstruct, request,  XhrProvider) {
-
+    var fetch = require( 'whatwg-fetch' );
     var companions = window.TdCompanions  = declare([Evented], {
 
         JS_BANNER_URL: 'https://player.tritondigital.com/tpl/default/jsbanner.php',
@@ -175,8 +175,9 @@ define([
             if (vastCompanionAd.creativeView && vastCompanionAd.creativeView.length ){
                 
                 vastCompanionAd.creativeView.forEach(function(url){
-                    var xhrProv = new XhrProvider();
-                    xhrProv.request( url, null, { method:'POST' } );
+                    window.fetch( url, {
+                        mode:'no-cors'
+                    });                    
                 });                                
             }
         },
