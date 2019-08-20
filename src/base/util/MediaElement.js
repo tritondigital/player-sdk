@@ -3,6 +3,7 @@ var EventEmitter = require( 'events' ).EventEmitter;
 var Hls = require( 'hls.js' );
 var PlaybackState = require( 'sdk/base/playback/PlaybackState' );
 var StateMachine = require( 'javascript-state-machine' );
+var hls;
 
 
 var STATE = {
@@ -263,10 +264,9 @@ module.exports = _.assign( new EventEmitter(), {
 		this.useHls = useHls || this.useHls;
 
 		if ( useHls ) {
-			var hls = new Hls();
-
-			hls.loadSource( url );
-			hls.attachMedia( this.audioNode );
+			this.hls = new Hls();
+			this.hls.loadSource( url );
+			this.hls.attachMedia( this.audioNode );			
 		} else {
 			this.audioNode.src = url;
 			this.audioNode.load();
@@ -288,6 +288,11 @@ module.exports = _.assign( new EventEmitter(), {
 			context.url = null;
 		 }, 300);
 		
+		 if ( this.useHls ) {
+			this.hls.detachMedia();
+			this.hls.stopLoad();
+			this.hls.destroy();
+		 }
 	},
 
 	pause: function () {
