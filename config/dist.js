@@ -28,7 +28,8 @@ let config = Object.assign({}, baseConfig, {
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin( {
           compress: {
-                  warnings: false
+                  warnings: false,
+		  pure_funcs: [ 'console.log', 'console.debug' ]
            }
       } ),
       new webpack.optimize.OccurenceOrderPlugin(),
@@ -36,10 +37,5 @@ let config = Object.assign({}, baseConfig, {
   ],
   module: defaultSettings.getDefaultModules()
 });
-
-// Add needed loaders to the defaults here
-config.module.loaders.push(
-    { test : /\.js$/, loader: 'strip-loader?strip[]=console.log' }
-);
 
 module.exports = config;
