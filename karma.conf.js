@@ -3,6 +3,8 @@ var webpackCfg = require( './config/webpack.config.js' );
 // Generated on Wed Jun 08 2016 09:26:53 GMT-0400 (EDT)
 
 var debug = process.argv.indexOf( '--debug' ) > -1;
+const puppeteer = require('puppeteer');
+process.env.CHROME_BIN = puppeteer.executablePath();
 
 module.exports = function ( config ) {
 	config.set( {
@@ -70,7 +72,24 @@ module.exports = function ( config ) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: [ debug ? 'Chrome' : 'PhantomJS' ],
+		browsers: [ debug ? 'Chrome' : 'HeadlessChrome' ],
+		customLaunchers: {
+			HeadlessChrome: {
+			  base: "Chrome",
+			  flags: [
+				"--headless", 
+				"--disable-gpu", 
+				"--remote-debugging-port=9999",
+				"--no-sandbox",
+				"--disable-setuid-sandbox"
+			  ]
+			}
+		  },
+		
+		browserConsoleLogOptions: {
+			terminal: true,
+			level: ""
+		},
 
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits

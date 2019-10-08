@@ -18,13 +18,7 @@ describe( 'Companions', function () {
         vastDocument = xmlParser.parse(VastMultiTrackingEvents );
         vastDocument = v2parser.parse(vastDocument);
 
-        xmlHttpRequestMock = _.assign( new XMLHttpRequest(), {
-			send: sendSpy,
-		} );
-
-		window.XMLHttpRequest = function () {
-			return xmlHttpRequestMock;
-		};
+		window.fetch = sendSpy;
 
     })
 
