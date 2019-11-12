@@ -50,7 +50,6 @@ var array = require( 'dojo/_base/array' );
 var ModuleManager = require( 'sdk/ModuleManager' );
 var BannerCapabilityFlags = require( 'sdk/base/ad/BannerCapabilityFlags' );
 var BlockAdBlock = require( 'sdk/base/util/BlockAdBlock' );
-var GAEventRequest = require( 'sdk/base/util/analytics/GAEventRequest' );
 var i18n = require( 'sdk/base/util/I18n' );
 
 var MediaElement = require( 'sdk/base/util/MediaElement' );
@@ -92,8 +91,6 @@ window.TDSdk = declare( [], {
 		this.abBlockProcessFinish = false;
 		this.MediaElement = MediaElement;
 
-		this._initGoogleAnalytics();
-
 		on( this.target, 'module-ready', lang.hitch( this, this._onModuleReady ) );
 
 		var blockAdBlock = new BlockAdBlock();
@@ -123,14 +120,6 @@ window.TDSdk = declare( [], {
 		}
 
 		this.loadModules();
-	},
-
-	/**
-	 * Get GAEventRequest
-	 */
-
-	getGAEventRequest: function () {
-		return GAEventRequest;
 	},
 
 	/**
@@ -196,30 +185,6 @@ window.TDSdk = declare( [], {
 			mediaPlayer.defaultTrackingParameters.log.tdsdk = 'js-' + this.version.value.substring( 0, 3 );
 			mediaPlayer.defaultTrackingParameters.log.pname = this.NAME;
 			mediaPlayer.defaultTrackingParameters.log.pversion = this.version.value.substring( 0, 3 );
-		}
-
-		//analytics
-		if ( typeof ( playerConfig.analytics ) === 'object' ) {
-			if ( playerConfig.analytics.active === false ) {
-				GAEventRequest.setActive(false);
-			}else{
-				GAEventRequest.setActive(true);
-			}
-
-			if ( playerConfig.analytics.debug === true ) {
-				GAEventRequest.debug = true;
-			}
-
-			if ( playerConfig.analytics.aiid ) {
-				GAEventRequest.aiid = playerConfig.analytics.aiid;
-			}
-
-			if ( playerConfig.analytics.platformId ) {
-				GAEventRequest.setPlatform( playerConfig.analytics.platformId );
-			}
-		} else {
-			GAEventRequest.setActive(true);
-			GAEventRequest.setPlatform( 'prod01' );
 		}
 
 		//overide locale
@@ -313,14 +278,6 @@ window.TDSdk = declare( [], {
 	 */
 	getModuleById: function ( moduleId ) {
 		return this.moduleManager.getModuleById( moduleId );
-	},
-
-	_initGoogleAnalytics: function () {
-		console.log( 'init analytics' );
-
-		GAEventRequest.av = this.version.value + '.' + this.version.build;
-		GAEventRequest.aid = this.version.value;
-
 	},
 
 	/**

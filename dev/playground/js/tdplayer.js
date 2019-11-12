@@ -49,8 +49,6 @@ var livePlaying; /* boolean - Live stream currently playing */
 var podcastPlaying;
 var companions; /* VAST companion banner object */
 var song; /* Song object that wraps NPE data */
-var GAActive = true; //getUrlVars()[ 'gaactive' ] == "true" ? true : false;
-var GADebug = getUrlVars()[ 'gadebug' ] == "true" ? true : false;
 //var allowPersonalisedAds = getUrlVars()['allowPersonalisedAds'] == "true" ? true : false;
 var allowPersonalisedAds = true;
 var tcfFramework = false;//getUrlVars()['tcfFramework'] == "true" ? true : false;
@@ -89,13 +87,7 @@ function initPlayer() {
 	playerServicesRegion = playerServicesRegion == 'us' ? '' : playerServicesRegion;
 
 	/* TD player configuration object used to create player instance */
-	var tdSdkConfig = {
-		analytics: {
-			platformId: platformid + '01',
-			active: GAActive,
-			aaid: 'tdtestapp',
-			debug: GADebug
-		},
+	var tdSdkConfig = {		
 		//locale: 'es',
 		coreModules: [ {
 			id: 'MediaPlayer',			
@@ -184,25 +176,25 @@ function initPlayer() {
 function configurePlatformIdButtons() {
 	$( '#platform_' + platformIdLink + '_button' ).button( 'toggle' );
 	$( "#platform_local_button" ).click( function () {
-		window.location.href = 'index.html?platformid=local&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=local&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( "#platform_local_build_button" ).click( function () {
-		window.location.href = 'index.html?platformid=build&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=build&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( "#platform_dev_button" ).click( function () {
-		window.location.href = 'index.html?platformid=dev&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=dev&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
   $( "#platform_preprodsecured_button" ).click( function () {
-		window.location.href = 'index.html?platformid=preprodsecured&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=preprodsecured&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( "#platform_preprod_button" ).click( function () {
-		window.location.href = 'index.html?platformid=preprod&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=preprod&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( "#platform_prod_button" ).click( function () {
-		window.location.href = 'index.html?platformid=prod&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=prod&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( "#platform_prodsecured_button" ).click( function () {
-		window.location.href = 'index.html?platformid=prodsecured&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=prodsecured&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds +  '&tcfFramework=' + tcfFramework;
 	} );
 }
 //End platformid configuration - Triton Digital QA usage only.
@@ -211,16 +203,16 @@ function configurePlatformIdButtons() {
 function configureTechButtons() {
 	$( '#tech_' + tech + '_button' ).button( 'toggle' );
 	$( "#tech_flash_html5_button" ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=flash_html5&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=flash_html5&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds +  '&tcfFramework=' + tcfFramework;
 	} );
 	$( "#tech_html5_flash_button" ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=html5_flash&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=html5_flash&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds +  '&tcfFramework=' + tcfFramework;
 	} );
 	$( "#tech_flash_button" ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=flash&sbm=false&aSyncCuePointFallback=false' + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=flash&sbm=false&aSyncCuePointFallback=false' + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( "#tech_html5_button" ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=html5&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=html5&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 }
 //End tech configuration - Triton Digital QA usage only.
@@ -243,17 +235,17 @@ function configureSBMButtons() {
 	}
 
 	$( '#sbm_active_button' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=true&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=true&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( '#sbm_inactive_button' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=false&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=false&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 
 	$( '#np_active_button' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=true' + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=true' + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( '#np_inactive_button' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=false' + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=false' + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 }
 
@@ -267,10 +259,10 @@ function configureHLSButtons() {
 	}
 
 	$( '#hls_active_button' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&hls=true&aSyncCuePointFallback=' + aSyncCuePointFallback + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&hls=true&aSyncCuePointFallback=' + aSyncCuePointFallback + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( '#hls_inactive_button' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&hls=false&aSyncCuePointFallback=' + aSyncCuePointFallback + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&hls=false&aSyncCuePointFallback=' + aSyncCuePointFallback + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 }
 
@@ -284,10 +276,10 @@ function configureAudioAdaptiveButtons() {
 	}
 
 	$( '#audioadaptive_active_button' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&hls=' + hls + '&audioAdaptive=true&aSyncCuePointFallback=' + aSyncCuePointFallback + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&hls=' + hls + '&audioAdaptive=true&aSyncCuePointFallback=' + aSyncCuePointFallback + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 	$( '#audioadaptive_inactive_button' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&hls=' + hls + '&audioAdaptive=false&aSyncCuePointFallback=' + aSyncCuePointFallback + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&hls=' + hls + '&audioAdaptive=false&aSyncCuePointFallback=' + aSyncCuePointFallback + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework;
 	} );
 }
 
@@ -295,13 +287,13 @@ function configurePlayerServicesRegionButtons() {
 	$('#playerservices_region_' + playerServicesRegion ).button( 'toggle' );
 
 	$( "#playerservices_region_us" ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=us';
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=us';
 	} );
 	$( "#playerservices_region_eu" ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=eu';
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=eu';
 	} );
 	$( "#playerservices_region_ap" ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=false&aSyncCuePointFallback=false' + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=ap';
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=false&aSyncCuePointFallback=false' + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=' + tcfFramework + '&playerServicesRegion=ap';
 	} );	
 }
 
@@ -314,14 +306,6 @@ function configureGDPRButtons(){
 		$( '#allow_personalised_ads_true' ).removeClass( "btn-primary active" ).addClass( "btn-default" );
 	}
 
-	if ( GAActive ) {
-		$( '#gaactive_true' ).removeClass( "btn-default" ).addClass( "btn-primary active" );
-		$( '#gaactive_false' ).removeClass( "btn-primary active" ).addClass( "btn-default" );
-	} else {
-		$( '#gaactive_false' ).removeClass( "btn-default" ).addClass( "btn-primary active" );
-		$( '#gaactive_true' ).removeClass( "btn-primary active" ).addClass( "btn-default" );
-	}
-
 	if ( tcfFramework ) {
 		$( '#tcf_true' ).removeClass( "btn-default" ).addClass( "btn-primary active" );
 		$( '#tcf_false' ).removeClass( "btn-primary active" ).addClass( "btn-default" );
@@ -331,27 +315,19 @@ function configureGDPRButtons(){
 	}
 
 	$( '#allow_personalised_ads_true' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=true' + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=true' + '&tcfFramework=' + tcfFramework;
 	} );
 
 	$( '#allow_personalised_ads_false' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=false' + '&gaactive=' + GAActive + '&tcfFramework=' + tcfFramework;
-	} );
-
-	$( '#gaactive_true' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=true' + '&tcfFramework=' + tcfFramework ;
-	} );
-
-	$( '#gaactive_false' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=false' + '&tcfFramework=' + tcfFramework;
-	} );
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=false' + '&tcfFramework=' + tcfFramework;
+	} );	
 
 	$( '#tcf_true' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive + '&tcfFramework=true' ;
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&tcfFramework=true' ;
 	} );
 
 	$( '#tcf_false' ).click( function () {
-		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds + '&gaactive=' + GAActive  + '&tcfFramework=false';
+		window.location.href = 'index.html?platformid=' + platformIdLink + '&tech=' + tech + '&sbm=' + sbm + '&aSyncCuePointFallback=' + aSyncCuePointFallback + '&hls=' + hls + '&audioAdaptive=' + audioAdaptive + '&allowPersonalisedAds=' + allowPersonalisedAds  + '&tcfFramework=false';
 	} );
 }
 

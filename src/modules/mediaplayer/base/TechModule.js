@@ -11,8 +11,7 @@ define( [
 	'sdk/modules/base/CoreModule',
 	'dojo/topic',
 	'dojo/io-query',
-	'sdk/base/util/analytics/GAEventRequest'
-], function ( declare, lang, has, on, dom, coreModule, topic, ioQuery, GAEventRequest ) {
+], function ( declare, lang, has, on, dom, coreModule, topic, ioQuery ) {
 
 	var module = declare( [ coreModule ], {
 
@@ -52,11 +51,7 @@ define( [
 			this.hls = ( config.hls != undefined ) ? config.hls : true;
 			this.audioAdaptive = ( config.audioAdaptive != undefined ) ? config.audioAdaptive : false;
 
-			this.__initSbmConfig( config );
-
-			//analytics
-			this._playConnectionTime = 0;
-			this._playConnectionTimeIntervall = null;
+			this.__initSbmConfig( config );			
 		},
 
 		start: function () {
@@ -107,17 +102,11 @@ define( [
 		},
 
 		_onMediaPlaybackStarted: function ( e ) {
-
-			//send analytics media success
-			GAEventRequest.requestGA( GAEventRequest.CATEGORY_ON_DEMAND, GAEventRequest.ACTION_PLAY, GAEventRequest.LABEL_SUCCESS );
-
+			console.log( 'techModule::_onMediaPlaybackStarted' );
 		},
 
 		_onMediaPlaybackError: function () {
-
-			//send analytics media error
-			GAEventRequest.requestGA( GAEventRequest.CATEGORY_ON_DEMAND, GAEventRequest.ACTION_PLAY, GAEventRequest.LABEL_ERROR );
-
+			console.log( 'techModule::_onMediaPlaybackError' );
 		},
 
 		__onStreamStart: function () {
@@ -130,22 +119,6 @@ define( [
 
 				this.connectionTimeOutTimer = setInterval( lang.hitch( this, this.__onTimeOutAlert ), this._currentLiveApiParams.connectionTimeOut * 60000 );
 			}
-
-			//send analytics connection success load time
-			var gaDimensions = {};
-			if(this.connection){
-				gaDimensions[ GAEventRequest.DIM_MEDIA_TYPE ] = this.connection.type;
-				gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.connection.mount ? this.connection.mount : '';
-				gaDimensions[ GAEventRequest.DIM_STATION ] = ( this._currentLiveApiParams.station ) ? this._currentLiveApiParams.station : '';
-				gaDimensions[ GAEventRequest.DIM_HLS ] = this.hls;
-				gaDimensions[ GAEventRequest.DIM_AUDIO_ADAPTIVE ] = this.audioAdaptive;
-			}			
-
-			var gaMetrics = {};
-			gaMetrics[ GAEventRequest.METRIC_CONNECTION_TIME ] = this._playConnectionTime;
-
-			GAEventRequest.requestGA( GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_SUCCESS, gaDimensions, gaMetrics );
-
 		},
 
 		__onStreamStop: function () {
@@ -177,18 +150,7 @@ define( [
 
 				var delay = Math.min( this.backOffDelay << this.backOffRetry++, 60000 );
 
-				console.log( 'techModule::__reconnect - delay=' + delay );
-
-				if ( delay >= 60000 ) {
-
-					//send analytics connection success load time
-					var gaDimensions = {};
-					gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.connection.mount ? this.connection.mount : '';
-					gaDimensions[ GAEventRequest.DIM_STATION ] = ( this._currentLiveApiParams.station ) ? this._currentLiveApiParams.station : '';
-
-					GAEventRequest.requestGA( GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_UNAVAILABLE, gaDimensions );
-
-				}
+				console.log( 'techModule::__reconnect - delay=' + delay );				
 
 				this.backOffTimer = setTimeout( lang.hitch( this, this.__onBackOffTimeOut ), delay );
 			} else {
@@ -250,28 +212,10 @@ define( [
 
 			if ( this.connection.isGeoBlocked && this.connection.alternateContent ) {
 
-				topic.publish( "api/request", "get-alternate-content", this.connection.alternateContent );
-
-				//send analytics geoblocking event
-				var gaDimensions = {};
-				gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.connection.mount ? this.connection.mount : '';
-				gaDimensions[ GAEventRequest.DIM_STATION ] = ( this._currentLiveApiParams.station ) ? this._currentLiveApiParams.station : '';
-				gaDimensions[ GAEventRequest.DIM_ALTERNATE_CONTENT ] = true;
-
-				GAEventRequest.requestGA( GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_GEOBLOCKING, gaDimensions );
-
+				topic.publish( "api/request", "get-alternate-content", this.connection.alternateContent );				
 				return;
 
-			} else if ( this.connection.isGeoBlocked ) {
-				//send analytics geoblocking event
-				var gaDimensions = {};
-				gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.connection.mount ? this.connection.mount : '';
-				gaDimensions[ GAEventRequest.DIM_STATION ] = ( this._currentLiveApiParams.station ) ? this._currentLiveApiParams.station : '';
-				gaDimensions[ GAEventRequest.DIM_ALTERNATE_CONTENT ] = false;
-
-				GAEventRequest.requestGA( GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_GEOBLOCKING, gaDimensions );
-			}
-
+			} 
 			var params = this._currentLiveApiParams.trackingParameters || {};
 
 			if ( this.lowActivated && this.connection.isAudioAdaptive )
@@ -285,15 +229,6 @@ define( [
             }
 
 			this.emit('stream-select');
-
-			//analytics start timer
-			this._playConnectionTime = 0;
-			if( !this._playConnectionTimeIntervall ){
-			    this._playConnectionTimeIntervall  = setInterval(function(){
-			        self._playConnectionTime += 10;
-			    }, 10);
-			}
-
 
 			this.playStream( {
 				url: streamUrl,
@@ -388,12 +323,6 @@ define( [
 
 		pause: function () {
 			console.log( 'techModule::pause' );
-
-			var gaDimensions = {};
-			if(this.mount != null) { gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.mount; }
-			if(this.station != null) { gaDimensions[ GAEventRequest.DIM_STATION ] = this.station; }
-			this.isLiveStream == true ? this.pauseStream() : this.pauseMedia();
-			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_PAUSE, GAEventRequest.LABEL_SUCCESS, gaDimensions );
 		},
 
 		stop: function () {
@@ -405,21 +334,10 @@ define( [
 			} else {
 				this.stopMedia();
 			}
-
-			var gaDimensions = {};
-			if(this.mount != null) { gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.mount; }
-			if(this.station != null) { gaDimensions[ GAEventRequest.DIM_STATION ] = this.station; }
-			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_STOP, GAEventRequest.LABEL_SUCCESS, gaDimensions );
 		},
 
 		resume: function () {
 			console.log( 'techModule::resume' );
-
-			var gaDimensions = {};
-			if(this.mount != null) { gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.mount; }
-			if(this.station != null) { gaDimensions[ GAEventRequest.DIM_STATION ] = this.station; }
-			this.isLiveStream == true ? this.resumeStream() : this.resumeMedia();
-			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_RESUME, GAEventRequest.LABEL_SUCCESS, gaDimensions );
 		},
 
 		seek: function ( seekOffset ) {
@@ -454,18 +372,10 @@ define( [
 
 		mute: function () {
 			console.log( 'techModule::mute' );
-			var gaDimensions = {};
-			if(this.mount != null) { gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.mount; }
-			if(this.station != null) { gaDimensions[ GAEventRequest.DIM_STATION ] = this.station; }
-			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_MUTE, GAEventRequest.LABEL_SUCCESS, gaDimensions );
 		},
 
 		unMute: function () {
 			console.log( 'techModule::unMute' );
-			var gaDimensions = {};
-			if(this.mount != null) { gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.mount; }
-			if(this.station != null) { gaDimensions[ GAEventRequest.DIM_STATION ] = this.station; }
-			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_UNMUTE, GAEventRequest.LABEL_SUCCESS, gaDimensions );
 		},
 
 		playAd: function ( adServerType, config ) {

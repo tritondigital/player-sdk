@@ -103,13 +103,6 @@
         <p>
             <b>GDPR</b>
         </p>
-        <p>
-            <b>GA Active</b>
-        </p>
-        <div class="btn-group btn-toggle">
-            <button id="gaactive_true" class="btn btn-sm btn-default">True</button>
-            <button id="gaactive_false" class="btn btn-sm btn-default">False</button>
-        </div>
         <div>&nbsp;</div>
         <p>
             <b>Allow Personalised Ads</b>
@@ -441,8 +434,6 @@ pg.controller('pgController', function($scope, $location){
     $scope.hls = getUrlVars()['hls'] == 'false' ? false : true;
     $scope.audioAdaptive = getUrlVars()['audioAdaptive'] == 'true' ? true : false;
     $scope.streamAutoStart = false;
-    $scope.GAActive = getUrlVars()['gaactive'] == "true" ? true : false ;
-    $scope.GADebug = getUrlVars()['gadebug'] == "true" ? true : false ;
     $scope.tcfFramework = getUrlVars()['tcfFramework'] == "true" ? true : false;
 
     $scope.tdSdkApiUrl = '//'+$scope.apiBaseUrl + $scope.apiVersion+ '/td-sdk.min.js';
