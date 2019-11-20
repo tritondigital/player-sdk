@@ -167,7 +167,8 @@ define( [
 				playAd: lang.hitch( this, this.playAd ),
 				skipAd: lang.hitch( this, this.skipAd ),
 				destroyAd: lang.hitch( this, this.destroyAd ),
-				initMediaElement: lang.hitch( this, this._initMediaElement  )
+				initMediaElement: lang.hitch( this, this._initMediaElement  ),
+				destroy: lang.hitch( this, this._destroy )
 			};
 			topic.subscribe( 'api/request', lang.hitch( this, this._onApiInternalRequest ) );
 
@@ -763,6 +764,19 @@ define( [
 			console.log( 'mediaPlayer::_initMediaElement' );
 
 			MediaElement.init();
+		},
+
+		_destroy: function () {
+			this._stop();
+			setTimeout( function () {
+
+				var playerElement = document.getElementById( 'tdplayer_ondemand' );
+				if ( playerElement ) {
+					MediaElement.destroyAudioElement();
+					MediaElement.resetAudioNode();
+					domConstruct.destroy( playerElement );
+				}
+			}, 500 );
 		},
 
 		_getAdManager: function () {

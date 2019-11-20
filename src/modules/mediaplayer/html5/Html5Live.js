@@ -299,8 +299,18 @@ define( [
 			console.log( 'html5Live::__initAudioElement' );
 
 			if ( this.audioEventListenersAttached == false ) {
+				MediaElement.on( 'destroyAudioElement', this.__destroyAudioElement );
 				MediaElement.on( 'html5-playback-status', lang.hitch( this, this.__onHTML5PlayerStatus ) );
 				this.audioEventListenersAttached = true;
+			}
+		},
+
+		__destroyAudioElement: function () {
+			console.log( 'html5Live::__destroyAudioElement' );
+			MediaElement.removeAllListeners( 'html5-playback-status' );
+			MediaElement.removeAllListeners( 'destroyAudioElement' );
+			if( this.sidebandMetadata ) {
+			this.sidebandMetadata.destroy();
 			}
 		},
 

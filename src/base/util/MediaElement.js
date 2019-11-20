@@ -60,26 +60,38 @@ function _onLoadStart() {
 }
 
 function _onCanPlay() {
+	var context = this;
+	
 	if ( fsm.is( STATE.STOPPED ) || fsm.is( STATE.PAUSED ) ) return;
 
 	if( this.url !== null ){
-		this.audioNode.play();
-		this.emit( 'html5-playback-status', {
+		this.audioNode.play()
+		.then(function(){			
+			context.emit( 'html5-playback-status', {
 			type: PlaybackState.CAN_PLAY,
-			mediaNode: this.audioNode
+				mediaNode: context.audioNode
+			} );
+		})
+		.catch(function(e){
+			context.handleHTMLPlayError(e);
 		} );
 	}
 }
 
 function _onCanPlayThrough() {
+	var context = this;
 	if ( fsm.is( STATE.STOPPED ) || fsm.is( STATE.PAUSED ) ) return;
 
 	if( this.url !== null ){
-		this.audioNode.play();
-
-		this.emit( 'html5-playback-status', {
+		this.audioNode.play()
+		.then(function(){			
+			context.emit( 'html5-playback-status', {
 			type: PlaybackState.CAN_PLAY_THROUGH,
-			mediaNode: this.audioNode
+				mediaNode: context.audioNode
+			} );
+		})
+		.catch(function(e){
+			context.handleHTMLPlayError(e);
 		} );
 	}
 }
@@ -245,16 +257,10 @@ module.exports = _.assign( new EventEmitter(), {
 	audioNode: null,
 
 	init: function () {
+			var context = this;
 			this.audioNode = getAudioNode.call( this );
 			this.url = null;
-			this.audioNode.src = '';
-			try {
-                this.audioNode.play().catch(function(e){});
-            }catch(e){
-				//IE fix
-				this.audioNode.play();
-			}
-			this.audioNode.pause();
+			this.audioNode.src = '';			
 	},
 
 	playAudio: function ( url, useHls, isLive ) {
@@ -305,15 +311,18 @@ module.exports = _.assign( new EventEmitter(), {
 	},
 
 	resume: function () {
+		var context = this;
 		if ( !fsm.is( STATE.PAUSED ) ) return;
 
 		this.audioNode = getAudioNode.call( this );
-
-		this.audioNode.play();
+		this.audioNode.play().catch(function(e){
+			context.handleHTMLPlayError(e);
+		});
 		fsm.resume();
 	},
 
 	mute: function () {
+		if ( !fsm.is( STATE.PLAYING ) ) return;
 		this.audioNode = getAudioNode.call( this );
 
 		this.audioNode.muted = true;
@@ -342,6 +351,22 @@ module.exports = _.assign( new EventEmitter(), {
 
 		if ( fsm.can( 'stop' ) ) {
 			fsm.stop();
+		}
+	},
+
+	destroyAudioElement: function () {
+		this.emit( 'destroyAudioElement' );		
+	},	
+
+ handleHTMLPlayError: function(e){		
+		var context = this;	
+		if ( e.name !== 'NotSupportedError' ) {
+			if ( e.name === 'NotAllowedError' ) {
+				this.emit( 'html5-playback-status', {
+					type: PlaybackState.PLAY_NOT_ALLOWED,
+					mediaNode: context.audioNode
+				} );
+			}
 		}
 	}
 } );
