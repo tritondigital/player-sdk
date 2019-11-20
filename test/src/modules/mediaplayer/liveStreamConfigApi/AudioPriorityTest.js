@@ -325,7 +325,7 @@ describe( 'AudioPriority', function () {
 			var mountPoints = [ mp3MountPoint, hlsMountPoint, audioAdaptiveMountPoint ];
 			var mpts = AudioPriority.filterMountPoints( mountPoints, edgePlatform, 'html5', null, null, null,null, true  );
 			expect( hasHLS( mpts[ 0 ] ) ).to.be( true );
-			expect( mpts.length ).to.be( 1 );
+			expect( mpts.length ).to.be( 2 );
 		})
 
 	} );

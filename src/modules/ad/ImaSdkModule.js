@@ -127,14 +127,14 @@ define([
             //get vast url
             if( this._currentAdConfig.url !== undefined )
             {
-                this._adsRequest.adTagUrl = this._currentAdConfig.url + ((this.config.allowPersonalisedAds == undefined || this.config.allowPersonalisedAds ) ? "" : "&npa=1");
+                this._adsRequest.adTagUrl = encodeURI(this._currentAdConfig.url + ((this.config.allowPersonalisedAds == undefined || this.config.allowPersonalisedAds ) ? "" : "&npa=1"));
 
             } else if ( this._currentAdConfig.sid !== undefined ) {
 
                 var tritonRunSpot4Helper = new TritonRunSpot4Helper();
                 var vastUrl = tritonRunSpot4Helper.getVastUri( tritonRunSpot4Helper.ENDPOINT, this._currentAdConfig.sid, this._currentAdConfig.mediaformat );
 
-                this._adsRequest.adTagUrl = vastUrl;
+                this._adsRequest.adTagUrl = encodeURI(vastUrl);
 
             } else if ( this._currentAdConfig.rawXML !== undefined ) {
 

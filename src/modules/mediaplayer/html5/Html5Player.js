@@ -151,12 +151,20 @@ define( [
 		 * @ignore
 		 */
 		resume: function () {
+			var context = this;
 			this.isPaused = false;
 
 			if ( this.mediaNode == undefined ) return;
 
 			if ( this.mediaNode.paused )
-				this.mediaNode.play();
+				this.mediaNode.play().catch(function(e){
+					if ( e.name === 'NotAllowedError' ) {
+						context.emit( 'html5-playback-status', {
+							type: PlaybackState.PLAY_NOT_ALLOWED,
+							mediaNode: this.audioNode
+						} );
+					}
+				});
 		},
 
 		/**
@@ -247,11 +255,19 @@ define( [
 		},
 
 		_onLoadData: function () {
+			var context = this;
 			if ( this.isStopped || this.isPaused ) return;
 
 			/* HACK: Firefox does not support canPlayThrough/canPlay event */
 			if ( has( 'mozilla' ) && this.mediaNode && this.mediaNode.paused ) {
-				this.mediaNode.play();
+				this.mediaNode.play().catch(function(e){
+					if ( e.name === 'NotAllowedError' ) {
+						context.emit( 'html5-playback-status', {
+							type: PlaybackState.PLAY_NOT_ALLOWED,
+							mediaNode: this.audioNode
+						} );
+					}
+				});
 			}
 
 			this.emit( 'html5-playback-status', {
@@ -261,6 +277,7 @@ define( [
 		},
 
 		_onCanPlay: function () {
+			var context = this;
 			if ( this.isStopped || this.isPaused ) return;
 
 			this.emit( 'html5-playback-status', {
@@ -269,11 +286,19 @@ define( [
 			} ); //The user agent can resume playback of the media data, but estimates that if playback were to be started now, the media resource could not be rendered at the current playback rate up to its end without having to stop for further buffering of content.
 
 			if ( this.mediaNode && this.mediaNode.paused ) {
-				this.mediaNode.play();
+				this.mediaNode.play().catch(function(e){
+					if ( e.name === 'NotAllowedError' ) {
+						context.emit( 'html5-playback-status', {
+							type: PlaybackState.PLAY_NOT_ALLOWED,
+							mediaNode: this.audioNode
+						} );
+					}
+				});
 			}
 		},
 
 		_onCanPlayThrough: function () {
+			var context = this;
 			if ( this.isStopped || this.isPaused ) return;
 
 			this.emit( 'html5-playback-status', {
@@ -282,7 +307,14 @@ define( [
 			} ); //The user agent estimates that if playback were to be started now, the media resource could be rendered at the current playback rate all the way to its end without having to stop for further buffering.
 
 			if ( this.mediaNode && this.mediaNode.paused ) {
-				this.mediaNode.play();
+				this.mediaNode.play().catch(function(e){
+					if ( e.name === 'NotAllowedError' ) {
+						context.emit( 'html5-playback-status', {
+							type: PlaybackState.PLAY_NOT_ALLOWED,
+							mediaNode: this.audioNode
+						} );
+					}
+				});
 			}
 		},
 

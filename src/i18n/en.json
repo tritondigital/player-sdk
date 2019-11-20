@@ -18,5 +18,6 @@
         "stationNotFound": "Station not found",
         "flashPluginOutOfDate": "Your Flash plugin version detected is out of date. Minimum version required is: 10.2.0",
         "browserNotSupported": "Your browser does not support HTML5 feature",
-        "embedFailed": "The embed failed!"
+        "embedFailed": "The embed failed!",
+        "playbackNotAllowed": "Playback of media in the current context or situation is not allowed"
 }

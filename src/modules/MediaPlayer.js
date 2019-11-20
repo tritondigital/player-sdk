@@ -89,6 +89,10 @@ define( [
 			STATION_NOT_FOUND: {
 				status: 'stationNotFound',
 				code: 'STATION_NOT_FOUND'
+			},
+			PLAY_NOT_ALLOWED: {
+				status: 'playbackNotAllowed',
+				code: 'PLAY_NOT_ALLOWED'
 			}
 		},
 
@@ -720,7 +724,6 @@ define( [
 		 */
 		unMute: function () {
 			console.log( 'mediaPlayer::unMute' );
-
 			this.tech.unMute();
 		},
 

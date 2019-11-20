@@ -1,6 +1,6 @@
 {
   "name": "td-sdk",
-  "version": "2.9.31",
+  "version": "2.9.33",
   "description": "TD SDK",
   "main": "index.js",
   "homepage": "http://player.listenlive.co/api/",
@@ -22,7 +22,7 @@
     "hls.js": "^0.12.4",
     "javascript-state-machine": "^2.4.0",
     "json-loader": "^0.5.7",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.15",
     "minimist": "^1.2.0",
     "platform": "^1.3.4",
     "q": "^1.5.1",

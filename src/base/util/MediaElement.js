@@ -23,6 +23,10 @@ var fsm = StateMachine.create( {
 		from: STATE.STOPPED,
 		to: STATE.PLAYING
 	}, {
+		name: 'play',
+		from: STATE.PLAYING,
+		to: STATE.PLAYING
+	}, {
 		name: 'stop',
 		from: STATE.PLAYING,
 		to: STATE.STOPPED

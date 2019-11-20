@@ -9,6 +9,9 @@ var PlaybackState = require( 'sdk/base/playback/PlaybackState' );
 
 var MediaElementInjector = require( 'injected!sdk/base/util/MediaElement' );
 
+var sinonStubPromise = require('sinon-stub-promise');
+sinonStubPromise(sinon);
+
 describe( 'MediaElement', function () {
 
 	var url = 'http://tritondigital.com/mystream';
@@ -17,13 +20,14 @@ describe( 'MediaElement', function () {
 
 	var loadSpy = sinon.spy();
 	var pauseSpy = sinon.spy();
-	var playSpy = sinon.spy();
+	var playSpy;
 
 	beforeEach( function () {
+		playSpy = sinon.stub();
 		audioMock = _.assign( new EventEmitter(), {
 			load: loadSpy,
 			pause: pauseSpy,
-			play: playSpy,
+			play: playSpy.returnsPromise().resolves(),
 			src: '',
 			crossOrigin: '',
 			addEventListener: function ( event, callback ) {
@@ -40,6 +44,7 @@ describe( 'MediaElement', function () {
 	} );
 
 	afterEach( function () {
+		sinon.restore();
 		if ( MediaElement.audioNode ) {
 			MediaElement.resetAudioNode();
 		}

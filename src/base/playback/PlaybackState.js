@@ -17,5 +17,6 @@ module.exports = {
 	STOP: 'stop',
 	SUSPEND: 'suspend',
 	TIME_UPDATE: 'timeupdate',
-	WAITING: 'waiting'
+	WAITING: 'waiting',
+	PLAY_NOT_ALLOWED: "playbackNotAllowed"
 };

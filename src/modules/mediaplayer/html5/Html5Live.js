@@ -94,6 +94,10 @@ define( [
 			waiting: {
 				status: 'buffering',
 				code: 'LIVE_BUFFERING'
+			}, 
+			playbackNotAllowed: {
+				status: 'playbackNotAllowed',
+				code: 'PLAY_NOT_ALLOWED'
 			}
 		},
 
@@ -329,12 +333,12 @@ define( [
 				this.isPaused = false;
 
 				this._streamStartCallback();
-			} else if ( e.type == PlaybackState.STOP || e.type == PlaybackState.PAUSE || e.type == PlaybackState.ERROR || e.type == PlaybackState.ABORT ||  e.type == PlaybackState.ENDED ) {
+			} else if ( e.type == PlaybackState.STOP || e.type == PlaybackState.PAUSE || e.type == PlaybackState.ERROR || e.type == PlaybackState.ABORT ||  e.type == PlaybackState.ENDED || e.type == PlaybackState.PLAY_NOT_ALLOWED) {
 				if ( this.aSyncCuePointDispatcher ) {
 					this.aSyncCuePointDispatcher.stopCuePointsListener();
 				}
 
-				if ( e.type == PlaybackState.STOP || e.type == PlaybackState.ERROR || e.type == PlaybackState.ABORT ) {
+				if ( e.type == PlaybackState.STOP || e.type == PlaybackState.ERROR || e.type == PlaybackState.ABORT || e.type == PlaybackState.PLAY_NOT_ALLOWED) {
 					if ( this.__isSidebandMetadataActivated() && this.sidebandMetadata ) {
 						this.sidebandMetadata.destroy();
 					}

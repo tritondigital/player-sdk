@@ -1,4 +1,12 @@
 # Release notes:
+#2.9.33 (November 21 2019)
+### Bug Fixes
+- URI Encode the VAST URL on Web-sdk
+- Fix compiling on Windows
+### Features
+- Expose NotAllowedError as thrown by the HTML5 MediaElement
+- Add destroy method to destroy the player when needed
+
 #2.9.30 (June 13 2019)
 ### Bug Fixes
 - Fix CORS issue when confirming the VAST impression

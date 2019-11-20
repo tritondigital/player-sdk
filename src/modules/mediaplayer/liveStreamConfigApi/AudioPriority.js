@@ -126,7 +126,6 @@ function _excludeHLS( mountPoints ) {
  * @param mountPoints array
  */
 function _forceHls( mountPoints, isHlsts ) {	
-	mountPoints = _excludeAudioAdaptive( mountPoints );
 	return _excludeTransport( mountPoints, [ {
 		transport: isHlsts?'hls':'hlsts',
 		codec: 'aac'

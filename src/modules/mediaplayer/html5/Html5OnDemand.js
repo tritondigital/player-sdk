@@ -413,7 +413,8 @@ define([
             stop: { status:'stop', code:'MEDIA_STOPPED' },
             suspend: { status:'buffering', code:'MEDIA_BUFFERING' },
             waiting: { status:'buffering', code:'MEDIA_BUFFERING' },
-            timeupdate: { status:'timeupdate', code:'MEDIA_TIME_UPDATE' }
+            timeupdate: { status:'timeupdate', code:'MEDIA_TIME_UPDATE' },
+            playbackNotAllowed: { status: 'playbackNotAllowed', code: 'PLAY_NOT_ALLOWED' }
         }
 
     });
