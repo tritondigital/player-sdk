@@ -119,6 +119,7 @@ describe( 'MediaElement', function () {
 	} );
 
 	it( 'should be able to mute', function () {
+		MediaElement.playAudio( url, false );
 		MediaElement.mute();
 
 		expect( MediaElement.audioNode.muted ).to.be( true );
