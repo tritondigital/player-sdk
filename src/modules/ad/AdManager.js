@@ -30,8 +30,7 @@ define([
     'sdk/modules/ad/ImaSdkModule',
     'sdk/modules/ad/VASTAdModule',
     'sdk/modules/ad/MediaAdModule',
-    'sdk/base/util/analytics/GAEventRequest'
-], function ( declare, lang, require, Deferred, on, domConstruct, dom, AdServerType, TritonAdPlatformHelper, XhrProvider, ImaSdkModule, VASTAdModule, MediaAdModule, GAEventRequest ) {
+], function ( declare, lang, require, Deferred, on, domConstruct, dom, AdServerType, TritonAdPlatformHelper, XhrProvider, ImaSdkModule, VASTAdModule, MediaAdModule ) {
 
     var adManager = declare([], {
 
@@ -78,9 +77,6 @@ define([
 
             this.inherited( arguments );
 
-            //analytics
-            this._adPrerollTime = 0;
-            this._adPrerollTimeIntervall = null;
             this._adParser= null;
             this._adSource = null;
             this._adFormat = null;
@@ -109,13 +105,7 @@ define([
                 }
                 return;
             }
-
-            //start analytics timer
-            self._adPrerollTime = 0;
-            this._adPrerollTimeIntervall = setInterval( function(){
-                self._adPrerollTime += 10;
-            }, 10 );
-
+                      
             //clean up old ad
             this.destroyAd( false );
 
@@ -259,45 +249,14 @@ define([
          * @param e | event
          */
         _onAdPlaybackStart : function( e ){
-
-            console.log( 'adManager::_onAdPlaybackStart' );
-
-            //send analytics preroll success
-            //stop timer
-            var gaDimensions = {};
-            gaDimensions[ GAEventRequest.DIM_AD_SOURCE ] = this._adSource;
-            gaDimensions[ GAEventRequest.DIM_AD_FORMAT ] = this._adFormat;
-            gaDimensions[ GAEventRequest.DIM_AD_PARSER ] = this._adParser ? this._adParser : ( e.data && e.data.playerData && e.data.playerData.adParser ) ? e.data.playerData.adParser : '';
-
-            var gaMetrics = {};
-            gaMetrics[ GAEventRequest.METRIC_CONNECTION_TIME ]= this._adPrerollTime;
-
-            GAEventRequest.requestGA( GAEventRequest.CATEGORY_AD, GAEventRequest.ACTION_PREROLL, GAEventRequest.LABEL_SUCCESS, gaDimensions, gaMetrics );
-
-            clearInterval( this._adPrerollTimeIntervall );
+            console.log( 'adManager::_onAdPlaybackStart' );            
         },
-
 
         /**
          * _onAdPlaybackError
          */
          _onAdPlaybackError : function( e ){
-             console.log( 'adManager::_onAdPlaybackStart' );
-
-             //send analytics preroll success
-             //stop timer
-             var gaDimensions = {};
-             gaDimensions[ GAEventRequest.DIM_AD_SOURCE ] = this._adSource;
-             gaDimensions[ GAEventRequest.DIM_AD_FORMAT ] = this._adFormat;
-             gaDimensions[ GAEventRequest.DIM_AD_PARSER ] = this._adParser ? this._adParser : ( e.data && e.data.playerData && e.data.playerData.adParser ) ? e.data.playerData.adParser : '';
-
-             var gaMetrics = {};
-             gaMetrics[ GAEventRequest.METRIC_CONNECTION_TIME ] = this._adPrerollTime;
-
-
-             GAEventRequest.requestGA( GAEventRequest.CATEGORY_AD, GAEventRequest.ACTION_PREROLL, GAEventRequest.LABEL_ERROR, gaDimensions, gaMetrics );
-
-             clearInterval( this._adPrerollTimeIntervall );
+             console.log( 'adManager::_onAdPlaybackStart' );             
          },
 
 
