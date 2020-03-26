@@ -85,17 +85,6 @@ describe( 'MediaElement', function () {
 
 		expect( loadSourceCalled ).to.be( true );
 		expect( attachMediaCalled ).to.be( true );
-	} );
-
-	it( 'should pause audio and clear src when calling stop', function () {
-		var clock = sinon.useFakeTimers();
-		MediaElement.playAudio( url, false );
-		MediaElement.stop();
-		clock.tick(310);
-
-		expect( MediaElement.audioNode.src ).to.be.empty();
-		expect( loadSpy.called ).to.be( true );
-		expect( pauseSpy.called ).to.be( true );
 	} );	
 
 	it( 'should be able to pause', function () {
@@ -118,18 +107,18 @@ describe( 'MediaElement', function () {
 		expect( playSpy.called ).to.be( true );
 	} );
 
-	it( 'should be able to mute', function () {
-		MediaElement.playAudio( url, false );
-		MediaElement.mute();
 
-		expect( MediaElement.audioNode.muted ).to.be( true );
+	it( 'should be able to unMute', function ( done ) {
+		MediaElement.once( 'html5-playback-status', function ( e ) {
+			expect( e.type ).to.be( PlaybackState.PLAY );
+
+			done();
 	} );
 
-	it( 'should be able to unMute', function () {
 		MediaElement.mute();
 		MediaElement.unMute();
 
-		expect( MediaElement.audioNode.muted ).to.be( false );
+		MediaElement.audioNode.emit( 'play' );
 	} );
 
 	it( 'should be able to set volume', function () {
@@ -165,7 +154,7 @@ describe( 'MediaElement', function () {
 	it( 'should emit the CAN_PLAY html5-playback-status event on the media tag\'s canplay event', function ( done ) {
 		MediaElement.once( 'html5-playback-status', function ( e ) {
 			expect( e.type ).to.be( PlaybackState.CAN_PLAY );
-			expect( playSpy.called ).to.be( true );
+			expect( playSpy.called ).to.be( false );
 
 			done();
 		} );
@@ -260,18 +249,6 @@ describe( 'MediaElement', function () {
 		MediaElement.audioNode.emit( 'pause' );
 	} );
 
-	it( 'should emit the STOP html5-playback-status event on the media tag\'s pause event when media tag is stopped', function ( done ) {
-		MediaElement.once( 'html5-playback-status', function ( e ) {
-			expect( e.type ).to.be( PlaybackState.STOP );
-
-			done();
-		} );
-
-		MediaElement.playAudio( url, false );
-		MediaElement.stop( url, false );
-
-		MediaElement.audioNode.emit( 'pause' );
-	} );
 
 	it( 'should emit the EMPTIED html5-playback-status event on the media tag\'s loadedmetadata event', function ( done ) {
 		MediaElement.once( 'html5-playback-status', function ( e ) {
@@ -311,18 +288,6 @@ describe( 'MediaElement', function () {
 		MediaElement.audioNode.emit( 'timeupdate' );
 	} );
 
-	it( 'should emit the STOP html5-playback-status event on the media tag\'s error event when media was stopped', function ( done ) {
-
-		MediaElement.once( 'html5-playback-status', function ( e ) {
-			expect( e.type ).to.be( PlaybackState.STOP );
-			done();
-		} );
-
-		MediaElement.playAudio( url, false );
-		MediaElement.stop();
-		MediaElement.audioNode.emit( 'error' );
-
-	} );
 
 	it( 'should emit the ERROR html5-playback-status event on the media tag\'s error event when media node had no data to play', function( done ){
 		MediaElement.once( 'html5-playback-status', function ( e ) {
@@ -337,16 +302,6 @@ describe( 'MediaElement', function () {
 
 	} );
 
-	it( 'should emit the STOP html5-playback-status event on the media tag\'s error event when media node had data to play', function( done ){
-		MediaElement.once( 'html5-playback-status', function ( e ) {
-			expect( e.type ).to.be( PlaybackState.STOP );
-			done();
-		} );
 
-		MediaElement.playAudio( url, false );
-		MediaElement.audioNode.readyState = 3;
-		MediaElement.audioNode.emit( 'error' );
-		
-	}  );
 
 } );

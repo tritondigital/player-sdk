@@ -17,6 +17,7 @@ var OsPlatform = require( 'platform' );
 var Hls = require( 'hls.js' );
 var PlaybackState = require( 'sdk/base/playback/PlaybackState' );
 var MediaElement = require( 'sdk/base/util/MediaElement' );
+var params;
 
 define( [
 	'dojo/_base/declare',
@@ -77,13 +78,15 @@ define( [
 		 * @ignore
 		 */
 		play: function ( params ) {
+			if(params){
+				this.params = params;
 			this.mediaNode = params.mediaNode;
 
 			this.isStopped = false;
 			this.isPaused = false;
 
 			this._loadMedia( params );
-			
+			}
 
 		},
 
@@ -203,12 +206,9 @@ define( [
 		 * @ignore
 		 */
 		mute: function () {
-			if ( this.mediaNode == undefined ) return;
-
-			console.log( 'volumePercent = ' + this.volume );
-
-			this.mediaNode.volume = 0;
+			if ( this.mediaNode == undefined ) return;			
 			this.mediaNode.muted = true;
+			this.stop();
 		},
 
 		/**
@@ -218,11 +218,8 @@ define( [
 		 */
 		unMute: function () {
 			if ( this.mediaNode == undefined ) return;
-
-			console.log( 'volumePercent = ' + this.volume );
-
-			this.mediaNode.volume = this.volume;
 			this.mediaNode.muted = false;
+			this.play(this.params);
 		},
 
 		/***************************************/
@@ -490,6 +487,7 @@ define( [
 		},
 
 		_removeMediaListeners: function () {
+			this.params = null;
 			this._errorHandler.remove();
 			//this._sourceErrorHandler.remove();
 			this._loadDataHandler.remove();

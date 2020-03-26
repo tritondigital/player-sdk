@@ -374,8 +374,11 @@ define( [
 					var alternateContent = false;
 
 					_.forEach( this.liveStreamConfig.mountPointsError, function ( m ) {
-						if ( m.status.isGeoBlocked && m.alternateContent ) {
+						if ( m.status.isGeoBlocked ) {
 							isGeoBlocked = true;
+						}
+
+						if ( m.alternateContent ) {
 							alternateContent = m.alternateContent;
 						}
 					} );
@@ -790,7 +793,7 @@ define( [
 		},
 
 		_emitStreamStatusByCode: function ( statusMapEntry ) {
-			var statusMessages = i18n;
+			var statusMessages = i18n.getLocalization();
 			if ( statusMessages == undefined ) return;
 
 			if ( statusMessages[ statusMapEntry.status ] ) {

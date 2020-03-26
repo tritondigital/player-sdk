@@ -224,6 +224,7 @@ define( [
 		},
 
 		play: function ( params ) {
+			if(params){
 			console.log( 'html5Live::play', params );
 
 			this._liveApiParams = params;
@@ -248,7 +249,7 @@ define( [
 			} else {
 				MediaElement.playAudio( this._liveApiParams.url, false, true );
 			}
-
+			}
 		},
 
 		pause: function () {
@@ -276,13 +277,16 @@ define( [
 		},
 
 		mute: function () {
-
+			if( MediaElement.audioNode && !MediaElement.audioNode.paused && !MediaElement.isStopped()){
 			MediaElement.mute();
+			}			
 		},
 
-		unMute: function () {
-
+		unMute: function (params) {		
+			if( MediaElement.isStopped()){
 			MediaElement.unMute();
+				this.play(params);
+			}			
 		},
 
 		/***************************************/

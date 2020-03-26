@@ -1,4 +1,10 @@
 # Release notes:
+#2.9.34 (February 24 2020)
+### Bug Fixes
+- Chrome on iOS not stopping
+- Stream Status Localization Error
+- Change mute to stop
+
 #2.9.33 (November 21 2019)
 ### Bug Fixes
 - URI Encode the VAST URL on Web-sdk

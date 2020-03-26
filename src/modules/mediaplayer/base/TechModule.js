@@ -140,6 +140,15 @@ define( [
 
 		},
 
+		__onStreamUnmute: function () {
+			console.info( 'techModule::__onStreamUnmute' );
+			if ( !this.connectionIterator ) {
+				return;
+			}
+			this.__reconnect();
+
+		},
+
 		__reconnect: function () {
 			if ( !this.connectionIterator ) {
 				console.error( 'techModule::__reconnect - connectionIterator is not defined' );

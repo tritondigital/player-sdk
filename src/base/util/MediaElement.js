@@ -4,7 +4,7 @@ var Hls = require( 'hls.js' );
 var PlaybackState = require( 'sdk/base/playback/PlaybackState' );
 var StateMachine = require( 'javascript-state-machine' );
 var hls;
-
+var OsPlatform = require( 'platform' );
 
 var STATE = {
 	IDLE: 'IDLE',
@@ -69,17 +69,22 @@ function _onCanPlay() {
 	if ( fsm.is( STATE.STOPPED ) || fsm.is( STATE.PAUSED ) ) return;
 
 	if( this.url !== null ){
-		this.audioNode.play()
-		.then(function(){			
+		if( OsPlatform.name === 'IE' && OsPlatform.version === '11.0' && parseInt( OsPlatform.os.version ) >= 7) {
+			this.audioNode.play();
+		}else{
 			context.emit( 'html5-playback-status', {
 			type: PlaybackState.CAN_PLAY,
 				mediaNode: context.audioNode
 			} );
+			
+			this.audioNode.play()			
+			.then(function(){							
 		})
 		.catch(function(e){
 			context.handleHTMLPlayError(e);
 		} );
 	}
+}
 }
 
 function _onCanPlayThrough() {
@@ -87,6 +92,10 @@ function _onCanPlayThrough() {
 	if ( fsm.is( STATE.STOPPED ) || fsm.is( STATE.PAUSED ) ) return;
 
 	if( this.url !== null ){
+
+		if( OsPlatform.name === 'IE' && OsPlatform.version === '11.0' && parseInt( OsPlatform.os.version ) >= 7) {
+			this.audioNode.play();
+		}else{
 		this.audioNode.play()
 		.then(function(){			
 			context.emit( 'html5-playback-status', {
@@ -97,6 +106,8 @@ function _onCanPlayThrough() {
 		.catch(function(e){
 			context.handleHTMLPlayError(e);
 		} );
+	}
+		
 	}
 }
 
@@ -267,13 +278,17 @@ module.exports = _.assign( new EventEmitter(), {
 			this.audioNode.src = '';			
 	},
 
-	playAudio: function ( url, useHls, isLive ) {
+	playAudio: function ( url, useHlsLibrary, isLive ) {	
+		if (this.audioNode ){
+			this.stop();			
+		}	
+			
 		this.audioNode = getAudioNode.call( this );
 		this.url = url || this.url;
 		this.isLive = isLive || this.isLive;
-		this.useHls = useHls || this.useHls;
+		this.useHlsLibrary = useHlsLibrary || this.useHlsLibrary;
 
-		if ( useHls ) {
+		if ( this.useHlsLibrary ) {
 			this.hls = new Hls();
 			this.hls.loadSource( url );
 			this.hls.attachMedia( this.audioNode );			
@@ -292,17 +307,32 @@ module.exports = _.assign( new EventEmitter(), {
 		this.audioNode = getAudioNode.call( this );
 
 		fsm.stop();
+		
 		this.audioNode.pause();
+		if( OsPlatform.name !== 'Safari'  || this.audioNode.src.indexOf('m3u8') > -1 || this.useHlsLibrary) {
 		setTimeout(function(){ 
 			context.audioNode.src = '';
 			context.url = null;
+				context.resetAudioNode();
 		 }, 300);
+		}else{
+			setTimeout(function(){ 
+				context.url = null;
+				context.resetAudioNode();
+			 }, 300);
+		}
 		
-		 if ( this.useHls ) {
+		if( OsPlatform.os.family === 'iOS' && OsPlatform.name === 'Chrome Mobile') {
+			window.stop();			
+		}
+				
+		 if ( this.useHlsLibrary ) {
 			this.hls.detachMedia();
 			this.hls.stopLoad();
 			this.hls.destroy();
 		 }
+
+		
 	},
 
 	pause: function () {
@@ -319,28 +349,30 @@ module.exports = _.assign( new EventEmitter(), {
 		if ( !fsm.is( STATE.PAUSED ) ) return;
 
 		this.audioNode = getAudioNode.call( this );
+		if( OsPlatform.name === 'IE' && OsPlatform.version === '11.0' && parseInt( OsPlatform.os.version ) >= 7) {
+			this.audioNode.play();
+		}else{
 		this.audioNode.play().catch(function(e){
 			context.handleHTMLPlayError(e);
 		});
+		}
+		
 		fsm.resume();
 	},
 
 	mute: function () {
 		if ( !fsm.is( STATE.PLAYING ) ) return;
 		this.audioNode = getAudioNode.call( this );
-
-		this.audioNode.muted = true;
+		this.stop();
 	},
 
 	unMute: function () {
-		this.audioNode = getAudioNode.call( this );
-
-		this.audioNode.muted = false;
+		if ( fsm.is( STATE.PLAYING ) ) return;
+		this.audioNode = getAudioNode.call( this );		
 	},
 
 	setVolume: function ( volume ) {
 		this.audioNode = getAudioNode.call( this );
-
 		this.audioNode.volume = volume;
 	},
 

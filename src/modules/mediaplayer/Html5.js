@@ -1,3 +1,5 @@
+var params;
+
 define( [
 	'dojo/_base/declare',
 	'dojo/_base/lang',
@@ -70,6 +72,7 @@ define( [
 
 		playStream: function ( params ) {
 
+			this.params = params;
 			this.inherited( arguments );
 
 			if ( !this._isMediaTagInitialized )
@@ -122,12 +125,12 @@ define( [
 
 		unMute: function () {
 			this.inherited( arguments );
-
-			this.html5Live.unMute();
-			this.html5OnDemand.unMute();
+			this.html5Live.unMute(this.params);
+			this.html5OnDemand.unMute(this.params);				
 		},
 
 		playMedia: function ( params ) {
+			this.params = params;
 			if ( this.html5OnDemand == undefined ) return;
 
 			this.inherited( arguments );
