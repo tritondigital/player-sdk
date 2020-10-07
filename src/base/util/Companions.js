@@ -139,7 +139,11 @@ define([
             {
                 case 'html':
                     
-                    if ( vastCompanionAd.code.indexOf("document.write") > -1 )
+                    if ( vastCompanionAd.code.indexOf("<script>") > -1 && vastCompanionAd.code.indexOf("document.write") > -1)
+                    {
+                        dom.byId(containerId, document ).innerHTML = vastCompanionAd.code;
+                    }
+                    else if ( vastCompanionAd.code.indexOf("document.write") > -1 )
                     {
                         vastCompanionAd.resourceType.name = "iframe";
                         vastCompanionAd.url = this.JS_BANNER_URL + '?code=' + encodeURIComponent(vastCompanionAd.code);

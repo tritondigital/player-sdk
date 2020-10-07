@@ -224,6 +224,7 @@ define( [
 		},
 
 		play: function ( params ) {
+			if( MediaElement.isStopped()){
 			if(params){
 			console.log( 'html5Live::play', params );
 
@@ -244,10 +245,11 @@ define( [
 			this.__initAudioElement();
 
 			// //enable hls lib only for ie11 > 8
-			if ( Hls.isSupported() && this._liveApiParams.isHLS && OsPlatform.name !== 'Safari') {
+					if ( Hls.isSupported() && this._liveApiParams.isHLS ) {
 				MediaElement.playAudio( this._liveApiParams.url, true, true );
 			} else {
 				MediaElement.playAudio( this._liveApiParams.url, false, true );
+					}
 			}
 			}
 		},
@@ -352,6 +354,10 @@ define( [
 
 				if ( e.type == PlaybackState.ERROR || e.type == PlaybackState.ENDED) {
 					this._streamFailedCallback();
+				}
+
+				if( e.type == PlaybackState.PAUSE ) {
+					MediaElement.stop();
 				}
 			}
 		},

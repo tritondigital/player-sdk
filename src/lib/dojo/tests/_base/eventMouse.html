@@ -75,7 +75,6 @@
 					dojo.connect(node, "onmousedown", function(evt){
 						if(evt.type == "unload"){
 							console.error("onmousedown handler got onunload event");
-							debugger;
 							return;
 						}
 						downEvents.push({

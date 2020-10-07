@@ -34,12 +34,13 @@ define([
         VERSION_2_0: '2.0',
         DAAST_VERSION_1_0: 'DAAST_1.0',
 
-        constructor:function( target, config )
+        constructor:function( target )
         {
             console.log( 'vastAdModule::constructor' );
 
             this.target = target;
 
+            this._adConfig = null;
             this._mediaAdBlankFiles = null;
             this._skipMediaAdPlayback = false;
             this._adBreak = false;
@@ -55,12 +56,16 @@ define([
             this.onClickTrackingElementClickedHandler = null;
 
             this.xhrProv = new XhrProvider();
+
+            // The parsing amount that is allowed (prevents a massive loop):
+            this._loadTimes = 0;
+            this._maxLoadTimes = 5;
         },
 
         init:function( adConfig )
         {
             console.log('vastAdModule::init - url : ' + adConfig.url + ' - skipMediaAdPlayback : ' + adConfig.skipMediaAdPlayback + ' - sequence : ' + adConfig.sequence );
-
+            this._adConfig = adConfig;
             this.inherited( arguments );
 
             this._adBreak = ( adConfig.adBreak ) ? true : false;
@@ -108,6 +113,11 @@ define([
             return this.vastDocument.vastAd.inlineAd;
         },
 
+        reloadSyncBanner: function () {
+            if( this._adConfig != null ) {
+                this.loadVast( this._adConfig );
+            }
+        },
 
         /***************************************/
         /******* PRIVATE FUNCTIONS  ************/
@@ -160,8 +170,9 @@ define([
 
             if( this.vastDocument != null )
             {
-                if ( this._needToLoadVASTWrapper( this.vastDocument.vastAd ) )
+                if ( this._shouldLoadVASTWrapper( this.vastDocument.vastAd ) )
                 {
+                    this._loadTimes++;
                     this._vastWrapperAd = this.vastDocument.vastAd.wrapperAd;
 
                     this._cacheWrapperData( this._vastWrapperAd );
@@ -170,6 +181,7 @@ define([
                 }
                 else
                 {
+                    this._loadTimes = 0;
                     if( this._vastWrapperAd != null )
                     {
                         this.vastDocument.vastAd.inlineAd.addWrapperLinearTrackingEvents( this._wrapperCachedData.wrapperTrackingEvents );
@@ -184,8 +196,11 @@ define([
 
                     this._vastWrapperAd = null;
 
+                    // Only used to prevent emitting an AD_MODULE_MEDIA_EMPTY (which will wipe the ads):
+                    var adEmpty = true;
 
                     if( this.vastDocument.vastAd.inlineAd.getCompanionAds( this._defaultSequence ) != undefined && this.vastDocument.vastAd.inlineAd.getCompanionAds( this._defaultSequence).length > 0 ){
+                        adEmpty = false;
                         this.emit(  this.AD_MODULE_COMPANIONS, { companions:this.vastDocument.vastAd.inlineAd.getCompanionAds( this._defaultSequence ) } );
                     }
 
@@ -194,8 +209,8 @@ define([
 
                     var mediaFiles = this._checkMediaAdBlankFiles( this.vastDocument.vastAd.inlineAd.getLinearMediaFiles( this._defaultSequence ) );
 
-                    if( mediaFiles != null )
-                    {
+                    if( mediaFiles != null ) {
+                        adEmpty = false;
                         var videoClick = this.vastDocument.vastAd.inlineAd.getLinearVideoClick( this._defaultSequence );
                         var clickThrough = videoClick != null ? videoClick.clickThrough : null;
                         var clickTrackings = videoClick != null ? videoClick.clickTrackings : null;
@@ -204,15 +219,14 @@ define([
                                                                  mediaFiles: mediaFiles,
                                                                  clickThrough:clickThrough,
                                                                  clickTrackings:clickTrackings } );
-                    }
-                    else
-                    {
+                    } else if ( adEmpty ) {
                         this.emit( this.AD_MODULE_MEDIA_EMPTY, { adServerType: AdServerType.VAST_AD } );
                     }
                 }
             }
             else
             {
+                this._loadTimes = 0;
                 this.emit( this.AD_MODULE_VAST_EMPTY, { adServerType: AdServerType.VAST_AD } );
             }
 
@@ -238,7 +252,7 @@ define([
             return null;
         },
 
-        _cacheWrapperData:function( vastWrapperAd )
+        _cacheWrapperData:function()
         {
             if( this._wrapperCachedData == null )
                 this._wrapperCachedData = { wrapperImpressions:[], wrapperTrackingEvents:[], wrapperVideoClickTracking:[] };
@@ -256,9 +270,9 @@ define([
                 this._wrapperCachedData.wrapperVideoClickTracking = this._wrapperCachedData.wrapperVideoClickTracking.concat( wrapperVideoClick.clickTrackings );
         },
 
-        _needToLoadVASTWrapper:function( adVast )
+        _shouldLoadVASTWrapper:function( adVast )
         {
-            if( adVast.wrapperAd != null && adVast.wrapperAd.vastAdTagURL != null )
+            if( adVast.wrapperAd != null && adVast.wrapperAd.vastAdTagURL != null && this._loadTimes <= this._maxLoadTimes )
                 return true;
             else
                 return false;
@@ -307,7 +321,7 @@ define([
         {
             if ( this._mediaAdBlankFiles == null ||this._mediaAdBlankFiles.length == 0 ) return false;
 
-            var mediaFileName = url.substr( url.lastIndexOf("/") + 1 );
+            var mediaFileName = url.substr( url.lastIndexOf( '/' ) + 1 );
             var mediaAdBlankFilesLength = this._mediaAdBlankFiles.length;
 
             for ( var i = 0; i < mediaAdBlankFilesLength; i++ )
@@ -325,11 +339,11 @@ define([
         _getRequestArgs: function()
         {
             return {
-                handleAs: "xml",
+                handleAs: 'xml',
                 preventCache: false,
                 withCredentials: true,
                 headers: { 'X-Requested-With':null, 'Content-Type': 'text/plain; charset=utf-8' }
-            }
+            };
         }
 
     });

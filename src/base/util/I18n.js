@@ -1,4 +1,5 @@
 var _ = require('lodash');
+window.lodash = _.noConflict();
 
 /**
  * I18n

@@ -24,6 +24,7 @@ define( [
 			this.type = type;
 			this.volume = 1;
 
+			this.params = null;
 			this.connection = null;
 			this._track = null;
 			this._currentLiveApiParams = null;
@@ -66,6 +67,12 @@ define( [
 		},
 
 		play: function ( params ) {
+			
+			if(params == null){			
+				return;
+			}
+
+			this.params = params;
 			console.log( 'techModule::play' );
 
 			/* Play a simple media file. Ex: podcast */
@@ -381,10 +388,12 @@ define( [
 
 		mute: function () {
 			console.log( 'techModule::mute' );
+                        this.isLiveStream == true ? this.muteStream() : this.muteMedia();
 		},
 
 		unMute: function () {
 			console.log( 'techModule::unMute' );
+			this.isLiveStream == true ? this.unMuteStream() : this.unMuteMedia();
 		},
 
 		playAd: function ( adServerType, config ) {
@@ -398,6 +407,10 @@ define( [
 
 		destroyAd: function () {
 			console.log( 'techModule::destroyAd' );
+		},
+
+		reloadSyncBanner: function () {
+			console.log( 'techModule::reloadSyncBanner' );
 		},
 
 		__onTimeOutAlert: function () {

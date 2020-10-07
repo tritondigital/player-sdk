@@ -18,5 +18,6 @@
         "stationNotFound": "No se encontró la estación",
         "flashPluginOutOfDate": "Su versión Flash plugin detectada es obsoleta. La versión mínima requerida es: 10.2.0",
         "browserNotSupported": "Su navegador no es compatible con la función HTML5",
-        "playbackNotAllowed": "No se permite la reproducción de medios en el contexto o situación actual"
+        "playbackNotAllowed": "No se permite la reproducción de medios en el contexto o situación actual",
+        "tritonListenLink": "El reproductor OnDemand no se puede usar con enlaces de escucha Triton"
 }

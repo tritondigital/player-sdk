@@ -9,7 +9,7 @@ var OsPlatform = require( 'platform' );
 define(['dojo/_base/declare'], function( declare ){
 
     var debug = true;
-    var debugName = 'FuckAdBlock';
+    var debugName = 'BlockAdBlock';
 
     var FabUtils = function() {
         var self = this;
@@ -297,7 +297,7 @@ define(['dojo/_base/declare'], function( declare ){
 		this.options.set({
 			loopTime:		50,
 			baitElement:	null,
-			baitClass:		'pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links',
+			baitClass:		'pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links adBanner',
 			baitStyle:		'width:1px!important;height:1px!important;position:absolute!important;left:-10000px!important;top:-1000px!important;',
 			baitParent:		null,
 		});

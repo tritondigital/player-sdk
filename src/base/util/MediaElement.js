@@ -289,7 +289,10 @@ module.exports = _.assign( new EventEmitter(), {
 		this.useHlsLibrary = useHlsLibrary || this.useHlsLibrary;
 
 		if ( this.useHlsLibrary ) {
-			this.hls = new Hls();
+			var config = {
+				maxBufferLength: 30
+			}
+			this.hls = new Hls(config);
 			this.hls.loadSource( url );
 			this.hls.attachMedia( this.audioNode );			
 		} else {
@@ -374,6 +377,9 @@ module.exports = _.assign( new EventEmitter(), {
 	setVolume: function ( volume ) {
 		this.audioNode = getAudioNode.call( this );
 		this.audioNode.volume = volume;
+		if(volume == 0){
+			this.mute();
+		}
 	},
 
 	isStopped: function () {

@@ -72,8 +72,8 @@ define( [
 
 		playStream: function ( params ) {
 
-			this.params = params;
 			this.inherited( arguments );
+			this.params = params;
 
 			if ( !this._isMediaTagInitialized )
 				this._initMediaTag();
@@ -91,7 +91,6 @@ define( [
 
 		stopStream: function () {
 			this.inherited( arguments );
-
 			this.html5Live.stop();
 		},
 
@@ -116,31 +115,43 @@ define( [
 			this.html5OnDemand.setVolume( volumePercent );
 		},
 
-		mute: function () {
+		muteStream: function() {
 			this.inherited( arguments );
-
 			this.html5Live.mute();
+		},
+
+		muteMedia: function () {
+			this.inherited( arguments );
 			this.html5OnDemand.mute();
 		},
 
-		unMute: function () {
+		unMuteStream: function ( ) {
 			this.inherited( arguments );
 			this.html5Live.unMute(this.params);
+		},
+
+		unMuteMedia: function () {
+			this.inherited( arguments );					
 			this.html5OnDemand.unMute(this.params);				
 		},
 
 		playMedia: function ( params ) {
-			this.params = params;
+			this.inherited( arguments );
 			if ( this.html5OnDemand == undefined ) return;
 
-			this.inherited( arguments );
-
+			if(params.url.indexOf('live.streamtheworld.com') >= 0 ){
+				this.emit( 'tech-error', {
+					error: this.errorCode.html5ModuleMap[ 'tritonListenLink' ]
+				} );
+			}else{
 			this.playbackOnDemandStatushandler = this.html5OnDemand.setPlaybackStatusHandler( lang.hitch( this, this._onMediaPlaybackStatus ) );
 
 			this.html5OnDemand.play( {
 				mediaUrl: params.url,
 				mediaFormat: 'audio'
 			} );
+			}
+					
 		},
 
 		pauseMedia: function ( params ) {

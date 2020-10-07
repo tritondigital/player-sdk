@@ -22,7 +22,8 @@ define([
             };
 
             this.html5ModuleMap = {
-                browserNotSupported: {code:101, message:e['browserNotSupported']}
+                browserNotSupported: {code:101, message:e['browserNotSupported']},
+                tritonListenLink: {code:102, message:e['tritonListenLink']}
             };
 
         }

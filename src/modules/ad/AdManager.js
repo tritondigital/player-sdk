@@ -208,6 +208,20 @@ define([
 
         },
 
+        reloadSyncBanner: function () {
+
+            
+            if( this.techType == 'Flash' ) {
+                this.tech.reloadSyncBanner();
+                return;
+            }
+
+            if( this.currentAdModule ){
+                if( this.adServerType == AdServerType.VAST_AD || this.adServerType == AdServerType.TRITON_AD_PLATFORM ) {
+                this.currentAdModule.reloadSyncBanner();
+                }
+            }
+        },
 
         /**
          * _initAdModule
@@ -660,7 +674,7 @@ define([
 
             if( adConfig != undefined && adConfig.url != undefined )
             {
-                if( adConfig.url.indexOf("/ondemand/ars") > -1 && adConfig.trackingParameters != undefined )
+                if( adConfig.url.indexOf( '/ondemand/ars' ) > -1 && adConfig.trackingParameters != undefined )
                 {
 
                     var delimiter;
@@ -670,7 +684,7 @@ define([
                      */
                     if( adConfig.trackingParameters.tdsdk != undefined )
                     {
-                        delimiter = ( adConfig.url.indexOf("?") > -1 ) ? '&' : '?';
+                        delimiter = ( adConfig.url.indexOf( '?' ) > -1 ) ? '&' : '?';
                         adConfig.url += delimiter +'tdsdk='+adConfig.trackingParameters.tdsdk;
                     }
 
@@ -679,7 +693,7 @@ define([
                      */
                     if( adConfig.trackingParameters.position != undefined && adConfig.trackingParameters.position.coords.latitude != undefined && adConfig.trackingParameters.position.coords != undefined && adConfig.trackingParameters.position.coords.longitude != undefined )
                     {
-                        delimiter = ( adConfig.url.indexOf("?") > -1 ) ? '&' : '?';
+                        delimiter = ( adConfig.url.indexOf( '?' ) > -1 ) ? '&' : '?';
                         adConfig.url += delimiter +'lat='+parseFloat( adConfig.trackingParameters.position.coords.latitude.toFixed(1) ) + '&long=' + parseFloat( adConfig.trackingParameters.position.coords.longitude.toFixed(1) );
                     }
 
@@ -688,7 +702,7 @@ define([
                      */
                     if( adConfig.trackingParameters.banners != undefined )
                     {
-                        delimiter = ( adConfig.url.indexOf("?") > -1 ) ? '&' : '?';
+                        delimiter = ( adConfig.url.indexOf( '?' ) > -1 ) ? '&' : '?';
                         adConfig.url += delimiter +'banners='+adConfig.trackingParameters.banners;
                     }
 
@@ -702,8 +716,8 @@ define([
                     delete cloneTrackingParams['pversion'];
 
                     for (var key in cloneTrackingParams) {
-                        delimiter = ( adConfig.url.indexOf("?") > -1 ) ? '&' : '?';
-                        adConfig.url += delimiter + key + "=" + encodeURIComponent(cloneTrackingParams[key]);
+                        delimiter = ( adConfig.url.indexOf( '?' ) > -1 ) ? '&' : '?';
+                        adConfig.url += delimiter + key + '=' + encodeURIComponent( cloneTrackingParams[key] );
                     }
 
                     // Add streaming guide implementation version

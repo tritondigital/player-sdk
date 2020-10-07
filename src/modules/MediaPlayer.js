@@ -172,7 +172,8 @@ define( [
 				skipAd: lang.hitch( this, this.skipAd ),
 				destroyAd: lang.hitch( this, this.destroyAd ),
 				initMediaElement: lang.hitch( this, this._initMediaElement  ),
-				destroy: lang.hitch( this, this._destroy )
+				destroy: lang.hitch( this, this._destroy ),
+				reloadSyncBanner: lang.hitch( this, this.reloadSyncBanner )
 			};
 			topic.subscribe( 'api/request', lang.hitch( this, this._onApiInternalRequest ) );
 
@@ -384,7 +385,6 @@ define( [
 					} );
 
 					if ( isGeoBlocked ) {
-
 						this._emitStreamStatusByCode( this.statusMap.STREAM_GEO_BLOCKED );
 
 						if ( alternateContent ) {
@@ -754,6 +754,15 @@ define( [
 
 			this._getAdManager().skipAd();
 		},
+		/**
+		 * Reload a SyncBanner 
+		 *
+		 */
+		reloadSyncBanner: function () {
+			console.log( 'mediaPlayer::reloadSyncBanner' );
+
+			this._getAdManager().reloadSyncBanner();
+		},
 
 		/**
 		 * Destroy the ad
@@ -893,6 +902,11 @@ define( [
 			//User data (see tdapi/modules/base/UserRegPlayerMediator)
 			for ( var userData in this.config.defaultTrackingParameters.user ) {
 				trackingParameters[ userData ] = this.config.defaultTrackingParameters.user[ userData ];
+			}
+
+			if(this.consentData){
+				trackingParameters.gdpr = (this.consentData.gdprApplies) ? 1 : 0;
+				trackingParameters.gdpr_consent = this.consentData.consentData;
 			}
 
 			return trackingParameters;

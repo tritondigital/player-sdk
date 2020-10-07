@@ -78,7 +78,7 @@ define( [
 		 * @ignore
 		 */
 		play: function ( params ) {
-			if(params){
+			if(params && (this.isStopped || this.isPaused)){
 				this.params = params;
 			this.mediaNode = params.mediaNode;
 
@@ -198,6 +198,9 @@ define( [
 
 			this.volume = volumePercent;
 			this.mediaNode.volume = volumePercent;
+			if( this.mediaNode.muted && volumePercent > 0 ){
+				this.mediaNode.muted = false;
+			}
 		},
 
 		/**
@@ -208,7 +211,6 @@ define( [
 		mute: function () {
 			if ( this.mediaNode == undefined ) return;			
 			this.mediaNode.muted = true;
-			this.stop();
 		},
 
 		/**
@@ -219,7 +221,6 @@ define( [
 		unMute: function () {
 			if ( this.mediaNode == undefined ) return;
 			this.mediaNode.muted = false;
-			this.play(this.params);
 		},
 
 		/***************************************/
@@ -239,6 +240,7 @@ define( [
 			// domAttr.set( this.audioSource, 'src', '' );
 			// domAttr.set( this.mediaNode, 'src', '' );
 			this.mediaNode.src = '';
+			this.mediaNode.load();
 		},
 
 		_removeMediaSource: function () {
@@ -487,7 +489,7 @@ define( [
 		},
 
 		_removeMediaListeners: function () {
-			this.params = null;
+			this.params.mediaNode.src = "";
 			this._errorHandler.remove();
 			//this._sourceErrorHandler.remove();
 			this._loadDataHandler.remove();

@@ -1,4 +1,38 @@
 # Release notes:
+
+#2.9.41 (September 9 2020)
+### Features
+- Add SyncBanner Refresh function
+- Fix ad blocker detection
+- Pass GDPR parameters to stream connection
+
+#2.9.40 (July 30 2020)
+### Bug Fixes ###
+- Add autoplay config option
+
+#2.9.39 (July 29 2020)
+### Bug Fixes ###
+- Fix lodash and underscore.js conflict issue
+
+#2.9.38 (June 30 2020)
+### Bug Fixes ####
+- Fix issue between ondemand player and live player
+- Handle mute/unmute/pause/resume as normal for the ondemand player
+- Implement VAST Wrappers
+
+#2.9.37 (April 9 2020)
+### Bug Fixes
+- HTML5 Media Player plays two streams when unmuting
+
+#2.9.36 (April 9 2020)
+### Bug Fixes
+- A2X ad not displaying
+- Android Chrome Lock Screen Pause Audio did not Stop Session
+
+#2.9.35 (April 9 2020)
+### Bug Fixes
+- URL Encoding causes wrong content
+
 #2.9.34 (February 24 2020)
 ### Bug Fixes
 - Chrome on iOS not stopping
