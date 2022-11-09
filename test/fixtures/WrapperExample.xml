@@ -1,0 +1,15 @@
+<VAST version="4.1">
+    <Ad id="20335411">
+        <Wrapper>
+            <Impression id="ImpressionConfirmationURL">
+                <![CDATA[ https://ondemand-impression.tritondigital.com/ondemand/impression?position=midroll&listenerId=cookie:test2&contentId=Y206YWR2PTEzMzY0OTEmY3A9NDQwODY1MSZmPTEyODA3OTAxJmFkPTIwMzM1NDExJmNzPTEyNjA0MTgxJmM9MTI2MDQ2NzEmYT05NjI4NTAx&stationId=72493&publisherId=28673&adRequestId=0c28255e-aed1-47b0-a86c-b560ae948289&fs=tap&durationMs=30014&checksum=MfVXcj2YwstYXmKgPRec6yFOdIpXJbehEeC6clec9mh-3FiRU4N5sRjsxg9_qBzJiweMubTafzCCaR168wzU3g%3D%3D ]]>
+            </Impression>
+            <AdSystem version="3.0">
+                <![CDATA[ TritonDigital On-Demand Ad Server ]]>
+            </AdSystem>
+            <VASTAdTagURI>
+                <![CDATA[ https://creative-manager.tritondigital.com/ondemand/creative-manager?position=midroll&adId=20335411&creativeSetId=12604181&stid=72493&lsid=cookie:test2&profile=ip%3D216.160.83.56,agent-full%3DMozilla/5.0+(X11%3B+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/83.0.4103.97+Safari/537.36 ]]>
+            </VASTAdTagURI>
+        </Wrapper>
+    </Ad>
+</VAST>

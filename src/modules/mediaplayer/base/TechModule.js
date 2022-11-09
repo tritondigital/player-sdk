@@ -11,7 +11,9 @@ define( [
 	'sdk/modules/base/CoreModule',
 	'dojo/topic',
 	'dojo/io-query',
-], function ( declare, lang, has, on, dom, coreModule, topic, ioQuery ) {
+	'sdk/base/util/analytics/GAEventRequest',
+	'sdk/base/util/XhrProvider'
+], function ( declare, lang, has, on, dom, coreModule, topic, ioQuery, GAEventRequest, XhrProvider ) {
 
 	var module = declare( [ coreModule ], {
 
@@ -24,6 +26,7 @@ define( [
 			this.type = type;
 			this.volume = 1;
 
+			this.xhrProv = new XhrProvider();
 			this.params = null;
 			this.connection = null;
 			this._track = null;
@@ -37,6 +40,7 @@ define( [
 
 			this.__resetBackOff();
 
+			this.config = config;
 			if ( config && config.playerId ) {
 				this.playerNode = dom.byId( config.playerId, document );
 			}
@@ -53,6 +57,11 @@ define( [
 			this.audioAdaptive = ( config.audioAdaptive != undefined ) ? config.audioAdaptive : false;
 
 			this.__initSbmConfig( config );			
+			//analytics
+			this._playConnectionTime = 0;
+			this._playConnectionTimeIntervall = null;
+
+			this.isReconnect = false;
 		},
 
 		start: function () {
@@ -68,6 +77,7 @@ define( [
 
 		play: function ( params ) {
 			
+			this.isReconnect = false;
 			if(params == null){			
 				return;
 			}
@@ -78,6 +88,7 @@ define( [
 			/* Play a simple media file. Ex: podcast */
 			if ( params.file != undefined && params.file != '' ) {
 				this.isLiveStream = false;
+				this.__extractOmnyParameters(params);
 				this.__playMedia( params );
 				return;
 			}
@@ -87,6 +98,8 @@ define( [
 			if ( this.connectionIterator ) {
 				this.isLiveStream = true;
 				this.__connect( this.connectionIterator.current() );
+			} else if (params.timeShift) {
+				this.__connectTimeshift( params.url, params.mount );			
 			} else {
 				console.error( 'techModule::play - connectionIterator is not defined' );
 			}
@@ -108,12 +121,12 @@ define( [
 			this._track = track;
 		},
 
-		_onMediaPlaybackStarted: function ( e ) {
-			console.log( 'techModule::_onMediaPlaybackStarted' );
+		_onMediaPlaybackStarted: function ( e ) {			
+			GAEventRequest.requestGA( GAEventRequest.CATEGORY_ON_DEMAND, GAEventRequest.ACTION_PLAY, GAEventRequest.LABEL_SUCCESS );
 		},
 
 		_onMediaPlaybackError: function () {
-			console.log( 'techModule::_onMediaPlaybackError' );
+			GAEventRequest.requestGA( GAEventRequest.CATEGORY_ON_DEMAND, GAEventRequest.ACTION_PLAY, GAEventRequest.LABEL_ERROR );
 		},
 
 		__onStreamStart: function () {
@@ -126,6 +139,20 @@ define( [
 
 				this.connectionTimeOutTimer = setInterval( lang.hitch( this, this.__onTimeOutAlert ), this._currentLiveApiParams.connectionTimeOut * 60000 );
 			}
+			//send analytics connection success load time
+			var gaDimensions = {};
+			if ( this.connection ) {
+				gaDimensions[ GAEventRequest.DIM_MEDIA_TYPE ] = this.connection.type;
+				gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.connection.mount ? this.connection.mount : '';
+				gaDimensions[ GAEventRequest.DIM_STATION ] = ( this._currentLiveApiParams.station ) ? this._currentLiveApiParams.station : '';
+				gaDimensions[ GAEventRequest.DIM_HLS ] = this.hls;
+				gaDimensions[ GAEventRequest.DIM_AUDIO_ADAPTIVE ] = this.audioAdaptive;
+			}			
+
+			var gaMetrics = {};
+			gaMetrics[ GAEventRequest.METRIC_CONNECTION_TIME ] = this._playConnectionTime;
+
+			GAEventRequest.requestGA( GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_PLAY, GAEventRequest.LABEL_SUCCESS );
 		},
 
 		__onStreamStop: function () {
@@ -168,6 +195,16 @@ define( [
 
 				console.log( 'techModule::__reconnect - delay=' + delay );				
 
+				if ( delay >= 60000 ) {
+
+					//send analytics connection success load time
+					var gaDimensions = {};
+					gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.connection.mount ? this.connection.mount : '';
+					gaDimensions[ GAEventRequest.DIM_STATION ] = ( this._currentLiveApiParams.station ) ? this._currentLiveApiParams.station : '';
+
+					GAEventRequest.requestGA( GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_UNAVAILABLE, gaDimensions );
+
+				}
 				this.backOffTimer = setTimeout( lang.hitch( this, this.__onBackOffTimeOut ), delay );
 			} else {
 				console.log( 'techModule::__reconnect' );
@@ -208,7 +245,11 @@ define( [
 			console.log( 'techModule::__playMedia url : ' + params.file );
 
 			this.playMedia( {
-				url: params.file
+				url: params.file,
+				omnyOrganizationId : params.omnyOrganizationId,
+				omnyClipId: params.omnyClipId,
+				omnySessionId: params.omnySessionId,
+				enableOmnyAnalytics: params.enableOmnyAnalytics	
 			} );
 		},
 
@@ -229,8 +270,23 @@ define( [
 			if ( this.connection.isGeoBlocked && this.connection.alternateContent ) {
 
 				topic.publish( "api/request", "get-alternate-content", this.connection.alternateContent );				
+				//send analytics geoblocking event
+				var gaDimensions = {};
+				gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.connection.mount ? this.connection.mount : '';
+				gaDimensions[ GAEventRequest.DIM_STATION ] = ( this._currentLiveApiParams.station ) ? this._currentLiveApiParams.station : '';
+				gaDimensions[ GAEventRequest.DIM_ALTERNATE_CONTENT ] = true;
+
+				GAEventRequest.requestGA( GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_GEOBLOCKING, gaDimensions );
 				return;
 
+			} else if ( this.connection.isGeoBlocked ) {
+				//send analytics geoblocking event
+				var gaDimensions = {};
+				gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.connection.mount ? this.connection.mount : '';
+				gaDimensions[ GAEventRequest.DIM_STATION ] = ( this._currentLiveApiParams.station ) ? this._currentLiveApiParams.station : '';
+				gaDimensions[ GAEventRequest.DIM_ALTERNATE_CONTENT ] = false;
+
+				GAEventRequest.requestGA( GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_GEOBLOCKING, gaDimensions );
 			} 
 			var params = this._currentLiveApiParams.trackingParameters || {};
 
@@ -241,10 +297,19 @@ define( [
 
 			var streamUrl = this.connection.url;
             if ( params ) {
-                streamUrl = streamUrl+ '?' + ioQuery.objectToQuery( params );
+                streamUrl = streamUrl+ '?' + ioQuery.objectToQuery( params ) + "&burst-time=15";
+            }else {
+				streamUrl = streamUrl+ '?burst-time=15';
             }
 
 			this.emit('stream-select');
+			//analytics start timer
+			this._playConnectionTime = 0;
+			if( !this._playConnectionTimeIntervall ){
+			    this._playConnectionTimeIntervall  = setInterval(function(){
+			        self._playConnectionTime += 10;
+			    }, 10);
+			}			
 
 			this.playStream( {
 				url: streamUrl,
@@ -258,7 +323,49 @@ define( [
 				mount: this.connection.mount,
 				sbmConfig: this.__getSbmData(),
 				isHLS: this.connection.isHLS,
-				isHLSTS: this.connection.isHLSTS
+				isHLSTS: this.connection.isHLSTS,
+				isReconnect: this.isReconnect
+			} );
+		},
+
+		/**
+		 * Connect to the stream
+		 *
+		 * @param {Connection} connection
+		 * @private
+		 */
+		 __connectTimeshift: function( streamUrl, mount ){
+			this.mount = mount;
+			var params = this._currentLiveApiParams.trackingParameters || {};			
+
+			if ( this.lowActivated && this.connection.isAudioAdaptive )
+				params.utags = 'low-bw';
+
+			var mimeType = "application/x-mpegURL";			
+
+			
+            if ( params ) {
+                streamUrl = streamUrl+ '?' + ioQuery.objectToQuery( params );
+            }
+
+			this.emit('stream-select');
+
+			//analytics start timer
+			this._playConnectionTime = 0;
+			if( !this._playConnectionTimeIntervall ){
+			    this._playConnectionTimeIntervall  = setInterval(function(){
+			        self._playConnectionTime += 10;
+			    }, 10);
+			}			
+
+			this.playStream( {
+				url: streamUrl,
+				mimeType: mimeType,				
+				timeShift: true,
+				hasVideo: false,
+				mount: this.mount,
+				isHLS: true,
+				isReconnect: this.isReconnect
 			} );
 		},
 
@@ -334,11 +441,13 @@ define( [
 
 		playStream: function ( params ) {
 
-			console.log( 'techModule::playStream' );
+			console.log( 'techModule::playingStream' );
 		},
 
 		pause: function () {
 			console.log( 'techModule::pause' );
+			this.isLiveStream == true ? this.pauseStream() : this.pauseMedia();
+			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_PAUSE, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions() );
 		},
 
 		stop: function () {
@@ -350,10 +459,13 @@ define( [
 			} else {
 				this.stopMedia();
 			}
+			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_STOP, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions() );
 		},
 
 		resume: function () {
 			console.log( 'techModule::resume' );
+			this.isLiveStream == true ? this.resumeStream() : this.resumeMedia();
+			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_RESUME, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions() );
 		},
 
 		seek: function ( seekOffset ) {
@@ -389,11 +501,13 @@ define( [
 		mute: function () {
 			console.log( 'techModule::mute' );
                         this.isLiveStream == true ? this.muteStream() : this.muteMedia();
+			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_MUTE, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions() );
 		},
 
 		unMute: function () {
 			console.log( 'techModule::unMute' );
 			this.isLiveStream == true ? this.unMuteStream() : this.unMuteMedia();
+			GAEventRequest.requestGA( GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_UNMUTE, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions() );
 		},
 
 		playAd: function ( adServerType, config ) {
@@ -433,6 +547,48 @@ define( [
 			this.stopStream();
 
 			this.emit( 'timeout-reach' );
+		},
+
+		
+		
+		_createUUID: function() {
+            // http://www.ietf.org/rfc/rfc4122.txt
+            var s = [];
+            var hexDigits = "0123456789abcdef";
+            for (var i = 0; i < 36; i++) {
+                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+            }
+            s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+            s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+            s[8] = s[13] = s[18] = s[23] = "-";
+        
+            var uuid = s.join("");
+            return uuid;
+        },
+
+		/**
+		 * Extract Omny Usage Analytics Parameters
+		 * e.g https://traffic.omny.fm/d/clips/233f32b3-2136-45a7-b0f5-aab200d79708/677817d0-1b13-4cf1-b14a-aad300e0954c/43701cc5-87ca-46ff-a714-ac5200a853af/audio.mp3
+		 * @param {String} file
+		 * @private
+		 */
+		__extractOmnyParameters: function ( params ) {
+			if ( params == null ) return;
+
+			if( ( params.omnyOrganizationId == undefined || params.omnyClipId == undefined )
+				&& params.enableOmnyAnalytics && params.file.indexOf("omny.fm") > -1 ){
+				var urlParts = params.file.split("/");
+				params.omnySessionId = this._createUUID();
+				params.omnyOrganizationId = urlParts[5];
+				params.omnyClipId = urlParts[7];								
+			}
+			
+		},
+        getDefaultGADimensions: function() {
+			var gaDimensions = {};
+			if ( this.mount != null ) { gaDimensions[ GAEventRequest.DIM_MOUNT ] = this.mount; }
+            if ( this.station != null ) { gaDimensions[ GAEventRequest.DIM_STATION ] = this.station; }
+            return gaDimensions;
 		}
 
 	} );

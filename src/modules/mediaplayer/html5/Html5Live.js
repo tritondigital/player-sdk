@@ -122,6 +122,7 @@ define( [
 
 			this.isPaused = false;
 			this.audioEventListenersAttached = false;
+			this.params = null;
 		},
 
 		/**
@@ -226,6 +227,7 @@ define( [
 		play: function ( params ) {
 			if( MediaElement.isStopped()){
 			if(params){
+					this.params = params;					
 			console.log( 'html5Live::play', params );
 
 			this._liveApiParams = params;
@@ -245,7 +247,7 @@ define( [
 			this.__initAudioElement();
 
 			// //enable hls lib only for ie11 > 8
-					if ( Hls.isSupported() && this._liveApiParams.isHLS ) {
+					if ( Hls.isSupported() && (this._liveApiParams.isHLS || this._liveApiParams.isHLSTS ) && OsPlatform.name !== 'Safari') {
 				MediaElement.playAudio( this._liveApiParams.url, true, true );
 			} else {
 				MediaElement.playAudio( this._liveApiParams.url, false, true );
@@ -269,9 +271,13 @@ define( [
 			MediaElement.resume();
 		},
 
-		seekStream: function ( seekOffset ) {},
+		seekStream: function ( seconds ) {
+			MediaElement.seekStream(seconds);
+		},
 
-		seekLive: function () {},
+		seekLive: function () {
+			MediaElement.seekLive();
+		},
 
 		setVolume: function ( volumePercent ) {
 
@@ -285,7 +291,9 @@ define( [
 		},
 
 		unMute: function (params) {		
-			if( MediaElement.isStopped()){
+			if( this.cfg.streamWhileMuted && MediaElement.audioNode ){
+				MediaElement.audioNode.muted = false;
+			} else if( MediaElement.isStopped()){
 			MediaElement.unMute();
 				this.play(params);
 			}			
@@ -308,6 +316,7 @@ define( [
 		__initAudioElement: function () {
 			console.log( 'html5Live::__initAudioElement' );
 
+			MediaElement.cfg = this.cfg;
 			if ( this.audioEventListenersAttached == false ) {
 				MediaElement.on( 'destroyAudioElement', this.__destroyAudioElement );
 				MediaElement.on( 'html5-playback-status', lang.hitch( this, this.__onHTML5PlayerStatus ) );
@@ -327,7 +336,7 @@ define( [
 		__onHTML5PlayerStatus: function ( e ) {
 			console.log( 'html5Live::_onHTML5PlayerStatus - type=' + e.type );
 
-			this.__emitPlaybackStatus( e );
+			e.isReconnect = (this.params && this.params.isReconnect) ? true : false;
 
 			if ( e.type == PlaybackState.PLAY ) {
 				if ( !this.isPaused && this.__isSidebandMetadataActivated() && this.sidebandMetadata ) {
@@ -339,7 +348,7 @@ define( [
 				this.isPaused = false;
 
 				this._streamStartCallback();
-			} else if ( e.type == PlaybackState.STOP || e.type == PlaybackState.PAUSE || e.type == PlaybackState.ERROR || e.type == PlaybackState.ABORT ||  e.type == PlaybackState.ENDED || e.type == PlaybackState.PLAY_NOT_ALLOWED) {
+			} else if ( e.type == PlaybackState.STOP || (e.type == PlaybackState.PAUSE && !this.cfg.streamWhileMuted ) || e.type == PlaybackState.ERROR || e.type == PlaybackState.ABORT ||  e.type == PlaybackState.ENDED || e.type == PlaybackState.PLAY_NOT_ALLOWED) {								
 				if ( this.aSyncCuePointDispatcher ) {
 					this.aSyncCuePointDispatcher.stopCuePointsListener();
 				}
@@ -360,6 +369,7 @@ define( [
 					MediaElement.stop();
 				}
 			}
+			this.__emitPlaybackStatus( e );
 		},
 
 		__isSidebandMetadataActivated: function () {
@@ -460,7 +470,9 @@ define( [
 				if ( msg && statusMessages[ msg.status ] ) {
 					this._playbackStatusCallback( {
 						status: statusMessages[ msg.status ],
-						code: msg.code
+						code: msg.code,
+						message: e.message,
+						isReconnect: e.isReconnect
 					} );
 				}
 			}

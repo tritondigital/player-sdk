@@ -11,9 +11,7 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-        "comma-spacing": [2, {"before": false, "after": true}],
-        "space-in-parens": [2, "always", { "exceptions": [ "empty"] }],
-        "array-bracket-spacing": [2, "always"],
+        "comma-spacing": [2, {"before": false, "after": true}],        
         "quotes": [
             "error",
             "single"
@@ -23,5 +21,8 @@
             "always"
         ],
         "no-console":0
+    },
+    "parserOptions": {
+        "ecmaVersion": 6
     }
 }

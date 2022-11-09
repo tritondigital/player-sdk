@@ -72,6 +72,7 @@ define( [
 
 		playStream: function ( params ) {
 
+			this.isLiveStream = true;
 			this.inherited( arguments );
 			this.params = params;
 
@@ -100,12 +101,14 @@ define( [
 			this.html5Live.resume();
 		},
 
-		seekStream: function ( seekOffset ) {
+		seekStream: function ( seconds ) {
 			this.inherited( arguments );
+			this.html5Live.seekStream( seconds );
 		},
 
 		seekLive: function () {
 			this.inherited( arguments );
+			this.html5Live.seekLive( );
 		},
 
 		setVolume: function ( volumePercent ) {
@@ -146,9 +149,14 @@ define( [
 			}else{
 			this.playbackOnDemandStatushandler = this.html5OnDemand.setPlaybackStatusHandler( lang.hitch( this, this._onMediaPlaybackStatus ) );
 
+				//FIXME : audio
 			this.html5OnDemand.play( {
 				mediaUrl: params.url,
-				mediaFormat: 'audio'
+					mediaFormat: 'audio',
+					omnyOrganizationId : params.omnyOrganizationId,
+					omnyClipId: params.omnyClipId,
+					omnySessionId: params.omnySessionId,
+					enableOmnyAnalytics: params.enableOmnyAnalytics
 			} );
 			}
 					

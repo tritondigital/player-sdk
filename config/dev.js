@@ -13,7 +13,6 @@ let config = Object.assign({}, baseConfig, {
   entry: [
     'webpack/hot/dev-server',
     'webpack-hot-middleware/client?reload=true',
-    'sdk/base/util/EventSourceJS',
     `${ defaultSettings.srcPath }/lib/swfobject-2.2`,
     `${ defaultSettings.srcPath }/main`
   ],

@@ -180,12 +180,13 @@ define(['dojo/_base/declare'], function( declare ){
 				self.debug.log('dispatchEvent', 'Starts dispatch of events "'+name+'" (0/'+eventsNumber+')');
 			}
 			if(eventsList !== undefined) {
-				for(var i in eventsList) {
+				eventsList.forEach(function(theEvent,i) {
 					if(self.debug.isEnable() === true) {
 						self.debug.log('dispatchEvent', 'Dispatch event "'+name+'" ('+(parseInt(i)+1)+'/'+eventsNumber+')');
 					}
-					eventsList[i]();
-				}
+					theEvent();					
+					});
+				
 			}
 			return this;
 		};
@@ -225,9 +226,9 @@ define(['dojo/_base/declare'], function( declare ){
 				end('#NoPlugin', false, true);
 				return this;
 			}
-			for(var i in pluginsList) {
-				var name = pluginsList[i];
-				this.debug.log('check', 'Load plugin "'+name+'" ('+(parseInt(i)+1)+'/'+pluginsLength+')');
+
+			pluginsList.forEach(function (name, i) {				
+				self.debug.log('check', 'Load plugin "'+name+'" ('+(parseInt(i)+1)+'/'+pluginsLength+')');
 				var plugin = plugins[name] = {
 					name:		name,
 					instance:	new (pluginsClass[name]),
@@ -245,7 +246,9 @@ define(['dojo/_base/declare'], function( declare ){
 						end(plugin.name, false);
 					});
 				})(end, plugin);
-			}
+			});
+			
+			
 			for(var name in plugins) {
 				plugins[name].instance.start();
 			}

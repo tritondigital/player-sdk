@@ -88,7 +88,13 @@ define([
            {
              this.setMediaAdBlankFiles( null );
 
-             this.xhrProv.request( config.url, config.url, this._getRequestArgs(), lang.hitch( this, this._onVastLoadComplete ), lang.hitch( this, this._onVastLoadError ) );
+             var requestArgs = this._getRequestArgs();
+             
+             if(config.url.indexOf("od-spy.live.streamtheworld.com") > -1 || config.url.indexOf("frequencyads") > -1 || config.url.indexOf("s3") > -1  ){
+                 requestArgs.withCredentials = false;
+             }
+
+             this.xhrProv.request( config.url, config.url, requestArgs, lang.hitch( this, this._onVastLoadComplete ), lang.hitch( this, this._onVastLoadError ) );
            }
            else if( config.sid != undefined )
            {
@@ -226,6 +232,14 @@ define([
             }
             else
             {
+                if(version === "2.0"){
+                    var errorURL = this.vastParser.parseMissedOpportunityError( data );
+                    if( errorURL ){
+                        var requestArgs = this._getRequestArgs();
+                        requestArgs.withCredentials = false;                        
+                        this.xhrProv.request( errorURL, null, requestArgs, null, null );
+                    }
+                }
                 this._loadTimes = 0;
                 this.emit( this.AD_MODULE_VAST_EMPTY, { adServerType: AdServerType.VAST_AD } );
             }
@@ -238,15 +252,12 @@ define([
             {
                 case this.VAST_1_ROOT :
                     return this.VERSION_1_0;
-                    break;
 
                 case this.VAST_2_ROOT :
                     return this.VERSION_2_0;
-                    break;
 
                 case this.DAAST_ROOT :
                     return this.DAAST_VERSION_1_0;
-                    break;
             }
 
             return null;
@@ -286,17 +297,14 @@ define([
                     if( this.vastParser == null )
                         this.vastParser = new vast1Parser( this.target );
                     return this.vastParser;
-                    break;
                 case this.VERSION_2_0 :
                     if( this.vastParser == null )
                         this.vastParser = new vast2Parser( this.target );
                     return this.vastParser;
-                    break;
                 case this.DAAST_VERSION_1_0 :
                     if( this.vastParser == null )
                         this.vastParser = new daastParser( this.target );
                     return this.vastParser;
-                    break;
             }
 
             return null;

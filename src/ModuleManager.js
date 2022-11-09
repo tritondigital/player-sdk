@@ -11,6 +11,7 @@ define([
     'dojo/on',
     'sdk/modules/base/UserRegPlayerMediator',
     'sdk/base/util/GoogleIma',
+    'sdk/base/util/analytics/GAEventRequest',
     'sdk/modules/SyncBanners',
     'sdk/modules/MediaPlayer',
     'sdk/modules/NowPlayingApi',
@@ -18,7 +19,7 @@ define([
     'sdk/modules/PlayerWebAdmin',
     'sdk/modules/TargetSpot',
     'sdk/modules/UserRegistration'
-], function (coreModule, array, declare, Deferred, lang, on, UserRegPlayerMediator, GoogleIma, SyncBanners, MediaPlayer, NowPlayingApi, Npe, PlayerWebAdmin, TargetSpot, UserRegistration ) {
+], function (coreModule, array, declare, Deferred, lang, on, UserRegPlayerMediator, GoogleIma, GAEventRequest, SyncBanners, MediaPlayer, NowPlayingApi, Npe, PlayerWebAdmin, TargetSpot, UserRegistration ) {
 
 //"use strict";
 
@@ -38,6 +39,9 @@ var moduleManager = declare([ coreModule ], {
 
         this.inherited(arguments); //this does not work if "use strict" is set
         
+        //analytics
+        this.analyticsLoadTime = 0;
+        this.hasLoadModuleError = false;
     },
 
     loadModules:function()
@@ -46,6 +50,10 @@ var moduleManager = declare([ coreModule ], {
         var self = this;
         if ( this.modulesQueue.length == 0 ) return;        
 
+        //start analytics timer (load Time )
+        this.analyticsLoadTimeInterval = setInterval( function(){
+            self.analyticsLoadTime += 10;
+        }, 10 );
         for( var i=0; i < this.config.coreModules.length; i++ )
         {
 
@@ -132,6 +140,8 @@ var moduleManager = declare([ coreModule ], {
 
         this._removeCurrentModuleFromQueue( e.data.id );
         var self = this;
+        //analytics vars
+        var dimensions, metrics, tech, adBlock, sbm, hls, audioAdaptive, idSync;
 
         if ( this.modulesQueue.length == 0 )
         {
@@ -144,6 +154,26 @@ var moduleManager = declare([ coreModule ], {
             }
 
             var mediaPlayerModule = this.getModuleById( 'MediaPlayer' );
+            //analytics
+            var sendAnalyticsInit = function( label ){
+                //send analytics init
+                if( mediaPlayerModule ){
+                    dimensions ={};
+                    dimensions[ GAEventRequest.DIM_HLS ] = mediaPlayerModule? mediaPlayerModule.hls:false ;
+                    dimensions[ GAEventRequest.DIM_SBM ] = ( mediaPlayerModule.config.sbm && mediaPlayerModule.config.sbm.active ) ? mediaPlayerModule.config.sbm.active : true;
+                    dimensions[ GAEventRequest.DIM_TECH ] = mediaPlayerModule.tech.type;
+                    dimensions[ GAEventRequest.DIM_ADBLOCK ] = self.config.adBlockerDetected ;
+                    dimensions[ GAEventRequest.DIM_AUDIO_ADAPTIVE ] = mediaPlayerModule.audioAdaptive;
+                    dimensions[ GAEventRequest.DIM_IDSYNC ] = ( mediaPlayerModule.config.idSync ) ? true : false;
+
+                    metrics = {};
+                    metrics[ GAEventRequest.METRIC_LOAD_TIME ] = self.analyticsLoadTime;
+
+                    GAEventRequest.requestGA( GAEventRequest.CATEGORY_INIT, GAEventRequest.ACTION_CONFIG, label, dimensions, metrics );
+                }
+                clearInterval( self.analyticsLoadTimeInterval );
+
+            };
             
             //load ima library
             if( mediaPlayerModule != undefined && mediaPlayerModule.tech.type == 'Html5' && !this.config.adBlockerDetected  ){
@@ -158,9 +188,27 @@ var moduleManager = declare([ coreModule ], {
 
                     self.emit( 'player-ready' );
 
+                    if( !this.hasLoadModuleError ){
+
+                        sendAnalyticsInit( GAEventRequest.LABEL_SUCCESS );
+
+                    } else {
+
+                        sendAnalyticsInit( GAEventRequest.LABEL_ERROR );
+
+                    }
                 }, function(err){
                     //Error
                     self.emit( 'player-ready' );                   
+                    if( !this.hasLoadModuleError ){
+
+                        sendAnalyticsInit( GAEventRequest.LABEL_SUCCESS );
+
+                    } else {
+
+                        sendAnalyticsInit( GAEventRequest.LABEL_ERROR );
+
+                    }
 
                 } );
 
@@ -170,6 +218,15 @@ var moduleManager = declare([ coreModule ], {
                 console.log('%cmoduleManager::_onModuleComplete - all modules have been loaded : PLAYER-READY','background:#990000;color:#fff');
 
                 this.emit( 'player-ready' );            
+                if ( mediaPlayerModule && !this.hasLoadModuleError ){
+
+                    sendAnalyticsInit( GAEventRequest.LABEL_SUCCESS );
+
+                } else {
+
+                    sendAnalyticsInit( GAEventRequest.LABEL_ERROR);
+
+                }
 
             }
 

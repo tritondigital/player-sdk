@@ -35,7 +35,7 @@ describe( 'MediaElement', function () {
 			},
 			removeEventListener: function ( event ) {
 				this.removeAllListeners( event );
-			},
+			}
 		} );
 
 		window.Audio = function () {
@@ -65,26 +65,19 @@ describe( 'MediaElement', function () {
 
 	it( 'should load the Hls module when calling playAudio with hls', function () {
 
-		var loadSourceCalled = false;
-		var attachMediaCalled = false;
+        var MediaElementWithMock = MediaElementInjector( {} );
 
-		var HlsMock = function () {
-			this.loadSource = function () {
-				loadSourceCalled = true;
-			};
-			this.attachMedia = function () {
-				attachMediaCalled = true;
-			};
-		};
-
-		var MediaElementWithMock = MediaElementInjector( {
-			'hls.js': HlsMock
-		} );
+        // Before playing:
+        expect( MediaElementWithMock.hls ).to.be( undefined );
+        expect( MediaElementWithMock.isStopped() ).not.to.be( false );
+        expect( MediaElementWithMock.url ).to.be( undefined );
 
 		MediaElementWithMock.playAudio( url, true );
 
-		expect( loadSourceCalled ).to.be( true );
-		expect( attachMediaCalled ).to.be( true );
+        // After playing:
+        expect( MediaElementWithMock.hls ).not.to.be( undefined );
+        expect( MediaElementWithMock.isStopped() ).to.be( false );
+        expect( MediaElementWithMock.url ).not.to.be( undefined );
 	} );	
 
 	it( 'should be able to pause', function () {

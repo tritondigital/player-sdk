@@ -30,7 +30,8 @@ define([
     'sdk/modules/ad/ImaSdkModule',
     'sdk/modules/ad/VASTAdModule',
     'sdk/modules/ad/MediaAdModule',
-], function ( declare, lang, require, Deferred, on, domConstruct, dom, AdServerType, TritonAdPlatformHelper, XhrProvider, ImaSdkModule, VASTAdModule, MediaAdModule ) {
+    'sdk/base/util/analytics/GAEventRequest'
+], function ( declare, lang, require, Deferred, on, domConstruct, dom, AdServerType, TritonAdPlatformHelper, XhrProvider, ImaSdkModule, VASTAdModule, MediaAdModule, GAEventRequest ) {
 
     var adManager = declare([], {
 
@@ -64,6 +65,7 @@ define([
             this.playerNode = dom.byId( this.config.playerId, document );
             this.tech = tech;
             this.techType = techType;
+            this.adServerType = null;
 
             this.adModules = [];
             this.currentAdModule = null;
@@ -77,6 +79,9 @@ define([
 
             this.inherited( arguments );
 
+            //analytics
+            this._adPrerollTime = 0;
+            this._adPrerollTimeIntervall = null;
             this._adParser= null;
             this._adSource = null;
             this._adFormat = null;
@@ -93,6 +98,7 @@ define([
         playAd: function( adServerType, config ) {
             var self = this;
 
+            this.adServerType = adServerType;
             // Audionode initialization on preroll only
             if( config.adBreak !== true ){
                 MediaElement.init();
@@ -105,6 +111,11 @@ define([
                 }
                 return;
             }
+            //start analytics timer
+            self._adPrerollTime = 0;
+            this._adPrerollTimeIntervall = setInterval( function(){
+                self._adPrerollTime += 10;
+            }, 10 );
                       
             //clean up old ad
             this.destroyAd( false );
@@ -119,14 +130,14 @@ define([
             }
 
             if( config.url == null && config.mediaUrl == undefined  && config.rawXML == undefined && config.sid == undefined )
-            {
-                this.target.emit( this.AD_PLAYBACK_ERROR, { data:{type:null, error:true} } );
-                return;
-            }
+            {
+                this.target.emit( this.AD_PLAYBACK_ERROR, { data:{type:null, error:true} } );
+                return;
+            }
 
             //DAAST || Ando lookup
             if( config.url ){
-                config.fallbackToVastPlugin = ( config.url.toLowerCase().indexOf('daast') > -1  || config.url.toLowerCase().indexOf('/ondemand/ars') > -1  );
+                config.fallbackToVastPlugin = ( config.url.toLowerCase().indexOf( 'daast' ) > -1  || config.url.toLowerCase().indexOf( '/ondemand/ars' ) > -1 || config.url.toLowerCase().indexOf( 's3' ) > -1  );
                 this._adFormat = config.url.toLowerCase().indexOf('daast') > -1 ? 'DAAST' : 'VAST' ;
                 this._adSource = config.url.toLowerCase().indexOf('daast') > -1 ? 'TAP': config.sid ? 'CM3': 'Others';
 
@@ -135,13 +146,7 @@ define([
                 this._adFormat = config.rawXML.toLowerCase().indexOf('daast') > -1 ? 'DAAST' : 'VAST' ;
                 this._adSource = config.rawXML.toLowerCase().indexOf('daast') > -1 ? 'TAP': config.sid ? 'CM3': 'Others';
             }
-
-            /* If Flash technology, all the flow will be Flash-based via td-playerapi-resources  */
-            if( this.techType == 'Flash' ) {
-                this.tech.playAd( adServerType, config );
-                return;
-            }
-
+           
             //create html5 media tag
             this.tech.prepare( 'adModule' );       
 
@@ -264,6 +269,19 @@ define([
          */
         _onAdPlaybackStart : function( e ){
             console.log( 'adManager::_onAdPlaybackStart' );            
+            //send analytics preroll success
+            //stop timer
+            var gaDimensions = {};
+            gaDimensions[ GAEventRequest.DIM_AD_SOURCE ] = this._adSource;
+            gaDimensions[ GAEventRequest.DIM_AD_FORMAT ] = this._adFormat;
+            gaDimensions[ GAEventRequest.DIM_AD_PARSER ] = this._adParser ? this._adParser : ( e.data && e.data.playerData && e.data.playerData.adParser ) ? e.data.playerData.adParser : '';
+
+            var gaMetrics = {};
+            gaMetrics[ GAEventRequest.METRIC_CONNECTION_TIME ]= this._adPrerollTime;
+
+            GAEventRequest.requestGA( GAEventRequest.CATEGORY_AD, GAEventRequest.ACTION_PREROLL, GAEventRequest.LABEL_SUCCESS, gaDimensions, gaMetrics );
+
+            clearInterval( this._adPrerollTimeIntervall );
         },
 
         /**
@@ -271,6 +289,20 @@ define([
          */
          _onAdPlaybackError : function( e ){
              console.log( 'adManager::_onAdPlaybackStart' );             
+             //send analytics preroll success
+             //stop timer
+             var gaDimensions = {};
+             gaDimensions[ GAEventRequest.DIM_AD_SOURCE ] = this._adSource;
+             gaDimensions[ GAEventRequest.DIM_AD_FORMAT ] = this._adFormat;
+             gaDimensions[ GAEventRequest.DIM_AD_PARSER ] = this._adParser ? this._adParser : ( e.data && e.data.playerData && e.data.playerData.adParser ) ? e.data.playerData.adParser : '';
+
+             var gaMetrics = {};
+             gaMetrics[ GAEventRequest.METRIC_CONNECTION_TIME ] = this._adPrerollTime;
+
+
+             GAEventRequest.requestGA( GAEventRequest.CATEGORY_AD, GAEventRequest.ACTION_PREROLL, GAEventRequest.LABEL_ERROR, gaDimensions, gaMetrics );
+
+             clearInterval( this._adPrerollTimeIntervall );
          },
 
 

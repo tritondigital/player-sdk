@@ -86,6 +86,14 @@ define( [
 				status: 'streamGeoBlocked',
 				code: 'STREAM_GEO_BLOCKED'
 			},
+			STREAM_GEO_BLOCKED_ALTERNATE: {
+				status: 'streamGeoBlockedAlternate',
+				code: 'STREAM_GEO_BLOCKED_ALTERNATE'
+			},
+			STREAM_GEO_BLOCKED_NO_ALTERNATE: {
+				status: 'streamGeoBlockedNoAlternate',
+				code: 'STREAM_GEO_BLOCKED_NO_ALTERNATE'
+			},
 			STATION_NOT_FOUND: {
 				status: 'stationNotFound',
 				code: 'STATION_NOT_FOUND'
@@ -109,6 +117,17 @@ define( [
 						self._loadIdSync( self.config.idSync );
 					}					
 				});
+			}else if(typeof (__tcfapi)	=== 'function' ){
+				__tcfapi('getTCData', 2, (tcData, success) => {
+					if(success) {				
+					  self.consentData = tcData;				  
+					  if ( self.config.idSync != undefined ) {
+						self._loadIdSync( self.config.idSync );
+					  }
+					}else{
+						console.error("Failed to get the TCF data");
+					}
+				  });
 			}else if ( this.config.idSync != undefined ) {
 				this._loadIdSync( this.config.idSync );
 			}	
@@ -121,12 +140,7 @@ define( [
 			this.tech = null; //Tech class instance
 			this.techErrors = [];
 
-			this.techPriority = ( this.config.techPriority && this.config.techPriority.length > 0 ) ? this.config.techPriority : [ 'Html5', 'Flash' ];
-
-			//Flash not supported on iOS, Android (4.0-) and BlackBerry + Safari 7+ has Power Saver activated by default
-			if ( has( "ios" ) || has( "android" ) || has( "bb" ) || has( "safari" ) > 7 || LocationHelper.currentProtocolIsHttps() ) {
-				this.techPriority = [ 'Html5' ];
-			}
+			this.techPriority = ( this.config.techPriority && this.config.techPriority.length > 0 ) ? this.config.techPriority : [ 'Html5', 'Flash' ];			
 
 			this.geoTargeting = ( this.config.geoTargeting != undefined ) ? this.config.geoTargeting : {
 				desktop: {
@@ -149,6 +163,10 @@ define( [
 			this.hls = ( config.hls != undefined ) ? config.hls : true;
 			this.audioAdaptive = ( config.audioAdaptive != undefined ) ? config.audioAdaptive : false;
 
+			if(config.audioAdaptive){
+				config.forceHls = true;
+			}	
+		
 			this.adManager = null; //Ad Manager instance
 			this._lowActivated = false;
 			this._isPlaying = false;
@@ -389,6 +407,9 @@ define( [
 
 						if ( alternateContent ) {
 							topic.publish( 'api/request', 'get-alternate-content', alternateContent );
+							this._emitStreamStatusByCode( this.statusMap.STREAM_GEO_BLOCKED_ALTERNATE );
+						} else {
+							this._emitStreamStatusByCode( this.statusMap.STREAM_GEO_BLOCKED_NO_ALTERNATE );
 						}
 					} else {
 						this._emitStreamStatusByCode( this.statusMap.STATION_NOT_FOUND );
@@ -548,6 +569,10 @@ define( [
 				if ( this._lowEnabled )
 					mountTags = mountTags.concat( this._lowTags );
 
+				if(params.timeShift && params.mount){
+					params.url = "//playerservices.streamtheworld.com/api/cloud-redirect/" + params.mount + ".m3u8"
+					self.tech.play( params );
+				} else {
 				this.liveStreamConfig.getStreamingConnections( liveStreamConfigParams, mountTags )
 					.then( function ( streamingConnections ) {
 						this.streamingConnections = streamingConnections;
@@ -564,6 +589,7 @@ define( [
 
 			}
 
+			}
 		},
 
 		/**
@@ -862,6 +888,7 @@ define( [
 			}
 
 			trackingParameters.tdsdk = this.config.defaultTrackingParameters.log.tdsdk;
+			trackingParameters.swm = (this.config.streamWhileMuted) ? this.config.streamWhileMuted :  false;
 
 			if ( this.isGeoTargetingActive ) {
 				trackingParameters = this._getGeoTargetingPos( trackingParameters );
@@ -906,7 +933,7 @@ define( [
 
 			if(this.consentData){
 				trackingParameters.gdpr = (this.consentData.gdprApplies) ? 1 : 0;
-				trackingParameters.gdpr_consent = this.consentData.consentData;
+				trackingParameters.gdpr_consent = (this.consentData.consentData) ? this.consentData.consentData : this.consentData.tcString;
 			}
 
 			return trackingParameters;
@@ -949,7 +976,7 @@ define( [
 
 			if(this.consentData){
 				config.gdpr = (this.consentData.gdprApplies) ? 1 : 0;
-				config.gdpr_consent = this.consentData.consentData;
+				config.gdpr_consent = (this.consentData.consentData) ? this.consentData.consentData : this.consentData.tcString;;
 			}
 
 			queryParam = ( config.gdpr && config.gdpr.toString().match(/^[0,1]$/g) ) ? queryParam + '&gdpr=' + config.gdpr : queryParam;
@@ -972,8 +999,8 @@ define( [
 			//age Integer value: 1 to 125
 			queryParam = ( config.age && !isNaN(config.age) && config.age > 0 && config.age <= 125 &&  queryParam.indexOf('dob') === -1 && queryParam.indexOf('yob') === -1  )  ? queryParam + '&age=' + config.age : queryParam
 
-			//gender "m" or "f" (case-sensitive)
-			queryParam = (config.gender && config.gender.match(/[m,f]/g) && config.gender.length === 1 ) ? queryParam + '&gender=' + config.gender : queryParam
+			//gender "m" or "f" or "o" (other)(case-sensitive)
+			queryParam = (config.gender && config.gender.match(/[m,f,o]/g) && config.gender.length === 1 ) ? queryParam + '&gender=' + config.gender : queryParam
 
 			//ip valide ip 
 			queryParam = (config.ip && config.ip.match(/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/g) ) ? queryParam + '&ip=' + config.ip : queryParam

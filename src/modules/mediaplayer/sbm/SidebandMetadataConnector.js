@@ -9,11 +9,10 @@ define([
     'dojo/on',
     'dojo/_base/array',
     'dojo/_base/lang',
-    'sdk/base/util/EventSourceJS',
     'sdk/base/cuepoints/TrackCuePoint',
     'sdk/base/cuepoints/BreakCuePoint',
     'sdk/base/cuepoints/HlsCuePoint'
-], function ( declare, on, array, lang, EventSourceJS, TrackCuePoint, BreakCuePoint, HlsCuePoint ) {
+], function ( declare, on, array, lang, TrackCuePoint, BreakCuePoint, HlsCuePoint ) {
 
     var sidebandMetadataConnector = declare([ ], {
 

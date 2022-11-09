@@ -15,6 +15,8 @@
         "stop":"Desconectado",
         "error":"Erro",
         "streamGeoBlocked": "Lo sentimos, este contenido no está disponible en su área",
+        "streamGeoBlockedNoAlternate" : "Lo sentimos, este contenido no está disponible en su área",
+        "streamGeoBlockedAlternate": "Desafortunadamente, este contenido no está disponible en su área, pero hay contenido alternativo disponible.",
         "stationNotFound": "No se encontró la estación",
         "flashPluginOutOfDate": "Su versión Flash plugin detectada es obsoleta. La versión mínima requerida es: 10.2.0",
         "browserNotSupported": "Su navegador no es compatible con la función HTML5",

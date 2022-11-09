@@ -1,4 +1,63 @@
 # Release notes:
+#2.9.58 (Sept 30 2022)
+- Fix empty source error and add an isReconnect property to the error to determine if the error happened on a reconnect.
+#2.9.57 (Jul 13 2022)
+- Impressions not fired.
+
+#2.9.56 (Apr 10 2022)
+- SWM parameter.
+
+#2.9.55 (Apr 6 2022)
+-  Timeshift must use the same scheme as the host URL.
+
+#2.9.54 (Mar 28 2022)
+- Widget controls out of sync when using an HLS stream.
+
+#2.9.53 (Feb 18 2022)
+- Fix adblock looping through all the object properties.
+#2.9.52 (Jan 21 2022)
+- Remove Audio Node Src on Error
+
+#2.9.51 (Jan 21 2022)
+- Web-SDK sort Now Playing Data
+- Web-SDK Use hls.js Library for HLSTS streams
+
+#2.9.50 (Jan 11 2022)
+- Web-SDK - Add error message reported by the HTML Player
+
+#2.9.49 (Nov 10 2021)
+- Fire the missed opportunity URL
+- Add "other" Gender Support to Web-SDK
+- Select correct stream for adaptive audio mounts
+
+#2.9.48 (Sept 29 2021)
+- Raise STREAM_GEO_BLOCKED_ALTERNATE event
+
+#2.9.47 (Sept 2 2021)
+- Timeshift implementation
+
+#2.9.46 (July 20 2021)
+- FLV Visualizer and Bootstrap Implementation
+
+#2.9.45 (July 8 2021)
+- Google Analytics Category Override
+
+#2.9.44 (April 29 2021)
+- Remove White Ops.
+
+#2.9.43 (April 20 2021)
+### Features
+- Customer Google Analytics.
+- Fix for Stencil SAM Cloud widgets.
+- FLV Debug tool.
+- Changed minification to use babel minify preset.
+- Implement TCFv2
+- Basic implementation of Omny analytics sdk.
+- Timeshift alpha.
+
+#2.9.42 (March 30 2021)
+### Features
+- Changed minification to use babel minify preset.
 
 #2.9.41 (September 9 2020)
 ### Features

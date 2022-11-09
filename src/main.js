@@ -50,6 +50,7 @@ var array = require( 'dojo/_base/array' );
 var ModuleManager = require( 'sdk/ModuleManager' );
 var BannerCapabilityFlags = require( 'sdk/base/ad/BannerCapabilityFlags' );
 var BlockAdBlock = require( 'sdk/base/util/BlockAdBlock' );
+var GAEventRequest = require( 'sdk/base/util/analytics/GAEventRequest' );
 var i18n = require( 'sdk/base/util/I18n' );
 
 var MediaElement = require( 'sdk/base/util/MediaElement' );
@@ -62,7 +63,7 @@ var InitMediaElement = function () {
 		document.removeEventListener( 'touchmove', isTouchWithMove, false );
 		MediaElement.init();
 	}
-	touchmove = false
+	touchmove = false;
 };
 var isTouchWithMove = function() {
 	touchmove=true;
@@ -90,6 +91,7 @@ window.TDSdk = declare( [], {
 		this.target = new Evented();
 		this.abBlockProcessFinish = false;
 		this.MediaElement = MediaElement;
+		this._initGoogleAnalytics();
 
 		on( this.target, 'module-ready', lang.hitch( this, this._onModuleReady ) );
 
@@ -120,6 +122,14 @@ window.TDSdk = declare( [], {
 		}
 
 		this.loadModules();
+	},
+
+	/**
+	 * Get GAEventRequest
+	 */
+
+	getGAEventRequest: function () {
+		return GAEventRequest;
 	},
 
 	/**
@@ -187,6 +197,26 @@ window.TDSdk = declare( [], {
 			mediaPlayer.defaultTrackingParameters.log.pversion = this.version.value.substring( 0, 3 );
 		}
 
+		if ( playerConfig.analytics && typeof playerConfig.analytics === 'object' ) {
+			if ( playerConfig.analytics.active ) {
+				GAEventRequest.setProperties(
+                    playerConfig.analytics.active,
+                    playerConfig.analytics.appInstallerId,
+                    playerConfig.analytics.debug,
+                    playerConfig.analytics.platformId,
+                    playerConfig.analytics.trackingId,
+                    playerConfig.analytics.sampleRate,
+		    playerConfig.analytics.trackingEvents,
+		    playerConfig.analytics.category
+                );
+				
+				GAEventRequest.loadGoogleAnalytics();
+			} else {
+				GAEventRequest.setActive(false);
+			}
+		}else { 
+			GAEventRequest.setActive(false);
+		}
 		//overide locale
 		if ( typeof ( playerConfig.locale ) === 'string' ) {
 			i18n.setLocalization( playerConfig.locale );
@@ -278,6 +308,13 @@ window.TDSdk = declare( [], {
 	 */
 	getModuleById: function ( moduleId ) {
 		return this.moduleManager.getModuleById( moduleId );
+	},
+
+	_initGoogleAnalytics: function () {
+		console.log( 'init analytics' );
+
+		GAEventRequest.av = this.version.value + '.' + this.version.build;
+		GAEventRequest.aid = this.version.value;
 	},
 
 	/**

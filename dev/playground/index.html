@@ -1,108 +1,1030 @@
-<!DOCTYPE html>
-<html ng-app="playground">
+<!doctype html>
+<html ng-app="playground" lang="en">
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
     <title>Triton Digital JavaScript Player SDK Reference - Version @tdversion@</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/lightbox.css" rel="stylesheet" media="screen">
-    <link href='//fonts.googleapis.com/css?family=Fredoka+One|Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <link href="css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="css/json-pretty-print.css" rel="stylesheet" media="screen">    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+        integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="js/rectangle.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
 
     <style media="screen">
-
-        label{
-          display:inherit !important;
-        }
-        .btn-info, .btn-danger{
-          margin-bottom:10px;
+        #volumeSlider {
+            max-width: 50%;
         }
 
+        .b-example-divider {
+            flex-shrink: 0;
+            width: 1.5rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        main {
+            display: flex;
+            flex-wrap: nowrap;
+            height: 100vh;
+            height: -webkit-fill-available;
+            max-height: 100vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        body{
+            font-family: 'Open Sans', sans-serif;
+        }        
+
+        /* Works on Firefox */
+* {  
+  scrollbar-color: #899ebe #3b5fa1;
+  scrollbar-width: 12px;
+
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #3b5fa1;
+  border-radius: 130px;
+}
+
+*::-webkit-scrollbar-thumb {
+  /* background-color: #899ebe; */
+  background-color: #899ebe;
+  border-radius: 130px;
+  /* border: 100px solid orange; */
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(0,0,0,0);
+}
+
+        
     </style>
 
 </head>
-<body ng-controller="pgController">
 
-<div class="container">
+<body ng-controller="pgController" class="d-flex flex-column h-100" style="background-color: #f6f9fb;">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-triton-header mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="img/logo-menu.png" alt="" width="107" height="40">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="navbar-nav nav-pills mx-auto mb-2 mb-lg-0">
+                        <a href="#" class="text-white nav-link {{tech == 'flash' ? 'active' : ''}}" aria-current="page"
+                            onclick="loadFlash()">Stream Debugger</a>
+                        <a class="text-white {{tech == 'flash' ? 'd-lg-inline' : 'd-none d-lg-inline'}} nav-link {{tech == 'html5' ? 'active' : ''}}" href="#" onclick="loadHtml()">HTML5
+                            Player</a>
+                        <li class="nav-item dropdown d-inline d-lg-none" ng-if="tech == 'html5'">
+                            <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                HTML5 Player
+                            </a>
+                            <ul class="dropdown-menu bg-triton-header" aria-labelledby="navbarDropdown">
+                                <li class="dropdown-item">
+                                    <a href="#" ng-click="updateMenuItem('liveStreaming')"
+                                        onclick="showMediaControls();initialiseBootstrapToggles()"
+                                        class="nav-link  {{menuItem == 'liveStreaming' ? 'active' : 'link-dark'}}"
+                                        aria-current="page">
+                                        Live Streaming
+                                    </a>
+                                </li> 
+                                <li class="dropdown-item">
+                                    <a href="#" ng-click="updateMenuItem('hlsRewind')"
+                                        onclick="showMediaControls();initialiseBootstrapToggles()"
+                                        class="nav-link {{menuItem == 'hlsRewind' ? 'active' : 'link-dark'}}">
+                                        Timeshift
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">                        
+                                    <a href="#" ng-click="updateMenuItem('podcast')"
+                                        class="nav-link {{menuItem == 'podcast' ? 'active' : 'link-dark'}}">
+                                        Podcast Player
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="#" ng-click="updateMenuItem('ads')"
+                                        class="nav-link {{menuItem == 'ads' ? 'active' : 'link-dark'}}">
+                                        Ads
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="#" ng-click="updateMenuItem('nowPlayingApi')"
+                                        class="nav-link {{menuItem == 'nowPlayingApi' ? 'active' : 'link-dark'}}">
+                                        Now Playing API
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a href="#" ng-click="updateMenuItem('playerWebAdmin')"
+                                        class="nav-link {{menuItem == 'playerWebAdmin' ? 'active' : 'link-dark'}}">
+                                        Player Web Admin
+                                    </a>
+                                </li>                                                               
+                            </ul>
+                            </li>
+                    </div>                    
+                </div>
+                <h6 class="d-none d-lg-inline"><span class="badge bg-secondary">@tdversion@</span></h6>
+            </div>
+        </nav>
+    </header>
+    <main class="container-fluid flex-shrink-0">
+        
 
-<h3 class="muted">Triton Digital JavaScript Player SDK Reference - Version @tdversion@</h3>
+        <!-- <div class="card mx-2 collapse show" ng-if="tech == 'html5'">
+            <div class="card-header" style="background-color: #e4808a;">
+                Note
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    On iOS / Android devices, the audio level is always
+                    under the user’s physical control. The volume property is not settable in JavaScript.
+                    <br>Limitation: The autoplay feature is disabled on mobile (iOS, Android) with Html5. You must call
+                    the play function only after the result of a user action.
+                </div>
+            </div>
+        </div> -->
+        <div class="container-fluid d-flex">
+            <div class="d-flex flex-column flex-shrink-0 p-2 text-white bg-light d-none d-md-inline" style="width: 205px;"
+                ng-if="tech == 'html5'">
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="#" ng-click="updateMenuItem('liveStreaming');updateStreamingType('station')"
+                            onclick="showMediaControls();initialiseBootstrapToggles()"
+                            class="nav-link  {{menuItem == 'liveStreaming' ? 'active' : 'link-dark'}}"
+                            aria-current="page">
+                            Live Streaming
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="updateMenuItem('hlsRewind')"
+                            onclick="showMediaControls();initialiseBootstrapToggles()"
+                            class="nav-link {{menuItem == 'hlsRewind' ? 'active' : 'link-dark'}}">
+                            Timeshift
+                        </a>
+                    </li>
+                    <li>                        
+                        <a href="#" ng-click="updateMenuItem('podcast')"
+                            class="nav-link {{menuItem == 'podcast' ? 'active' : 'link-dark'}}">
+                            Podcast Player
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="updateMenuItem('ads')"
+                            class="nav-link {{menuItem == 'ads' ? 'active' : 'link-dark'}}">
+                            Ads
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="updateMenuItem('nowPlayingApi')"
+                            class="nav-link {{menuItem == 'nowPlayingApi' ? 'active' : 'link-dark'}}">
+                            Now Playing API
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="updateMenuItem('playerWebAdmin')"
+                            class="nav-link {{menuItem == 'playerWebAdmin' ? 'active' : 'link-dark'}}">
+                            Player Web Admin
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-flex flex-column w-100 p-1 overflow-auto">
+                <div class="flex-row"
+                    ng-if="tech == 'html5' && menuItem != 'nowPlayingApi' && menuItem != 'playerWebAdmin' && menuItem != 'ads' && menuItem != 'podcast'">
+                    <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse"
+                        data-bs-target="#optionsDiv" aria-expanded="true" role="button">
+                        <div class="d-flex flex-wrap">
+                            Options
+                        </div>
+                    </header>
+                    <div id="optionsDiv" class="flex-row mx-4 collapse show">
+                        <div class="mb-3">
+                            <label class="form-label fw-bolder">Side-Band Metadata:</label>
+                            <input id="sbm-toggle" type="checkbox" data-onstyle="primary"
+                                data-offstyle="outline-secondary" ng-checked="sbm == true"
+                                data-toggle="toggle" onchange="toggleSBM(this.checked)">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bolder">Now Playing API fallback:</label>
+                            <input id="now-playing-toggle" type="checkbox" data-onstyle="primary"
+                                data-offstyle="outline-secondary" ng-checked="aSyncCuePointFallback == true"
+                                data-toggle="toggle" onchange="toggleNowPlaying(this.checked)">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bolder">HLS:</label>
+                            <input id="hls-toggle" type="checkbox" data-onstyle="primary"
+                                data-offstyle="outline-secondary" ng-checked="hls == true"
+                                data-toggle="toggle" onchange="toggleHLS(this.checked)">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bolder">Adaptive Audio:</label>
+                            <input id="adaptive-audio-toggle" type="checkbox" data-onstyle="primary"
+                                data-offstyle="outline-secondary" ng-checked="audioAdaptive == true"
+                                data-toggle="toggle" onchange="toggleAdaptiveAudio(this.checked)">
+                        </div>
+                        <div class="mb-3">
+                            <span><label class="form-label fw-bolder">Player Services Region</label></span>
+                            <input type="radio" class="btn-check" name="region" id="us" autocomplete="off"
+                                ng-checked="playerServicesRegion == 'us'"
+                                onchange="updatePlayerServicesRegion(this.id)">
+                            <label class="btn btn-primary" for="us">US</label>
 
-<p>
-    <a href="userreg.php?platformid=<?php echo $platformid; ?>">User Registration playground</a>
-</p>
+                            <input type="radio" class="btn-check" name="region" id="eu" autocomplete="off"
+                                ng-checked="playerServicesRegion == 'eu'"
+                                onchange="updatePlayerServicesRegion(this.id)">
+                            <label class="btn btn-primary" for="eu">EU</label>
 
-<p>
-    The JavaScript SDK allows users to embed a chromeless live stream player via JavaScript.<br>
-    The player UI interface and skinning can be done in HTML/CSS.
-</p>
+                            <input type="radio" class="btn-check" name="region" id="ap" autocomplete="off"
+                                ng-checked="playerServicesRegion == 'ap'"
+                                onchange="updatePlayerServicesRegion(this.id)">
+                            <label class="btn btn-primary" for="ap">AP</label>
+                        </div>
+                    </div>
+                    <!-- <div class="accordion my-2" id="accordionExample" ng-if="tech == 'html5'">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Options
+                                </button>
+                            </h2>
 
-<div><p><span class="label label-important"><b>Note:</b> On iOS / Android devices, the audio level is always under the user’s physical control. The volume property is not settable in JavaScript.
-    <br>Limitation: The autoplay feature is disabled on mobile (iOS, Android) with Html5. You must call the play function only after the result of a user action.
-</span></p></div>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bolder">Side-Band Metadata:</label>
+                                        <input id="sbm-toggle" type="checkbox" data-onstyle="primary"
+                                            data-offstyle="outline-secondary" ng-checked="sbm == true"
+                                            data-toggle="toggle" onchange="toggleSBM(this.checked)">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bolder">Now Playing API fallback:</label>
+                                        <input id="now-playing-toggle" type="checkbox" data-onstyle="primary"
+                                            data-offstyle="outline-secondary" ng-checked="aSyncCuePointFallback == true"
+                                            data-toggle="toggle" onchange="toggleNowPlaying(this.checked)">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bolder">HLS:</label>
+                                        <input id="hls-toggle" type="checkbox" data-onstyle="primary"
+                                            data-offstyle="outline-secondary" ng-checked="hls == true"
+                                            data-toggle="toggle" onchange="toggleHLS(this.checked)">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bolder">Adaptive Audio:</label>
+                                        <input id="adaptive-audio-toggle" type="checkbox" data-onstyle="primary"
+                                            data-offstyle="outline-secondary" ng-checked="audioAdaptive == true"
+                                            data-toggle="toggle" onchange="toggleAdaptiveAudio(this.checked)">
+                                    </div>
+                                    <div class="mb-3">
+                                        <span><label class="form-label fw-bolder">Player Services Region</label></span>
+                                        <input type="radio" class="btn-check" name="region" id="us" autocomplete="off"
+                                            ng-checked="playerServicesRegion == 'us'"
+                                            onchange="updatePlayerServicesRegion(this.id)">
+                                        <label class="btn btn-primary" for="us">US</label>
 
-<div class="container" style="background-color: #f5f5f5; padding: 20px;">
-    <div class="well">
-        <p>
-            <b>Technology</b>
-        </p>
-        <div class="btn-group" data-toggle="buttons-radio">
-            <button id="tech_flash_html5_button" type="button" class="btn btn-primary">Flash w/HTML5 fallback</button>
-            <button id="tech_html5_flash_button" type="button" class="btn btn-primary">HTML5 w/Flash fallback</button>
-            <button id="tech_flash_button" type="button" class="btn btn-primary">Flash only</button>
-            <button id="tech_html5_button" type="button" class="btn btn-primary">HTML5 only</button>
+                                        <input type="radio" class="btn-check" name="region" id="eu" autocomplete="off"
+                                            ng-checked="playerServicesRegion == 'eu'"
+                                            onchange="updatePlayerServicesRegion(this.id)">
+                                        <label class="btn btn-primary" for="eu">EU</label>
+
+                                        <input type="radio" class="btn-check" name="region" id="ap" autocomplete="off"
+                                            ng-checked="playerServicesRegion == 'ap'"
+                                            onchange="updatePlayerServicesRegion(this.id)">
+                                        <label class="btn btn-primary" for="ap">AP</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+                <div class="flex-row mt-3" ng-if="tech == 'html5' && menuItem == 'nowPlayingApi'">
+                    <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse"
+                        data-bs-target="#now-playing-containter" role="button" aria-expanded="true">
+                        <div class="d-flex flex-wrap">
+                            Now Playing API
+                        </div>
+                    </header>
+                    <div id="now-playing-containter" class="mx-4 collapse show">
+                        <div class="row g-3">
+                            <div class="col-auto">
+                                <label for="songHistoryCallsignUser" class="visually-hidden">Callsign</label>
+                                <input type="text" placeholder="Enter a Callsign" class="form-control"
+                                    id="songHistoryCallsignUser">
+                            </div>
+                            <div class="col-auto">
+                                <label for="songHistoryConnectionTypeSelect" class="visually-hidden">Connection</label>
+                                <select class="form-select" id="datalistOptions">
+                                    <option selected value="normalConnection">normalConnection</option>
+                                    <option value="hdConnection">hdConnection (AAC)</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary mb-2" type="button" onclick="loadNpApi()"
+                                    id="fetchSongHistoryByUserCallsignButton">Get
+                                    Song
+                                    History</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-row mt-3" ng-if="tech == 'html5' && menuItem == 'playerWebAdmin'">
+                    <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse"
+                        data-bs-target="#pwa-container" role="button" aria-expanded="true">
+                        <div class="d-flex flex-wrap">
+                            Player Web Admin
+                        </div>
+                    </header>
+                    <div id="pwa-container" class="mx-4 collapse show">
+                        <div class="row g-3">
+                            <div class="col-auto">
+                                <label for="pwaCallsign" class="visually-hidden">Callsign</label>
+                                <input class="form-control" placeholder="Enter a Callsign" id="pwaCallsign" type="text">
+                            </div>
+                            <div class="col-auto">
+                                <label for="pwaStreamId" class="visually-hidden">StreamId</label>
+                                <input class="form-control" placeholder="Enter a streamid" id="pwaStreamId" type="text">
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary" type="button" id="pwaButton" onclick="loadPwaData()">Get Player Web Admin
+                                    Configuration</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-row" ng-if="tech == 'html5' && menuItem == 'liveStreaming'">
+                    <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse"
+                        data-bs-target="#liveStreamingDiv, #mediaControls" aria-expanded="true" role="button">
+                        <div class="d-flex flex-wrap">
+                            Live Streaming
+                        </div>
+                    </header>
+                    <div class="mx-4 collapse show" id="liveStreamingDiv">                        
+                        <div class="mb-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="streamingType" id="streamingType1"
+                                    value="station" ng-click="updateStreamingType('station')" checked>
+                                <label class="form-check-label" for="streamingType1">Station ID</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="streamingType" id="streamingType2"
+                                    value="url" ng-click="updateStreamingType('url')">
+                                <label class="form-check-label" for="streamingType2">URL</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="streamingType" id="streamingType3"
+                                    value="url" ng-click="updateStreamingType('presets')">
+                                <label class="form-check-label" for="streamingType3">Presets</label>
+                            </div>
+                        </div>
+                        <div class="mb-3 {{streamingType == 'station' ? '' : 'd-none'}}" >
+                            <label for="stationUser" class="form-label">Station</label>
+                            <input type="text" class="form-control" id="stationUser" placeholder="Enter a Station">
+                        </div>
+                        <div class="mb-3 {{streamingType == 'station' ? '' : 'd-none'}}">
+                            <label for="stationUserTrackingParameters" class="form-label">Tracking Parameters</label>
+                            <input type="text" class="form-control" id="stationUserTrackingParameters"
+                                placeholder="Enter Tracking parameters, comma-separated (id:demo,csegid:123456)">
+                        </div>
+                        <div class="mb-3 {{streamingType == 'url' ? '' : 'd-none'}}">
+                            <label for="streamUrlUser" class="form-label">Stream URL</label>
+                            <input type="text" class="form-control" id="streamUrlUser"
+                                placeholder="Enter a media url (audio/video)">
+                        </div>
+
+                        <div class="mb-3 {{streamingType == 'presets' ? '' : 'd-none'}}">
+                            <p ng-if="platformid == 'prod' || platformid == 'local' || platformid == 'build' ">
+                                 <button class="btn btn-primary"
+                                    onclick="playLiveAudioStream('TRITONRADIOMUSIC',null)">
+                                    TRITONRADIOMUSIC
+                                </button>
+                            </p>
+
+                            <p ng-if="platformid == 'preprod' ">
+                                <button class="btn btn-primary" 
+                                    onclick="playLiveAudioStream('MORGANFM',null)">
+                                    MORGANFM
+                                </button>
+                            </p>                          
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="flex-row" ng-if="tech != 'flash' && menuItem == 'hlsRewind'">
+                    <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse"
+                        data-bs-target="#hls-rewind-containter, #mediaControls" role="button" aria-expanded="true">
+                        <div class="d-flex flex-wrap">
+                            Timeshift
+                        </div>
+                    </header>
+                    <div id="hls-rewind-containter" class="mx-4 collapse show">
+                        <div class="mb-3">
+                            <label for="hlsRewindMount" class="form-label">Timeshift Mount</label>
+                            <input type="text" class="form-control" id="hlsRewindMount" placeholder="Enter a Mount"
+                                value="TRITONRADIOMUSICAAC_RW">
+                        </div>
+                    </div>
+                </div>                  
+                <div id="mediaControls" class="flex-row mt-3 collapse show"
+                    ng-if="tech == 'html5' && (menuItem == 'liveStreaming' || menuItem == 'hlsRewind')">
+                    <div class="mx-4">                        
+                        <div class="mb-3">                                                         
+                            <button class="btn btn-primary {{(playerStatus == 'LIVE_STOP' || playerStatus == 'STATION_NOT_FOUND' || playerStatus == 'STREAM_GEO_BLOCKED' ) ? '' : 'd-none'}}"
+                                ng-click="playAudio()">
+                                <i class="fas fa-play" aria-hidden="true"></i>
+                            </button>                            
+                            <button class="btn btn-primary {{playerStatus == 'LIVE_PLAYING' || playerStatus == 'LIVE_BUFFERING' ? '' : 'd-none'}}" 
+                                type="button" id="stopButton" value="Stop"
+                                onclick="stopStream()">
+                                <i class="fas fa-stop" aria-hidden="true"></i>
+                            </button> 
+
+                            <!--Timeshift Specific-->
+                            <button class="btn btn-primary" onclick="forward(10)" ng-if="menuItem == 'hlsRewind'">
+                                <i class="fas fa-redo" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-primary" onclick="rewind(10)" ng-if="menuItem == 'hlsRewind'">
+                                <i class="fas fa-undo" aria-hidden="true"></i>
+                            </button>
+                            <button id="hlsLiveButton" class="btn btn-primary" onclick="live()" ng-if="menuItem == 'hlsRewind'">
+                                <i class="fas fa-wifi" aria-hidden="true"></i>
+                                Live
+                            </button>
+
+                            <!--Put this back if you want to test the PAUSE / Resume" functionality-->
+                            <!-- <button class="btn btn-primary" type="button" value="Pause"
+                                    onclick="pauseStream()">
+                                    <i class="fas fa-pause" aria-hidden="true"></i>
+                                </button>                            
+
+                                <input class="btn btn-primary" type="button" id="resumeButton" value="Resume"
+                                    onclick="resumeStream()" />
+                                     -->
+
+                            <!-- Put this back if you need to test the mute / stop functionality
+                                <button class="btn btn-primary" type="button" value="Mute"
+                                    onclick="mute()" >
+                                    <i class="fas fa-volume-mute" aria-hidden="true"></i>
+                                </button>
+
+                                <button class="btn btn-primary" type="button" id="unMuteButton" value="UnMute"
+                                    onclick="unMute()">
+                                    <i class="fas fa-volume-up" aria-hidden="true"></i>
+                                </button> -->
+                            <div id="playButtonLoadingSpinner" class="spinner-border spinner-border-sm {{playerStatus == 'GETTING_STATION_INFORMATION' || playerStatus == 'LIVE_CONNECTING' ? 'visible' : 'invisible'}} mt-1"
+                                role="status" aria-hidden="true"></div>
+                        </div>
+                        <div>
+                            <label for="volumeSlider" class="form-label">Volume</label><br />
+                            <input type="range" class="form-range" min="0" max="1" step="0.1" id="volumeSlider"
+                                onchange="flvVolumeSlider(this.value)">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-row" ng-if="tech == 'html5' && menuItem == 'ads'">
+                    <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse"
+                        data-bs-target="#ads-containter" role="button" aria-expanded="true">
+                        <div class="d-flex flex-wrap">
+                            MediaPlayer / Ads
+                        </div>
+                    </header>
+                    <div id="ads-containter" class="mx-4 collapse show">
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                <label class="form-label">IMA</label><br />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=')"
+                                    value="Single Inline Linear" />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=')"
+                                    value="Single Skippable Linear" />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirecterror&correlator=')"
+                                    value="Single Redirect Broken" />
+                                <input class="btn mt-2" style="background-color: #ec8790 !important;" type="button"
+                                    onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirecterror&nofb=1&correlator=')"
+                                    value="Single Redirect Error" />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinearvpaid&correlator=')"
+                                    value="Single VPAID Linear Flash" />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpreonly&cmsid=496&vid=short_onecue&correlator=')"
+                                    value="VMAP Preroll" />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpreonlybumper&cmsid=496&vid=short_onecue&correlator=')"
+                                    value="VMAP Preroll With Bumper" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Triton Ad Platform (TAP)</label><br />
+
+                                <input class="btn btn-primary mt-2" type="button" id="playTapAdButton"
+                                    value="player.playAd( 'tap', { type:'preroll', format:'vast', stationId:77583 } )" />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    id="playTapAdButtonWithTrackingParameters"
+                                    value="player.playAd( 'tap', { type:'preroll', format:'vast', stationId:77583, trackingParameters:{ ttag: 'demo' } } )" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Triton RunSpot Ad - station id 3168</label><br />
+                                <input class="btn btn-primary mt-2" type="button" id="playRunSpotAdButton"
+                                    value="player.playAd( 'vastAd', { sid:3168 } )" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">DAAST </label><br />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    onClick="playVastAd('http://proserv.tritondigital.com/vast/daast1.xml')"
+                                    value="DAAST example" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Vast Ad </label><br />
+
+                                <input class="" id="vastAdUrl"
+                                    value="" />
+                                    
+                                    <input class="btn btn-primary mt-2" type="button" id="playVastAdURLButton"
+                                    onClick="playVastAdByUrl()"
+                                    value="Play VAST Ad" />         
+
+                            </div>
+                            <!--<p>
+                                Bloom / AdGear
+                                <input class="btn btn-info" type="button" id="playBloomAdButton" value="player.playAd( 'bloom', { id: 4974 } )"/>
+                            </p>-->
+                            <div class="mb-3">
+                                <label class="form-label">Static Media Ad</label><br />
+                                <input class="btn btn-primary mt-2" type="button"
+                                    value="player.playAd( 'mediaAd', { mediaUrl: 'http://MEDIA_FILE_URL', linkUrl:'http://www.geico.com/' } )"
+                                    onclick="playMediaAd()" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Flow Ads</label><br />
+                                <input class="btn btn-primary mt-2" type="button" id="flowAds" value="FlowAds"
+                                    onclick="playFlowAds()" />
+
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Player Ad Actions</label><br />
+
+                                <input class="btn btn-primary mt-2" type="button" id="skipAdButton"
+                                    value="player.skipAd()" />
+
+                                <input ng-if="isLocal" class="btn btn-info" type="button" id="destroyAdButton"
+                                    value="player.destroyAd()" />
+
+                            </div>
+                            <!-- <div class="mb-3">
+                                <label class="form-label">Triton RunSpot Ad</label>
+                                <div class="row g-2">
+                                    <div class="col-auto">
+                                        <input class="form-control" placeholder="Enter a RunSpot Station Id (example: 3168)"
+                                        id="runSpotId" type="text">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary" type="button" id="playRunSpotAdByIdButton">Play Triton RunSpotAd</button>
+                                    </div>
+                                </div>  
+                            </div>                              
+                            <div>
+                                <div class="mb-3">
+                                    <label class="form-label">VAST Ad</label>
+                                    <div class="row g-2">
+                                        <div class="col-auto">
+                                            <input class="form-control" placeholder="Enter a VAST/DAAST tag Url (http://...)"
+                                            id="vastAdUrl" type="text">
+                                        </div>
+                                        <div class="col-auto">
+                                            <button class="btn btn-primary" type="button" id="playRunSpotAdByIdButton">Play VAST Ad</button>
+                                        </div>
+                                    </div>                                
+                                <div>
+                            </div>                                                     -->
+
+                            <div class="mb-3">
+                                <label class="form-label">VAST XML</label><br />
+
+                                <textarea class="form-control" rows="4"
+                                    placeholder="Enter a VAST/DAAST XML (<VAST>...</VAST>)" id="vastAdRawXML"
+                                    type="text"></textarea>
+
+                                <button class="btn btn-primary mt-2" type="button" id="playVastAdByRawXMLButton" onclick="playVastAdByRawXML()">Play
+                                    XML Vast
+                                    Ad</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-row" ng-if="tech == 'html5' && menuItem == 'podcast'">
+                    <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse"
+                        data-bs-target="#podcast-container">
+                        <div class="d-flex flex-wrap">
+                            Podcast Player
+                        </div>
+                    </header>
+                    <div id="podcast-container" class="mx-4 collapse show">
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                <label for="podcastUrl" class="form-label">Podcast URL</label>
+                                <input id="fileUrl" type="text" class="form-control" id="podcastUrl"
+                                    placeholder="Enter an Audio File URL"
+                                    value="https://traffic.omny.fm/d/clips/9ddc536a-8e34-4bf9-9897-aae8017127ca/c1672dfe-3f96-46f6-b1cb-aaee014a2de3/6b3dbc87-ed2a-4f73-97fc-ab4a00460202/audio.mp3" />
+                            </div>
+                            <p>
+                                <button class="btn btn-primary" type="button" onclick="playFileClicked()">Play
+                                    File</button>
+                                <button class="btn btn-primary" type="button" onclick="pauseFileClicked()">Pause
+                                    File</button>
+                                <button class="btn btn-primary" type="button" onclick="resumeFileClicked()">Resume
+                                    File</button>
+                                <button class="btn btn-primary" type="button" onclick="stopFileClicked()">Stop
+                                    File</button>
+                                <button class="btn btn-primary" type="button" onclick="backFileClicked()">Back 15
+                                    sec</button>
+                                <button class="btn btn-primary" type="button" onclick="jumpFileClicked()">Jump 15
+                                    sec</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse" data-bs-target="#playerInfo"
+                    ng-if="menuItem != 'nowPlayingApi' && menuItem != 'playerWebAdmin' && tech == 'html5'" role="button">
+                    <div class="d-flex flex-wrap align-items-center">
+                        Player Info
+                    </div>
+                </header>
+            <div id="playerInfo" class="flex-row mb-2 mx-4 collapse show"
+                ng-if="menuItem != 'nowPlayingApi' && menuItem != 'playerWebAdmin' && tech == 'html5'">
+                <div>
+                    <label class="form-label fw-bolder">Status:</label>
+                    <span id="status" class="badge bg-success"></span>
+                </div>
+                <div>
+                    <label class="form-label fw-bolder">API Version:</label>
+                    <span id="techInfo" class="badge bg-secondary"></span>
+                </div>
+                <div ng-if="menuItem == 'podcast'">
+                    <label class="form-label fw-bolder">Play Time:</label>
+                    <span id="filetime" class="badge bg-secondary"> 00:00/00:00 </span>
+                </div>
+
+                <div class="card" ng-if="menuItem != 'podcast'">
+                    <div class="card-header">
+                        Now Playing
+                    </div>
+                    <div id="trackInfo" class="card-body">
+                        No data
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button id="flvHeaderPlayerButton" class="btn btn-primary d-none flv-player-button-parent" value="Play" style="position: relative; top:48px ; left: 150px;" onclick="flvPlayerButton()">
+                    <i class="fas fa-play-circle flv-player-button spinner-border-sm" ></i>
+                </button>
+                <header class="p-3 mb-2 bg-triton-header text-white" role="button" ng-if="tech == 'flash'" data-bs-toggle="collapse" data-bs-target="#flv-debugger-container" aria-expanded="true">
+                    <div>
+                        Stream Debugger
+                    </div>                    
+                </header>
+            </div>                
+                <div id="flv-debugger-container" class="flex-row mx-4 collapse show" ng-if="tech == 'flash'">
+                    <div class="mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="flvStreamingType" id="flvStreamingType1"
+                                value="station" ng-click="flvStreamingType = 'callsign'" checked>
+                            <label class="form-check-label" for="flvStreamingType1">Callsign</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="flvStreamingType" id="flvStreamingType2"
+                                value="url" ng-click="flvStreamingType = 'url'">
+                            <label class="form-check-label" for="flvStreamingType2">URL</label>
+                        </div>
+                    </div>
+                    <div class="mb-3" ng-if="flvStreamingType == 'callsign'">
+                        <label for="stationUser" class="form-label">Callsign</label>
+                        <input type="text" class="form-control" id="flvMount" placeholder="Enter the Callsign">
+                    </div>
+                    <div class="mb-3" ng-if="flvStreamingType == 'url'">
+                        <label for="stationUser" class="form-label">URL</label>
+                        <input type="text" class="form-control" id="flvUrl" placeholder="Enter the FLV URL">
+                    </div>                   
+
+                    <p ng-if="platformid == 'prod' || platformid == 'local' || platformid == 'build' ">
+                    
+                        <br />
+                        <button class="btn btn-primary btn-lg flv-player-button-parent" value="Play" onclick="flvPlayerButton()">
+                            <i class="fas fa-play-circle flv-player-button spinner-border-md" style="font-size:33px;"
+                                aria-hidden="true"></i>
+                        </button>
+
+                        <button id="flvDownloadLink" class="btn btn-primary btn-lg" value="Download">
+                            <i class="fas fa-file-download" style="font-size:33px;"
+                                aria-hidden="true"></i>
+                        </button>                        
+                    </p>
+                    <div ng-if="tech == 'flash'">
+                        <label for="volumeSlider" class="form-label">Volume</label><br />
+                        <input type="range" class="form-range" min="0" max="1" step="0.1" id="volumeSlider"
+                            onchange="flvVolumeSlider(this.value)">
+                    </div>
+                </div>        
+                <div class="container-fluid w-100 h-100" ng-if="tech == 'flash'">
+                    <div class="row" class="w-100">
+                      <div class="col-md-3">
+                        <div class="row border border-triton">
+                            <h6 class="bg-triton-header text-center m-0 p-2 text-white">Information</h6>
+                            <div class="container-fluid row" style="height:70px">
+                                <div class="col mt-2 text-black">
+                                    <h6 class="fw-bold">DURATION</h6>
+                                    <h6>
+                                        {{tagDuration}}
+                                    </h6>
+                                </div>
+                                <div class="col mt-2 text-black">
+                                    <h6 class="fw-bold">TAGS</h6>
+                                    <h6>
+                                        {{totalTags}}
+                                    </h6>
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="row">
+                            <h6 class="bg-triton-header text-center m-0 p-2 text-white">Metadata</h6>
+                            <div id="metadata-info-container" class="scroll-auto flex-row my-2 p-0 collapse show text-black" ng-if="tech == 'flash'">
+                                <input class="btn btn-primary" type="button" id="clearMetadataInfo" onclick="clearMetadataInfo()" value="Clear"  />
+                                <input class="btn btn-primary" type="button" id="downloadMetadataInfo" value="Download" />
+                                <pre id="metadataInfo"
+                                    style="overflow: auto; height: 200px; border: 1px solid #ccc; padding: 5px;margin-top: 5px;margin-bottom:0px"></pre>
+                            </div>
+                        </div>
+                        <div class="row" style="overflow: auto;">
+                            <h6 class="bg-triton-header text-center m-0 p-2 border border-triton text-white">Cue Points</h6>
+                            <div id="cuepoint-info-container" class="flex-row my-2 p-0 collapse show text-black" ng-if="tech == 'flash'">
+                                <input class="btn btn-primary" type="button" id="clearCuepointInfo" value="Clear" onclick="clearCuepointInfo()" />
+                                <input class="btn btn-primary" type="button" id="downloadCuepointInfo" value="Download" />
+                                <div id="cuePointInfo"
+                                    style="overflow: auto; height: 220px; border: 1px solid #ccc; padding: 5px; margin-top: 5px;">
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="col-md-7 p-0">
+                        <h6 class="bg-triton-header text-center m-0 p-2 border border-triton text-white">Audio Packets</h6>
+                        <div id="visualize-container" class="flex-row mb-2 collapse show text-black" ng-if="tech == 'flash'">
+                            <input class="btn btn-primary m-2" type="button" id="clearFlvVisualizer" value="Clear" onclick="clearFlvVisualizer()" />                            
+                            <div id="flvSVGCanvas"
+                                style="max-height: 650px; overflow: auto;">
+                                <svg id="flvSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 975 400"
+                                    style="display: block; overflow:auto">
+        
+                                </svg>
+                            </div>
+                        </div> 
+                      </div>
+                      <div class="col-md-2 p-0 overflow-auto" style="max-height: 800px;">
+                        <h6 class="bg-triton-header text-center m-0 p-2 border border-triton text-white" style="top:0px; position:sticky">Inspector</h6>
+                        <span id=tagData></span>
+                        <div class="w-100 p-2 text-black bg-flv-meta-data" ng-if="flvTagData.tagType == 18 && flvTagData.meta.onMetaData != null">
+                            <h6 class="fw-bold">TYPE</h6>
+                            <h1>Meta</h1>
+                        </div>
+                        <div class="w-100 p-2 text-black bg-flv-script-data" ng-if="flvTagData.tagType == 18 && flvTagData.meta.onListenerInfo != null">
+                            <h6 class="fw-bold">TYPE</h6>
+                            <h1>Script Data</h1>
+                        </div>
+                        <div class="w-100 p-2 text-black bg-flv-cue-point-data" ng-if="flvTagData.tagType == 18 && flvTagData.meta.onCuePoint != null">
+                            <h6 class="fw-bold">TYPE</h6>
+                            <h1>Cue Point</h1>
+                        </div>
+                        <div class="w-100 p-2 text-black bg-flv-audio-data" ng-if="flvTagData.tagType == 8">
+                            <h6 class="fw-bold">TYPE</h6>
+                            <h1>Audio</h1>
+                        </div>
+                        <div class="mx-2 mt-2 text-black" ng-if="flvTagData.size != null">
+                            <h6 class="fw-bold">SIZE</h6>
+                            <h6>
+                                {{flvTagData.size}} bytes
+                            </h6>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.timestamp != null">
+                            <h6 class="fw-bold">TIMESTAMP</h6>
+                            <h6>
+                                {{flvTagData.timestamp | millisToDateTime | date:'HH:mm:ss.sss'}}                                
+                            </h6>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.tagType == 8">
+                            <h6 class="fw-bold">FORMAT</h6>
+                            <h6>{{flvTagData.soundFormat}} {{flvTagData.meta.channelCount == 2 ? 'Stereo' : 'Mono'}} 
+                                {{flvTagData.meta.audioSampleRate}}hz
+                            </h6>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.tagType == 18 && flvTagData.meta.onListenerInfo">
+                            <h6 class="fw-bold">FUNCTION</h6>
+                            <h6>onListenerInfo</h6>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.tagType == 18 && flvTagData.meta.onListenerInfo">
+                            <div ng-repeat="(key, value) in flvTagData.meta.onListenerInfo"> 
+                                <h6 class="fw-bold">{{key}}</h6>
+                                <h6>{{value}}</h6>
+                            </div>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.tagType == 18 && flvTagData.meta.onCuePoint">
+                            <h6 class="fw-bold">FUNCTION</h6>
+                            <h6>onCuePoint</h6>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.tagType == 18 && flvTagData.meta.onCuePoint">
+                            <h6 class="fw-bold">NAME</h6>
+                            <h6>{{flvTagData.meta.onCuePoint.name}}</h6>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.tagType == 18 && flvTagData.meta.onCuePoint">
+                            <h6 class="fw-bold">TYPE</h6>
+                            <h6>{{flvTagData.meta.onCuePoint.type}}</h6>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.tagType == 18 && (flvTagData.meta.onCuePoint)">
+                            <div ng-repeat="(key, value) in flvTagData.meta.onCuePoint.parameters"> 
+                                <h6 class="fw-bold">{{key}}</h6>
+                                <h6>{{value}}</h6>
+                            </div>
+                        </div>
+                        <div class="mx-2 text-black" ng-if="flvTagData.tagType == 18 && (flvTagData.meta.onMetaData)">
+                            <div ng-repeat="(key, value) in flvTagData.meta.onMetaData"> 
+                                <h6 class="fw-bold">{{key}}</h6>
+                                <h6>{{value}}</h6>
+                            </div>
+                        </div>                                                
+                      </div>
+                    </div>                    
+                  </div>  
+                <div id="td_container" class="invisible" ng-if="tech == 'flash'" />
+                  style="background-color:#000;color:#fff;border:1px dashed black; float:left; width:300px; height:250px;">
+                  Player</div>  
+            <div ng-if="(menuItem != 'nowPlayingApi' && menuItem != 'playerWebAdmin' && tech == 'html5') || tech == 'flash'">
+                <header class="p-3 mb-2 bg-triton-header text-white" data-bs-toggle="collapse" data-bs-target="#debug-info-container"
+                    ng-if="(menuItem != 'nowPlayingApi' && menuItem != 'playerWebAdmin' && tech == 'html5') || tech == 'flash'" role="button">
+                    <div class="d-flex flex-wrap align-items-center">
+                        Debug Info
+                    </div>
+                </header>                  
+                <div class="flex-row mb-2 mx-4 collapse show" id="debug-info-container"
+                    ng-if="(menuItem != 'nowPlayingApi' && menuItem != 'playerWebAdmin' && tech == 'html5') || tech == 'flash' ">
+                    <div class="d-flex flex-column ">                        
+                        <div id="debugInfoButtons" class="mb-3 flex-fill">
+                            <input class="btn btn-primary" type="button" id="clearDebug" value="Clear" />
+                            <input class="btn btn-primary" type="button" id="downloadDebugInfo" value="Download" />
+                        </div>
+                        <pre id="debugInformation"
+                            style="overflow: scroll; height: 300px; border: 1px solid #ccc; padding: 5px;"></pre>
+
+                        <div class="flex-md-row">
+                            <div id="td_container" 
+                                style="background-color:#000;color:#fff;border:1px dashed black; float:left; width:300px; height:250px;">
+                                Player</div>
+
+                            <div id="bigbox" 
+                                style="text-align:center; border:1px dashed black; margin-left:5px; float:left; background-color: #FFFFFF; width: 300px; height: 250px;">
+                                <div id="td_synced_bigbox">Synced Bigbox (300x250)</div>
+                                <div id="td_adserver_bigbox"></div>
+                            </div>
+
+                            <div id="leaderboard" 
+                                style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 728px; height: 90px;">
+                                <div id="td_synced_leaderboard">Synced Leaderboard (728x90)</div>
+                                <div id="td_adserver_leaderboard"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+                <!-- <div id="nowPlaying">
+                        <div id="trackInfo">
+                            <p><span class="label label-info">Now Playing</span></p>
+                        </div>
+                    </div> -->
+                <!-- <div class="well" ng-if="tech == 'flash'">
+                    <p>
+                        <b>Visualized Data</b>
+                    </p>
+                    <input class="btn" type="button" id="clearFlvVisualizer" value="Clear" style="margin-bottom:5px" />
+                </div> -->
+                <!-- <header class="p-3 mb-2 bg-dark text-white" data-bs-toggle="collapse"
+                    data-bs-target="#cuepoint-info-container" aria-expanded="true" role="button"
+                    ng-if="tech == 'flash'">
+                    <div class="d-flex flex-wrap">
+                        CuePoint Info
+                    </div>
+                </header>
+                <div id="cuepoint-info-container" class="flex-row mb-2 collapse show" ng-if="tech == 'flash'">
+                    <input class="btn" type="button" id="clearCuepointInfo" value="Clear" style="margin-bottom:5px" />
+                    <input class="btn" type="button" id="downloadCuepointInfo" value="Download"
+                        style="margin-bottom:5px" />
+                    <div contenteditable="true" id="cuePointInfo"
+                        style="overflow: scroll; height:200px;  border: 1px solid #ccc; padding: 5px;">
+                    </div>
+                </div>
+                <header class="p-3 mb-2 bg-dark text-white" data-bs-toggle="collapse"
+                    data-bs-target="#metadata-info-container" aria-expanded="true" role="button"
+                    ng-if="tech == 'flash'">
+                    <div class="d-flex flex-wrap">
+                        Metadata Info
+                    </div>
+                </header>
+                <div id="metadata-info-container" class="flex-row mb-2 collapse show" ng-if="tech == 'flash'">
+                    <input class="btn" type="button" id="clearMetadataInfo" value="Clear" style="margin-bottom:5px" />
+                    <input class="btn" type="button" id="downloadMetadataInfo" value="Download"
+                        style="margin-bottom:5px" />
+                    <pre id="metadataInfo"
+                        style="overflow: scroll; height:200px; border: 1px solid #ccc; padding: 5px;"></pre>
+                </div> -->
+
+                <!-- <div class="well" ng-if="tech != 'flash'">
+                    <p>
+                        <b>Now Playing Enhanced (NPE):</b>
+                    </p>
+                    <div class="btn-group">
+                        <input class="btn btn-inverse" type="button" id="getArtistButton" value="Get artist info" />
+                    </div>
+                </div> -->
+
+
+                <!-- <div class="well" ng-if="tech != 'flash'">
+                    <p>
+                        <b>UserRegistration / MediaPlayer / Selective bitrate</b>
+                    </p>
+                    <p class="input-append">
+                        <input class="span2" id="userVid" type="text" value="9E88AFB2A54741B79718E9D82FA9476C">
+                        <input class="span3" id="userTags" type="text" value="tdas-reg">
+                        <input class="span3" id="userTagsHash" type="text"
+                            value="3b6d5debe26eac9fcf67edc6fcd3e9887319fc5b">
+                        <input class="btn btn-primary" type="button" id="loginButton" value="Log-in (enableHQ)" />
+                        <input class="btn btn-primary" type="button" id="logoutButton" value="Log-out (disableHQ)" />
+                    </p>
+                    <p>
+                        <input class="btn btn-primary" type="button" id="activateLowButton"
+                            value="player.MediaPlayer.activateLow()" />
+                        <input class="btn btn-primary" type="button" id="deactivateLowButton"
+                            value="player.MediaPlayer.deactivateLow()" />
+                    </p>
+                    <p>
+                        Has HQ ? <span id="hasHQ">N/A</span><br>
+                        Is HQ ? <span id="isHQ">N/A</span><br>
+                        Has Low ? <span id="hasLow">N/A</span><br>
+                        Is Low ? <span id="isLow">N/A</span>
+                    </p>
+                </div> -->
+
+                <!-- asyncData is a placeholder for Song History, Pwa configuration, Npe metadata -->
+                <div id="asyncData"></div>
+
+            </div>
+            
+        </div>       
+    </main>
+    <footer class="footer mt-auto py-3 bg-light" id="footer">
+        <div class="container">
+            <p class="text-muted credit">&copy; Triton Digital 2021</p>
         </div>
-        <div>&nbsp;</div>
-
-        <div ng-if="tech != 'flash' " >
-            <p>
-                <b>Side-Band Metadata</b>
-            </p>
-            <div class="btn-group btn-toggle">
-                <button id="sbm_active_button" class="btn btn-sm btn-default">ON</button>
-                <button id="sbm_inactive_button" class="btn btn-sm btn-default">OFF</button>
-            </div>
-            <div>&nbsp;</div>
-            <p>
-                <b>Now Playing API fallback</b>
-            </p>
-            <div class="btn-group btn-toggle">
-                <button id="np_active_button" class="btn btn-sm btn-default">ON</button>
-                <button id="np_inactive_button" class="btn btn-sm btn-default">OFF</button>
-            </div>
-
-            <div>&nbsp;</div>
-            <p>
-                <b>HLS</b>
-            </p>
-            <div class="btn-group btn-toggle">
-                <button id="hls_active_button" class="btn btn-sm btn-default">ON</button>
-                <button id="hls_inactive_button" class="btn btn-sm btn-default">OFF</button>
-            </div>
-
-            <div>&nbsp;</div>
-            <p>
-                <b>Audio Adaptive</b>
-            </p>
-            <div class="btn-group btn-toggle">
-                <button id="audioadaptive_active_button" class="btn btn-sm btn-default">ON</button>
-                <button id="audioadaptive_inactive_button" class="btn btn-sm btn-default">OFF</button>
-            </div>
-
-	        <div>&nbsp;</div>
-            <p>
-                <b>Player Services Region</b>
-           </p>
-           <div class="btn-group" data-toggle="buttons-radio">
-                <button id="playerservices_region_us" type="button" class="btn btn-primary">US</button>
-                <button id="playerservices_region_eu" type="button" class="btn btn-primary">EU</button>
-                <button id="playerservices_region_ap" type="button" class="btn btn-primary">AP</button>                                
-            </div>
-        </div>
-    </div>
-
+    </footer>
     <div class="well" style="display:none">
         <p>
             <b>GDPR</b>
         </p>
+        <p>
+            <b>GA Active</b>
+        </p>
+        <div class="btn-group btn-toggle">
+            <button id="gaactive_true" class="btn btn-sm btn-default">True</button>
+            <button id="gaactive_false" class="btn btn-sm btn-default">False</button>
+        </div>
         <div>&nbsp;</div>
         <p>
             <b>Allow Personalised Ads</b>
@@ -121,370 +1043,154 @@
         </div>
     </div>
 
-    <div class="well">
-        <p>
-            <b>MediaPlayer / Live Streaming</b>
-        </p>
-        <div class="input-append">
-            <input class="span2" placeholder="Enter a Station" id="stationUser" type="text">
-            <input class="span6" placeholder="Enter Tracking parameters, comma-separated (id:demo,csegid:123456)" id="stationUserTrackingParameters" type="text">
-            <button class="btn" type="button" id="playStreamByUserStationButton">Play Live Stream</button>
-        </div>
-        <div class="input-append">
-            <input class="span10" placeholder="Enter a media url (audio/video)" id="streamUrlUser" type="text">
-            <button class="btn" type="button" id="playUrlButton">Play url</button>
-        </div>
 
-
-
-        <div>&nbsp;</div>
-
-
-            <p ng-if="platformid == 'prod' || platformid == 'local' || platformid == 'build' ">
-                TRITONRADIOMUSIC (live audio) <input class="btn btn-primary" type="button" data-action="play-live" data-station="TRITONRADIOMUSIC" value="player.play( { station:'TRITONRADIOMUSIC' } )"/>
-            </p>
-
-            <p>
-                BASIC_CONFIG (live audio) <input class="btn btn-primary" type="button" data-action="play-live" data-station="BASIC_CONFIG" value="player.play( { station:'BASIC_CONFIG' } )"/>
-            </p>
-
-        <p>
-            <input class="btn btn-primary" type="button" id="stopButton" value="player.stop()"/>
-            <input class="btn btn-primary" type="button" id="pauseButton" value="player.pause()"/>
-            <input class="btn btn-primary" type="button" id="resumeButton" value="player.resume()"/>
-            <input class="btn btn-primary" type="button" id="seekLiveButton" value="player.seekLive()"/>
-            <input class="btn btn-primary" type="button" id="flowAds" value="player.flowAds()"/>
-        </p>
-        <p>
-            <input class="btn btn-primary" type="button" id="setVolume50Button" value="player.setVolume(.5)"/>
-            <input class="btn btn-primary" type="button" id="muteButton" value="player.mute()"/>
-            <input class="btn btn-primary" type="button" id="unMuteButton" value="player.unMute()"/>
-        </p>
     </div>
 
-    <div class="well">
-        <p>
-            <b>Podcast Player</b>
-            <input class="span10" placeholder="Enter a file url (audio)" id="fileUrl" type="text" value="http://c.espnradio.com/s:5L8r1/audio/2437468/espnucf_2015-02-17-131808.64k.mp3" style="visibility:hidden">
-        </p>
-
-        <div>
-            <div style="float:left"><img src="http://assets.espn.go.com/i/espnradio/logos/championship_drive_rece_davis_300x300.jpg" style="vertical-align: middle;border:0px;width:115px;height:115px;margin-right:10px;margin-bottom:10px" /></div>
-
-                <b>Championship Drive with Rece Davis</b><br/>
-                ESPN<br/>
-                Championship Drive Football gives you an all-access pass inside the world of college football, utilizing ESPN's stable of reporters and analysts.<br/>
-                Episode 96 - Tue, 17 Feb 2015<br/>
-                Duration : 51:21<br/>
-                &nbsp;
-        </div>
-        <div id="filestatus"><p><span class="label label-success">Status:</span></p></div>
-        <div id="fileloadpercent"><p><span class="label"></span></p></div>
-        <div id="filetime"><p><span class="label">00:00/00:00</span></p></div>
-        <p>
-            <button class="btn btn-primary" type="button" id="playFileButton">Play File</button>
-            <button class="btn btn-primary" type="button" id="pauseFileButton">Pause File</button>
-            <button class="btn btn-primary" type="button" id="resumeFileButton">Resume File</button>
-            <button class="btn btn-primary" type="button" id="stopFileButton">Stop File</button>
-            <button class="btn btn-primary" type="button" id="backFileButton">Back 15 sec</button>
-            <button class="btn btn-primary" type="button" id="jumpFileButton">Jump 15 sec</button>
-        </p>
-    </div>
-
-
-
-    <div class="well">
-        <p>
-            <b style="font-size:130%">MediaPlayer / Ads</b>
-
-        </p>
-        <label style="font-weight:bold;">Auto Start</label>
-        <button id="stream_auto_start_true" type="button" class="btn btn-primary ">Auto Start Stream</button>&nbsp;<button id="podcast_auto_start_true" type="button" class="btn btn-primary ">Auto Start Podcast</button>&nbsp;<button  id="stream_auto_start_false" type="button" class="btn btn-primary active">No</button>
-        <br/><br/>
-
-        <div class="form-group">
-          <label style="font-weight:bold;">IMA</label>
-          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=')" value="Single Inline Linear"/>
-          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator=')" value="Single Skippable Linear"/>
-          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirectlinear&correlator=')" value="Single Redirect Linear"/>
-          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirecterror&correlator=')" value="Single Redirect Broken"/>
-          <input class="form-control btn btn-danger" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dredirecterror&nofb=1&correlator=')" value="Single Redirect Error"/>
-          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinearvpaid&correlator=')" value="Single VPAID Linear Flash"/>
-          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpreonly&cmsid=496&vid=short_onecue&correlator=')" value="VMAP Preroll"/>
-          <input class="form-control btn btn-info" type="button" onClick="playVastAd('http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=vmap&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ar%3Dpreonlybumper&cmsid=496&vid=short_onecue&correlator=')" value="VMAP Preroll With Bumper"/>
-        </div>
-        <br>
-
-        <p>
-          <label style="font-weight:bold;">Triton Ad Platform (TAP)</label>
-
-            <input class="btn btn-info" type="button" id="playTapAdButton" value="player.playAd( 'tap', { type:'preroll', format:'vast', stationId:77583 } )"/>
-            <input class="btn btn-info" type="button" id="playTapAdButtonWithTrackingParameters" value="player.playAd( 'tap', { type:'preroll', format:'vast', stationId:77583, trackingParameters:{ ttag: 'demo' } } )"/>
-        </p>
-        <p>
-          <label style="font-weight:bold;">Triton RunSpot Ad - station id 3168</label>
-
-            <input class="btn btn-info" type="button" id="playRunSpotAdButton" value="player.playAd( 'vastAd', { sid:3168 } )"/>
-        </p>
-
-        <p>
-            <label style="font-weight:bold;">DAAST </label>
-
-            <input class="btn btn-info" type="button" onClick="playVastAd('http://proserv.tritondigital.com/vast/daast1.xml')"  value="DAAST example"/>
-
-        </p>
-
-        <p>
-            <label style="font-weight:bold;">Vast Ad </label>
-
-            <input class="btn btn-info" type="button" id="playVastAdButton" value="player.playAd( 'vastAd', { url:'http://VAST_URL_HERE'} )"/>
-
-            <input class="btn btn-info" type="button" onClick="playVastAd('http://proserv.tritondigital.com/vast/vast-openx.xml')"  value="Vast OpenX"/>
-
-        </p>
-        <!--<p>
-            Bloom / AdGear
-            <input class="btn btn-info" type="button" id="playBloomAdButton" value="player.playAd( 'bloom', { id: 4974 } )"/>
-        </p>-->
-        <p>
-          <label style="font-weight:bold;">Static Media Ad</label>
-
-            <input class="btn btn-info" type="button" id="playMediaAdButton" value="player.playAd( 'mediaAd', { mediaUrl: 'http://MEDIA_FILE_URL', linkUrl:'http://www.geico.com/' } )"/>
-        </p>
-
-
-
-        <p>
-          <label style="font-weight:bold;">Player Ad Actions</label>
-
-            <input class="btn btn-info" type="button" id="skipAdButton" value="player.skipAd()"/>
-
-            <input ng-if="isLocal" class="btn btn-info" type="button" id="destroyAdButton" value="player.destroyAd()"/>
-
-        </p>
-
-
-
-        <div class="input-append">
-            <input class="span4" placeholder="Enter a RunSpot Station Id (example: 3168)" id="runSpotId" type="text">
-            <button class="btn" type="button" id="playRunSpotAdByIdButton">Play Triton RunSpot Ad</button>
-        </div>
-
-        <div class="input-append">
-            <input type="text" class="span10" rows="4" placeholder="Enter a VAST/DAAST tag Url (http://...) " id="vastAdUrl" type="text" />
-
-            <button class="btn" type="button" id="playVastAdByUrlButton">Play Vast Ad</button>
-        </div>
-
-        <div class="input-append">
-            <textarea class="span10" rows="4" placeholder="Enter a VAST/DAAST XML (<VAST>...</VAST>)" id="vastAdRawXML" type="text"></textarea>
-            <button class="btn" type="button" id="playVastAdByRawXMLButton">Play XML Vast Ad</button>
-        </div>
-    </div>
-
-
-
-
-
-    <div id="status"><p><span class="label label-success">Loading...</span></p></div>
-    <div id="techInfo"><p><span class="label label-info"></span></p></div>
-
-    <div id="nowPlaying" style="float:left; width:330px; height:250px;">
-        <div id="trackInfo">
-            <p><span class="label label-info">Now Playing</span></p>
-        </div>
-        <div id="npeInfo"></div>
-    </div>
-
-    <!-- Player placeholder -->
-    <div id="td_container" style="background-color:#000;color:#fff;border:1px dashed black; float:left; width:300px; height:250px;">Player</div>
-
-
-    <div id="bigbox" style="text-align:center; border:1px dashed black; margin-left:5px; float:left; background-color: #FFFFFF; width: 300px; height: 250px;">
-        <div id="td_synced_bigbox">Synced Bigbox (300x250)</div>
-        <div id="td_adserver_bigbox"></div>
-    </div>
-
-    <div id="leaderboard" style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 728px; height: 90px;">
-        <div id="td_synced_leaderboard">Synced Leaderboard (728x90)</div>
-        <div id="td_adserver_leaderboard"></div>
-    </div>
-
-    <br style="clear: both;">
-
-    <br style="clear: both;">
-
-    <input class="btn" type="button" id="clearDebug" value="Clear"/>
-    <textarea style="float: left;" class="span10" rows="20" placeholder="Debug information..." id="debugInformation" type="text"></textarea>
-
-    <br style="clear: both;">
-
-    <div class="well">
-        <p>
-            <b>Now Playing Enhanced (NPE):</b>
-        </p>
-        <div class="btn-group">
-            <input class="btn btn-inverse" type="button" id="getArtistButton" value="Get artist info"/>
-        </div>
-    </div>
-
-
-    <div class="well">
-        <p>
-            <b>NowPlayingApi</b>
-        </p>
-        <div class="btn-group">
-            <div class="input-append">
-                <input class="span2" placeholder="Enter a Callsign" id="songHistoryCallsignUser" type="text">
-                <select id="songHistoryConnectionTypeSelect" name="songHistoryConnectionTypeSelect">
-                    <option value="normalConnection">normalConnection</option>
-                    <option value="hdConnection">hdConnection (AAC)</option>
-                </select>
-                <button class="btn" type="button" id="fetchSongHistoryByUserCallsignButton">Get Song History</button>
-            </div>
-        </div>
-    </div>
-    <div class="well">
-        <b>PlayerWebAdmin</b>
-        <p>
-        <div class="btn-group">
-            <div class="input-append">
-                <input class="span2" placeholder="Enter a Callsign" id="pwaCallsign" type="text">
-                <input class="span2" placeholder="Enter a streamid" id="pwaStreamId" type="text">
-                <button class="btn" type="button" id="pwaButton">Get PlayerWebAdmin configuration</button>
-            </div>
-        </div>
-        </p>
-    </div>
-
-
-    <div class="well">
-        <p>
-            <b>UserRegistration / MediaPlayer / Selective bitrate</b>
-        </p>
-        <p class="input-append">
-            <input class="span2" id="userVid" type="text" value="9E88AFB2A54741B79718E9D82FA9476C">
-            <input class="span3" id="userTags" type="text" value="tdas-reg">
-            <input class="span3" id="userTagsHash" type="text" value="3b6d5debe26eac9fcf67edc6fcd3e9887319fc5b">
-            <input class="btn btn-primary" type="button" id="loginButton" value="Log-in (enableHQ)"/>
-            <input class="btn btn-primary" type="button" id="logoutButton" value="Log-out (disableHQ)"/>
-        </p>
-        <p>
-            <input class="btn btn-primary" type="button" id="activateLowButton" value="player.MediaPlayer.activateLow()"/>
-            <input class="btn btn-primary" type="button" id="deactivateLowButton" value="player.MediaPlayer.deactivateLow()"/>
-        </p>
-        <p>
-            Has HQ ? <span id="hasHQ">N/A</span><br>
-            Is HQ ? <span id="isHQ">N/A</span><br>
-            Has Low ? <span id="hasLow">N/A</span><br>
-            Is Low ? <span id="isLow">N/A</span>
-        </p>
-    </div>
-
-    <br style="clear: both;">
-
-    <!-- asyncData is a placeholder for Song History, Pwa configuration, Npe metadata -->
-    <div id="asyncData"></div>
-
-
-</div>
-
-<script src="js/jquery-1.7.2.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-
-<!-- tdplayer.js is specific to this index.html page, it is NOT required and is only there for a demo on how to integrate the TD SDK in a page -->
-<script src="js/tdplayer.js"></script>
-
-<script src="js/jquery-ui-1.8.18.custom.min.js"></script>
-<script src="js/jquery.smooth-scroll.min.js"></script>
-<script src="js/lightbox.js"></script>
-
-</div>
-
-<br style="clear: both;">
-
-<div id="footer">
-    <div class="container">
-        <p class="muted credit">&copy; Triton Digital 2017</p>
-    </div>
-</div>
-
-<script type="text/javascript">
-var pg = angular.module('playground', []);
-
-pg.controller('pgController', function($scope, $location){
-
-	$scope.isLocal = false;
-	$scope.platformid = 'prod';
-
-	if (getUrlVars()['platformid']) {
-		$scope.platformid =  getUrlVars()['platformid'];
-	} else if ( $location.$$host == 'localhost' ){
-        $scope.isLocal = true;
-		$scope.platformid = 'local';
-    } 
-
-    $scope.apiBaseUrl = 'sdk.listenlive.co/web/';
-    $scope.tdplayerapiUrl = null;
-    $scope.apiVersion = '2.9';
-
-    $scope.tech = getUrlVars()['tech'] || 'flash_html5' ;
-    $scope.sbm = getUrlVars()['sbm'] == 'false' ? false : true;
-    $scope.aSyncCuePointFallback = getUrlVars()['aSyncCuePointFallback'] == 'false' ? false : true;
-    $scope.hls = getUrlVars()['hls'] == 'false' ? false : true;
-    $scope.audioAdaptive = getUrlVars()['audioAdaptive'] == 'true' ? true : false;
-    $scope.streamAutoStart = false;
-    $scope.tcfFramework = getUrlVars()['tcfFramework'] == "true" ? true : false;
-
-    $scope.tdSdkApiUrl = '//'+$scope.apiBaseUrl + $scope.apiVersion+ '/td-sdk.min.js';
-
-  if ( $location.absUrl().indexOf('web/v/') !== -1 ) {
-
-        var sdkBuildVersion = $location.absUrl().match(/(\d+\.)?(\d+\.)?(\*|\d+)(\-)(\d){1,4}/)[0];
-
-        $scope.apiBaseUrl = 'sdk.listenlive.co/web/v/' + sdkBuildVersion;
-        $scope.tdSdkApiUrl = '//'+$scope.apiBaseUrl + '/td-sdk.min.js';
-  }
-
-  if ( $scope.platformid == 'build'){
-        $scope.tdSdkApiUrl = '../../dist/td-sdk.min.js';
-  } else if (  $scope.platformid == 'local'){
-        $scope.tdSdkApiUrl = './td-sdk.js';
-  }
-
-if($scope.tcfFramework){
-    $.getScript("js/gdpr.js", function(data, textStatus, jqxhr) {
-    console.log(data); //data returned
-    console.log(textStatus); //success
-    console.log(jqxhr.status); //200
-    console.log('Load was performed.');
-});
-}
-
-
-  $.getScript( $scope.tdSdkApiUrl )
-    .done(function(script, textStatus){
-        initPlayer();
-  })
-
-});
-
-
-function getUrlVars()
-{
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
-
-
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+    <!-- tdplayer.js is specific to this index.html page, it is NOT required and is only there for a demo on how to integrate the TD SDK in a page -->
+    <script src="js/tdplayer.js"></script>
+
+    <script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="js/jquery.smooth-scroll.min.js"></script>
+    <script src="js/lightbox.js"></script>
+
+    </div>    
+    <script type="text/javascript">
+        var pg = angular.module('playground', []);
+
+        pg.filter('millisToDateTime', [function() {
+              return function(millis) {
+              return new Date(1970, 0, 1).setMilliseconds(millis);
+            };
+        }])
+
+        pg.controller('pgController', function ($scope, $location) {
+
+            $scope.isLocal = false;
+            $scope.platformid = 'prod';
+
+            if (getUrlVars()['platformid']) {
+                $scope.platformid = getUrlVars()['platformid'];
+            } else if ($location.$$host == 'localhost') {
+                $scope.isLocal = true;
+                $scope.platformid = 'local';
+            } else if ($location.$$host == 'playercore.preprod01.streamtheworld.net') {
+                $scope.isLocal = false;
+                $scope.platformid = 'preprod';
+            }
+
+            if ($location.absUrl().indexOf('web/v/') !== -1) {
+                $scope.isLocal = false;
+                $scope.platformid = 'prod';
+            }
+
+            $scope.apiBaseUrl = 'sdk.listenlive.co/web/';
+            $scope.tdplayerapiUrl = null;
+            $scope.apiVersion = '2.9';
+
+            $scope.tech = getUrlVars()['tech'] || 'flash';
+            $scope.streamingType = "station";
+            $scope.flvStreamingType = "callsign";
+            $scope.sbm = getUrlVars()['sbm'] == 'false' ? false : true;
+            $scope.aSyncCuePointFallback = getUrlVars()['aSyncCuePointFallback'] == 'false' ? false : true;
+            $scope.hls = getUrlVars()['hls'] == 'false' ? false : true;
+            $scope.audioAdaptive = getUrlVars()['audioAdaptive'] == 'true' ? true : false;
+            $scope.streamAutoStart = false;
+            $scope.GAActive = getUrlVars()['gaactive'] == "true" ? true : false;
+            $scope.GADebug = getUrlVars()['gadebug'] == "true" ? true : false;
+            $scope.tcfFramework = getUrlVars()['tcfFramework'] == "true" ? true : false;
+            $scope.streamStatus = "Loading...";
+            $scope.playerServicesRegion = getUrlVars()['playerServicesRegion'] ? getUrlVars()['playerServicesRegion'] : 'us';
+            $scope.menuItem = "liveStreaming";
+            $scope.flvTagData = {};
+            $scope.tagDuration = '00:00:00';
+            $scope.totalTags = 0;
+            $scope.playerStatus = "LIVE_STOP";
+            $scope.updateStreamingType = function (value) {
+                $scope.streamingType = value;
+            }
+
+            $scope.updateTagData = function (value){
+                $scope.flvTagData = value;
+            }
+
+            $scope.updateTagDuration = function (value){
+                $scope.tagDuration = value;
+            }
+
+            $scope.updateTotalTags = function (value){                
+                $scope.totalTags = value;
+            }
+
+            $scope.updateMenuItem = function (value) {
+                $scope.menuItem = value;
+            }
+
+            $scope.updatePlayerStatus = function (value) {
+                $scope.playerStatus = value;
+                $scope.$applyAsync();
+            }
+
+            $scope.playAudio = function () {
+                playAudio($scope.menuItem, $scope.streamingType);
+            }
+
+            if ($scope.platformid == 'preprod') {
+                $scope.apiBaseUrl = 'playercore.preprod01.streamtheworld.net/tdplayerapi/';
+            }
+
+            $scope.tdSdkApiUrl = '//' + $scope.apiBaseUrl + $scope.apiVersion + '/td-sdk.min.js';
+
+            if ($location.absUrl().indexOf('web/v/') !== -1) {
+
+                var sdkBuildVersion = $location.absUrl().match(/(\d+\.)?(\d+\.)?(\*|\d+)(\-)(\d){1,4}/)[0];
+
+                $scope.apiBaseUrl = 'sdk.listenlive.co/web/v/' + sdkBuildVersion;
+                $scope.tdSdkApiUrl = '//' + $scope.apiBaseUrl + '/td-sdk.min.js';
+            }
+
+            if ($scope.platformid == 'build') {
+                $scope.tdSdkApiUrl = '../../dist/td-sdk.min.js';
+            } else if ($scope.platformid == 'local') {
+                $scope.tdSdkApiUrl = './td-sdk.js';
+            }
+
+            if ($scope.tcfFramework) {
+                $.getScript("js/gdpr.js", function (data, textStatus, jqxhr) {
+                    console.log(data); //data returned
+                    console.log(textStatus); //success
+                    console.log(jqxhr.status); //200
+                    console.log('Load was performed.');
+                });
+            }
+
+            $.getScript($scope.tdSdkApiUrl)
+                .done(function (script, textStatus) {
+                    initPlayer();
+                })
+
+        });
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+
+    </script>
 
 </body>
+
 </html>

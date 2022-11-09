@@ -273,7 +273,9 @@ define(["exports", "./_base/kernel", "./sniff", "./_base/window", "./dom", "./do
 		//	|		.onclick(function(e){ console.log('clicked', e.target) })
 		//	|		.place("#someNode"); // redundant, but cleaner.
 
-		var doc = win.doc;
+		// NOTE: Since Shadow DOM might be used, this method can get fired from the wrong context.
+		// In this case, Use the document from the window to prevent a null reference exception:
+		var doc = win.doc || window.document;
 		if(refNode){
 			refNode = dom.byId(refNode);
 			doc = refNode.ownerDocument;

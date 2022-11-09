@@ -15,8 +15,10 @@ define([
     'dojo/dom-attr',
     'dojo/dom-style',
     'dojo/has',
-    'sdk/modules/mediaplayer/html5/Html5Player'
-], function ( declare, lang, on, Evented, domConstruct, domAttr, domStyle, has, Html5Player ) {
+    'sdk/modules/mediaplayer/html5/Html5Player',
+    'sdk/modules/mediaplayer/html5/ConsumptionAnalytics'
+
+], function ( declare, lang, on, Evented, domConstruct, domAttr, domStyle, has, Html5Player, ConsumptionAnalytics ) {
 
     var html5OnDemand = declare([ Evented ], {
 
@@ -40,6 +42,7 @@ define([
 
             this.onVideoNodeClickHandler = on( this.html5OnDemandNode, 'click', lang.hitch( this, this.__onVideoNodeClick ) );
             this.onVideoNodeTouchHandler = on( this.html5OnDemandNode, 'touchstart', lang.hitch( this, this.__onVideoNodeClick ) );
+            this.consumptionAnalytics =  null;
         },
 
 
@@ -60,6 +63,7 @@ define([
         {
             this._adServerType = null;
 
+            this.initConsumptionAnalytics( config );
             this.html5Player.play( { url:config.mediaUrl, type:config.mediaFormat, mediaNode:this.audioNode, isLive:false } );
         },
 
@@ -392,6 +396,14 @@ define([
                 this.onVideoNodeClickHandler.remove();
 
              this._clickTrackingElementClickedCallback( { clickThrough:this._clickThrough, clickTrackings:this._clickTrackings } );
+        },
+
+        initConsumptionAnalytics: function ( config ) 
+        {
+            if( config.enableOmnyAnalytics && config.omnyOrganizationId != undefined && config.omnyClipId != undefined ) {  
+                this.consumptionAnalytics = new ConsumptionAnalytics( this.html5Player);
+                this.consumptionAnalytics.init( config.omnyOrganizationId, config.omnyClipId, config.omnySessionId );
+            }
         },
 
         /**

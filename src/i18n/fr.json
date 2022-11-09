@@ -15,6 +15,8 @@
         "stop":"Déconnecté",
         "error":"Erreur",
         "streamGeoBlocked": "Désolé, ce flux n'est pas disponible dans votre région",
+        "streamGeoBlockedNoAlternate": "Désolé, ce flux n'est pas disponible dans votre région",
+        "streamGeoBlockedAlternate": "Malheureusement, ce contenu n'est pas disponible dans votre région, mais un autre contenu est disponible.",
         "stationNotFound": "Station inexistante",
         "flashPluginOutOfDate": "La version de votre plugin Flash est obsolète. La version minimale requise est: 10.2.0",
         "browserNotSupported": "Votre navigateur ne supporte pas HTML5",

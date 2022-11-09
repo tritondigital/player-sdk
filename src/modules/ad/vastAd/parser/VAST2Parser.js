@@ -58,6 +58,20 @@ define([
             return this.vastDocument;
         },
 
+        parseMissedOpportunityError:function( xml )
+        {
+            this.vastDocument = new VASTDocument();
+            var errorXML = xml.getElementsByTagName( VASTElement.ERROR );
+
+            if( errorXML[0] == undefined ) return null;
+            
+            var errorURL = this.trim( xmlParser.textContent( errorXML[0] ) ) ;
+            
+            errorURL = errorURL.replace("[TD_DURATION]", "0");
+            errorURL = errorURL.replace("[ERRORCODE]", "202");
+                           
+            return errorURL;
+        },
         _parseAdTag:function( xml )
         {
             var xmlLength = xml.length;

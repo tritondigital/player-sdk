@@ -120,7 +120,11 @@ define([
             }
 
             //Track list sorted by cueTimeStart
+            if(list.length > 0 && list[0].cueTimeStart){
             list = list.sort( function( a, b ){ return a.cueTimeStart-b.cueTimeStart; }).reverse();
+            }else if(list.length > 0 && !list[0].cueTimeStart){
+                list = list.sort( function( a, b ){ return a.timestamp-b.timestamp; }).reverse();
+            }                    
 
             this._emitNotificationByMode( requestData.mount, requestData.mode, list );
 

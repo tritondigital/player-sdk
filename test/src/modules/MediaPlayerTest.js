@@ -149,10 +149,20 @@ describe( 'MediaPlayer', function () {
 			expect(query).to.not.contain('yob')
 		});
 
-		it( 'should add gender param when is a m or f string only', function () {
+		it( 'should add gender param when is a m or f or o string only', function () {
 			var config = {
 				station: station,
 				gender: 'm'
+			}
+			var mediaPlayer = new MediaPlayer(config,null);
+			var query = mediaPlayer._getIdSyncQueryParam(config)
+			expect(query).to.contain('gender')
+		});
+
+		it( 'should add gender param when is a m or f or o string only', function () {
+			var config = {
+				station: station,
+				gender: 'o'
 			}
 			var mediaPlayer = new MediaPlayer(config,null);
 			var query = mediaPlayer._getIdSyncQueryParam(config)
