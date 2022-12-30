@@ -58,7 +58,7 @@
     "karma-sinon": "^1.0.5",
     "karma-webpack": "^1.8.1",
     "lolex": "^1.6.0",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "ngrok": "^2.3.0",
     "phantomjs-prebuilt": "^2.1.16",
     "puppeteer": "^1.19.0",
