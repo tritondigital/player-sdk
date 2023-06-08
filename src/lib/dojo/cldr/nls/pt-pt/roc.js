@@ -1,8 +1,6 @@
-define(
-//begin v1.x content
+define(//begin v1.x content
 {
-	"field-zone": "Fuso horário",
-	"dateFormat-short": "d/M/y G"
-}
+  "field-zone": "Fuso horário",
+  "dateFormat-short": "d/M/y G",
+});
 //end v1.x content
-);

@@ -1,139 +1,154 @@
-[ {
-	"alternateContent": null,
-	"status": {
-		"statusCode": null,
-		"message": null,
-		"isError": false,
-		"isGeoBlocked": false
-	},
-	"tags": [],
-	"transports": [ {
-		"mountSuffix": null,
-		"transport": "http"
-	} ],
-	"metadata": {
-		"shoutcastV1": {
-			"active": true,
-			"mountSuffix": "_SC"
-		},
-		"shoutcastV2": {
-			"active": false,
-			"mountSuffix": "_SC"
-		},
-		"sseSideband": {
-			"active": true,
-			"streamSuffix": "_SC"
-		}
-	},
-	"servers": [
-		"http://15653.live.streamtheworld.com:80",
-		"http://15653.live.streamtheworld.com:443",
-		"http://15653.live.streamtheworld.com:3690"
-	],
-	"mediaFormat": {
-		"container": "flv",
-		"cuePoints": "stwcue",
-		"trackScheme": "audio",
-		"audioTracks": [ {
-			"index": 0,
-			"codec": "aaclc",
-			"bitRate": 80000,
-			"sampleRate": 44100,
-			"channels": 2,
-			"isMP3": false,
-			"isAAC": true
-		} ],
-		"videoTracks": [],
-		"hasAudio": true,
-		"hasVideo": false,
-		"isAudioAdaptive": false
-	},
-	"metrics": [ {
-		"name": {
-			"_attr": {
-				"name": {
-					"_value": "uuid"
-				}
-			},
-			"_text": null
-		}
-	} ],
-	"mount": "HLS_PLAYERSAAC",
-	"format": "FLV",
-	"bitRate": 80000,
-	"authentication": false,
-	"timeout": 0,
-	"sendPageURL": false,
-	"isAvailable": true,
-	"hasHLS": false,
-	"hasHLSTS": false
-}, {
-	"alternateContent": null,
-	"status": {
-		"statusCode": null,
-		"message": null,
-		"isError": false,
-		"isGeoBlocked": false
-	},
-	"tags": [],
-	"transports": [ {
-		"mountSuffix": null,
-		"transport": "http"
-	} ],
-	"metadata": {
-		"shoutcastV1": {
-			"active": true,
-			"mountSuffix": "_SC"
-		},
-		"shoutcastV2": {
-			"active": false,
-			"mountSuffix": "_SC"
-		},
-		"sseSideband": {
-			"active": true,
-			"streamSuffix": "_SC"
-		}
-	},
-	"servers": [
-		"http://15653.live.streamtheworld.com:80",
-		"http://15653.live.streamtheworld.com:443",
-		"http://15653.live.streamtheworld.com:3690"
-	],
-	"mediaFormat": {
-		"container": "flv",
-		"cuePoints": "stwcue",
-		"trackScheme": "audio",
-		"audioTracks": [ {
-			"index": 0,
-			"codec": "aaclc",
-			"bitRate": 128000,
-			"sampleRate": 44100,
-			"channels": 2,
-			"isMP3": false,
-			"isAAC": true
-		} ],
-		"videoTracks": [],
-		"hasAudio": true,
-		"hasVideo": false,
-		"isAudioAdaptive": false
-	},
-	"metrics": [ {
-		"name": {
-			"_attr": {
-				"name": {
-					"_value": "uuid"
-				}
-			},
-			"_text": null
-		}
-	} ],
-	"mount": "HLS_PLAYERSAAC",
-	"format": "FLV",
-	"bitRate": 128000,
-	"authentication": false,
-	"timeout": 0,
-	"sendPageURL": false,
-	"isAvailable": true,
-	"hasHLS": false,
-	"hasHLSTS": false
-} ]
+[
+  {
+    "alternateContent": null,
+    "status": {
+      "statusCode": null,
+      "message": null,
+      "isError": false,
+      "isGeoBlocked": false
+    },
+    "tags": [],
+    "transports": [
+      {
+        "mountSuffix": null,
+        "transport": "http"
+      }
+    ],
+    "metadata": {
+      "shoutcastV1": {
+        "active": true,
+        "mountSuffix": "_SC"
+      },
+      "shoutcastV2": {
+        "active": false,
+        "mountSuffix": "_SC"
+      },
+      "sseSideband": {
+        "active": true,
+        "streamSuffix": "_SC"
+      }
+    },
+    "servers": [
+      "http://15653.live.streamtheworld.com:80",
+      "http://15653.live.streamtheworld.com:443",
+      "http://15653.live.streamtheworld.com:3690"
+    ],
+    "mediaFormat": {
+      "container": "flv",
+      "cuePoints": "stwcue",
+      "trackScheme": "audio",
+      "audioTracks": [
+        {
+          "index": 0,
+          "codec": "aaclc",
+          "bitRate": 80000,
+          "sampleRate": 44100,
+          "channels": 2,
+          "isMP3": false,
+          "isAAC": true
+        }
+      ],
+      "videoTracks": [],
+      "hasAudio": true,
+      "hasVideo": false,
+      "isAudioAdaptive": false
+    },
+    "metrics": [
+      {
+        "name": {
+          "_attr": {
+            "name": {
+              "_value": "uuid"
+            }
+          },
+          "_text": null
+        }
+      }
+    ],
+    "mount": "HLS_PLAYERSAAC",
+    "format": "FLV",
+    "bitRate": 80000,
+    "authentication": false,
+    "timeout": 0,
+    "sendPageURL": false,
+    "isAvailable": true,
+    "hasHLS": false,
+    "hasHLSTS": false
+  },
+  {
+    "alternateContent": null,
+    "status": {
+      "statusCode": null,
+      "message": null,
+      "isError": false,
+      "isGeoBlocked": false
+    },
+    "tags": [],
+    "transports": [
+      {
+        "mountSuffix": null,
+        "transport": "http"
+      }
+    ],
+    "metadata": {
+      "shoutcastV1": {
+        "active": true,
+        "mountSuffix": "_SC"
+      },
+      "shoutcastV2": {
+        "active": false,
+        "mountSuffix": "_SC"
+      },
+      "sseSideband": {
+        "active": true,
+        "streamSuffix": "_SC"
+      }
+    },
+    "servers": [
+      "http://15653.live.streamtheworld.com:80",
+      "http://15653.live.streamtheworld.com:443",
+      "http://15653.live.streamtheworld.com:3690"
+    ],
+    "mediaFormat": {
+      "container": "flv",
+      "cuePoints": "stwcue",
+      "trackScheme": "audio",
+      "audioTracks": [
+        {
+          "index": 0,
+          "codec": "aaclc",
+          "bitRate": 128000,
+          "sampleRate": 44100,
+          "channels": 2,
+          "isMP3": false,
+          "isAAC": true
+        }
+      ],
+      "videoTracks": [],
+      "hasAudio": true,
+      "hasVideo": false,
+      "isAudioAdaptive": false
+    },
+    "metrics": [
+      {
+        "name": {
+          "_attr": {
+            "name": {
+              "_value": "uuid"
+            }
+          },
+          "_text": null
+        }
+      }
+    ],
+    "mount": "HLS_PLAYERSAAC",
+    "format": "FLV",
+    "bitRate": 128000,
+    "authentication": false,
+    "timeout": 0,
+    "sendPageURL": false,
+    "isAvailable": true,
+    "hasHLS": false,
+    "hasHLSTS": false
+  }
+]

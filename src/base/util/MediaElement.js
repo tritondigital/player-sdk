@@ -4,6 +4,8 @@ var Hls = require("hls.js");
 var PlaybackState = require("sdk/base/playback/PlaybackState");
 var StateMachine = require("javascript-state-machine");
 var OsPlatform = require("platform");
+var stwLSID = null;
+var timeupdateCounter = 0;
 
 var STATE = {
   IDLE: "IDLE",
@@ -51,6 +53,7 @@ var fsm = StateMachine.create({
   ],
 });
 
+var isProgramPlaying = false;
 function _onLoadedData() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
@@ -72,6 +75,17 @@ function _onLoadStart() {
 function _onCanPlay() {
   var context = this;
 
+  if (this.timeshiftEnabled) {
+    var context = this;
+
+    if (OsPlatform.name === "Safari") {
+      setTimeout(() => {
+        context.emit("timeshift-info", {
+          programStartTime: context.audioNode.getStartDate().getTime(),
+        });
+      }, 1000);
+    }
+  }
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
   if (this.url !== null) {
@@ -93,6 +107,15 @@ function _onCanPlay() {
         .catch(function (e) {
           context.handleHTMLPlayError(e);
         });
+      if (
+        this.url.indexOf("CLOUD/HLS/program") > -1 &&
+        this.timeshiftOffset != null &&
+        this.timeshiftOffset >= 0 &&
+        !this.hls
+      ) {
+        this.seekStream(this.timeshiftOffset);
+        this.timeshiftOffset = null;
+      }
     }
   }
 }
@@ -184,11 +207,11 @@ function _onPause() {
 
 function _onError(event) {
   let errorMessage = "";
-  let errorCode = null;  
+  let errorCode = null;
 
-  if (event && event.currentTarget && event.currentTarget.error) {    
+  if (event && event.currentTarget && event.currentTarget.error) {
     errorMessage = event.currentTarget.error.message;
-    errorCode = event.currentTarget.error.code;    
+    errorCode = event.currentTarget.error.code;
   }
 
   var audioNode = this.audioNode;
@@ -237,6 +260,29 @@ function _onTimeUpdate() {
         type: PlaybackState.TIME_UPDATE,
         mediaNode: this.audioNode,
       });
+    }
+  }
+  if (this.timeshiftEnabled && !this.hls) {
+    if (timeupdateCounter == 0) {
+      timeupdateCounter++;
+      let startSeconds =
+        parseInt(new Date().getTime() / 1000) -
+        parseInt(this.audioNode.getStartDate().getTime() / 1000) -
+        this.audioNode.currentTime;
+      let c = parseInt(new Date().getTime()) - startSeconds * 1000;
+
+      this.emit("timeshift-info", {
+        currentTime: c,
+        programStartTime: this.audioNode.getStartDate().getTime(),
+        totalduration:
+          parseInt(new Date().getTime() / 1000) -
+          parseInt(this.audioNode.getStartDate().getTime() / 1000),
+      });
+    } else {
+      timeupdateCounter++;
+      if (timeupdateCounter > 40) {
+        timeupdateCounter = 0;
+      }
     }
   }
 }
@@ -300,40 +346,87 @@ module.exports = _.assign(new EventEmitter(), {
     this.audioNode.src = null;
   },
 
-  playAudio: function (url, useHlsLibrary, isLive) {
+  playAudio: function (
+    url,
+    useHlsLibrary,
+    isLive,
+    timeshiftOffset,
+    timeshiftEnabled
+  ) {
+    this.timeshiftEnabled = timeshiftEnabled;
     if (this.audioNode) {
       this.stop();
     }
 
     this.audioNode = getAudioNode.call(this);
     this.url = url || this.url;
+    if (stwLSID) {
+      this.url = this.url + "&lsid=" + stwLSID;
+    }
     this.isLive = isLive || this.isLive;
     this.useHlsLibrary = useHlsLibrary || this.useHlsLibrary;
+    this.timeshiftOffset = timeshiftOffset == undefined ? -1 : timeshiftOffset;
 
-    if (this.useHlsLibrary) {
+    if (useHlsLibrary) {
       var config = {
         maxBufferLength: 30,
+        autoStartLoad: false,
       };
       this.hls = new Hls(config);
-      this.hls.attachMedia(this.audioNode);
 
+      this.hls.config.xhrSetup = function (xhr, url) {
+        // Set the original headers on the new XHR object
+        xhr.onload = function () {
+          let headers = xhr.getAllResponseHeaders();
+
+          if (headers && headers.indexOf("x-stw-lsid") > 0) {
+            if (xhr.getResponseHeader("x-stw-lsid")) {
+              stwLSID = xhr.getResponseHeader("x-stw-lsid");
+            }
+            console.log("X-STW-LSID:" + stwLSID);
+          }
+        };
+      };
+
+      if (timeshiftEnabled) {
+        this.hls.on(Hls.Events.LEVEL_LOADED, this.levelsLoaded.bind(this));
+        this.hls.on(Hls.Events.FRAG_CHANGED, this.hlsFragChanged.bind(this));
+      }
+
+      this.hls.on(Hls.Events.ERROR, this.hlsError.bind(this));
       this.hls.on(Hls.Events.MEDIA_ATTACHED, this.hlsMediaAttached.bind(this));
+      this.hls.on(
+        Hls.Events.MANIFEST_PARSED,
+        this.hlsManifestParsed.bind(this)
+      );
+      this.hls.loadSource(this.url);
+      this.hls.attachMedia(this.audioNode);
     } else {
-      this.audioNode.src = url;
+      this.audioNode.src = this.url;
       this.audioNode.load();
     }
 
     fsm.play();
   },
 
-  hlsMediaAttached: function () {
-    this.hls.loadSource(this.url);
-    this.hls.on(Hls.Events.MANIFEST_PARSED, this.hlsManifestParsed.bind(this));
-    this.hls.on(Hls.Events.ERROR, this.hlsError.bind(this));
+  hlsMediaAttached: function () {},
+
+  hlsFragChanged: function (id, data) {
+    this.emit("timeshift-info", {
+      currentTime: data.frag.programDateTime,
+    });
+  },
+
+  levelsLoaded: function (event, data) {
+    this.emit("timeshift-info", {
+      totalduration: data.details.totalduration,
+      programStartTime: data.details.fragments[0].programDateTime,
+    });
   },
 
   hlsManifestParsed: function (event, data) {
-    console.log("MediaElement::HLS-event:" + data.type);
+    console.log("MediaElement::HLS-event:" + JSON.stringify(data));
+    this.hls.startLoad(this.timeshiftOffset);
   },
 
   hlsError: function (event, data) {
@@ -378,21 +471,54 @@ module.exports = _.assign(new EventEmitter(), {
     if (this.useHlsLibrary) {
       // Remove hls listeners:
       this.hls.off(Hls.Events.MEDIA_ATTACHED, this.hlsMediaAttached.bind(this));
+      this.hls.off(Hls.Events.LEVEL_LOADED, this.levelsLoaded.bind(this));
       this.hls.off(
         Hls.Events.MANIFEST_PARSED,
         this.hlsManifestParsed.bind(this)
       );
       this.hls.off(Hls.Events.ERROR, this.hlsError.bind(this));
+      this.hls.off(Hls.Events.FRAG_CHANGED, this.hlsFragChanged.bind(this));
 
       // Destruct hls:
-      this.hls.detachMedia();
       this.hls.stopLoad();
+      this.hls.detachMedia();
       this.hls.destroy();
       // emit stop event after hls listeners killed
       this.emit("html5-playback-status", {
         type: PlaybackState.STOP,
         mediaNode: this.audioNode,
       });
+    }
+  },
+
+  seekFromLive: function (seconds) {
+    if (this.hls) {
+      this.seekFromLiveWithLibrary(seconds);
+    } else {
+      this.seekFromLiveNative(seconds);
+    }
+  },
+
+  //This should only happen on iOS
+  seekFromLiveNative: function (seconds) {
+    let startSeconds =
+      parseInt(new Date().getTime() / 1000) -
+      parseInt(this.audioNode.getStartDate().getTime() / 1000);
+    //Must be the total length in seconds minus the param.
+    console.log("SEEK NATIVE!!!" + seconds);
+    if (seconds >= 0) {
+      this.audioNode.currentTime = startSeconds - seconds;
+    } else {
+      this.audioNode.currentTime = startSeconds + seconds;
+    }
+  },
+
+  //Always seeks back
+  seekFromLiveWithLibrary: function (seconds) {
+    if (seconds >= 0) {
+      this.audioNode.currentTime = this.hls.liveSyncPosition - seconds;
+    } else {
+      this.audioNode.currentTime = this.hls.liveSyncPosition + seconds;
     }
   },
 
@@ -436,12 +562,11 @@ module.exports = _.assign(new EventEmitter(), {
   mute: function () {
     if (!fsm.is(STATE.PLAYING)) return;
     this.audioNode = getAudioNode.call(this);
-    if( this.cfg && this.cfg.streamWhileMuted ){
+    if (this.cfg && this.cfg.streamWhileMuted) {
       this.audioNode.muted = true;
-    }else{
+    } else {
       this.stop();
     }
-    
   },
 
   unMute: function () {
@@ -452,9 +577,9 @@ module.exports = _.assign(new EventEmitter(), {
   setVolume: function (volume) {
     this.audioNode = getAudioNode.call(this);
     this.audioNode.volume = volume;
-    if (volume == 0 ) {
+    if (volume == 0) {
       this.mute();
-    }else {
+    } else {
       this.audioNode.muted = false;
     }
   },
@@ -481,7 +606,7 @@ module.exports = _.assign(new EventEmitter(), {
 
   handleHTMLPlayError: function (e) {
     var context = this;
-    if (e.name !== "NotSupportedError") {      
+    if (e.name !== "NotSupportedError") {
       if (e.name === "NotAllowedError") {
         this.emit("html5-playback-status", {
           type: PlaybackState.PLAY_NOT_ALLOWED,

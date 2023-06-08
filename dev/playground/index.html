@@ -51,6 +51,14 @@
             font-family: 'Open Sans', sans-serif;
         }        
 
+        #custom-handle{
+            width: 80px;
+            height: 1.6em;
+            top: 50%;
+            margin-top: -.8em;
+            text-align: center;
+            line-height: 1.6em;
+        }
         /* Works on Firefox */
 * {  
   scrollbar-color: #899ebe #3b5fa1;
@@ -266,6 +274,18 @@
                                 onchange="updatePlayerServicesRegion(this.id)">
                             <label class="btn btn-primary" for="ap">AP</label>
                         </div>
+                        <div class="mb-3" >
+                            <label class="form-label fw-bolder">Stream While Muted:</label>
+                            <input id="swm-toggle" type="checkbox" data-onstyle="primary"
+                                data-offstyle="outline-secondary" ng-checked="streamWhileMuted == true"
+                                data-toggle="toggle" onchange="toggleStreamWhileMuted(this.checked)">
+                        </div>
+                        <div class="mb-3" >
+                            <label class="form-label fw-bolder">Force Timeshift:</label>
+                            <input id="force-timeshift-toggle" type="checkbox" data-onstyle="primary"
+                                data-offstyle="outline-secondary" ng-checked="forceTimeShift == true"
+                                data-toggle="toggle" onchange="toggleForceTimeShift(this.checked)">
+                        </div>
                     </div>
                     <!-- <div class="accordion my-2" id="accordionExample" ng-if="tech == 'html5'">
                         <div class="accordion-item">
@@ -446,10 +466,36 @@
                         </div>
                     </header>
                     <div id="hls-rewind-containter" class="mx-4 collapse show">
-                        <div class="mb-3">
-                            <label for="hlsRewindMount" class="form-label">Timeshift Mount</label>
-                            <input type="text" class="form-control" id="hlsRewindMount" placeholder="Enter a Mount"
-                                value="TRITONRADIOMUSICAAC_RW">
+                        <div class="mb-3" style="display:inline-block">
+                            <label for="hlsRewindStation" class="form-label">Timeshift Station</label>
+                            <input type="text" class="form-control" id="hlsRewindStation" placeholder="Enter a Station"
+                                value="TRITONRADIOMUSIC">
+                        </div>        
+                        <div class="mb-3" style="display:inline-block">
+                            <label for="seekFromLive" class="form-label">Seek From Live ( in seconds )</label>  
+                            <div class="input-group">
+                            <input type="text" class="input-xs" id="seekFromLive" placeholder="Seconds to Seek From Live"
+                            value="50"/>                             
+                            <button class="btn btn-primary" style="margin-left: 5px;" onclick="seekFromLive()" ng-if="menuItem == 'hlsRewind'">
+                                <i class="fas fa-undo" aria-hidden="true"></i>
+                                Seek
+                            </button>
+                           </div> 
+                        </div> 
+                        
+                        <div id="maximumRewindTime" ng-if="maximumRewindTime > 0" class="mb-3">
+                            <b>The Cloud Stream Maximum Rewind Time:</b> {{maximumRewindTime}}
+                        </div>
+                        <div id="timeshiftPrograms" ng-if="timeshiftPrograms.length > 0" class="card">                            
+                            <div class="card-header">
+                                Programs
+                            </div>
+                            <div class="card-body">
+                                <button class="badge rounded-pill bg-info me-2" ng-repeat="(key, value) in timeshiftPrograms" ng-click="playProgram(value)">
+                                    {{value.title}} -- {{value.startTime }}
+                                </button>
+                                <br/>             
+                            </div>
                         </div>
                     </div>
                 </div>                  
@@ -457,7 +503,7 @@
                     ng-if="tech == 'html5' && (menuItem == 'liveStreaming' || menuItem == 'hlsRewind')">
                     <div class="mx-4">                        
                         <div class="mb-3">                                                         
-                            <button class="btn btn-primary {{(playerStatus == 'LIVE_STOP' || playerStatus == 'STATION_NOT_FOUND' || playerStatus == 'STREAM_GEO_BLOCKED' ) ? '' : 'd-none'}}"
+                            <button class="btn btn-primary {{(playerStatus == 'LIVE_STOP' || playerStatus == 'STATION_NOT_FOUND' || playerStatus == 'STREAM_GEO_BLOCKED' ) && (streamingType != 'presets') ? '' : 'd-none'}}"
                                 ng-click="playAudio()">
                                 <i class="fas fa-play" aria-hidden="true"></i>
                             </button>                            
@@ -468,16 +514,38 @@
                             </button> 
 
                             <!--Timeshift Specific-->
+                            <button ng-if="menuItem == 'hlsRewind'" class="btn btn-primary {{playerStatus == 'LIVE_PLAYING' || playerStatus == 'LIVE_BUFFERING' ? '' : 'd-none'}}" 
+                                type="button" id="pauseButton" value="Pause"
+                                onclick="pauseStream()">
+                                <i class="fas fa-pause" aria-hidden="true"></i>
+                            </button>
+                            <button ng-if="menuItem == 'hlsRewind'" class="btn btn-primary {{playerStatus == 'LIVE_PAUSE' ? '' : 'd-none'}}" 
+                                type="button" id="resumeButton" value="Pause"
+                                onclick="resumeStream()">
+                                <i class="fas fa-play" aria-hidden="true"></i>
+                            </button>
                             <button class="btn btn-primary" onclick="forward(10)" ng-if="menuItem == 'hlsRewind'">
                                 <i class="fas fa-redo" aria-hidden="true"></i>
+                                10s
                             </button>
                             <button class="btn btn-primary" onclick="rewind(10)" ng-if="menuItem == 'hlsRewind'">
                                 <i class="fas fa-undo" aria-hidden="true"></i>
+                                10s
                             </button>
                             <button id="hlsLiveButton" class="btn btn-primary" onclick="live()" ng-if="menuItem == 'hlsRewind'">
                                 <i class="fas fa-wifi" aria-hidden="true"></i>
                                 Live
                             </button>
+                            <button id="hlsLiveButton" class="btn btn-primary" onclick="getCloudStreamInfo()" ng-if="menuItem == 'hlsRewind'">
+                                <i class="fas fa-recycle" aria-hidden="true"></i>
+                                Get Cloud Stream Info
+                            </button>                         
+                            <div ng-if="menuItem == 'hlsRewind'">
+                                <label id="sliderMinLabel"></label>
+                                <div id="timeshiftSlider" style="margin-top: 15px; width:450px;display:inline-block; ">
+                                    <div id="custom-handle" class="ui-slider-handle"></div>
+                                </div>                                    
+                            </div>                            
 
                             <!--Put this back if you want to test the PAUSE / Resume" functionality-->
                             <!-- <button class="btn btn-primary" type="button" value="Pause"
@@ -1055,7 +1123,7 @@
     <!-- tdplayer.js is specific to this index.html page, it is NOT required and is only there for a demo on how to integrate the TD SDK in a page -->
     <script src="js/tdplayer.js"></script>
 
-    <script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
     <script src="js/jquery.smooth-scroll.min.js"></script>
     <script src="js/lightbox.js"></script>
 
@@ -1099,6 +1167,8 @@
             $scope.sbm = getUrlVars()['sbm'] == 'false' ? false : true;
             $scope.aSyncCuePointFallback = getUrlVars()['aSyncCuePointFallback'] == 'false' ? false : true;
             $scope.hls = getUrlVars()['hls'] == 'false' ? false : true;
+            $scope.forceTimeShift = getUrlVars()['forceTimeShift'] == 'true' ? true : false;
+            $scope.streamWhileMuted = getUrlVars()['streamWhileMuted'] == 'true' ? true : false;
             $scope.audioAdaptive = getUrlVars()['audioAdaptive'] == 'true' ? true : false;
             $scope.streamAutoStart = false;
             $scope.GAActive = getUrlVars()['gaactive'] == "true" ? true : false;
@@ -1111,6 +1181,8 @@
             $scope.tagDuration = '00:00:00';
             $scope.totalTags = 0;
             $scope.playerStatus = "LIVE_STOP";
+            $scope.timeshiftPrograms = [];
+            $scope.maximumRewindTime = 0;
             $scope.updateStreamingType = function (value) {
                 $scope.streamingType = value;
             }
@@ -1127,6 +1199,13 @@
                 $scope.totalTags = value;
             }
 
+            $scope.updateMaximumRewindTime = function (value){                
+                $scope.maximumRewindTime = value;
+            }
+
+            $scope.updateTimeshiftPrograms = function (value){                
+                $scope.timeshiftPrograms = value;
+            }
             $scope.updateMenuItem = function (value) {
                 $scope.menuItem = value;
             }
@@ -1138,6 +1217,10 @@
 
             $scope.playAudio = function () {
                 playAudio($scope.menuItem, $scope.streamingType);
+            }
+
+            $scope.playProgram = function (timeshiftProgram) {
+                playProgram(timeshiftProgram);
             }
 
             if ($scope.platformid == 'preprod') {

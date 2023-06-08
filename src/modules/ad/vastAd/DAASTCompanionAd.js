@@ -2,24 +2,19 @@
  * DAAST Companion Ad
  */
 define([
-    'dojo/_base/declare',
-    'sdk/modules/ad/vastAd/VASTCompanionAd'
-], function ( declare, VASTCompanionAd ) {
+  "dojo/_base/declare",
+  "sdk/modules/ad/vastAd/VASTCompanionAd",
+], function (declare, VASTCompanionAd) {
+  var daastCompanionAd = declare(VASTCompanionAd, {
+    constructor: function () {
+      console.log("daastCompanionAd::constructor");
 
-    var daastCompanionAd = declare( VASTCompanionAd, {
+      this.logoTile = null;
+      this.logoTitle = null;
+      this.logoArtist = null;
+      this.logoURL = null;
+    },
+  });
 
-        constructor:function()
-        {
-            console.log('daastCompanionAd::constructor');
-
-            this.logoTile = null;
-            this.logoTitle = null;
-            this.logoArtist = null;
-            this.logoURL = null;
-        }
-
-    });
-
-    return daastCompanionAd;
-
+  return daastCompanionAd;
 });

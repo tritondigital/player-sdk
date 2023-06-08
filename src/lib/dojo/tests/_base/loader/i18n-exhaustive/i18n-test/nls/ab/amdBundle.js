@@ -1,4 +1,4 @@
 define({
-	amdBundle:"amdBundle-ab",
-	abValueOnly:"abValueOnly"
+  amdBundle: "amdBundle-ab",
+  abValueOnly: "abValueOnly",
 });

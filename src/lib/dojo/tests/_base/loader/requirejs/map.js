@@ -1,7 +1,5 @@
-define("map",
-  function(){
-    return {
-      name: "map"
-    };
-  }
-);
+define("map", function () {
+  return {
+    name: "map",
+  };
+});

@@ -1,7 +1,5 @@
-define(
-//begin v1.x content
+define(//begin v1.x content
 {
- hello: "Howdy"
-}
+  hello: "Howdy",
+});
 //end v1.x content
-);

@@ -1,424 +1,454 @@
 {
-	"_attr": {
-		"xmlns": {
-			"_value": "http://provisioning.streamtheworld.com/player/livestream-1.8"
-		},
-		"version": {
-			"_value": 1.8
-		}
-	},
-	"mountpoints": {
-		"mountpoint": [ {
-			"_attr": {
-				"tags": {
-					"_value": "low,hq"
-				}
-			},
-			"status": {
-				"status-code": {
-					"_text": 200
-				},
-				"status-message": {
-					"_text": "OK"
-				}
-			},
-			"transports": {
-				"transport": {
-					"_text": "http"
-				}
-			},
-			"metadata": {
-				"shoutcast-v1": {
-					"_attr": {
-						"enabled": {
-							"_value": true
-						},
-						"mountSuffix": {
-							"_value": "_SC"
-						}
-					},
-					"_text": null
-				},
-				"shoutcast-v2": {
-					"_attr": {
-						"enabled": {
-							"_value": false
-						},
-						"mountSuffix": {
-							"_value": "_SC"
-						}
-					},
-					"_text": null
-				},
-				"sse-sideband": {
-					"_attr": {
-						"enabled": {
-							"_value": true
-						},
-						"streamSuffix": {
-							"_value": "_SC"
-						},
-						"metadataSuffix": {
-							"_value": "_SBM"
-						}
-					},
-					"_text": null
-				}
-			},
-			"servers": {
-				"server": [ {
-					"_attr": {
-						"sid": {
-							"_value": 6083
-						}
-					},
-					"ip": {
-						"_text": "6083.live.streamtheworld.com"
-					},
-					"ports": {
-						"port": [ {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 80
-						}, {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 3690
-						}, {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 443
-						} ]
-					}
-				}, {
-					"_attr": {
-						"sid": {
-							"_value": 13753
-						}
-					},
-					"ip": {
-						"_text": "13753.live.streamtheworld.com"
-					},
-					"ports": {
-						"port": [ {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 80
-						}, {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 443
-						}, {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 3690
-						} ]
-					}
-				}, {
-					"_attr": {
-						"sid": {
-							"_value": 14573
-						}
-					},
-					"ip": {
-						"_text": "14573.live.streamtheworld.com"
-					},
-					"ports": {
-						"port": [ {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 80
-						}, {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 443
-						}, {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 3690
-						} ]
-					}
-				} ]
-			},
-			"metrics": {
-				"tag": {
-					"_attr": {
-						"name": {
-							"_value": "uuid"
-						}
-					},
-					"_text": null
-				}
-			},
-			"mount": {
-				"_text": "HLS_PLAYERSMP3"
-			},
-			"alternate-content": {
-				"url": {
-					"_text": "[URL to alternate content]"
-				},
-				"mount": {
-					"_text": "[Alternate Mount Name]"
-				}
-			},
-			"format": {
-				"_text": "FLV"
-			},
-			"bitrate": {
-				"_text": 80000
-			},
-			"media-format": {
-				"_attr": {
-					"container": {
-						"_value": "flv"
-					},
-					"cuepoints": {
-						"_value": "stwcue"
-					},
-					"trackScheme": {
-						"_value": "audio"
-					}
-				},
-				"audio": [ {
-					"_attr": {
-						"index": {
-							"_value": 0
-						},
-						"samplerate": {
-							"_value": 22050
-						},
-						"codec": {
-							"_value": "mp3"
-						},
-						"bitrate": {
-							"_value": 80000
-						},
-						"channels": {
-							"_value": 2
-						}
-					},
-					"_text": null
-				}, {
-					"_attr": {
-						"index": {
-							"_value": 1
-						},
-						"samplerate": {
-							"_value": 22050
-						},
-						"codec": {
-							"_value": "mp3"
-						},
-						"bitrate": {
-							"_value": 80000
-						},
-						"channels": {
-							"_value": 3
-						}
-					},
-					"_text": null
-				} ]
-			},
-			"authentication": {
-				"_text": 0
-			},
-			"timeout": {
-				"_text": 0
-			},
-			"send-page-url": {
-				"_text": 0
-			}
-		}, {
-			"status": {
-				"status-code": {
-					"_text": 200
-				},
-				"status-message": {
-					"_text": "OK"
-				}
-			},
-			"transports": {
-				"transport": [ {
-					"_text": "http"
-				}, {
-					"_attr": {
-						"mountSuffix": {
-							"_value": "/HLS/playlist.m3u8"
-						}
-					},
-					"_text": "hls"
-				}, {
-					"_attr": {
-						"mountSuffix": {
-							"_value": "/HLSTS/playlist.m3u8"
-						}
-					},
-					"_text": "hlsts"
-				} ]
-			},
-			"metadata": {
-				"shoutcast-v1": {
-					"_attr": {
-						"enabled": {
-							"_value": true
-						},
-						"mountSuffix": {
-							"_value": "_SC"
-						}
-					},
-					"_text": null
-				},
-				"shoutcast-v2": {
-					"_attr": {
-						"enabled": {
-							"_value": false
-						},
-						"mountSuffix": {
-							"_value": "_SC"
-						}
-					},
-					"_text": null
-				},
-				"sse-sideband": {
-					"_attr": {
-						"enabled": {
-							"_value": true
-						},
-						"streamSuffix": {
-							"_value": "_SC"
-						},
-						"metadataSuffix": {
-							"_value": "_SBM"
-						}
-					},
-					"_text": null
-				}
-			},
-			"servers": {
-				"server": {
-					"_attr": {
-						"sid": {
-							"_value": 15653
-						}
-					},
-					"ip": {
-						"_text": "15653.live.streamtheworld.com"
-					},
-					"ports": {
-						"port": [ {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 80
-						}, {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 443
-						}, {
-							"_attr": {
-								"type": {
-									"_value": "http"
-								}
-							},
-							"_text": 3690
-						} ]
-					}
-				}
-			},
-			"metrics": {
-				"tag": {
-					"_attr": {
-						"name": {
-							"_value": "uuid"
-						}
-					},
-					"_text": null
-				}
-			},
-			"mount": {
-				"_text": "HLS_PLAYERSAAC"
-			},
-			"format": {
-				"_text": "FLV"
-			},
-			"bitrate": {
-				"_text": 128000
-			},
-			"media-format": {
-				"_attr": {
-					"container": {
-						"_value": "flv"
-					},
-					"cuepoints": {
-						"_value": "stwcue"
-					},
-					"trackScheme": {
-						"_value": "audio"
-					}
-				},
-				"audio": {
-					"_attr": {
-						"index": {
-							"_value": 0
-						},
-						"samplerate": {
-							"_value": 44100
-						},
-						"codec": {
-							"_value": "aaclc"
-						},
-						"bitrate": {
-							"_value": 128000
-						},
-						"channels": {
-							"_value": 2
-						}
-					},
-					"_text": null
-				}
-			},
-			"authentication": {
-				"_text": 0
-			},
-			"timeout": {
-				"_text": 0
-			},
-			"send-page-url": {
-				"_text": 0
-			}
-		} ]
-	},
-	"lastRefreshTime": 1466435341189
+  "_attr": {
+    "xmlns": {
+      "_value": "http://provisioning.streamtheworld.com/player/livestream-1.8"
+    },
+    "version": {
+      "_value": 1.8
+    }
+  },
+  "mountpoints": {
+    "mountpoint": [
+      {
+        "_attr": {
+          "tags": {
+            "_value": "low,hq"
+          }
+        },
+        "status": {
+          "status-code": {
+            "_text": 200
+          },
+          "status-message": {
+            "_text": "OK"
+          }
+        },
+        "transports": {
+          "transport": {
+            "_text": "http"
+          }
+        },
+        "metadata": {
+          "shoutcast-v1": {
+            "_attr": {
+              "enabled": {
+                "_value": true
+              },
+              "mountSuffix": {
+                "_value": "_SC"
+              }
+            },
+            "_text": null
+          },
+          "shoutcast-v2": {
+            "_attr": {
+              "enabled": {
+                "_value": false
+              },
+              "mountSuffix": {
+                "_value": "_SC"
+              }
+            },
+            "_text": null
+          },
+          "sse-sideband": {
+            "_attr": {
+              "enabled": {
+                "_value": true
+              },
+              "streamSuffix": {
+                "_value": "_SC"
+              },
+              "metadataSuffix": {
+                "_value": "_SBM"
+              }
+            },
+            "_text": null
+          }
+        },
+        "servers": {
+          "server": [
+            {
+              "_attr": {
+                "sid": {
+                  "_value": 6083
+                }
+              },
+              "ip": {
+                "_text": "6083.live.streamtheworld.com"
+              },
+              "ports": {
+                "port": [
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 80
+                  },
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 3690
+                  },
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 443
+                  }
+                ]
+              }
+            },
+            {
+              "_attr": {
+                "sid": {
+                  "_value": 13753
+                }
+              },
+              "ip": {
+                "_text": "13753.live.streamtheworld.com"
+              },
+              "ports": {
+                "port": [
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 80
+                  },
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 443
+                  },
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 3690
+                  }
+                ]
+              }
+            },
+            {
+              "_attr": {
+                "sid": {
+                  "_value": 14573
+                }
+              },
+              "ip": {
+                "_text": "14573.live.streamtheworld.com"
+              },
+              "ports": {
+                "port": [
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 80
+                  },
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 443
+                  },
+                  {
+                    "_attr": {
+                      "type": {
+                        "_value": "http"
+                      }
+                    },
+                    "_text": 3690
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "metrics": {
+          "tag": {
+            "_attr": {
+              "name": {
+                "_value": "uuid"
+              }
+            },
+            "_text": null
+          }
+        },
+        "mount": {
+          "_text": "HLS_PLAYERSMP3"
+        },
+        "alternate-content": {
+          "url": {
+            "_text": "[URL to alternate content]"
+          },
+          "mount": {
+            "_text": "[Alternate Mount Name]"
+          }
+        },
+        "format": {
+          "_text": "FLV"
+        },
+        "bitrate": {
+          "_text": 80000
+        },
+        "media-format": {
+          "_attr": {
+            "container": {
+              "_value": "flv"
+            },
+            "cuepoints": {
+              "_value": "stwcue"
+            },
+            "trackScheme": {
+              "_value": "audio"
+            }
+          },
+          "audio": [
+            {
+              "_attr": {
+                "index": {
+                  "_value": 0
+                },
+                "samplerate": {
+                  "_value": 22050
+                },
+                "codec": {
+                  "_value": "mp3"
+                },
+                "bitrate": {
+                  "_value": 80000
+                },
+                "channels": {
+                  "_value": 2
+                }
+              },
+              "_text": null
+            },
+            {
+              "_attr": {
+                "index": {
+                  "_value": 1
+                },
+                "samplerate": {
+                  "_value": 22050
+                },
+                "codec": {
+                  "_value": "mp3"
+                },
+                "bitrate": {
+                  "_value": 80000
+                },
+                "channels": {
+                  "_value": 3
+                }
+              },
+              "_text": null
+            }
+          ]
+        },
+        "authentication": {
+          "_text": 0
+        },
+        "timeout": {
+          "_text": 0
+        },
+        "send-page-url": {
+          "_text": 0
+        }
+      },
+      {
+        "status": {
+          "status-code": {
+            "_text": 200
+          },
+          "status-message": {
+            "_text": "OK"
+          }
+        },
+        "transports": {
+          "transport": [
+            {
+              "_text": "http"
+            },
+            {
+              "_attr": {
+                "mountSuffix": {
+                  "_value": "/HLS/playlist.m3u8"
+                }
+              },
+              "_text": "hls"
+            },
+            {
+              "_attr": {
+                "mountSuffix": {
+                  "_value": "/HLSTS/playlist.m3u8"
+                }
+              },
+              "_text": "hlsts"
+            }
+          ]
+        },
+        "metadata": {
+          "shoutcast-v1": {
+            "_attr": {
+              "enabled": {
+                "_value": true
+              },
+              "mountSuffix": {
+                "_value": "_SC"
+              }
+            },
+            "_text": null
+          },
+          "shoutcast-v2": {
+            "_attr": {
+              "enabled": {
+                "_value": false
+              },
+              "mountSuffix": {
+                "_value": "_SC"
+              }
+            },
+            "_text": null
+          },
+          "sse-sideband": {
+            "_attr": {
+              "enabled": {
+                "_value": true
+              },
+              "streamSuffix": {
+                "_value": "_SC"
+              },
+              "metadataSuffix": {
+                "_value": "_SBM"
+              }
+            },
+            "_text": null
+          }
+        },
+        "servers": {
+          "server": {
+            "_attr": {
+              "sid": {
+                "_value": 15653
+              }
+            },
+            "ip": {
+              "_text": "15653.live.streamtheworld.com"
+            },
+            "ports": {
+              "port": [
+                {
+                  "_attr": {
+                    "type": {
+                      "_value": "http"
+                    }
+                  },
+                  "_text": 80
+                },
+                {
+                  "_attr": {
+                    "type": {
+                      "_value": "http"
+                    }
+                  },
+                  "_text": 443
+                },
+                {
+                  "_attr": {
+                    "type": {
+                      "_value": "http"
+                    }
+                  },
+                  "_text": 3690
+                }
+              ]
+            }
+          }
+        },
+        "metrics": {
+          "tag": {
+            "_attr": {
+              "name": {
+                "_value": "uuid"
+              }
+            },
+            "_text": null
+          }
+        },
+        "mount": {
+          "_text": "HLS_PLAYERSAAC"
+        },
+        "format": {
+          "_text": "FLV"
+        },
+        "bitrate": {
+          "_text": 128000
+        },
+        "media-format": {
+          "_attr": {
+            "container": {
+              "_value": "flv"
+            },
+            "cuepoints": {
+              "_value": "stwcue"
+            },
+            "trackScheme": {
+              "_value": "audio"
+            }
+          },
+          "audio": {
+            "_attr": {
+              "index": {
+                "_value": 0
+              },
+              "samplerate": {
+                "_value": 44100
+              },
+              "codec": {
+                "_value": "aaclc"
+              },
+              "bitrate": {
+                "_value": 128000
+              },
+              "channels": {
+                "_value": 2
+              }
+            },
+            "_text": null
+          }
+        },
+        "authentication": {
+          "_text": 0
+        },
+        "timeout": {
+          "_text": 0
+        },
+        "send-page-url": {
+          "_text": 0
+        }
+      }
+    ]
+  },
+  "lastRefreshTime": 1466435341189
 }

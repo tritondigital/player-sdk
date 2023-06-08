@@ -1,36 +1,28 @@
 /**
  *  @module GAExceptionRequest
  */
-define([
-    'dojo/_base/declare',
-    'sdk/base/util/analytics/GARequest'
-], function ( declare, GARequest ) {
-
+define(["dojo/_base/declare", "sdk/base/util/analytics/GARequest"], function (
+  declare,
+  GARequest
+) {
+  /**
+   * @namespace tdapi/modules/analytics/GAEventRequest
+   */
+  var GAExceptionRequest = declare([GARequest], {
     /**
-     * @namespace tdapi/modules/analytics/GAEventRequest
+     * constructor
      */
-    var GAExceptionRequest = declare([ GARequest ], {
+    constructor: function () {
+      console.log("GAExceptionRequest::constructor");
 
-        /**
-         * constructor
-         */
-        constructor: function(){
+      this.inherited(arguments);
+    },
+  });
 
-            console.log('GAExceptionRequest::constructor');
+  //singleton
+  if (this.GAExceptionRequestInstance == null) {
+    this.GAExceptionRequestInstance = new GAExceptionRequest();
+  }
 
-            this.inherited( arguments );
-
-        }
-
-    });
-
-    //singleton
-    if ( this.GAExceptionRequestInstance == null ){
-
-        this.GAExceptionRequestInstance = new GAExceptionRequest( );
-
-    }
-
-    return this.GAExceptionRequestInstance;
-
-} );
+  return this.GAExceptionRequestInstance;
+});

@@ -1,11 +1,8 @@
-define([
-	"./router/RouterBase"
-], function(RouterBase){
+define(["./router/RouterBase"], function (RouterBase) {
+  // module:
+  //		dojo/router
 
-	// module:
-	//		dojo/router
-
-/*=====
+  /*=====
 return {
 	// summary:
 	//		A singleton-style instance of dojo/router/RouterBase. See that
@@ -24,5 +21,5 @@ return {
 };
 =====*/
 
-	return new RouterBase({});
+  return new RouterBase({});
 });

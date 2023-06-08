@@ -1,8 +1,14 @@
-define(["./kernel", "../query", "./array", "./html", "../NodeList-dom"], function(dojo, query, array){
-	// module:
-	//		dojo/_base/NodeList
+define([
+  "./kernel",
+  "../query",
+  "./array",
+  "./html",
+  "../NodeList-dom",
+], function (dojo, query, array) {
+  // module:
+  //		dojo/_base/NodeList
 
-	/*=====
+  /*=====
 	return {
 		// summary:
 		//		This module extends dojo/NodeList with the legacy connect(), coords(),
@@ -11,15 +17,15 @@ define(["./kernel", "../query", "./array", "./html", "../NodeList-dom"], functio
 		//		mouseout(), mouseover(), mouseup(), and submit() methods.
 	};
 	=====*/
- 
-	var NodeList = query.NodeList,
-		nlp = NodeList.prototype;
 
-	nlp.connect = NodeList._adaptAsForEach(function(){
-		// don't bind early to dojo.connect since we no longer explicitly depend on it
-		return dojo.connect.apply(this, arguments);
-	});
-	/*=====
+  var NodeList = query.NodeList,
+    nlp = NodeList.prototype;
+
+  nlp.connect = NodeList._adaptAsForEach(function () {
+    // don't bind early to dojo.connect since we no longer explicitly depend on it
+    return dojo.connect.apply(this, arguments);
+  });
+  /*=====
 	nlp.connect = function(methodName, objOrFunc, funcName){
 		// summary:
 		//		Attach event handlers to every item of the NodeList. Uses dojo.connect()
@@ -51,8 +57,8 @@ define(["./kernel", "../query", "./array", "./html", "../NodeList-dom"], functio
 	};
 	=====*/
 
-	nlp.coords = NodeList._adaptAsMap(dojo.coords);
-	/*=====
+  nlp.coords = NodeList._adaptAsMap(dojo.coords);
+  /*=====
 	nlp.coords = function(){
 		// summary:
 		//		Deprecated: Use position() for border-box x/y/w/h
@@ -65,24 +71,38 @@ define(["./kernel", "../query", "./array", "./html", "../NodeList-dom"], functio
 	};
 	=====*/
 
-	NodeList.events = [
-		// summary:
-		//		list of all DOM events used in NodeList
-		"blur", "focus", "change", "click", "error", "keydown", "keypress",
-		"keyup", "load", "mousedown", "mouseenter", "mouseleave", "mousemove",
-		"mouseout", "mouseover", "mouseup", "submit"
-	];
+  NodeList.events = [
+    // summary:
+    //		list of all DOM events used in NodeList
+    "blur",
+    "focus",
+    "change",
+    "click",
+    "error",
+    "keydown",
+    "keypress",
+    "keyup",
+    "load",
+    "mousedown",
+    "mouseenter",
+    "mouseleave",
+    "mousemove",
+    "mouseout",
+    "mouseover",
+    "mouseup",
+    "submit",
+  ];
 
-	// FIXME: pseudo-doc the above automatically generated on-event functions
+  // FIXME: pseudo-doc the above automatically generated on-event functions
 
-	// syntactic sugar for DOM events
-	array.forEach(NodeList.events, function(evt){
-			var _oe = "on" + evt;
-			nlp[_oe] = function(a, b){
-				return this.connect(_oe, a, b);
-			};
-				// FIXME: should these events trigger publishes?
-				/*
+  // syntactic sugar for DOM events
+  array.forEach(NodeList.events, function (evt) {
+    var _oe = "on" + evt;
+    nlp[_oe] = function (a, b) {
+      return this.connect(_oe, a, b);
+    };
+    // FIXME: should these events trigger publishes?
+    /*
 				return (a ? this.connect(_oe, a, b) :
 							this.forEach(function(n){
 								// FIXME:
@@ -102,9 +122,8 @@ define(["./kernel", "../query", "./array", "./html", "../NodeList-dom"], functio
 							})
 				);
 				*/
-		}
-	);
+  });
 
-	dojo.NodeList = NodeList;
-	return NodeList;
+  dojo.NodeList = NodeList;
+  return NodeList;
 });

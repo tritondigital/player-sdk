@@ -1,3 +1,3 @@
 define("foo/bar/two", {
-    name: "two"
+  name: "two",
 });

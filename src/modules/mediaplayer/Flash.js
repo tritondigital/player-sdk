@@ -117,7 +117,7 @@ define([
       onMediaPlaybackStatus: "_onMediaPlaybackStatus",
       onMediaPlaybackTimeUpdate: "media-playback-timeupdate",
       onMediaPlaybackMetadata: "media-playback-metadata",
-      onMediaError: "_onMediaError"
+      onMediaError: "_onMediaError",
     },
 
     /**
@@ -219,7 +219,7 @@ define([
       data.delay = delay;
       window.setTimeout(() => {
         this.emit("stream-data", data);
-      }, delay);      
+      }, delay);
     },
 
     /*************************
@@ -550,7 +550,7 @@ define([
             cuePoint[BreakCuePoint.AD_VAST_URL] != ""
               ? cuePoint[BreakCuePoint.AD_VAST_URL]
               : null;
-          
+
           setTimeout(() => {
             if (
               adBreakData.isVastInStream == true &&
@@ -558,7 +558,7 @@ define([
             ) {
               topic.publish("api/request", "get-vast-instream", adBreakData);
             }
-            
+
             this._onAdBreakCuePoint({
               adBreakData: adBreakData,
               cuePoint: cuePoint,
@@ -569,8 +569,8 @@ define([
             this._onTrackCuePoint({ cuePoint: cuePoint });
           }, delay);
         }
-      } 
-    },    
+      }
+    },
 
     __onCuePoint: function (data) {
       console.log("flash:cuePoint received");

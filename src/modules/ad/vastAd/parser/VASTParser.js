@@ -1,69 +1,57 @@
-var xmlParser = require('sdk/base/util/XmlParser');
+var xmlParser = require("sdk/base/util/XmlParser");
 
 /**
  * VAST Parser
  */
-define([
-    'dojo/_base/declare'
-], function ( declare ) {
+define(["dojo/_base/declare"], function (declare) {
+  var vastParser = declare([], {
+    constructor: function (target) {
+      console.log("vastParser::constructor");
 
-    var vastParser = declare([], {
+      this.target = target;
+    },
 
-        constructor:function( target )
-        {
-            console.log('vastParser::constructor');
+    /**
+     * Return the value of a tag in a defined XML.
+     *
+     * @param xmldata
+     * @param tagName
+     *
+     */
+    getTagValue: function (xmldata, tagName) {
+      if (xmldata.getElementsByTagName(tagName).length == 0) return null;
+      else
+        return xmlParser.textContent(xmldata.getElementsByTagName(tagName)[0]);
+    },
 
-            this.target = target;
-        },
+    /**
+     * Return an array of childNodes in a defined XML node.
+     *
+     * @param xmldata
+     * @param tagName
+     * @param nodeName
+     *
+     */
+    getDataAsArray: function (xmldata, tagName, nodeName) {
+      if (xmldata.getElementsByTagName(tagName).length == 0) return null;
 
-        /**
-         * Return the value of a tag in a defined XML.
-         *
-         * @param xmldata
-         * @param tagName
-         *
-         */
-        getTagValue:function( xmldata, tagName  )
-        {
-            if ( xmldata.getElementsByTagName( tagName ).length == 0 )
-                return null;
-            else
-                return xmlParser.textContent( xmldata.getElementsByTagName( tagName )[0] );
-        },
+      var data = xmldata.getElementsByTagName(tagName)[0].childNodes;
 
-        /**
-         * Return an array of childNodes in a defined XML node.
-         *
-         * @param xmldata
-         * @param tagName
-         * @param nodeName
-         *
-         */
-        getDataAsArray:function( xmldata, tagName, nodeName )
-        {
-            if ( xmldata.getElementsByTagName( tagName ).length == 0 ) return null;
+      var array = [];
 
-            var data = xmldata.getElementsByTagName(tagName)[0].childNodes;
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].nodeName == nodeName)
+          array.push(xmlParser.textContent(data[i]));
+      }
+      return array;
+    },
 
-            var array = [];
+    trim: function (value) {
+      if (value == undefined) return null;
 
-            for ( var i = 0; i < data.length; i++ ) {
-                if( data[i].nodeName == nodeName )
-                    array.push( xmlParser.textContent( data[i] ) );
-            }
-            return array;
-        },
+      return value.replace(/^\s+|\s+$/g, "");
+    },
+  });
 
-        trim:function( value )
-        {
-            if( value == undefined ) return null;
-
-            return value.replace(/^\s+|\s+$/g, "");
-
-        }
-
-    });
-
-    return vastParser;
-
+  return vastParser;
 });

@@ -1,7 +1,7 @@
-$( document ).ready( function () {
-	configurePlatformIdButtons();
-	//configureGDPRButtons();
-} );
+$(document).ready(function () {
+  configurePlatformIdButtons();
+  //configureGDPRButtons();
+});
 //Change platformid buttons - Triton Digital QA usage only.
 var platformid = "prod";
 var platformIdLink = platformid;
@@ -19,21 +19,23 @@ var flvTagData = {};
 var totalTags = 0;
 let scope = null;
 let selectedRect = null;
+let totalTimeshiftDuration = null;
+let timeshiftSliderStartValue = 0;
+var maximumRewindTime = 10800;
 
 if (getUrlVars()["platformid"]) {
   platformid = getUrlVars()["platformid"];
-	platformIdLink = platformid;
+  platformIdLink = platformid;
 
   if (platformid === "local") {
     platformIdLink = "local";
     platformid = "prod";
-	}
+  }
 
   if (platformid === "versioning") {
     platformIdLink = "versioning";
     platformid = "prod";
-	}
-
+  }
 } else if (location.host.startsWith("localhost")) {
   platformIdLink = "local";
   platformid = "prod";
@@ -45,15 +47,16 @@ if (getUrlVars()["platformid"]) {
 } else if (location.href.includes("web/v/")) {
   platformid = "prod";
   platformIdLink = "versioning";
-
-} 
-
+}
 
 var tech = getUrlVars()["tech"] || "flash";
 var sbm = getUrlVars()["sbm"] == "false" ? false : true;
 var aSyncCuePointFallback =
   getUrlVars()["aSyncCuePointFallback"] == "false" ? false : true;
 var hls = getUrlVars()["hls"] == "false" ? false : true;
+var forceTimeShift = getUrlVars()["forceTimeShift"] == "true" ? true : false;
+var streamWhileMuted =
+  getUrlVars()["streamWhileMuted"] == "true" ? true : false;
 var audioAdaptive = getUrlVars()["audioAdaptive"] == "true" ? true : false;
 var streamAutoStart = false;
 
@@ -70,7 +73,7 @@ var GAActive = true; //getUrlVars()[ 'gaactive' ] == "true" ? true : false;
 var GADebug = getUrlVars()["gadebug"] == "true" ? true : false;
 //var allowPersonalisedAds = getUrlVars()['allowPersonalisedAds'] == "true" ? true : false;
 var allowPersonalisedAds = true;
-var tcfFramework = false;//getUrlVars()['tcfFramework'] == "true" ? true : false;
+var tcfFramework = false; //getUrlVars()['tcfFramework'] == "true" ? true : false;
 var playerServicesRegion = getUrlVars()["playerServicesRegion"] || "us";
 
 //idSync
@@ -92,76 +95,70 @@ var flowAds = false;
 var flvPacketCount = 0;
 var canvasWidth = 975;
 var canvasHeight = 400;
+var timeshiftPrograms = [];
 
 function initPlayer() {
-	var techPriority;
-	switch ( tech ) {
+  var techPriority;
+  switch (tech) {
     case "flash_html5":
       techPriority = ["Flash", "Html5"];
-		break;
+      break;
     case "flash":
       techPriority = ["Flash"];
-		break;
+      break;
     case "html5":
       techPriority = ["Html5"];
-		break;
+      break;
     case "html5_flash":
-	default:
+    default:
       techPriority = ["Html5", "Flash"];
-		break;
-
-	}
+      break;
+  }
 
   playerServicesRegion =
     playerServicesRegion == "us" ? "" : playerServicesRegion;
 
-	/* TD player configuration object used to create player instance */
-	var tdSdkConfig = {		
-		//locale: 'es',
+  /* TD player configuration object used to create player instance */
+  var tdSdkConfig = {
+    //locale: 'es',
     coreModules: [
       {
         id: "MediaPlayer",
         playerId: "td_container",
         platformId: platformid + "01", //prod01 by default.
-			isDebug: true,
-			techPriority: techPriority,
-			allowPersonalisedAds: allowPersonalisedAds,
-			playerServicesRegion: playerServicesRegion,
-                        streamWhileMuted: true,
-			/* (default behaviour) or ['Html5', 'Flash'] or ['Flash'] or ['Html5'] */
-        timeShift: {
-          /* The 'timeShift' configuration object is optional, by default the timeShifting is inactive and is Flash only, HTML5 to be tested in a future version of PlayerCore */
-				active: 0,
-				/* 1 = active, 0 = inactive */
-          max_listening_time: 35 /* If max_listening_time is undefined, the default value will be 30 minutes */,
-			},
-			//defaultTrackingParameters:{ user:{ streamtheworld_user:1 } },
-			sbm: {
-				active: sbm,
+        isDebug: true,
+        techPriority: techPriority,
+        allowPersonalisedAds: allowPersonalisedAds,
+        playerServicesRegion: playerServicesRegion,
+        streamWhileMuted: streamWhileMuted,
+        //defaultTrackingParameters:{ user:{ streamtheworld_user:1 } },
+        sbm: {
+          active: sbm,
           aSyncCuePointFallback: aSyncCuePointFallback,
-			},
-			hls: hls,
-			audioAdaptive: audioAdaptive,
-			geoTargeting: {
-				desktop: {
-            isActive: true,
-				},
-				iOS: {
-            isActive: true,
-				},
-				android: {
+        },
+        hls: hls,
+        forceHls: false,
+        audioAdaptive: audioAdaptive,
+        geoTargeting: {
+          desktop: {
             isActive: true,
           },
-			},
-			idSync: {
-				station: idSyncStation,
-				age: age,
-				dob: dob,
-				yob: yob,
-				gender: gender,
+          iOS: {
+            isActive: true,
+          },
+          android: {
+            isActive: true,
+          },
+        },
+        idSync: {
+          station: idSyncStation,
+          age: age,
+          dob: dob,
+          yob: yob,
+          gender: gender,
           ip: ip,
-			},
-			adStitcher: true,
+        },
+        adStitcher: true,
         plugins: [
           {
             id: "vastAd",
@@ -194,12 +191,12 @@ function initPlayer() {
         elements: [
           {
             id: "td_synced_bigbox",
-				width: 300,
+            width: 300,
             height: 250,
           },
           {
             id: "td_synced_leaderboard",
-				width: 728,
+            width: 728,
             height: 90,
           },
         ],
@@ -209,13 +206,23 @@ function initPlayer() {
         id: "TargetSpot",
       },
     ],
-		playerReady: onPlayerReady,
-		configurationError: onConfigurationError,
-		moduleError: onModuleError,
+    playerReady: onPlayerReady,
+    configurationError: onConfigurationError,
+    moduleError: onModuleError,
     adBlockerDetected: onAdBlock,
-	};
+  };
 
-	player = new TDSdk( tdSdkConfig );
+  player = new TDSdk(tdSdkConfig);
+}
+
+function toggleStreamWhileMuted(checked) {
+  this.streamWhileMuted = checked;
+  window.location.href = getWindowLocation();
+}
+
+function toggleForceTimeShift(checked) {
+  this.forceTimeShift = checked;
+  window.location.href = getWindowLocation();
 }
 
 function toggleSBM(checked) {
@@ -236,12 +243,12 @@ function toggleHLS(checked) {
 function toggleAdaptiveAudio(checked) {
   this.audioAdaptive = checked;
   window.location.href = getWindowLocation();
-	}
+}
 
 function updatePlayerServicesRegion(region) {
   this.playerServicesRegion = region;
   window.location.href = getWindowLocation();
-	}
+}
 
 function loadHtml() {
   this.tech = "html5";
@@ -260,7 +267,7 @@ function playFileClicked() {
   if ($("#fileUrl").val() == "") {
     alert("Please enter a file url");
     return;
-	}
+  }
 
   if (adPlaying) player.skipAd();
 
@@ -269,7 +276,7 @@ function playFileClicked() {
   player.play({
     file: $("#fileUrl").val(),
     enableOmnyAnalytics: true,
-	} );
+  });
   podcastPlaying = true;
 }
 
@@ -277,7 +284,7 @@ function pauseFileClicked() {
   if (podcastPlaying) {
     player.pause();
   }
-	}
+}
 
 function resumeFileClicked() {
   player.resume();
@@ -315,6 +322,8 @@ function initialiseBootstrapToggles() {
     $("#now-playing-toggle").bootstrapToggle();
     $("#hls-toggle").bootstrapToggle();
     $("#adaptive-audio-toggle").bootstrapToggle();
+    $("#swm-toggle").bootstrapToggle();
+    $("#force-timeshift-toggle").bootstrapToggle();
   }, 50);
 }
 
@@ -338,7 +347,7 @@ function configurePlatformIdButtons() {
       GAActive +
       "&tcfFramework=" +
       tcfFramework;
-	} );
+  });
   $("#platform_local_build_button").click(function () {
     window.location.href =
       "index.html?platformid=build&tech=" +
@@ -357,7 +366,7 @@ function configurePlatformIdButtons() {
       GAActive +
       "&tcfFramework=" +
       tcfFramework;
-	} );
+  });
   $("#platform_dev_button").click(function () {
     window.location.href =
       "index.html?platformid=dev&tech=" +
@@ -452,18 +461,18 @@ function configurePlatformIdButtons() {
       GAActive +
       "&tcfFramework=" +
       tcfFramework;
-	} );	
+  });
 }
 
-function configureGDPRButtons(){
-	if ( allowPersonalisedAds ) {
+function configureGDPRButtons() {
+  if (allowPersonalisedAds) {
     $("#allow_personalised_ads_true")
       .removeClass("btn-default")
       .addClass("btn-primary active");
     $("#allow_personalised_ads_false")
       .removeClass("btn-primary active")
       .addClass("btn-default");
-	} else {
+  } else {
     $("#allow_personalised_ads_false")
       .removeClass("btn-default")
       .addClass("btn-primary active");
@@ -486,15 +495,15 @@ function configureGDPRButtons(){
     $("#gaactive_true")
       .removeClass("btn-primary active")
       .addClass("btn-default");
-	}
+  }
 
-	if ( tcfFramework ) {
+  if (tcfFramework) {
     $("#tcf_true").removeClass("btn-default").addClass("btn-primary active");
     $("#tcf_false").removeClass("btn-primary active").addClass("btn-default");
-	} else {
+  } else {
     $("#tcf_false").removeClass("btn-default").addClass("btn-primary active");
     $("#tcf_true").removeClass("btn-primary active").addClass("btn-default");
-	}
+  }
 
   $("#allow_personalised_ads_true").click(function () {
     window.location.href =
@@ -516,7 +525,7 @@ function configureGDPRButtons(){
       "&tcfFramework=" +
       tcfFramework;
     tech_html5_button;
-	} );
+  });
 
   $("#allow_personalised_ads_false").click(function () {
     window.location.href =
@@ -537,7 +546,7 @@ function configureGDPRButtons(){
       GAActive +
       "&tcfFramework=" +
       tcfFramework;
-	} );	
+  });
 
   $("#gaactive_true").click(function () {
     window.location.href =
@@ -558,7 +567,7 @@ function configureGDPRButtons(){
       "&gaactive=true" +
       "&tcfFramework=" +
       tcfFramework;
-	} );
+  });
 
   $("#gaactive_false").click(function () {
     window.location.href =
@@ -579,7 +588,7 @@ function configureGDPRButtons(){
       "&gaactive=false" +
       "&tcfFramework=" +
       tcfFramework;
-	} );
+  });
 
   $("#tcf_true").click(function () {
     window.location.href =
@@ -600,7 +609,7 @@ function configureGDPRButtons(){
       "&gaactive=" +
       GAActive +
       "&tcfFramework=true";
-	} );
+  });
 
   $("#tcf_false").click(function () {
     window.location.href =
@@ -621,14 +630,56 @@ function configureGDPRButtons(){
       "&gaactive=" +
       GAActive +
       "&tcfFramework=false";
-	} );
+  });
 }
 
-function initControlsUi() {
+function initTimeshiftSlider() {
+  //Timeshoft slider
+  timeshiftSliderStartValue = 0;
+  var handle = $("#custom-handle");
+  $("#timeshiftSlider").slider({
+    range: "max",
+    min: new Date().getTime() - 180000000,
+    max: new Date().getTime(),
+    value: new Date().getTime(),
+    start: function (event, ui) {
+      //Fires when sliding starts
+      timeshiftSliderStartValue = ui.value;
+    },
+    create: function () {
+      handle.text($(this).slider("value"));
+    },
+    slide: function (event, ui) {
+      if (ui.value == 0) {
+        handle.text("Live");
+        seekLive();
+      } else {
+        let label = new Date(ui.value).toLocaleString("en-US", {
+          hour: "numeric", // numeric, 2-digit
+          minute: "numeric", // numeric, 2-digit
+          second: "numeric", // numeric, 2-digit
+          hour12: true,
+        });
+        handle.text(label);
+      }
+    },
+  });
 
-	$( "#clearDebug" ).click( function () {
-		clearDebugInfo();
-	} );
+  $("#timeshiftSlider").on("slidestop", function (event, ui) {
+    if (timeshiftSliderStartValue || timeshiftSliderStartValue === 0) {
+      $("#hlsLiveButton").removeClass("active");
+      var seekval = (-1 * (timeshiftSliderStartValue - ui.value)) / 1000;
+      if (seekval != 0 && ui.value != 0) {
+        player.seek(seekval);
+        timeshiftSliderStartValue = ui.value;
+      }
+    }
+  });
+}
+function initControlsUi() {
+  $("#clearDebug").click(function () {
+    clearDebugInfo();
+  });
 
   $("#flvDownloadLink").click(function () {
     let flvMountName = $("#flvMount").val();
@@ -651,7 +702,7 @@ function initControlsUi() {
       "metadataInfo",
       "text/html"
     );
-	} );
+  });
 
   $("#downloadCuepointInfo").click(function () {
     let mountName = generateFlvMountName();
@@ -660,7 +711,7 @@ function initControlsUi() {
       "cuePointInfo",
       "text/html"
     );
-	} );
+  });
 
   $("#downloadMetadataInfo").click(function () {
     let mountName = generateFlvMountName();
@@ -669,7 +720,7 @@ function initControlsUi() {
       "metadataInfo",
       "text/html"
     );
-	} );
+  });
 
   $("#downloadDebugInfo").click(function () {
     let mountName = generateFlvMountName();
@@ -678,78 +729,77 @@ function initControlsUi() {
       "debugInformation",
       "text/html"
     );
-	} );
+  });
 
-	$( "#seekLiveButton" ).click( function () {
-		seekLive();	
-	} );
+  $("#seekLiveButton").click(function () {
+    seekLive();
+  });
 
-	$( "#skipAdButton" ).click( function () {
-		skipAd();
-	} );
+  $("#skipAdButton").click(function () {
+    skipAd();
+  });
 
-	$( "#destroyAdButton" ).click( function () {
-		destroyAd();
-	} );
+  $("#destroyAdButton").click(function () {
+    destroyAd();
+  });
 
-	$( "#setVolume50Button" ).click( function () {
-		setVolume50();
-	} );
+  $("#setVolume50Button").click(function () {
+    setVolume50();
+  });
 
-	$( "#playTapAdButton" ).click( function () {
-		playTAPAd();
-	} );
+  $("#playTapAdButton").click(function () {
+    playTAPAd();
+  });
 
-	$( "#playTapAdButtonWithTrackingParameters" ).click( function () {
-		playTAPAdButtonWithTrackingParameters();
-	} );
+  $("#playTapAdButtonWithTrackingParameters").click(function () {
+    playTAPAdButtonWithTrackingParameters();
+  });
 
-	$( "#playRunSpotAdButton" ).click( function () {
-		playRunSpotAd();
-	} );
+  $("#playRunSpotAdButton").click(function () {
+    playRunSpotAd();
+  });
 
-	$( "#playRunSpotAdByIdButton" ).click( function () {
-		playRunSpotAdById();
-	} );
+  $("#playRunSpotAdByIdButton").click(function () {
+    playRunSpotAdById();
+  });
 
-	$( "#playVastAdButton" ).click( function () {
-		playVastAd();
-	} );
-	
+  $("#playVastAdButton").click(function () {
+    playVastAd();
+  });
 
-	$( "#playBloomAdButton" ).click( function () {
-		playBloomAd();
-	} );
-	
-	$( "#getArtistButton" ).click( function () {
-		getArtistData();
-	} );
-	
-	//Buttons specific to User Registration / MediaPlayer / Selective Bitrate
-	$( "#loginButton" ).click( function () {
+  $("#playBloomAdButton").click(function () {
+    playBloomAd();
+  });
+
+  $("#getArtistButton").click(function () {
+    getArtistData();
+  });
+
+  //Buttons specific to User Registration / MediaPlayer / Selective Bitrate
+  $("#loginButton").click(function () {
     player.UserRegistration.emit("user-logged-in");
 
-		var data = {
+    var data = {
       dob: "06/29/1980",
       gender: "male",
       zip: "00000",
-		};
-		data.vid = $( "#userVid" ).val();
-		data.tdas = {};
+    };
+    data.vid = $("#userVid").val();
+    data.tdas = {};
     data.tdas["user-tags"] = $("#userTags").val();
     data.tdas["user-tags-hash"] = $("#userTagsHash").val();
 
     player.UserRegistration.emit("user-details", data);
-	} );
-	$( "#logoutButton" ).click( function () {
+  });
+  $("#logoutButton").click(function () {
     player.UserRegistration.emit("user-logged-out");
-	} );
-	$( "#activateLowButton" ).click( function () {
-		player.MediaPlayer.activateLow();
-	} );
-	$( "#deactivateLowButton" ).click( function () {
-		player.MediaPlayer.deactivateLow();
-	} );
+  });
+  $("#activateLowButton").click(function () {
+    player.MediaPlayer.activateLow();
+  });
+  $("#deactivateLowButton").click(function () {
+    player.MediaPlayer.deactivateLow();
+  });
 }
 
 function playLiveAudioStream(station, mount) {
@@ -757,7 +807,7 @@ function playLiveAudioStream(station, mount) {
   if (!station && !mount) {
     alert("Please enter a Station");
     return;
-}
+  }
 
   debug("playLiveAudioStream - station=" + station);
 
@@ -770,7 +820,12 @@ function playLiveAudioStream(station, mount) {
   player.play({
     station: station,
     mount: mount,
-    timeShift: true
+    forceTimeShift: forceTimeShift,
+    timeShift: true,
+    trackingParameters: {
+      dist: "player-dist-param",
+      "dist-timeshift": "player-timeshift-dist-param",
+    },
   });
 
   $("#volumeSlider").val(this.currentVolume);
@@ -803,8 +858,8 @@ function playStreamFLVByUserMount() {
 
   if ($("#flvMount").val() == "") {
     alert("Please enter a mount");
-		return;
-	}
+    return;
+  }
 
   if (adPlaying) player.skipAd();
 
@@ -825,9 +880,9 @@ function playFLVStream() {
 
   if (livePlaying) player.stop();
 
-	player.play( {
+  player.play({
     file: $("#flvUrl").val(),
-	} );
+  });
   this.playerStarted = new Date().getTime();
 }
 
@@ -839,8 +894,8 @@ function flvPlayerButton(e) {
 
   if ($("#flvUrl").val() == "") {
     alert("Please enter a URL");
-		return;
-	}
+    return;
+  }
 
   if ($("#flvMount").val() == "") {
     alert("Please enter a Callsign");
@@ -848,7 +903,7 @@ function flvPlayerButton(e) {
   }
 
   if (flvPlayerStatus == "playing") {
-		player.stop();
+    player.stop();
 
     while (streamDataTimeoutId--) {
       window.clearTimeout(streamDataTimeoutId); // will do nothing if no timeout with id is present
@@ -874,17 +929,23 @@ function flvVolumeSlider(value) {
   player.setVolume(value);
 }
 
-
-function playAudio(menuItem, streamingType){
-  if(menuItem == "hlsRewind"){
-    playLiveAudioStream(null,$('#hlsRewindMount').val());
+function playAudio(menuItem, streamingType) {
+  if (menuItem == "hlsRewind") {
+    playLiveAudioStream($("#hlsRewindStation").val(), null);
+    initTimeshiftSlider();
+    updateTimeshiftSlider({
+      value: new Date().getTime(),
+      text: "Live",
+      label: "-" + formatDate(maximumRewindTime),
+      max: new Date().getTime(),
+      min: new Date().getTime() - maximumRewindTime * 1000,
+    });
     $("#hlsLiveButton").addClass("active");
-  } else if(menuItem === "liveStreaming" && streamingType === "url"){
+  } else if (menuItem === "liveStreaming" && streamingType === "url") {
     playUrl();
-  } else if(menuItem === "liveStreaming" && streamingType === "station"){
+  } else if (menuItem === "liveStreaming" && streamingType === "station") {
     playStreamByUserStation();
   }
-  
 }
 
 function playUrl() {
@@ -903,7 +964,7 @@ function playUrl() {
     aSyncCuePoint: {
       active: false,
     },
-    isHLS: (url.indexOf("m3u8") > -1 ? true : false),
+    isHLS: url.indexOf("m3u8") > -1 ? true : false,
   });
 }
 
@@ -918,44 +979,83 @@ function playStreamByUserStation() {
   if (livePlaying) player.stop();
 
   var trackingParams = $("#stationUserTrackingParameters").val().split(",");
-	var params = {};
-	for ( var i = 0; i < trackingParams.length; i++ ) {
+  var params = {};
+  for (var i = 0; i < trackingParams.length; i++) {
     var tup = trackingParams[i].split(":");
-		params[ tup[ 0 ] ] = tup[ 1 ];
-	}
+    params[tup[0]] = tup[1];
+  }
 
-	player.play( {
-		station: $( "#stationUser" ).val(),
-		trackingParameters: params,
+  player.play({
+    station: $("#stationUser").val(),
+    trackingParameters: params,
     timeShift: true,
-	} );
+  });
 
-	if ( currentStation != $( "#stationUser" ).val() ) {
-		currentStation = $( "#stationUser" ).val();
-	}
+  if (currentStation != $("#stationUser").val()) {
+    currentStation = $("#stationUser").val();
+  }
 }
 
 function stopStream() {
-	player.stop();
+  player.stop();
 }
 
+function seekFromLive() {
+  let seconds = parseInt($("#seekFromLive").val());
+  if (seconds < 0) {
+    seconds = seconds * -1;
+  }
+
+  updateTimeshiftSlider({
+    value: -seconds,
+    text: "-" + formatDate(Math.floor(seconds)),
+  });
+  player.seekFromLive(seconds);
+}
 function rewind(seconds) {
   $("#hlsLiveButton").removeClass("active");
-  player.seek(-seconds);
+  let val = $("#timeshiftSlider").slider("option", "value");
+  this.timeshiftSliderStartValue = val;
+  let label = new Date(val - 10000).toLocaleString("en-US", {
+    hour: "numeric", // numeric, 2-digit
+    minute: "numeric", // numeric, 2-digit
+    second: "numeric", // numeric, 2-digit
+    hour12: true,
+  });
+  updateTimeshiftSlider({ value: val - 10000, text: label });
+  player.seek(-10);
 }
 
 function forward(seconds) {
   $("#hlsLiveButton").removeClass("active");
-  player.seek(seconds);
+  let val = $("#timeshiftSlider").slider("option", "value");
+  this.timeshiftSliderStartValue = val;
+  let label = new Date(val - 10000).toLocaleString("en-US", {
+    hour: "numeric", // numeric, 2-digit
+    minute: "numeric", // numeric, 2-digit
+    second: "numeric", // numeric, 2-digit
+    hour12: true,
+  });
+  updateTimeshiftSlider({ value: val + 10000, text: label });
+  player.seek(10);
 }
 
 function live() {
-  $("#hlsLiveButton").addClass("active");
+  updateTimeshiftSlider({
+    value: new Date().getTime(),
+    text: "Live",
+    label: "-" + formatDate(maximumRewindTime),
+  });
   player.seekLive();
+  $("#hlsLiveButton").addClass("active");
+}
+
+function getCloudStreamInfo() {
+  player.getCloudStreamInfo($("#hlsRewindStation").val());
 }
 
 function pauseStream() {
-	player.pause();
+  player.pause();
 }
 
 function resumeStream() {
@@ -964,31 +1064,31 @@ function resumeStream() {
 }
 
 function seekLive() {
-	player.seekLive();
+  player.seekLive();
 }
 
 function loadNpApi() {
   if ($("#songHistoryCallsignUser").val() == "") {
     alert("Please enter a Callsign");
-		return;
-	}
+    return;
+  }
 
   var isHd = $("#songHistoryConnectionTypeSelect").val() == "hdConnection";
 
-	//Set the hd parameter to true if the station has AAC. Set it to false if the station has no AAC.
-	player.NowPlayingApi.load( {
-		mount: $( "#songHistoryCallsignUser" ).val(),
-		hd: isHd,
+  //Set the hd parameter to true if the station has AAC. Set it to false if the station has no AAC.
+  player.NowPlayingApi.load({
+    mount: $("#songHistoryCallsignUser").val(),
+    hd: isHd,
     numberToFetch: 15,
-	} );
+  });
 }
 
 function skipAd() {
-	player.skipAd();
+  player.skipAd();
 }
 
 function destroyAd() {
-	player.destroyAd();
+  player.destroyAd();
 }
 
 function setVolume50() {
@@ -996,19 +1096,40 @@ function setVolume50() {
 }
 
 function mute() {
-	player.mute();
+  player.mute();
 }
 
 function unMute() {
-	player.unMute();
+  player.unMute();
 }
 
 function getArtistData() {
   if (song && song.artist() != null) song.artist().fetchData();
 }
 
+function updateTimeshiftSlider(sliderObj) {
+  if (sliderObj.min || sliderObj.min === 0) {
+    $("#timeshiftSlider").slider("option", "min", sliderObj.min);
+  }
+
+  if (sliderObj.max || sliderObj.max === 0) {
+    $("#timeshiftSlider").slider("option", "max", sliderObj.max);
+  }
+
+  if (sliderObj.value || sliderObj.value === 0) {
+    $("#timeshiftSlider").slider("option", "value", sliderObj.value);
+  }
+
+  if (sliderObj.text) {
+    $("#custom-handle").text(sliderObj.text);
+  }
+
+  if (sliderObj.label !== undefined) {
+    $("#sliderMinLabel").text(sliderObj.label);
+  }
+}
 function onPlayerReady() {
-	initControlsUi();
+  initControlsUi();
 
   player.addEventListener("track-cue-point", (e) => {
     onTrackCuePoint(e);
@@ -1030,7 +1151,6 @@ function onPlayerReady() {
   player.addEventListener("speech-cue-point", onSpeechCuePoint);
   player.addEventListener("custom-cue-point", onCustomCuePoint);
 
-
   player.addEventListener("stream-geo-blocked", onGeoBlocked);
   player.addEventListener("timeout-alert", onTimeOutAlert);
   player.addEventListener("timeout-reach", onTimeOutReach);
@@ -1040,6 +1160,7 @@ function onPlayerReady() {
 
   player.addEventListener("stream-start", onStreamStarted);
   player.addEventListener("stream-stop", onStreamStopped);
+  player.addEventListener("timeshift-info", onTimeshiftInfo);
 
   player.addEventListener("media-playback-status", onMediaPlaybackStatus);
   player.addEventListener("media-error", onMediaError);
@@ -1049,10 +1170,14 @@ function onPlayerReady() {
   );
 
   player.addEventListener("flv-player-status", onFlvPlayerStatus);
-	player.setVolume( 1 ); //Set volume to 100%
+  player.setVolume(1); //Set volume to 100%
+  player.addEventListener(
+    "timeshift-program-load-error",
+    onTimeshiftProgramLoadError
+  );
 
   setStatus("Api Ready");
-	setTech( player.MediaPlayer.tech.type );
+  setTech(player.MediaPlayer.tech.type);
 
   player.addEventListener("list-loaded", onListLoaded);
   player.addEventListener("list-empty", onListEmpty);
@@ -1069,13 +1194,13 @@ function onPlayerReady() {
       .getElementById("flv-debugger-container")
       .addEventListener("hide.bs.collapse", function () {
         $("#flvHeaderPlayerButton").removeClass("d-none");
-	} );
+      });
 
     document
       .getElementById("flv-debugger-container")
       .addEventListener("shown.bs.collapse", function (e) {
         $("#flvHeaderPlayerButton").addClass("d-none");
-	} );
+      });
   }
 }
 
@@ -1083,7 +1208,7 @@ function onPlayerReady() {
  * Event fired in case the loading of the companion ad returned an error.
  * @param e
  */
-function onCompanionLoadError( e ) {
+function onCompanionLoadError(e) {
   debug(
     "tdplayer::onCompanionLoadError - containerId=" +
       e.containerId +
@@ -1093,66 +1218,65 @@ function onCompanionLoadError( e ) {
   );
 }
 
-function onAdPlaybackStart( e ) {
-	adPlaying = true;
+function onAdPlaybackStart(e) {
+  adPlaying = true;
 
   setStatus("Advertising... Type=" + e.data.type);
 }
 
-function onAdPlaybackComplete( e ) {
-	adPlaying = false;
+function onAdPlaybackComplete(e) {
+  adPlaying = false;
 
-	console.log( e );
-	$( "#td_synced_bigbox" ).empty();
-	$( "#td_synced_leaderboard" ).empty();
+  console.log(e);
+  $("#td_synced_bigbox").empty();
+  $("#td_synced_leaderboard").empty();
 
-	if ( streamAutoStart ) {
-		player.play( {
+  if (streamAutoStart) {
+    player.play({
       station: station,
     });
-	}
+  }
 
   setStatus("Ad Playback Complete");
-
 }
 
-function onAdPlaybackError( e ) {
-
-	if ( flowAds ) {
+function onAdPlaybackError(e) {
+  if (flowAds) {
     player.playAd("vastAd", {
       url: "http://proserv.tritondigital.com/vast/vast2_linear_webteam.xml",
-		} );
-		flowAds = false;
-	} else {
+    });
+    flowAds = false;
+  } else {
     setStatus("Ad Playback Error");
-	}
-
+  }
 }
 
-function onAdPlaybackDestroy( e ) {
-	adPlaying = false;
+function onAdPlaybackDestroy(e) {
+  adPlaying = false;
 
-	console.log( e );
-	$( "#td_synced_bigbox" ).empty();
-	$( "#td_synced_leaderboard" ).empty();
+  console.log(e);
+  $("#td_synced_bigbox").empty();
+  $("#td_synced_leaderboard").empty();
 
   setStatus("Ad Playback Destroy");
-
 }
 
-function onAdCountdown( e ) {
+function onAdCountdown(e) {
   debug("Ad countdown : " + e.data.countDown + " second(s)");
 }
 
-function onVpaidAdCompanions( e ) {
+function onVpaidAdCompanions(e) {
   debug("Vpaid Ad Companions");
 
-	//Load Vast Ad companion (bigbox & leaderbaord ads)
-	//displayVastCompanionAds( e.companions );
+  //Load Vast Ad companion (bigbox & leaderbaord ads)
+  //displayVastCompanionAds( e.companions );
 }
 
+function onTimeshiftProgramLoadError(e) {
+  setStatus("Can't load timeshift program");
+}
 function onStreamStarted() {
-	livePlaying = true;
+  livePlaying = true;
 }
 
 function onStreamSelect() {
@@ -1164,9 +1288,9 @@ function onStreamSelect() {
 }
 
 function onStreamStopped() {
-	livePlaying = false;
+  livePlaying = false;
 
-	clearNpe();
+  clearNpe();
   $("#trackInfo").html("");
   $("#asyncData").html("");
 
@@ -1185,14 +1309,14 @@ function onMetadataCuePoint(metadata) {
 }
 
 function onStreamData(event) {
-  if (this.totalTags == 0) {    
+  if (this.totalTags == 0) {
     $(".flv-player-button")
       .removeClass("spinner-border")
       .addClass("fa-stop-circle");
 
     $(".flv-player-button-parent").removeAttr("disabled");
-  } 
-  
+  }
+
   streamDataTimeoutId = window.setTimeout(() => {
     this.totalTags++;
     // this.drawSquare(event.data.tagType);
@@ -1213,7 +1337,7 @@ function drawSVGSquare(data) {
   let rect = document.createElementNS(this.svgns, "rect");
   let tagColor = "#fff";
 
-  let event = new Event("showInspector_" + this.totalTags, {bubbles:true});
+  let event = new Event("showInspector_" + this.totalTags, { bubbles: true });
   rect.addEventListener(
     "showInspector_" + this.totalTags,
     this.showFLVData.bind(null, data, rect)
@@ -1245,11 +1369,11 @@ function drawSVGSquare(data) {
     rect.setAttributeNS(null, "stroke", "#000000");
   }
 
-  rect.addEventListener("click", function(){
+  rect.addEventListener("click", function () {
     clearCuepointInfoSelected();
     this.dispatchEvent(event);
   });
-  
+
   this.svg.appendChild(rect);
   this.flvPacketCount++;
 }
@@ -1301,7 +1425,7 @@ function scrollToBottom() {
   );
 }
 
-function onTrackCuePoint( e ) {
+function onTrackCuePoint(e) {
   debug("<b>New Track cuepoint received</b>");
   if (tech == "flash") {
     debug(
@@ -1315,19 +1439,19 @@ function onTrackCuePoint( e ) {
         e.data.cuePoint.artistName
     );
   }
-	console.log( e );
+  console.log(e);
 
-	if ( currentTrackCuePoint && currentTrackCuePoint != e.data.cuePoint )
-		clearNpe();
+  if (currentTrackCuePoint && currentTrackCuePoint != e.data.cuePoint)
+    clearNpe();
 
-	if ( e.data.cuePoint.nowplayingURL && sbm && player.Npe !== undefined )
+  if (e.data.cuePoint.nowplayingURL && sbm && player.Npe !== undefined)
     player.Npe.loadNpeMetadata(
       e.data.cuePoint.nowplayingURL,
       e.data.cuePoint.artistName,
       e.data.cuePoint.cueTitle
     );
 
-	currentTrackCuePoint = e.data.cuePoint;
+  currentTrackCuePoint = e.data.cuePoint;
 
   this.trackInfo = $("#trackInfo").html(
     "<b>Title: </b>" +
@@ -1335,39 +1459,38 @@ function onTrackCuePoint( e ) {
       "<br><b>Artist: </b> " +
       currentTrackCuePoint.artistName
   );
-
 }
 
-function onTrackChange( e ) {
+function onTrackChange(e) {
   debug("Stream Track has changed");
 }
 
-function onHlsCuePoint( e ) {
+function onHlsCuePoint(e) {
   debug("New HLS cuepoint received");
-	console.log( e );
+  console.log(e);
 }
 
-function onSpeechCuePoint( e ) {
+function onSpeechCuePoint(e) {
   debug("New Speech cuepoint received");
-	console.log( e );
+  console.log(e);
 }
 
-function onCustomCuePoint( e ) {
+function onCustomCuePoint(e) {
   debug("New Custom cuepoint received");
-	console.log( e );
+  console.log(e);
 }
 
-function onAdBreak( e ) {
+function onAdBreak(e) {
   setStatus("Commercial break...");
   if (tech == "flash") {
     debug(syntaxHighlight(JSON.stringify(e.data.adBreakData, null, 2)));
   }
-	console.log( e );
+  console.log(e);
 }
 
-function onAdEndBreak( e ) {
-	setStatus( this.streamStatus );
-	console.log( e );
+function onAdEndBreak(e) {
+  setStatus(this.streamStatus);
+  console.log(e);
 }
 
 function clearNpe() {
@@ -1376,9 +1499,9 @@ function clearNpe() {
 }
 
 //Song History
-function onListLoaded( e ) {
+function onListLoaded(e) {
   debug("Song History loaded");
-	console.log( e.data );
+  console.log(e.data);
 
   $("#asyncData").html(
     '<br><p><span class="label label-warning">Song History:</span>'
@@ -1387,9 +1510,9 @@ function onListLoaded( e ) {
   var tableContent =
     '<table class="table table-striped"><thead><tr><th>Song title</th><th>Artist name</th><th>Time</th></tr></thead>';
 
-	var time;
-	$.each( e.data.list, function ( index, item ) {
-		time = new Date( Number( item.cueTimeStart ) );
+  var time;
+  $.each(e.data.list, function (index, item) {
+    time = new Date(Number(item.cueTimeStart));
     tableContent +=
       "<tr><td>" +
       item.cueTitle +
@@ -1398,55 +1521,55 @@ function onListLoaded( e ) {
       "</td><td>" +
       time.toLocaleTimeString() +
       "</td></tr>";
-	} );
+  });
 
-	tableContent += "</table></p>";
+  tableContent += "</table></p>";
 
-	$( "#asyncData" ).html( "<div>" + tableContent + "</div>" );
+  $("#asyncData").html("<div>" + tableContent + "</div>");
 }
 
 //Song History empty
-function onListEmpty( e ) {
+function onListEmpty(e) {
   $("#asyncData").html(
     '<br><p><span class="label label-important">Song History is empty</span>'
   );
 }
 
-function onNowPlayingApiError( e ) {
+function onNowPlayingApiError(e) {
   debug("Song History loading error", true);
-	console.error( e );
+  console.error(e);
 
   $("#asyncData").html(
     '<br><p><span class="label label-important">Song History error</span>'
   );
 }
 
-function onTimeOutAlert( e ) {
+function onTimeOutAlert(e) {
   debug("Time Out Alert");
 }
 
-function onTimeOutReach( e ) {
+function onTimeOutReach(e) {
   debug("Time Out Reached");
 }
 
-function onConfigurationError( e ) {
+function onConfigurationError(e) {
   debug("Configuration error", true);
-	console.log( e );
+  console.log(e);
 }
 
-function onModuleError( object ) {
+function onModuleError(object) {
   var message = "";
 
-	$.each( object.data.errors, function ( i, val ) {
+  $.each(object.data.errors, function (i, val) {
     message += "ERROR : " + val.data.error.message + "<br/>";
-	} );
+  });
 
   $("#status").html(
     '<p><span class="label label-important">' + message + "</span><p></p>"
   );
 }
 
-function onStatus( e ) {
+function onStatus(e) {
   console.log("tdplayer::onStatus");
 
   if (!this.scope) {
@@ -1454,7 +1577,7 @@ function onStatus( e ) {
     this.scope = angularElement.scope();
   }
 
-	this.streamStatus = e.data.status;
+  this.streamStatus = e.data.status;
   if (e.data.code == "STATION_NOT_FOUND" && tech == "flash") {
     $(".flv-player-button")
       .addClass("fa-play-circle")
@@ -1464,8 +1587,8 @@ function onStatus( e ) {
     $(".flv-player-button-parent").removeAttr("disabled");
   }
 
-	setStatus( e.data.status );
-    this.scope.updatePlayerStatus(e.data.code);
+  setStatus(e.data.status);
+  this.scope.updatePlayerStatus(e.data.code);
 }
 
 function onFlvPlayerStatus(e) {
@@ -1486,36 +1609,35 @@ function onMediaPlaybackStatus(e) {
     var time = "00:00/00:00";
 
     $("#filetime").html(time);
-	}
+  }
 }
 
-function onMediaError( e ) {
+function onMediaError(e) {
   console.log("tdplayer::onMediaError");
   setStatus(e.data.error);
 }
 
 var currentTime = 0;
 
-function onMediaPlaybackTimeUpdate( e ) {
+function onMediaPlaybackTimeUpdate(e) {
   console.log("tdplayer::onMediaPlaybackTimeUpdate");
 
-	currentTime = e.data.playedTime;
+  currentTime = e.data.playedTime;
 
   var toto =
     SecondsToHMS(e.data.playedTime) + "/" + SecondsToHMS(e.data.duration);
 
   $("#filetime").html(toto);
-
 }
 
-function onAdBlock( e ) {
+function onAdBlock(e) {
   console.log("tdplayer::onAdBlock");
 
-	debug( e.data.message );
+  debug(e.data.message);
 }
 
-function SecondsToHMS( d ) {
-	d = Number( d );
+function SecondsToHMS(d) {
+  d = Number(d);
   var m = Math.floor((d % 3600) / 60);
   var s = Math.floor((d % 3600) % 60);
   return (
@@ -1525,23 +1647,23 @@ function SecondsToHMS( d ) {
   );
 }
 
-function onGeoBlocked( e ) {
+function onGeoBlocked(e) {
   console.log("tdplayer::onGeoBlocked");
 
-	setStatus( e.data.text );
+  setStatus(e.data.text);
 }
 
-function setStatus( status ) {
+function setStatus(status) {
   debug("<b>" + status + "</b>");
   $("#status").html(status);
 }
 
-function setTech( techType ) {
+function setTech(techType) {
   var apiVersion = player.version.value + "-" + player.version.build;
 
   var techInfo = apiVersion + " - Technology: " + techType;
 
-	if ( player.flash.available )
+  if (player.flash.available)
     techInfo +=
       " - Your current version of flash plugin is: " +
       player.flash.version.major +
@@ -1552,21 +1674,21 @@ function setTech( techType ) {
 
   techInfo += "</span>";
 
-	$( "#techInfo" ).html( techInfo );
+  $("#techInfo").html(techInfo);
 }
 
 function loadPwaData() {
   if ($("#pwaCallsign").val() == "" || $("#pwaStreamId").val() == "") {
     alert("Please enter a Callsign and a streamid");
-		return;
-	}
+    return;
+  }
 
-	player.PlayerWebAdmin.load( $( "#pwaCallsign" ).val(), $( "#pwaStreamId" ).val() );
+  player.PlayerWebAdmin.load($("#pwaCallsign").val(), $("#pwaStreamId").val());
 }
 
-function onPwaDataLoaded( e ) {
+function onPwaDataLoaded(e) {
   debug("PlayerWebAdmin data loaded successfully");
-	console.log( e );
+  console.log(e);
 
   $("#asyncData").html(
     '<br><p><span class="label label-warning">PlayerWebAdmin:</span>'
@@ -1575,121 +1697,218 @@ function onPwaDataLoaded( e ) {
   var tableContent =
     '<table class="table table-striped"><thead><tr><th>Key</th><th>Value</th></tr></thead>';
 
-	for ( var item in e.data.config ) {
-		console.log( item );
+  for (var item in e.data.config) {
+    console.log(item);
     tableContent +=
       "<tr><td>" + item + "</td><td>" + e.data.config[item] + "</td></tr>";
-	}
+  }
 
-	tableContent += "</table></p>";
+  tableContent += "</table></p>";
 
-	$( "#asyncData" ).html( "<div>" + tableContent + "</div>" );
+  $("#asyncData").html("<div>" + tableContent + "</div>");
 }
 
-function playTAPAd() {
-	detachAdListeners();
-	attachAdListeners();
+function onTimeshiftInfo(e) {
+  let abc = angular.element($("#hls-rewind-containter"));
+  let abcScope = abc.scope();
 
-	player.stop();
-	//player.skipAd();
+  if (e.data.maximum_rewind_time_sec) {
+    maximumRewindTime = e.data.maximum_rewind_time_sec;
+    abcScope.$apply(function () {
+      abcScope.updateMaximumRewindTime(maximumRewindTime);
+    });
+  }
+
+  if (e.data.programs) {
+    let timeshiftPrograms = e.data.programs.map((item) => {
+      let programId = item.program_episode_id || item.properties.program_id;
+      let label = new Date(
+        parseInt(item.properties.program_time_start.trim())
+      ).toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false,
+      });
+
+      return {
+        name: item.name,
+        title: item.properties.program_title,
+        startTime: label,
+        programId: programId ? programId.trim() : "0",
+      };
+    });
+
+    abcScope.$apply(function () {
+      abcScope.updateTimeshiftPrograms(timeshiftPrograms);
+    });
+  }
+
+  if (e.data.programDuration) {
+    totalTimeshiftDuration = e.data.totalduration - 10;
+    let label = new Date(e.data.programStartTime).toLocaleString("en-US", {
+      hour: "numeric", // numeric, 2-digit
+      minute: "numeric", // numeric, 2-digit
+      second: "numeric", // numeric, 2-digit
+      hour12: true,
+    });
+    updateTimeshiftSlider({ value: e.data.programStartTime, text: label });
+  }
+
+  if (e.data.totalduration) {
+    totalTimeshiftDuration = e.data.totalduration - 10;
+    let label = new Date(e.data.programStartTime).toLocaleString("en-US", {
+      hour: "numeric", // numeric, 2-digit
+      minute: "numeric", // numeric, 2-digit
+      second: "numeric", // numeric, 2-digit
+      hour12: true,
+    });
+    updateTimeshiftSlider({
+      min: e.data.programStartTime,
+      max: new Date().getTime(),
+      label: label,
+    });
+  }
+
+  if (e.data.currentTime) {
+    let label = new Date(e.data.currentTime).toLocaleString("en-US", {
+      hour: "numeric", // numeric, 2-digit
+      minute: "numeric", // numeric, 2-digit
+      second: "numeric", // numeric, 2-digit
+      hour12: true,
+    });
+    updateTimeshiftSlider({
+      max: new Date().getTime(),
+      text: label,
+      value: e.data.currentTime,
+    });
+  }
+}
+
+function playProgram(timeshiftProgram) {
+  initTimeshiftSlider();
+  updateTimeshiftSlider({
+    value: new Date().getTime(),
+    text: "Live",
+    label: "-",
+    max: new Date().getTime(),
+    min: new Date().getTime() - maximumRewindTime * 1000,
+  });
+  player.playProgram(
+    timeshiftProgram.programId,
+    0,
+    $("#hlsRewindStation").val()
+  );
+}
+
+function formatDate(seconds) {
+  var date = new Date(null);
+  date.setSeconds(seconds);
+  var hhmmssFormat = date.toISOString().substr(11, 8);
+  return hhmmssFormat;
+}
+function playTAPAd() {
+  detachAdListeners();
+  attachAdListeners();
+
+  player.stop();
+  //player.skipAd();
   player.playAd("tap", {
     host: "cmod601.live.streamtheworld.com",
     type: "preroll",
     format: "vast",
     stationId: 125003,
-	} );
+  });
 }
 
 function playTAPAdButtonWithTrackingParameters() {
-	detachAdListeners();
-	attachAdListeners();
+  detachAdListeners();
+  attachAdListeners();
 
-	player.stop();
+  player.stop();
   player.playAd("tap", {
     host: "cmod.live.streamtheworld.com",
     type: "preroll",
     format: "vast",
-		stationId: 77583,
-		trackingParameters: {
+    stationId: 77583,
+    trackingParameters: {
       ttag: "demo",
     },
-	} );
+  });
 }
 
 function playRunSpotAd() {
-	detachAdListeners();
-	attachAdListeners();
+  detachAdListeners();
+  attachAdListeners();
 
-	player.stop();
-	//player.skipAd();
+  player.stop();
+  //player.skipAd();
   player.playAd("vastAd", {
     sid: 352783,
-	} );
+  });
 }
 
 function playRunSpotAdById() {
   if ($("#runSpotId").val() == "") return;
 
-	detachAdListeners();
-	attachAdListeners();
+  detachAdListeners();
+  attachAdListeners();
 
-	player.stop();
+  player.stop();
   player.playAd("vastAd", {
     sid: $("#runSpotId").val(),
-	} );
+  });
 }
 
-function playVastAd( url ) {
-	detachAdListeners();
-	attachAdListeners();
+function playVastAd(url) {
+  detachAdListeners();
+  attachAdListeners();
 
-	player.stop();
-	if ( url ) {
+  player.stop();
+  if (url) {
     player.playAd("vastAd", {
       url: url,
-		} );
-	} else {
+    });
+  } else {
     player.playAd("vastAd", {
       url: "http://proserv.tritondigital.com/vast/vast2_linear_webteam.xml",
-		} );
-	}
-
+    });
+  }
 }
 
 function playVastAdByUrl() {
   if ($("#vastAdUrl").val() == "") {
     alert("Please enter an URL");
     return;
-  } 
+  }
 
-	detachAdListeners();
-	attachAdListeners();
+  detachAdListeners();
+  attachAdListeners();
 
-	player.stop();
+  player.stop();
   player.playAd("vastAd", {
     url: $("#vastAdUrl").val(),
-	} );
+  });
 }
 
 function playVastAdByRawXML() {
-
   if ($("#vastAdRawXML").val() == "") return;
 
-	detachAdListeners();
-	attachAdListeners();
+  detachAdListeners();
+  attachAdListeners();
 
-	player.stop();
+  player.stop();
   player.playAd("vastAd", {
     rawXML: $("#vastAdRawXML").val(),
-    adBreak: true
-	} );
+    adBreak: true,
+  });
 }
 
 function playBloomAd() {
-	detachAdListeners();
-	attachAdListeners();
+  detachAdListeners();
+  attachAdListeners();
 
-	player.stop();
+  player.stop();
   player.playAd("bloom", {
     id: 4974,
   });
@@ -1700,19 +1919,19 @@ function playFlowAds() {
   attachAdListeners();
   player.playAd("vastAd", {
     url: "http://runspot4.tritondigital.com/RunSpotV4.svc/GetVASTAd?&StationID=undefined&MediaFormat=21&RecordImpressionOnCall=false&AdMinimumDuration=0&AdMaximumDuration=900&AdLevelPlacement=1&AdCategory=1",
-	} );
+  });
 }
 
 function playMediaAd() {
-	detachAdListeners();
-	attachAdListeners();
+  detachAdListeners();
+  attachAdListeners();
 
-	player.stop();
+  player.stop();
   player.playAd("mediaAd", {
     mediaUrl:
       "http://proserv.tritondigital.com/vast/mediafiles/GEICOPushItfeaturingSaltNPepa.mp4",
     linkUrl: "http://www.geico.com/",
-	} );
+  });
 }
 
 function attachAdListeners() {
@@ -1735,69 +1954,69 @@ function detachAdListeners() {
 
 var artist;
 
-function onNPESong( e ) {
+function onNPESong(e) {
   console.log("tdplayer::onNPESong");
-	console.log( e );
+  console.log(e);
 
-	song = e.data.song;
+  song = e.data.song;
 
-	artist = song.artist();
+  artist = song.artist();
   artist.addEventListener("artist-complete", onArtistComplete);
 
-	var songData = getNPEData();
+  var songData = getNPEData();
 
-	displayNpeInfo( songData, false );
+  displayNpeInfo(songData, false);
 }
 
-function displayNpeInfo( songData, asyncData ) {
-	$( "#asyncData" ).empty();
+function displayNpeInfo(songData, asyncData) {
+  $("#asyncData").empty();
 
   var id = asyncData ? "asyncData" : "npeInfo";
-	var list = $( "#" + id );
+  var list = $("#" + id);
 
-	if ( asyncData == false )
-		list.html( '<span class="label label-inverse">Npe Info:</span>' );
+  if (asyncData == false)
+    list.html('<span class="label label-inverse">Npe Info:</span>');
 
-	list.append( songData );
+  list.append(songData);
 }
 
-function onArtistComplete( e ) {
+function onArtistComplete(e) {
   artist.addEventListener("picture-complete", onArtistPictureComplete);
 
-	var pictures = artist.getPictures();
-	var picturesIds = [];
-	for ( var i = 0; i < pictures.length; i++ ) {
-		picturesIds.push( pictures[ i ].id );
-	}
+  var pictures = artist.getPictures();
+  var picturesIds = [];
+  for (var i = 0; i < pictures.length; i++) {
+    picturesIds.push(pictures[i].id);
+  }
   if (picturesIds.length > 0) artist.fetchPictureByIds(picturesIds);
 
-	var songData = getArtist();
+  var songData = getArtist();
 
-	displayNpeInfo( songData, true );
+  displayNpeInfo(songData, true);
 }
 
-function onArtistPictureComplete( pictures ) {
+function onArtistPictureComplete(pictures) {
   console.log("tdplayer::onArtistPictureComplete");
-	console.log( pictures );
+  console.log(pictures);
 
-	var songData = '<span class="label label-inverse">Photos:</span><br>';
+  var songData = '<span class="label label-inverse">Photos:</span><br>';
 
-	for ( var i = 0; i < pictures.length; i++ ) {
-		if ( pictures[ i ].getFiles() )
+  for (var i = 0; i < pictures.length; i++) {
+    if (pictures[i].getFiles())
       songData +=
         '<a href="' +
         pictures[i].getFiles()[0].url +
         '" rel="lightbox[npe]" title="Click on the right side of the image to move forward."><img src="' +
         pictures[i].getFiles()[0].url +
         '" width="125" /></a>&nbsp;';
-	}
+  }
 
-	$( "#asyncData" ).append( songData );
+  $("#asyncData").append(songData);
 }
 
 function getArtist() {
-	if ( song != undefined ) {
-		var songData = '<span class="label label-inverse">Artist:</span>';
+  if (song != undefined) {
+    var songData = '<span class="label label-inverse">Artist:</span>';
 
     songData += "<ul><li>Artist id: " + song.artist().id + "</li>";
     songData +=
@@ -1811,20 +2030,20 @@ function getArtist() {
       "<li>Artist is group ?: " + song.artist().getIsGroup() + "</li>";
     songData += "<li>Artist country: " + song.artist().getCountry() + "</li>";
 
-		var albums = song.artist().getAlbums();
-		for ( var i = 0; i < albums.length; i++ ) {
+    var albums = song.artist().getAlbums();
+    for (var i = 0; i < albums.length; i++) {
       songData +=
         "<li>Album " + (i + 1) + ": " + albums[i].getTitle() + "</li>";
-		}
-		var similars = song.artist().getSimilar();
-		for ( var i = 0; i < similars.length; i++ ) {
+    }
+    var similars = song.artist().getSimilar();
+    for (var i = 0; i < similars.length; i++) {
       songData +=
         "<li>Similar artist " + (i + 1) + ": " + similars[i].name + "</li>";
-		}
-		var members = song.artist().getMembers();
-		for ( var i = 0; i < members.length; i++ ) {
+    }
+    var members = song.artist().getMembers();
+    for (var i = 0; i < members.length; i++) {
       songData += "<li>Member " + (i + 1) + ": " + members[i].name + "</li>";
-		}
+    }
 
     songData += "<li>Artist website: " + song.artist().getWebsite() + "</li>";
     songData +=
@@ -1836,24 +2055,24 @@ function getArtist() {
       song.artist().getBiography().substring(0, 2000) +
       "...</small>";
 
-		var genres = song.artist().getGenres();
-		for ( var i = 0; i < genres.length; i++ ) {
+    var genres = song.artist().getGenres();
+    for (var i = 0; i < genres.length; i++) {
       songData += "<li>Genre " + (i + 1) + ": " + genres[i] + "</li>";
-		}
+    }
     songData += "</ul>";
 
-		return songData;
-	} else {
-		return '<span class="label label-important">The artist information is undefined</span>';
-	}
+    return songData;
+  } else {
+    return '<span class="label label-important">The artist information is undefined</span>';
+  }
 }
 
 function getNPEData() {
   var innerContent = "NPE Data undefined";
 
-	if ( song != undefined && song.album() ) {
+  if (song != undefined && song.album()) {
     var _iTunesLink = "";
-		if ( song.album().getBuyUrl() != null )
+    if (song.album().getBuyUrl() != null)
       _iTunesLink =
         '<a target="_blank" title="' +
         song.album().getBuyUrl() +
@@ -1872,27 +2091,27 @@ function getNPEData() {
         '<img src="' +
         song.album().getCoverArtOriginal().url +
         '" style="height:100px" /></p>';
-		}
-	}
+    }
+  }
 
-	return innerContent;
+  return innerContent;
 }
 
 function getUrlVars() {
-	var vars = [],
-		hash;
+  var vars = [],
+    hash;
   var hashes = window.location.href
     .slice(window.location.href.indexOf("?") + 1)
     .split("&");
-	for ( var i = 0; i < hashes.length; i++ ) {
+  for (var i = 0; i < hashes.length; i++) {
     hash = hashes[i].split("=");
-		vars.push( hash[ 0 ] );
-		vars[ hash[ 0 ] ] = hash[ 1 ];
-	}
-	return vars;
+    vars.push(hash[0]);
+    vars[hash[0]] = hash[1];
+  }
+  return vars;
 }
 
-function debug( info, error ) {
+function debug(info, error) {
   if (error) console.error(info);
   else console.log("%cDEBUG : " + info, "background:#ccc");
 
@@ -1921,13 +2140,15 @@ function clearFlvVisualizer() {
 }
 
 function clearCuepointInfoSelected(id) {
-  $(".cuepoint-info").removeClass("cuepoint-info-active");  
+  $(".cuepoint-info").removeClass("cuepoint-info-active");
 }
 
 function cuepointInfoSelected(id, rect) {
   $(".cuepoint-info").removeClass("cuepoint-info-active");
   $("#" + id).addClass("cuepoint-info-active");
-  document.getElementById("flvSVGCanvas").scrollTo(rect.getAttribute("x"),rect.getAttribute("y"));
+  document
+    .getElementById("flvSVGCanvas")
+    .scrollTo(rect.getAttribute("x"), rect.getAttribute("y"));
 }
 
 function logFLVCuePointInfo(cuePoint, isAd, event, rect) {
@@ -1937,19 +2158,16 @@ function logFLVCuePointInfo(cuePoint, isAd, event, rect) {
   timePlayed = isAd
     ? cuePoint.parameters.time_played
     : cuePoint.parameters.time_played;
-  
 
-   jQuery(document.body).on(
-      event.type,
-      function(){
-        cuepointInfoSelected(event.type, rect)
-      }
-    );
+  jQuery(document.body).on(event.type, function () {
+    cuepointInfoSelected(event.type, rect);
+  });
 
   var item = $(
-    '<div id="'+ event.type +'" style="cursor: pointer" class="cuepoint-info")"></div>'
+    '<div id="' +
+      event.type +
+      '" style="cursor: pointer" class="cuepoint-info")"></div>'
   );
-
 
   formattedCueType =
     '<span style="margin-left: 5px" class="badge ' +
@@ -2061,7 +2279,9 @@ function generateFlvMountName() {
 
 function getWindowLocation() {
   return (
-    "index.html?platformid=" + platformid + "&tech=" +
+    "index.html?platformid=" +
+    platformid +
+    "&tech=" +
     tech +
     "&sbm=" +
     sbm +
@@ -2078,7 +2298,11 @@ function getWindowLocation() {
     "&tcfFramework=" +
     tcfFramework +
     "&playerServicesRegion=" +
-    playerServicesRegion
+    playerServicesRegion +
+    "&streamWhileMuted=" +
+    streamWhileMuted +
+    "&forceTimeShift=" +
+    forceTimeShift
   );
 }
 

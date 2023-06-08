@@ -1,127 +1,135 @@
-define([], function(){
+define([], function () {
+  // module:
+  //		dojo/aspect
 
-	// module:
-	//		dojo/aspect
+  "use strict";
+  var undefined,
+    nextId = 0;
+  function advise(dispatcher, type, advice, receiveArguments) {
+    var previous = dispatcher[type];
+    var around = type == "around";
+    var signal;
+    if (around) {
+      var advised = advice(function () {
+        return previous.advice(this, arguments);
+      });
+      signal = {
+        remove: function () {
+          if (advised) {
+            advised = dispatcher = advice = null;
+          }
+        },
+        advice: function (target, args) {
+          return advised
+            ? advised.apply(target, args) // called the advised function
+            : previous.advice(target, args); // cancelled, skip to next one
+        },
+      };
+    } else {
+      // create the remove handler
+      signal = {
+        remove: function () {
+          if (signal.advice) {
+            var previous = signal.previous;
+            var next = signal.next;
+            if (!next && !previous) {
+              delete dispatcher[type];
+            } else {
+              if (previous) {
+                previous.next = next;
+              } else {
+                dispatcher[type] = next;
+              }
+              if (next) {
+                next.previous = previous;
+              }
+            }
 
-	"use strict";
-	var undefined, nextId = 0;
-	function advise(dispatcher, type, advice, receiveArguments){
-		var previous = dispatcher[type];
-		var around = type == "around";
-		var signal;
-		if(around){
-			var advised = advice(function(){
-				return previous.advice(this, arguments);
-			});
-			signal = {
-				remove: function(){
-					if(advised){
-						advised = dispatcher = advice = null;
-					}
-				},
-				advice: function(target, args){
-					return advised ?
-						advised.apply(target, args) :  // called the advised function
-						previous.advice(target, args); // cancelled, skip to next one
-				}
-			};
-		}else{
-			// create the remove handler
-			signal = {
-				remove: function(){
-					if(signal.advice){
-						var previous = signal.previous;
-						var next = signal.next;
-						if(!next && !previous){
-							delete dispatcher[type];
-						}else{
-							if(previous){
-								previous.next = next;
-							}else{
-								dispatcher[type] = next;
-							}
-							if(next){
-								next.previous = previous;
-							}
-						}
+            // remove the advice to signal that this signal has been removed
+            dispatcher = advice = signal.advice = null;
+          }
+        },
+        id: nextId++,
+        advice: advice,
+        receiveArguments: receiveArguments,
+      };
+    }
+    if (previous && !around) {
+      if (type == "after") {
+        // add the listener to the end of the list
+        // note that we had to change this loop a little bit to workaround a bizarre IE10 JIT bug
+        while (previous.next && (previous = previous.next)) {}
+        previous.next = signal;
+        signal.previous = previous;
+      } else if (type == "before") {
+        // add to beginning
+        dispatcher[type] = signal;
+        signal.next = previous;
+        previous.previous = signal;
+      }
+    } else {
+      // around or first one just replaces
+      dispatcher[type] = signal;
+    }
+    return signal;
+  }
+  function aspect(type) {
+    return function (target, methodName, advice, receiveArguments) {
+      var existing = target[methodName],
+        dispatcher;
+      if (!existing || existing.target != target) {
+        // no dispatcher in place
+        target[methodName] = dispatcher = function () {
+          var executionId = nextId;
+          // before advice
+          var args = arguments;
+          var before = dispatcher.before;
+          while (before) {
+            args = before.advice.apply(this, args) || args;
+            before = before.next;
+          }
+          // around advice
+          if (dispatcher.around) {
+            var results = dispatcher.around.advice(this, args);
+          }
+          // after advice
+          var after = dispatcher.after;
+          while (after && after.id < executionId) {
+            if (after.receiveArguments) {
+              var newResults = after.advice.apply(this, args);
+              // change the return value only if a new value was returned
+              results = newResults === undefined ? results : newResults;
+            } else {
+              results = after.advice.call(this, results, args);
+            }
+            after = after.next;
+          }
+          return results;
+        };
+        if (existing) {
+          dispatcher.around = {
+            advice: function (target, args) {
+              return existing.apply(target, args);
+            },
+          };
+        }
+        dispatcher.target = target;
+      }
+      var results = advise(
+        dispatcher || existing,
+        type,
+        advice,
+        receiveArguments
+      );
+      advice = null;
+      return results;
+    };
+  }
 
-						// remove the advice to signal that this signal has been removed
-						dispatcher = advice = signal.advice = null;
-					}
-				},
-				id: nextId++,
-				advice: advice,
-				receiveArguments: receiveArguments
-			};
-		}
-		if(previous && !around){
-			if(type == "after"){
-				// add the listener to the end of the list
-				// note that we had to change this loop a little bit to workaround a bizarre IE10 JIT bug
-				while(previous.next && (previous = previous.next)){}
-				previous.next = signal;
-				signal.previous = previous;
-			}else if(type == "before"){
-				// add to beginning
-				dispatcher[type] = signal;
-				signal.next = previous;
-				previous.previous = signal;
-			}
-		}else{
-			// around or first one just replaces
-			dispatcher[type] = signal;
-		}
-		return signal;
-	}
-	function aspect(type){
-		return function(target, methodName, advice, receiveArguments){
-			var existing = target[methodName], dispatcher;
-			if(!existing || existing.target != target){
-				// no dispatcher in place
-				target[methodName] = dispatcher = function(){
-					var executionId = nextId;
-					// before advice
-					var args = arguments;
-					var before = dispatcher.before;
-					while(before){
-						args = before.advice.apply(this, args) || args;
-						before = before.next;
-					}
-					// around advice
-					if(dispatcher.around){
-						var results = dispatcher.around.advice(this, args);
-					}
-					// after advice
-					var after = dispatcher.after;
-					while(after && after.id < executionId){
-						if(after.receiveArguments){
-							var newResults = after.advice.apply(this, args);
-							// change the return value only if a new value was returned
-							results = newResults === undefined ? results : newResults;
-						}else{
-							results = after.advice.call(this, results, args);
-						}
-						after = after.next;
-					}
-					return results;
-				};
-				if(existing){
-					dispatcher.around = {advice: function(target, args){
-						return existing.apply(target, args);
-					}};
-				}
-				dispatcher.target = target;
-			}
-			var results = advise((dispatcher || existing), type, advice, receiveArguments);
-			advice = null;
-			return results;
-		};
-	}
+  // TODOC: after/before/around return object
 
-	// TODOC: after/before/around return object
-
-	var after = aspect("after");
-	/*=====
+  var after = aspect("after");
+  /*=====
 	after = function(target, methodName, advice, receiveArguments){
 		// summary:
 		//		The "after" export of the aspect module is a function that can be used to attach
@@ -146,8 +154,8 @@ define([], function(){
 	};
 	=====*/
 
-	var before = aspect("before");
-	/*=====
+  var before = aspect("before");
+  /*=====
 	before = function(target, methodName, advice){
 		// summary:
 		//		The "before" export of the aspect module is a function that can be used to attach
@@ -167,8 +175,8 @@ define([], function(){
 	};
 	=====*/
 
-	var around = aspect("around");
-	/*=====
+  var around = aspect("around");
+  /*=====
 	 around = function(target, methodName, advice){
 		// summary:
 		//		The "around" export of the aspect module is a function that can be used to attach
@@ -199,25 +207,25 @@ define([], function(){
 	};
 	=====*/
 
-	return {
-		// summary:
-		//		provides aspect oriented programming functionality, allowing for
-		//		one to add before, around, or after advice on existing methods.
-		// example:
-		//	|	define(["dojo/aspect"], function(aspect){
-		//	|		var signal = aspect.after(targetObject, "methodName", function(someArgument){
-		//	|			this will be called when targetObject.methodName() is called, after the original function is called
-		//	|		});
-		//
-		// example:
-		//	The returned signal object can be used to cancel the advice.
-		//	|	signal.remove(); // this will stop the advice from being executed anymore
-		//	|	aspect.before(targetObject, "methodName", function(someArgument){
-		//	|		// this will be called when targetObject.methodName() is called, before the original function is called
-		//	|	 });
+  return {
+    // summary:
+    //		provides aspect oriented programming functionality, allowing for
+    //		one to add before, around, or after advice on existing methods.
+    // example:
+    //	|	define(["dojo/aspect"], function(aspect){
+    //	|		var signal = aspect.after(targetObject, "methodName", function(someArgument){
+    //	|			this will be called when targetObject.methodName() is called, after the original function is called
+    //	|		});
+    //
+    // example:
+    //	The returned signal object can be used to cancel the advice.
+    //	|	signal.remove(); // this will stop the advice from being executed anymore
+    //	|	aspect.before(targetObject, "methodName", function(someArgument){
+    //	|		// this will be called when targetObject.methodName() is called, before the original function is called
+    //	|	 });
 
-		before: before,
-		around: around,
-		after: after
-	};
+    before: before,
+    around: around,
+    after: after,
+  };
 });

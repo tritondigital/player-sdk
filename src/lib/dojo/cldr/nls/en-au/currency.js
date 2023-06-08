@@ -1,8 +1,6 @@
-define(
-//begin v1.x content
+define(//begin v1.x content
 {
-	"AUD_symbol": "$",
-	"USD_symbol": "US$"
-}
+  AUD_symbol: "$",
+  USD_symbol: "US$",
+});
 //end v1.x content
-);

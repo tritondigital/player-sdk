@@ -1,4 +1,7 @@
-define(["module"], function(module){
-	return {getConfig:function(){ return module.config();}};
+define(["module"], function (module) {
+  return {
+    getConfig: function () {
+      return module.config();
+    },
+  };
 });
-

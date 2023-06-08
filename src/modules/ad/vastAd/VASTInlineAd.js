@@ -1,59 +1,74 @@
 /**
  * VAST Inline Ad
  */
-define([
-    'dojo/_base/declare'
-], function ( declare ) {
+define(["dojo/_base/declare"], function (declare) {
+  var vastInlineAd = declare([], {
+    constructor: function () {
+      console.log("VASTInlineAd::constructor");
 
-    var vastInlineAd = declare([], {
+      this.adTitle = null;
+      this.adSystem = null;
+      this.errorURL = null;
+      this.description = null;
+      this.impressions = [];
 
-        constructor:function()
-        {
-            console.log('VASTInlineAd::constructor');
+      /* DAAST */
+      this.advertiser = null;
+      this.expires = null;
+      this.survey = null;
+      this.category = null;
+    },
 
-            this.adTitle = null;
-            this.adSystem = null;
-            this.errorURL = null;
-            this.description = null;
-            this.impressions = [];
+    getLinearTrackingEvents: function (sequence) {
+      return null;
+    },
 
-            /* DAAST */
-            this.advertiser = null;
-            this.expires = null;
-            this.survey = null;
-            this.category = null;
-        },
+    addWrapperLinearTrackingEvents: function (array) {
+      return;
+    },
 
-        getLinearTrackingEvents:function( sequence ) { return null; },
+    addWrapperLinearVideoClickTracking: function (array) {
+      return;
+    },
 
-        addWrapperLinearTrackingEvents:function( array ) { return; },
+    addImpressions: function (array) {
+      return;
+    },
 
-        addWrapperLinearVideoClickTracking:function( array ) { return; },
+    getCompanionAdUrl: function (width, height, vastResourceType, sequence) {
+      return null;
+    },
 
-        addImpressions:function( array ) { return; },
+    /**
+     * The collection of VASTCompanionAd within this ad package.
+     */
+    getCompanionAds: function (sequence) {
+      return null;
+    },
 
-        getCompanionAdUrl:function( width, height, vastResourceType, sequence ) { return null; },
+    getLinearMediaFiles: function (sequence) {
+      return null;
+    },
 
-        /**
-         * The collection of VASTCompanionAd within this ad package.
-         */
-        getCompanionAds:function( sequence ){ return null; },
+    getLinearMediaFileByIndex: function (index, sequence) {
+      return null;
+    },
 
-        getLinearMediaFiles:function( sequence ) { return null; },
+    getLinearVideoClick: function (sequence) {
+      return null;
+    },
 
-        getLinearMediaFileByIndex:function( index, sequence ) { return null; },
+    /**
+     * The collection of VASTNonLinearAd within this ad package.
+     */
+    getNonLinearAds: function (sequence) {
+      return null;
+    },
 
-        getLinearVideoClick:function( sequence ) { return null; },
+    getLinearDuration: function (sequence) {
+      return null;
+    },
+  });
 
-        /**
-         * The collection of VASTNonLinearAd within this ad package.
-         */
-        getNonLinearAds:function( sequence ){ return null; },
-
-        getLinearDuration:function( sequence ){ return null; }
-
-    });
-
-    return vastInlineAd;
-
+  return vastInlineAd;
 });
