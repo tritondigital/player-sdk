@@ -1,3 +1,3 @@
 define({
-    red: "red, dude"
+  red: "red, dude",
 });

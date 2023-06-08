@@ -142,7 +142,7 @@ define([
       }
 
       return false;
-    //   return navigator.sendBeacon !== undefined;
+      //   return navigator.sendBeacon !== undefined;
     },
 
     pushEvent: function (eventType) {

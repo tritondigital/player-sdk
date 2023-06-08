@@ -1,21 +1,14 @@
 /**
  * VAST Document
  */
-define([
-    'dojo/_base/declare'
-], function ( declare ) {
+define(["dojo/_base/declare"], function (declare) {
+  var VASTDocument = declare([], {
+    constructor: function () {
+      console.log("vastDocument::constructor");
 
-    var VASTDocument = declare([], {
+      this.vastAd = null;
+    },
+  });
 
-        constructor:function()
-        {
-            console.log('vastDocument::constructor');
-
-            this.vastAd = null;
-        }
-
-    });
-
-    return VASTDocument;
-
+  return VASTDocument;
 });

@@ -7,77 +7,72 @@
  *
  */
 define([
-    'dojo/_base/declare',
-    'sdk/modules/npe/Track',
-    'sdk/modules/npe/Artist',
-    'sdk/modules/npe/Album'
-], function ( declare, Track, Artist, Album ) {
+  "dojo/_base/declare",
+  "sdk/modules/npe/Track",
+  "sdk/modules/npe/Artist",
+  "sdk/modules/npe/Album",
+], function (declare, Track, Artist, Album) {
+  var song = declare([], {
+    constructor: function (data, npeId, platformId) {
+      console.log("song::constructor");
+      console.log(data);
 
-    var song = declare([], {
+      this.songData = data;
+      this.npeId = npeId;
+      this.platformId = platformId;
 
-        constructor:function( data, npeId, platformId )
-        {
-            console.log( 'song::constructor' );
-            console.log( data );
+      this.trackInstance = null;
+      this.albumInstance = null;
+      this.artistInstance = null;
 
-            this.songData = data;
-            this.npeId = npeId;
-            this.platformId = platformId;
+      this.inherited(arguments);
+    },
 
-            this.trackInstance = null;
-            this.albumInstance = null;
-            this.artistInstance = null;
+    /**
+     * Track of the song
+     *
+     * @return {Track} the track of the song
+     */
+    track: function () {
+      if (this.songData.track == undefined) return null;
 
-            this.inherited(arguments);
-        },
+      if (this.trackInstance == null)
+        this.trackInstance = new Track(this.songData.track, this.platformId);
 
-        /**
-         * Track of the song
-         *
-         * @return {Track} the track of the song
-         */
-        track:function()
-        {
-            if ( this.songData.track == undefined ) return null;
+      return this.trackInstance;
+    },
 
-            if ( this.trackInstance == null )
-                this.trackInstance = new Track( this.songData.track, this.platformId );
+    /**
+     * Artist of the song
+     *
+     * @return {Artist} the artist of the song
+     */
+    artist: function () {
+      if (this.songData.artists == undefined) return null;
 
-            return this.trackInstance;
-        },
+      if (this.artistInstance == null)
+        this.artistInstance = new Artist(
+          this.songData.artists[0],
+          this.platformId
+        );
 
-        /**
-         * Artist of the song
-         *
-         * @return {Artist} the artist of the song
-         */
-        artist:function()
-        {
-            if ( this.songData.artists == undefined ) return null;
+      return this.artistInstance;
+    },
 
-            if ( this.artistInstance == null )
-                this.artistInstance = new Artist( this.songData.artists[0], this.platformId );
+    /**
+     * Album of the song
+     *
+     * @return {Album} the album of the song
+     */
+    album: function () {
+      if (this.songData.album == undefined) return null;
 
-            return this.artistInstance;
-        },
+      if (this.albumInstance == null)
+        this.albumInstance = new Album(this.songData.album, this.platformId);
 
-        /**
-         * Album of the song
-         *
-         * @return {Album} the album of the song
-         */
-        album:function()
-        {
-            if( this.songData.album == undefined ) return null;
+      return this.albumInstance;
+    },
+  });
 
-            if( this.albumInstance == null )
-                this.albumInstance = new Album( this.songData.album, this.platformId );
-
-            return this.albumInstance;
-        }
-
-    });
-
-    return song;
-
+  return song;
 });

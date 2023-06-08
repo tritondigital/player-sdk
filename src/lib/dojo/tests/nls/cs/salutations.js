@@ -1,8 +1,6 @@
-define(
-//begin v1.x content
+define(//begin v1.x content
 {
- cs: "česky",
- hello: "Ahoj"
-}
+  cs: "česky",
+  hello: "Ahoj",
+});
 //end v1.x content
-);

@@ -1,109 +1,105 @@
-var webpackCfg = require( './config/webpack.config.js' );
+var webpackCfg = require("./config/webpack.config.js");
 // Karma configuration
 // Generated on Wed Jun 08 2016 09:26:53 GMT-0400 (EDT)
 
-var debug = process.argv.indexOf( '--debug' ) > -1;
-const puppeteer = require('puppeteer');
+var debug = process.argv.indexOf("--debug") > -1;
+const puppeteer = require("puppeteer");
 process.env.CHROME_BIN = puppeteer.executablePath();
 
-module.exports = function ( config ) {
-	config.set( {
+module.exports = function (config) {
+  config.set({
+    // base path that will be used to resolve all patterns (eg. files, exclude)
+    basePath: "",
 
-		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: '',
+    // frameworks to use
+    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+    frameworks: ["mocha", "sinon"],
 
-		// frameworks to use
-		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-		frameworks: [ 'mocha', 'sinon' ],
+    // list of files / patterns to load in the browser
+    files: ["node_modules/babel-polyfill/dist/polyfill.js", "test/**/*Test.js"],
 
-		// list of files / patterns to load in the browser
-		files: [
-			'node_modules/babel-polyfill/dist/polyfill.js',
-			'test/**/*Test.js'
-		],
+    // list of files to exclude
+    exclude: [],
 
-		// list of files to exclude
-		exclude: [
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    preprocessors: {
+      "test/**/*Test.js": ["webpack"],
+    },
 
-		],
+    webpack: webpackCfg,
+    webpackServer: {
+      noInfo: true,
+    },
+    coverageReporter: {
+      dir: "target/coverage/",
+      reporters: [
+        {
+          type: "html",
+        },
+        {
+          type: "text",
+        },
+      ],
+      watermarks: {
+        statements: [50, 75],
+        functions: [50, 75],
+        branches: [50, 75],
+        lines: [50, 75],
+      },
+    },
 
-		// preprocess matching files before serving them to the browser
-		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-		preprocessors: {
-			'test/**/*Test.js': [ 'webpack' ]
-		},
+    // test results reporter to use
+    // possible values: 'dots', 'progress'
+    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+    reporters: ["mocha", "coverage"],
 
-		webpack: webpackCfg,
-		webpackServer: {
-			noInfo: true
-		},
-		coverageReporter: {
-			dir: 'target/coverage/',
-			reporters: [ {
-				type: 'html'
-			}, {
-				type: 'text'
-			} ],
-			watermarks: {
-				statements: [ 50, 75 ],
-				functions: [ 50, 75 ],
-				branches: [ 50, 75 ],
-				lines: [ 50, 75 ]
-			}
-		},
+    // web server port
+    port: 9876,
 
-		// test results reporter to use
-		// possible values: 'dots', 'progress'
-		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: [ 'mocha', 'coverage' ],
+    // enable / disable colors in the output (reporters and logs)
+    colors: true,
 
-		// web server port
-		port: 9876,
+    // level of logging
+    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    logLevel: config.LOG_INFO,
 
-		// enable / disable colors in the output (reporters and logs)
-		colors: true,
+    // enable / disable watching file and executing tests whenever any file changes
+    autoWatch: true,
 
-		// level of logging
-		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_INFO,
+    // start these browsers
+    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+    browsers: [debug ? "Chrome" : "HeadlessChrome"],
+    customLaunchers: {
+      HeadlessChrome: {
+        base: "Chrome",
+        flags: [
+          "--headless",
+          "--disable-gpu",
+          "--remote-debugging-port=9999",
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+        ],
+      },
+    },
 
-		// enable / disable watching file and executing tests whenever any file changes
-		autoWatch: true,
+    browserConsoleLogOptions: {
+      terminal: true,
+      level: "",
+    },
 
-		// start these browsers
-		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: [ debug ? 'Chrome' : 'HeadlessChrome' ],
-		customLaunchers: {
-			HeadlessChrome: {
-			  base: "Chrome",
-			  flags: [
-				"--headless", 
-				"--disable-gpu", 
-				"--remote-debugging-port=9999",
-				"--no-sandbox",
-				"--disable-setuid-sandbox"
-			  ]
-			}
-		  },
-		
-		browserConsoleLogOptions: {
-			terminal: true,
-			level: ""
-		},
+    // Continuous Integration mode
+    // if true, Karma captures browsers, runs the tests and exits
+    singleRun: false,
 
-		// Continuous Integration mode
-		// if true, Karma captures browsers, runs the tests and exits
-		singleRun: false,
+    // Concurrency level
+    // how many browser should be started simultaneous
+    concurrency: Infinity,
 
-		// Concurrency level
-		// how many browser should be started simultaneous
-		concurrency: Infinity,
-
-		client: {
-			mocha: {
-				timeout: debug ? '3600000' : '2000'
-			}
-		}
-
-	} )
-}
+    client: {
+      mocha: {
+        timeout: debug ? "3600000" : "2000",
+      },
+    },
+  });
+};

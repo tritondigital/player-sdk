@@ -1,1 +1,6 @@
-({"abCdEfValueOnly":"abCdEfValueOnly","legacyBundle":"legacyBundle-ab-cd-ef","abValueOnly":"abValueOnly","rootValueOnly":"rootValueOnly"})
+({
+  abCdEfValueOnly: "abCdEfValueOnly",
+  legacyBundle: "legacyBundle-ab-cd-ef",
+  abValueOnly: "abValueOnly",
+  rootValueOnly: "rootValueOnly",
+});

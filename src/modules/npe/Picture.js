@@ -6,119 +6,113 @@
  *
  */
 define([
-    'dojo/_base/declare',
-    'dojo/_base/lang',
-    'sdk/base/util/XhrProvider',
-    'sdk/modules/npe/base/Inpe'
-], function ( declare, lang, XhrProvider, Inpe) {
+  "dojo/_base/declare",
+  "dojo/_base/lang",
+  "sdk/base/util/XhrProvider",
+  "sdk/modules/npe/base/Inpe",
+], function (declare, lang, XhrProvider, Inpe) {
+  var picture = declare([Inpe], {
+    constructor: function (data, platformId) {
+      console.log("picture::constructor");
 
-    var picture = declare([ Inpe ], {
+      this.pictureData = null;
 
-        constructor:function( data, platformId )
-        {
-            console.log( 'picture::constructor' );
+      //A picture has an albumId or an artistId
+      this.albumId = data.albumId ? data.albumId : null;
+      this.artistId = data.artistId ? data.artistId : null;
 
-            this.pictureData = null;
+      this.inherited(arguments);
+    },
 
-            //A picture has an albumId or an artistId
-            this.albumId = ( data.albumId ) ? data.albumId : null;
-            this.artistId = ( data.artistId ) ? data.artistId : null;
+    getOriginalSourceUrl: function () {
+      return this.data.originalSourceUrl;
+    },
 
-            this.inherited( arguments );
-        },
+    getOriginalWidth: function () {
+      return this.data.width;
+    },
 
-        getOriginalSourceUrl:function()
-        {
-            return this.data.originalSourceUrl;
-        },
+    getOriginalHeight: function () {
+      return this.data.height;
+    },
 
-        getOriginalWidth:function()
-        {
-            return this.data.width;
-        },
+    /**
+     * Returns the array of picture files
+     *
+     * @returns {Array.<Object>} containing: {width, height, url}
+     */
+    getFiles: function () {
+      return this.pictureData != null &&
+        this.pictureData.files != undefined &&
+        this.pictureData.files.length > 0
+        ? this.pictureData.files
+        : null;
+    },
 
-        getOriginalHeight:function()
-        {
-            return this.data.height;
-        },
+    /**
+     * Fetch data by requesting URL
+     *
+     */
+    fetchData: function (isDynamicCall) {
+      console.log("picture::fetchData - id:" + this.id);
 
-        /**
-         * Returns the array of picture files
-         *
-         * @returns {Array.<Object>} containing: {width, height, url}
-         */
-        getFiles:function()
-        {
-            return (this.pictureData != null && this.pictureData.files != undefined && this.pictureData.files.length > 0) ? this.pictureData.files: null;
-        },
+      isDynamicCall = isDynamicCall == undefined ? false : isDynamicCall;
 
-        /**
-         * Fetch data by requesting URL
-         *
-         */
-        fetchData:function(isDynamicCall)
-        {
-            console.log( 'picture::fetchData - id:' + this.id );
+      if (isDynamicCall) {
+        if (this.albumId != null)
+          this.url = this.getDynamicAlbumPictureUrl(this.albumId, this.id);
+        else this.url = this.getDynamicArtistPictureUrl(this.artistId, this.id);
+      } else {
+        if (this.albumId != null)
+          this.url +=
+            this.url.indexOf("?") != -1
+              ? "&"
+              : "?" + "rewrite_id=" + this.albumId;
+        else
+          this.url +=
+            this.url.indexOf("?") != -1
+              ? "&"
+              : "?" + "rewrite_id=" + this.artistId;
+      }
 
-            isDynamicCall = ( isDynamicCall == undefined ) ? false : isDynamicCall;
+      if (this.alreadyFetched == false) {
+        var xhrProv = new XhrProvider();
+        xhrProv.request(
+          this.url,
+          { pictureId: this.id, isDynamicCall: isDynamicCall },
+          this.getRequestArgs(),
+          lang.hitch(this, this._onLoadComplete),
+          lang.hitch(this, this._onLoadError)
+        );
+      } else {
+        this.notify("picture-complete", { pictureId: this.id });
+      }
+    },
 
-            if ( isDynamicCall )
-            {
-                if ( this.albumId != null )
-                    this.url = this.getDynamicAlbumPictureUrl( this.albumId, this.id );
-                else
-                    this.url = this.getDynamicArtistPictureUrl( this.artistId, this.id );
-            } 
-            else 
-            {
-                if ( this.albumId != null )
-                    this.url += ( this.url.indexOf('?') != -1 ) ? '&' : '?' + 'rewrite_id=' + this.albumId;
-                else
-                    this.url += ( this.url.indexOf('?') != -1 ) ? '&' : '?' + 'rewrite_id=' + this.artistId;
-            }
+    /***************************************/
+    /******* PRIVATE FUNCTIONS  ************/
+    /***************************************/
 
-            if ( this.alreadyFetched == false )
-            {
-                var xhrProv = new XhrProvider();
-                xhrProv.request( this.url, { pictureId:this.id, isDynamicCall:isDynamicCall }, this.getRequestArgs(), lang.hitch( this, this._onLoadComplete ), lang.hitch( this, this._onLoadError ) );
-            }
-            else
-            {
-                this.notify( 'picture-complete', { pictureId:this.id } );
-            }
-        },
+    _onLoadError: function (requestData, error) {
+      console.error(error);
 
-        /***************************************/
-        /******* PRIVATE FUNCTIONS  ************/
-        /***************************************/
+      if (requestData.isDynamicCall == false) {
+        this.fetchData(true); //Fallback to dynamic url
+      } else {
+        this.notify("picture-error", { pictureId: requestData.pictureId });
+      }
+    },
 
-        _onLoadError: function( requestData, error )
-        {
-            console.error( error );
+    _onLoadComplete: function (requestData, data) {
+      console.log(data);
 
-            if ( requestData.isDynamicCall == false )
-            {
-                this.fetchData(true); //Fallback to dynamic url
-            }
-            else
-            {
-                this.notify( 'picture-error', { pictureId:requestData.pictureId } );
-            }
-        },
+      this.pictureData = data.picture;
 
-        _onLoadComplete: function( requestData, data )
-        {
-            console.log( data );
+      this.alreadyFetched = true;
 
-            this.pictureData = data.picture;
+      this.notify("picture-complete", { pictureId: requestData.pictureId });
+    },
+  });
 
-            this.alreadyFetched = true;
-
-            this.notify( 'picture-complete', { pictureId:requestData.pictureId } );
-        }
-
-    });
-
-    return picture;
-
+  return picture;
 });

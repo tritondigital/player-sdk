@@ -6,128 +6,105 @@
  *
  */
 define([
-    'dojo/_base/declare',
-    'dojo/_base/lang',
-    'sdk/base/util/XhrProvider',
-    'sdk/modules/npe/base/Inpe'
-], function ( declare, lang, XhrProvider, Inpe) {
+  "dojo/_base/declare",
+  "dojo/_base/lang",
+  "sdk/base/util/XhrProvider",
+  "sdk/modules/npe/base/Inpe",
+], function (declare, lang, XhrProvider, Inpe) {
+  var track = declare([Inpe], {
+    constructor: function (data, platformId) {
+      console.log("track::constructor");
 
-    var track = declare([ Inpe ], {
+      this.trackData = null;
 
-        constructor:function( data, platformId )
-        {
-            console.log( 'track::constructor' );
+      this.inherited(arguments);
+    },
 
-            this.trackData = null;
+    /**
+     * URL for iTunes Buy Url
+     *
+     * @return {string} the url of iTunes JSON data
+     */
+    getBuyUrl: function () {
+      if (this.trackData != null) return this.trackData.buyURL;
+      else return this.data.buyURL;
+    },
 
-            this.inherited( arguments );
-        },
+    getDuration: function () {
+      return this.data.duration;
+    },
 
-        /**
-         * URL for iTunes Buy Url
-         *
-         * @return {string} the url of iTunes JSON data
-         */
-        getBuyUrl:function()
-        {
-            if ( this.trackData != null )
-                return this.trackData.buyURL;
-            else
-                return this.data.buyURL;
-        },
+    getSampleUrl: function () {
+      if (this.trackData != null) return this.trackData.sampleURL;
+      else return this.data.sampleURL;
+    },
 
-        getDuration:function()
-        {
-            return this.data.duration;
-        },
+    getTitle: function () {
+      if (this.trackData != null) return this.trackData.title;
+      else return this.data.title;
+    },
 
-        getSampleUrl:function()
-        {
-            if ( this.trackData != null )
-                return this.trackData.sampleURL;
-            else
-                return this.data.sampleURL;
-        },
+    getArtists: function () {
+      return this.trackData.artists;
+    },
 
-        getTitle:function()
-        {
-            if ( this.trackData != null )
-                return this.trackData.title;
-            else
-                return this.data.title;
-        },
+    getReview: function () {
+      return this.trackData.review;
+    },
 
-        getArtists:function()
-        {
-            return this.trackData.artists;
-        },
+    getReviewAuthor: function () {
+      return this.trackData.reviewAuthor;
+    },
 
-        getReview:function()
-        {
-            return this.trackData.review;
-        },
+    getDisc: function () {
+      return this.data.disc;
+    },
 
-        getReviewAuthor:function()
-        {
-            return this.trackData.reviewAuthor;
-        },
+    fetchData: function (isDynamicCall) {
+      console.log("track::fetchData - id:" + this.id);
 
-        getDisc:function()
-        {
-            return this.data.disc;
-        },
+      isDynamicCall = isDynamicCall == undefined ? false : isDynamicCall;
 
-        fetchData:function(isDynamicCall)
-        {
-            console.log( 'track::fetchData - id:' + this.id );
+      if (isDynamicCall) this.url = this.getDynamicTrackUrl(this.id);
 
-            isDynamicCall = ( isDynamicCall == undefined ) ? false : isDynamicCall;
+      if (this.alreadyFetched == false) {
+        var xhrProv = new XhrProvider();
+        xhrProv.request(
+          this.url,
+          { trackId: this.id, isDynamicCall: isDynamicCall },
+          this.getRequestArgs(),
+          lang.hitch(this, this._onLoadComplete),
+          lang.hitch(this, this._onLoadError)
+        );
+      } else {
+        this.notify("track-complete", { trackId: this.id });
+      }
+    },
 
-            if ( isDynamicCall )
-                this.url = this.getDynamicTrackUrl( this.id );
+    /***************************************/
+    /******* PRIVATE FUNCTIONS  ************/
+    /***************************************/
 
-            if ( this.alreadyFetched == false )
-            {
-                var xhrProv = new XhrProvider();
-                xhrProv.request( this.url, { trackId:this.id, isDynamicCall:isDynamicCall }, this.getRequestArgs(), lang.hitch( this, this._onLoadComplete ), lang.hitch( this, this._onLoadError ) );
-            }
-            else
-            {
-                this.notify( 'track-complete', { trackId:this.id } );
-            }
-        },
+    _onLoadError: function (requestData, error) {
+      console.error(error);
 
-        /***************************************/
-        /******* PRIVATE FUNCTIONS  ************/
-        /***************************************/
+      if (requestData.isDynamicCall == false) {
+        this.fetchData(true); //Fallback to dynamic url
+      } else {
+        this.notify("track-error", { trackId: requestData.trackId });
+      }
+    },
 
-        _onLoadError: function( requestData, error )
-        {
-            console.error( error );
+    _onLoadComplete: function (requestData, data) {
+      console.log(data);
 
-            if ( requestData.isDynamicCall == false )
-            {
-                this.fetchData(true); //Fallback to dynamic url
-            }
-            else
-            {
-                this.notify( 'track-error', { trackId:requestData.trackId } );
-            }
-        },
+      this.trackData = data.track;
 
-        _onLoadComplete: function( requestData, data )
-        {
-            console.log( data );
+      this.alreadyFetched = true;
 
-            this.trackData = data.track;
+      this.notify("track-complete", { trackId: requestData.trackId });
+    },
+  });
 
-            this.alreadyFetched = true;
-
-            this.notify( 'track-complete', { trackId:requestData.trackId } );
-        }
-
-    });
-
-    return track;
-
+  return track;
 });

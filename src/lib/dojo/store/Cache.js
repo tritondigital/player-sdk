@@ -1,62 +1,74 @@
-define(["../_base/lang","../when" /*=====, "../_base/declare", "./api/Store" =====*/],
-function(lang, when /*=====, declare, Store =====*/){
+define([
+  "../_base/lang",
+  "../when" /*=====, "../_base/declare", "./api/Store" =====*/,
+], function (lang, when /*=====, declare, Store =====*/) {
+  // module:
+  //		dojo/store/Cache
 
-// module:
-//		dojo/store/Cache
+  var Cache = function (masterStore, cachingStore, options) {
+    options = options || {};
+    return lang.delegate(masterStore, {
+      query: function (query, directives) {
+        var results = masterStore.query(query, directives);
+        results.forEach(function (object) {
+          if (!options.isLoaded || options.isLoaded(object)) {
+            cachingStore.put(object);
+          }
+        });
+        return results;
+      },
+      // look for a queryEngine in either store
+      queryEngine: masterStore.queryEngine || cachingStore.queryEngine,
+      get: function (id, directives) {
+        return when(cachingStore.get(id), function (result) {
+          return (
+            result ||
+            when(masterStore.get(id, directives), function (result) {
+              if (result) {
+                cachingStore.put(result, { id: id });
+              }
+              return result;
+            })
+          );
+        });
+      },
+      add: function (object, directives) {
+        return when(masterStore.add(object, directives), function (result) {
+          // now put result in cache
+          cachingStore.add(
+            object && typeof result == "object" ? result : object,
+            directives
+          );
+          return result; // the result from the add should be dictated by the masterStore and be unaffected by the cachingStore
+        });
+      },
+      put: function (object, directives) {
+        // first remove from the cache, so it is empty until we get a response from the master store
+        cachingStore.remove(
+          (directives && directives.id) || this.getIdentity(object)
+        );
+        return when(masterStore.put(object, directives), function (result) {
+          // now put result in cache
+          cachingStore.put(
+            object && typeof result == "object" ? result : object,
+            directives
+          );
+          return result; // the result from the put should be dictated by the masterStore and be unaffected by the cachingStore
+        });
+      },
+      remove: function (id, directives) {
+        return when(masterStore.remove(id, directives), function (result) {
+          return cachingStore.remove(id, directives);
+        });
+      },
+      evict: function (id) {
+        return cachingStore.remove(id);
+      },
+    });
+  };
+  lang.setObject("dojo.store.Cache", Cache);
 
-var Cache = function(masterStore, cachingStore, options){
-	options = options || {};
-	return lang.delegate(masterStore, {
-		query: function(query, directives){
-			var results = masterStore.query(query, directives);
-			results.forEach(function(object){
-				if(!options.isLoaded || options.isLoaded(object)){
-					cachingStore.put(object);
-				}
-			});
-			return results;
-		},
-		// look for a queryEngine in either store
-		queryEngine: masterStore.queryEngine || cachingStore.queryEngine,
-		get: function(id, directives){
-			return when(cachingStore.get(id), function(result){
-				return result || when(masterStore.get(id, directives), function(result){
-					if(result){
-						cachingStore.put(result, {id: id});
-					}
-					return result;
-				});
-			});
-		},
-		add: function(object, directives){
-			return when(masterStore.add(object, directives), function(result){
-				// now put result in cache
-				cachingStore.add(object && typeof result == "object" ? result : object, directives);
-				return result; // the result from the add should be dictated by the masterStore and be unaffected by the cachingStore
-			});
-		},
-		put: function(object, directives){
-			// first remove from the cache, so it is empty until we get a response from the master store
-			cachingStore.remove((directives && directives.id) || this.getIdentity(object));
-			return when(masterStore.put(object, directives), function(result){
-				// now put result in cache
-				cachingStore.put(object && typeof result == "object" ? result : object, directives);
-				return result; // the result from the put should be dictated by the masterStore and be unaffected by the cachingStore
-			});
-		},
-		remove: function(id, directives){
-			return when(masterStore.remove(id, directives), function(result){
-				return cachingStore.remove(id, directives);
-			});
-		},
-		evict: function(id){
-			return cachingStore.remove(id);
-		}
-	});
-};
-lang.setObject("dojo.store.Cache", Cache);
-
-/*=====
+  /*=====
 var __CacheArgs = {
 	// summary:
 	//		These are additional options for how caching is handled.
@@ -142,5 +154,5 @@ Cache = declare(Store, {
 });
 =====*/
 
-return Cache;
+  return Cache;
 });

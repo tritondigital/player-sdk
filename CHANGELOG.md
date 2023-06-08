@@ -1,4 +1,24 @@
 # Release notes:
+#2.9.64 (June 8 2023)
+- Migrate Google UA to GA4 on Web-SDK.
+
+#2.9.63 (Apr 28 2023)
+- Change getPrograms to getCloudStreamInfo
+- Timeshift - iOS not working with HLS.js issues.
+
+#2.9.62 (Feb 28 2023)
+- Possibility to add custom values for "dist" parameter when using the new time-shifting functions.
+
+#2.9.61 (Feb 28 2023)
+- Program Anchoring.
+- Various bug reported.
+
+#2.9.60 (Feb 09 2023)
+- Add seek from livefunctionality.
+
+#2.9.59 (Nov 16 2022)
+- Timeshift Phase 1.5.
+
 #2.9.58 (Sept 30 2022)
 - Fix empty source error and add an isReconnect property to the error to determine if the error happened on a reconnect.
 #2.9.57 (Jul 13 2022)

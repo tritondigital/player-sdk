@@ -1,3 +1,3 @@
 var one = {
-    name: "one"
+  name: "one",
 };
