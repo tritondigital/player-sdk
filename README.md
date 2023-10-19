@@ -1,16 +1,16 @@
 # Triton Digital® Player SDK
 
-The Triton Digital® Player SDK allows you to create an HTML5 and chromeless media player connected to all Triton Digital® services (e.g. audio streaming, podcasting, audio advertising, etc.) via JavaScript®. Rendering is done in HTML5, so the media player is available on desktop, tablet, and mobile devices.
+The Triton Digital® Player SDK allows you to create an HTML5 and chromeless media player connected to all Triton Digital® services (e.g. audio streaming, podcasting, audio advertising, etc.) via JavaScript®. Rendering is done in HTML5, so the media player is available on desktop, tablet, and mobile devices. 
 
-The Triton Digital® Player SDK does not provide a user interface (UI),  except for a video container used to display video advertisements and live video streams. The player UI interface and skinning have to be done in HTML, CSS, and JavaScript® by the developer.
+The Triton Digital® Player SDK does not provide a user interface (UI),  except for a video container used to display video advertisements and live video streams. The player UI interface and skinning have to be done in HTML, CSS, and JavaScript® by the developer. 
 
-The Triton Digital® Player SDK is designed with a modular approach (AMD), where each module gives you access to a specific player feature.
+The Triton Digital® Player SDK is designed with a modular approach (AMD), where each module gives you access to a specific player feature. 
 
 For complete documentation on using the Triton Digital® Player SDK, visit our [online documentation](https://userguides.tritondigital.com/spc/tdplay2/  ).
 
 ## Getting Started
 
-The following instructions will get a copy of the project up and running on your local machine for development and testing purposes.
+The following instructions will get a copy of the project up and running on your local machine for development and testing purposes. 
 
 ### Prerequisites
 
@@ -18,7 +18,7 @@ The following instructions will get a copy of the project up and running on your
 
 ### Installing
 
-First, clone the GitHub project to your local development environment
+First, clone the GitHub project to your local development environment 
 
 In your terminal:
 
@@ -39,7 +39,7 @@ This will open up an SDK Playground where you can test the SDK features.
 
 ## Running the tests
 
-In your terminal, navigate to where you forked or cloned the SDK:
+In your terminal, navigate to where you forked or cloned the SDK: 
 
 ```bash
 npm run test
@@ -71,3 +71,4 @@ We use an internal versioning system. All accepted contributions will be version
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE.md](LICENSE.md) file for details
 
+The Google VAST Parser is packaged in the Triton Digital® Player SDK for use by the user of the SDK. For more information, please see: [https://developers.google.com/interactive-media-ads/docs/sdks/html5](https://developers.google.com/interactive-media-ads/docs/sdks/html5)
