@@ -6,18 +6,18 @@
  *
  */
 define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "sdk/base/util/XhrProvider",
-  "sdk/modules/npe/base/Inpe",
-  "dojo/_base/array",
-  "sdk/modules/npe/Album",
-  "sdk/modules/npe/Picture",
-  "dojo/on",
+  'dojo/_base/declare',
+  'dojo/_base/lang',
+  'sdk/base/util/XhrProvider',
+  'sdk/modules/npe/base/Inpe',
+  'dojo/_base/array',
+  'sdk/modules/npe/Album',
+  'sdk/modules/npe/Picture',
+  'dojo/on'
 ], function (declare, lang, XhrProvider, Inpe, array, Album, Picture, on) {
   var artist = declare([Inpe], {
     constructor: function (data, platformId) {
-      console.log("artist::constructor");
+      console.log('artist::constructor');
 
       this.artistData = null;
 
@@ -240,15 +240,9 @@ define([
 
       if (this.alreadyFetched == false) {
         var xhrProv = new XhrProvider();
-        xhrProv.request(
-          this.url,
-          { isDynamicCall: isDynamicCall },
-          this.getRequestArgs(),
-          lang.hitch(this, this._onLoadComplete),
-          lang.hitch(this, this._onLoadError)
-        );
+        xhrProv.request(this.url, { isDynamicCall: isDynamicCall }, this.getRequestArgs(), lang.hitch(this, this._onLoadComplete), lang.hitch(this, this._onLoadError));
       } else {
-        this.notify("artist-complete", { artistId: this.id });
+        this.notify('artist-complete', { artistId: this.id });
       }
     },
 
@@ -258,9 +252,9 @@ define([
      * @param albumIds {string or array} The list of albums to retrieve data. Set a string for only one album, or an array for a list of albums.
      */
     fetchAlbumByIds: function (albumIds) {
-      console.log("artist::fetchAlbumByIds - albumIds=" + albumIds);
+      console.log('artist::fetchAlbumByIds - albumIds=' + albumIds);
 
-      if (typeof albumIds == "string") albumIds = [albumIds];
+      if (typeof albumIds == 'string') albumIds = [albumIds];
 
       this.albumsQueue = lang.clone(albumIds);
 
@@ -271,16 +265,8 @@ define([
         if (album.successCallback) album.successCallback.remove();
         if (album.errorCallback) album.errorCallback.remove();
 
-        album.successCallback = on(
-          album,
-          "album-complete",
-          lang.hitch(this, this._onAlbumComplete)
-        );
-        album.errorCallback = on(
-          album,
-          "album-error",
-          lang.hitch(this, this._onAlbumComplete)
-        );
+        album.successCallback = on(album, 'album-complete', lang.hitch(this, this._onAlbumComplete));
+        album.errorCallback = on(album, 'album-error', lang.hitch(this, this._onAlbumComplete));
 
         album.fetchData();
       }
@@ -292,9 +278,9 @@ define([
      * @param pictureIds {string or array} The list of pictures to retrieve data. Set a string for only one picture, or an array for a list of pictures.
      */
     fetchPictureByIds: function (pictureIds) {
-      console.log("artist::fetchPictureByIds - pictureIds=" + pictureIds);
+      console.log('artist::fetchPictureByIds - pictureIds=' + pictureIds);
 
-      if (typeof pictureIds == "string") pictureIds = [pictureIds];
+      if (typeof pictureIds == 'string') pictureIds = [pictureIds];
 
       this.picturesQueue = lang.clone(pictureIds);
 
@@ -305,16 +291,8 @@ define([
         if (picture.successCallback) picture.successCallback.remove();
         if (picture.errorCallback) picture.errorCallback.remove();
 
-        picture.successCallback = on(
-          picture,
-          "picture-complete",
-          lang.hitch(this, this._onPictureComplete)
-        );
-        picture.errorCallback = on(
-          picture,
-          "picture-error",
-          lang.hitch(this, this._onPictureComplete)
-        );
+        picture.successCallback = on(picture, 'picture-complete', lang.hitch(this, this._onPictureComplete));
+        picture.errorCallback = on(picture, 'picture-error', lang.hitch(this, this._onPictureComplete));
 
         picture.fetchData();
       }
@@ -330,7 +308,7 @@ define([
       if (requestData.isDynamicCall == false) {
         this.fetchData(true); //Fallback to dynamic url
       } else {
-        this.notify("artist-error", { artistId: this.id });
+        this.notify('artist-error', { artistId: this.id });
       }
     },
 
@@ -339,17 +317,17 @@ define([
 
       this.alreadyFetched = true;
 
-      this.notify("artist-complete", { artistId: this.id });
+      this.notify('artist-complete', { artistId: this.id });
     },
 
     //album completed = load complete or error
     _onAlbumComplete: function (requestData, data) {
-      console.log("_onAlbumComplete - albumId=" + requestData.albumId);
+      console.log('_onAlbumComplete - albumId=' + requestData.albumId);
 
       this._removeAlbumFromQueue(requestData.albumId);
 
       if (this.albumsQueue.length == 0) {
-        this.notify("album-complete", this.albums);
+        this.notify('album-complete', this.albums);
       }
     },
 
@@ -369,12 +347,12 @@ define([
 
     //picture completed = load complete or error
     _onPictureComplete: function (requestData, data) {
-      console.log("_onPictureComplete - pictureId=" + requestData.pictureId);
+      console.log('_onPictureComplete - pictureId=' + requestData.pictureId);
 
       this._removePictureFromQueue(requestData.pictureId);
 
       if (this.picturesQueue.length == 0) {
-        this.notify("picture-complete", this.pictures);
+        this.notify('picture-complete', this.pictures);
       }
     },
 
@@ -390,7 +368,7 @@ define([
       );
 
       if (spliceStartIndex > -1) this.picturesQueue.splice(spliceStartIndex, 1);
-    },
+    }
   });
 
   return artist;

@@ -1,12 +1,4 @@
-define([
-  "./kernel",
-  "../Deferred",
-  "../promise/Promise",
-  "../errors/CancelError",
-  "../has",
-  "./lang",
-  "../when",
-], function (dojo, NewDeferred, Promise, CancelError, has, lang, when) {
+define(['./kernel', '../Deferred', '../promise/Promise', '../errors/CancelError', '../has', './lang', '../when'], function (dojo, NewDeferred, Promise, CancelError, has, lang, when) {
   // module:
   //		dojo/_base/Deferred
 
@@ -161,7 +153,7 @@ define([
 
     function complete(value) {
       if (finished) {
-        throw new Error("This deferred has already been resolved");
+        throw new Error('This deferred has already been resolved');
       }
       result = value;
       finished = true;
@@ -178,7 +170,7 @@ define([
         }
 
         var func = isError ? listener.error : listener.resolved;
-        if (has("config-useDeferredInstrumentation")) {
+        if (has('config-useDeferredInstrumentation')) {
           if (isError && NewDeferred.instrumentRejected) {
             NewDeferred.instrumentRejected(result, !!func);
           }
@@ -186,21 +178,15 @@ define([
         if (func) {
           try {
             var newResult = func(result);
-            if (newResult && typeof newResult.then === "function") {
-              newResult.then(
-                lang.hitch(listener.deferred, "resolve"),
-                lang.hitch(listener.deferred, "reject"),
-                lang.hitch(listener.deferred, "progress")
-              );
+            if (newResult && typeof newResult.then === 'function') {
+              newResult.then(lang.hitch(listener.deferred, 'resolve'), lang.hitch(listener.deferred, 'reject'), lang.hitch(listener.deferred, 'progress'));
               continue;
             }
             var unchanged = mutated && newResult === undefined;
             if (mutated && !unchanged) {
               isError = newResult instanceof Error;
             }
-            listener.deferred[unchanged && isError ? "reject" : "resolve"](
-              unchanged ? result : newResult
-            );
+            listener.deferred[unchanged && isError ? 'reject' : 'resolve'](unchanged ? result : newResult);
           } catch (e) {
             listener.deferred.reject(e);
           }
@@ -261,7 +247,7 @@ define([
       //		Fulfills the Deferred instance as an error with the provided error
       isError = true;
       this.fired = fired = 1;
-      if (has("config-useDeferredInstrumentation")) {
+      if (has('config-useDeferredInstrumentation')) {
         if (NewDeferred.instrumentRejected) {
           NewDeferred.instrumentRejected(error, !!nextListener);
         }
@@ -293,11 +279,7 @@ define([
       return this; // Deferred
     };
     // provide the implementation of the promise
-    promise.then = this.then = function (
-      /*Function?*/ resolvedCallback,
-      /*Function?*/ errorCallback,
-      /*Function?*/ progressCallback
-    ) {
+    promise.then = this.then = function (/*Function?*/ resolvedCallback, /*Function?*/ errorCallback, /*Function?*/ progressCallback) {
       // summary:
       //		Adds a fulfilledHandler, errorHandler, and progressHandler to be called for
       //		completion of a promise. The fulfilledHandler is called when the promise
@@ -323,13 +305,12 @@ define([
       //		|		then(printResult, onError);
       //		|	>44
       //
-      var returnDeferred =
-        progressCallback == mutator ? this : new Deferred(promise.cancel);
+      var returnDeferred = progressCallback == mutator ? this : new Deferred(promise.cancel);
       var listener = {
         resolved: resolvedCallback,
         error: errorCallback,
         progress: progressCallback,
-        deferred: returnDeferred,
+        deferred: returnDeferred
       };
       if (nextListener) {
         head = head.next = listener;
@@ -384,7 +365,7 @@ define([
       var enclosed = lang.hitch.apply(dojo, arguments);
       return this.addCallbacks(enclosed, enclosed); // Deferred
     },
-    fired: -1,
+    fired: -1
   });
 
   Deferred.when = dojo.when = when;

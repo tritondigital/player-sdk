@@ -1,5 +1,5 @@
-define(["./Deferred", "./promise/Promise"], function (Deferred, Promise) {
-  "use strict";
+define(['./Deferred', './promise/Promise'], function (Deferred, Promise) {
+  'use strict';
 
   // module:
   //		dojo/when
@@ -29,8 +29,7 @@ define(["./Deferred", "./promise/Promise"], function (Deferred, Promise) {
     // returns: dojo/promise/Promise
     //		Promise, or if a callback is provided, the result of the callback.
 
-    var receivedPromise =
-      valueOrPromise && typeof valueOrPromise.then === "function";
+    var receivedPromise = valueOrPromise && typeof valueOrPromise.then === 'function';
     var nativePromise = receivedPromise && valueOrPromise instanceof Promise;
 
     if (!receivedPromise) {

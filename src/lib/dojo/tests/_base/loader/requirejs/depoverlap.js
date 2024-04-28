@@ -1,15 +1,15 @@
-require(["require", "uno", "doh"], function (require, uno, doh) {
-  doh.register("depoverlap", [
+require(['require', 'uno', 'doh'], function (require, uno, doh) {
+  doh.register('depoverlap', [
     function depoverlap(t) {
       //First confirm there is only one script tag for each module:
-      var scripts = document.getElementsByTagName("script"),
+      var scripts = document.getElementsByTagName('script'),
         i,
         counts = {},
         modName,
         props,
         something;
       for (var i = scripts.length - 1; i > -1; i--) {
-        modName = scripts[i].getAttribute("data-requiremodule");
+        modName = scripts[i].getAttribute('data-requiremodule');
         if (modName) {
           if (!(modName in counts)) {
             counts[modName] = 0;
@@ -24,11 +24,11 @@ require(["require", "uno", "doh"], function (require, uno, doh) {
         t.is(1, counts[prop]);
       }
 
-      t.is("uno", uno.name);
+      t.is('uno', uno.name);
       something = uno.doSomething();
-      t.is("dos", something.dosName);
-      t.is("tres", something.tresName);
-    },
+      t.is('dos', something.dosName);
+      t.is('tres', something.tresName);
+    }
   ]);
   doh.run();
 });

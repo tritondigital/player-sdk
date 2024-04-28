@@ -2,12 +2,12 @@ define([], function () {
   // module:
   //		dojo/aspect
 
-  "use strict";
+  'use strict';
   var undefined,
     nextId = 0;
   function advise(dispatcher, type, advice, receiveArguments) {
     var previous = dispatcher[type];
-    var around = type == "around";
+    var around = type == 'around';
     var signal;
     if (around) {
       var advised = advice(function () {
@@ -23,7 +23,7 @@ define([], function () {
           return advised
             ? advised.apply(target, args) // called the advised function
             : previous.advice(target, args); // cancelled, skip to next one
-        },
+        }
       };
     } else {
       // create the remove handler
@@ -51,17 +51,17 @@ define([], function () {
         },
         id: nextId++,
         advice: advice,
-        receiveArguments: receiveArguments,
+        receiveArguments: receiveArguments
       };
     }
     if (previous && !around) {
-      if (type == "after") {
+      if (type == 'after') {
         // add the listener to the end of the list
         // note that we had to change this loop a little bit to workaround a bizarre IE10 JIT bug
         while (previous.next && (previous = previous.next)) {}
         previous.next = signal;
         signal.previous = previous;
-      } else if (type == "before") {
+      } else if (type == 'before') {
         // add to beginning
         dispatcher[type] = signal;
         signal.next = previous;
@@ -110,17 +110,12 @@ define([], function () {
           dispatcher.around = {
             advice: function (target, args) {
               return existing.apply(target, args);
-            },
+            }
           };
         }
         dispatcher.target = target;
       }
-      var results = advise(
-        dispatcher || existing,
-        type,
-        advice,
-        receiveArguments
-      );
+      var results = advise(dispatcher || existing, type, advice, receiveArguments);
       advice = null;
       return results;
     };
@@ -128,7 +123,7 @@ define([], function () {
 
   // TODOC: after/before/around return object
 
-  var after = aspect("after");
+  var after = aspect('after');
   /*=====
 	after = function(target, methodName, advice, receiveArguments){
 		// summary:
@@ -154,7 +149,7 @@ define([], function () {
 	};
 	=====*/
 
-  var before = aspect("before");
+  var before = aspect('before');
   /*=====
 	before = function(target, methodName, advice){
 		// summary:
@@ -175,7 +170,7 @@ define([], function () {
 	};
 	=====*/
 
-  var around = aspect("around");
+  var around = aspect('around');
   /*=====
 	 around = function(target, methodName, advice){
 		// summary:
@@ -226,6 +221,6 @@ define([], function () {
 
     before: before,
     around: around,
-    after: after,
+    after: after
   };
 });

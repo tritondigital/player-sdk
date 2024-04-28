@@ -1,22 +1,22 @@
 define([
-  "./_base/kernel", // kernel.isAsync
-  "./has",
-  "require",
-  "./sniff",
-  "./_base/lang",
-  "./_base/array",
-  "./_base/config",
-  "./ready",
-  "./_base/declare",
-  "./_base/connect",
-  "./_base/Deferred",
-  "./_base/json",
-  "./_base/Color",
-  "./has!dojo-firebug?./_firebug/firebug",
-  "./has!host-browser?./_base/browser",
-  "./has!dojo-sync-loader?./_base/loader",
+  './_base/kernel', // kernel.isAsync
+  './has',
+  'require',
+  './sniff',
+  './_base/lang',
+  './_base/array',
+  './_base/config',
+  './ready',
+  './_base/declare',
+  './_base/connect',
+  './_base/Deferred',
+  './_base/json',
+  './_base/Color',
+  './has!dojo-firebug?./_firebug/firebug',
+  './has!host-browser?./_base/browser',
+  './has!dojo-sync-loader?./_base/loader'
 ], function (kernel, has, require, sniff, lang, array, config, ready) {
-  dojo.require("sdk/main");
+  dojo.require('sdk/main');
 
   // module:
   //		dojo/main
@@ -29,17 +29,17 @@ define([
   // console guaranteed at a particular spot in an app, either set config.has["dojo-firebug"] true before
   // loading dojo.js or explicitly include dojo/_firebug/firebug in a dependency list.
   if (config.isDebug) {
-    require(["./_firebug/firebug"]);
+    require(['./_firebug/firebug']);
   }
 
   // dojoConfig.require is deprecated; use the loader configuration property deps
-  has.add("dojo-config-require", 1);
-  if (has("dojo-config-require")) {
+  has.add('dojo-config-require', 1);
+  if (has('dojo-config-require')) {
     var deps = config.require;
     if (deps) {
       // config.require may be dot notation
       deps = array.map(lang.isArray(deps) ? deps : [deps], function (item) {
-        return item.replace(/\./g, "/");
+        return item.replace(/\./g, '/');
       });
       if (kernel.isAsync) {
         require(deps);

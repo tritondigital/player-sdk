@@ -1,21 +1,12 @@
-define([
-  "./has!dom-addeventlistener?:./aspect",
-  "./_base/kernel",
-  "./sniff",
-], function (aspect, dojo, has) {
-  "use strict";
-  if (has("dom")) {
+define(['./has!dom-addeventlistener?:./aspect', './_base/kernel', './sniff'], function (aspect, dojo, has) {
+  'use strict';
+  if (has('dom')) {
     // check to make sure we are in a browser, this module should work anywhere
     var major = window.ScriptEngineMajorVersion;
-    has.add("jscript", major && major() + ScriptEngineMinorVersion() / 10);
-    has.add("event-orientationchange", has("touch") && !has("android")); // TODO: how do we detect this?
-    has.add(
-      "event-stopimmediatepropagation",
-      window.Event &&
-        !!window.Event.prototype &&
-        !!window.Event.prototype.stopImmediatePropagation
-    );
-    has.add("event-focusin", function (global, doc, element) {
+    has.add('jscript', major && major() + ScriptEngineMinorVersion() / 10);
+    has.add('event-orientationchange', has('touch') && !has('android')); // TODO: how do we detect this?
+    has.add('event-stopimmediatepropagation', window.Event && !!window.Event.prototype && !!window.Event.prototype.stopImmediatePropagation);
+    has.add('event-focusin', function (global, doc, element) {
       // All browsers except firefox support focusin, but too hard to feature test webkit since element.onfocusin
       // is undefined.  Just return true for IE and use fallback path for other browsers.
       return !!element.attachEvent;
@@ -53,11 +44,7 @@ define([
     //		|	obj.onfoo({key:"value"});
     //		If you use on.emit on a DOM node, it will use native event dispatching when possible.
 
-    if (
-      typeof target.on == "function" &&
-      typeof type != "function" &&
-      !target.nodeType
-    ) {
+    if (typeof target.on == 'function' && typeof type != 'function' && !target.nodeType) {
       // delegate to the target's on() method, so it can handle it's own listening if it wants (unless it
       // is DOM node and we may be dealing with jQuery or Prototype's incompatible addition to the
       // Element prototype
@@ -104,30 +91,21 @@ define([
     });
     return signal;
   };
-  on.parse = function (
-    target,
-    type,
-    listener,
-    addListener,
-    dontFix,
-    matchesTarget
-  ) {
+  on.parse = function (target, type, listener, addListener, dontFix, matchesTarget) {
     if (type.call) {
       // event handler function
       // on(node, touch.press, touchListener);
       return type.call(matchesTarget, target, listener);
     }
 
-    if (type.indexOf(",") > -1) {
+    if (type.indexOf(',') > -1) {
       // we allow comma delimited event names, so you can register for multiple events at once
       var events = type.split(/\s*,\s*/);
       var handles = [];
       var i = 0;
       var eventName;
       while ((eventName = events[i++])) {
-        handles.push(
-          addListener(target, eventName, listener, dontFix, matchesTarget)
-        );
+        handles.push(addListener(target, eventName, listener, dontFix, matchesTarget));
       }
       handles.remove = function () {
         for (var i = 0; i < handles.length; i++) {
@@ -150,15 +128,15 @@ define([
       return on.selector(selector, type).call(matchesTarget, target, listener);
     }
     // test to see if it a touch event right now, so we don't have to do it every time it fires
-    if (has("touch")) {
+    if (has('touch')) {
       if (touchEvents.test(type)) {
         // touch event, fix it
         listener = fixTouchListener(listener);
       }
-      if (!has("event-orientationchange") && type == "orientationchange") {
+      if (!has('event-orientationchange') && type == 'orientationchange') {
         //"orientationchange" not supported <= Android 2.1,
         //but works through "resize" on window
-        type = "resize";
+        type = 'resize';
         target = window;
         listener = fixTouchListener(listener);
       }
@@ -178,14 +156,14 @@ define([
       return {
         remove: function () {
           target.removeEventListener(adjustedType, listener, capture);
-        },
+        }
       };
     }
-    type = "on" + type;
+    type = 'on' + type;
     if (fixAttach && target.attachEvent) {
       return fixAttach(target, type, listener);
     }
-    throw new Error("Target must be an event emitter");
+    throw new Error('Target must be an event emitter');
   }
 
   on.selector = function (selector, eventType, children) {
@@ -207,21 +185,14 @@ define([
     // |		on(node, on.selector(".my-class", mouse.enter), handlerForMyHover);
     return function (target, listener) {
       // if the selector is function, use it to select the node, otherwise use the matches method
-      var matchesTarget =
-          typeof selector == "function" ? { matches: selector } : this,
+      var matchesTarget = typeof selector == 'function' ? { matches: selector } : this,
         bubble = eventType.bubble;
       function select(eventTarget) {
         // see if we have a valid matchesTarget or default to dojo.query
-        matchesTarget =
-          matchesTarget && matchesTarget.matches ? matchesTarget : dojo.query;
+        matchesTarget = matchesTarget && matchesTarget.matches ? matchesTarget : dojo.query;
         // there is a selector, so make sure it matches
         while (!matchesTarget.matches(eventTarget, selector, target)) {
-          if (
-            eventTarget == target ||
-            children === false ||
-            !(eventTarget = eventTarget.parentNode) ||
-            eventTarget.nodeType != 1
-          ) {
+          if (eventTarget == target || children === false || !(eventTarget = eventTarget.parentNode) || eventTarget.nodeType != 1) {
             // intentional assignment
             return;
           }
@@ -299,8 +270,8 @@ define([
       //	|		direction: "left-to-right"
       //	|	});
       var args = slice.call(arguments, 2);
-      var method = "on" + type;
-      if ("parentNode" in target) {
+      var method = 'on' + type;
+      if ('parentNode' in target) {
         // node (or node-like), create event controller methods
         var newEvent = (args[0] = {});
         for (var i in event) {
@@ -319,10 +290,8 @@ define([
       } while (event && event.bubbles && (target = target.parentNode));
       return event && event.cancelable && event; // if it is still true (was cancelable and was cancelled), return the event to indicate default action should happen
     });
-  var captures = has("event-focusin")
-    ? {}
-    : { focusin: "focus", focusout: "blur" };
-  if (!has("event-stopimmediatepropagation")) {
+  var captures = has('event-focusin') ? {} : { focusin: 'focus', focusout: 'blur' };
+  if (!has('event-stopimmediatepropagation')) {
     var stopImmediatePropagation = function () {
       this.immediatelyStopped = true;
       this.modified = true; // mark it as modified so the event will be cached in IE
@@ -337,7 +306,7 @@ define([
       };
     };
   }
-  if (has("dom-addeventlistener")) {
+  if (has('dom-addeventlistener')) {
     // emitter that works with native event handling
     on.emit = function (target, type, event) {
       if (target.dispatchEvent && document.createEvent) {
@@ -347,7 +316,7 @@ define([
         // that would be a lot of extra code, with little benefit that I can see, seems
         // best to use the generic constructor and copy properties over, making it
         // easy to have events look like the ones created with specific initializers
-        var nativeEvent = target.ownerDocument.createEvent("HTMLEvents");
+        var nativeEvent = target.ownerDocument.createEvent('HTMLEvents');
         nativeEvent.initEvent(type, !!event.bubbles, !!event.cancelable);
         // and copy all our properties over
         for (var i in event) {
@@ -370,21 +339,14 @@ define([
       // sender:
       //		node to treat as "currentTarget"
       if (!evt) {
-        var w =
-          (sender &&
-            (sender.ownerDocument || sender.document || sender).parentWindow) ||
-          window;
+        var w = (sender && (sender.ownerDocument || sender.document || sender).parentWindow) || window;
         evt = w.event;
       }
       if (!evt) {
         return evt;
       }
       try {
-        if (
-          lastEvent &&
-          evt.type == lastEvent.type &&
-          evt.srcElement == lastEvent.target
-        ) {
+        if (lastEvent && evt.type == lastEvent.type && evt.srcElement == lastEvent.target) {
           // should be same event, reuse event object (so it can be augmented);
           // accessing evt.srcElement rather than evt.target since evt.target not set on IE until fixup below
           evt = lastEvent;
@@ -397,10 +359,10 @@ define([
         // check to see if it has been fixed yet
         evt.target = evt.srcElement;
         evt.currentTarget = sender || evt.srcElement;
-        if (evt.type == "mouseover") {
+        if (evt.type == 'mouseover') {
           evt.relatedTarget = evt.fromElement;
         }
-        if (evt.type == "mouseout") {
+        if (evt.type == 'mouseout') {
           evt.relatedTarget = evt.toElement;
         }
         if (!evt.stopPropagation) {
@@ -408,8 +370,8 @@ define([
           evt.preventDefault = preventDefault;
         }
         switch (evt.type) {
-          case "keypress":
-            var c = "charCode" in evt ? evt.charCode : evt.keyCode;
+          case 'keypress':
+            var c = 'charCode' in evt ? evt.charCode : evt.keyCode;
             if (c == 10) {
               // CTRL-ENTER is CTRL-ASCII(10) on IE, but CTRL-ENTER on Mozilla
               c = 0;
@@ -454,24 +416,18 @@ define([
     };
     var fixAttach = function (target, type, listener) {
       listener = fixListener(listener);
-      if (
-        ((target.ownerDocument
-          ? target.ownerDocument.parentWindow
-          : target.parentWindow || target.window || window) != top ||
-          has("jscript") < 5.8) &&
-        !has("config-_allow_leaks")
-      ) {
+      if (((target.ownerDocument ? target.ownerDocument.parentWindow : target.parentWindow || target.window || window) != top || has('jscript') < 5.8) && !has('config-_allow_leaks')) {
         // IE will leak memory on certain handlers in frames (IE8 and earlier) and in unattached DOM nodes for JScript 5.7 and below.
         // Here we use global redirection to solve the memory leaks
-        if (typeof _dojoIEListeners_ == "undefined") {
+        if (typeof _dojoIEListeners_ == 'undefined') {
           _dojoIEListeners_ = [];
         }
         var emitter = target[type];
         if (!emitter || !emitter.listeners) {
           var oldListener = emitter;
           emitter = Function(
-            "event",
-            "var callee = arguments.callee; for(var i = 0; i<callee.listeners.length; i++){var listener = _dojoIEListeners_[callee.listeners[i]]; if(listener){listener.call(this,event);}}"
+            'event',
+            'var callee = arguments.callee; for(var i = 0; i<callee.listeners.length; i++){var listener = _dojoIEListeners_[callee.listeners[i]]; if(listener){listener.call(this,event);}}'
           );
           emitter.listeners = [];
           target[type] = emitter;
@@ -481,16 +437,14 @@ define([
           }
         }
         var handle;
-        emitter.listeners.push(
-          (handle = emitter.global._dojoIEListeners_.push(listener) - 1)
-        );
+        emitter.listeners.push((handle = emitter.global._dojoIEListeners_.push(listener) - 1));
         return new IESignal(handle);
       }
       return aspect.after(target, type, listener, true);
     };
 
     var _setKeyChar = function (evt) {
-      evt.keyChar = evt.charCode ? String.fromCharCode(evt.charCode) : "";
+      evt.keyChar = evt.charCode ? String.fromCharCode(evt.charCode) : '';
       evt.charOrCode = evt.keyChar || evt.keyCode;
     };
     // Called in Event scope
@@ -517,7 +471,7 @@ define([
       this.modified = true; // mark it as modified  (for defaultPrevented flag) so the event will be cached in IE
     });
   }
-  if (has("touch")) {
+  if (has('touch')) {
     var Event = function () {};
     var windowOrientation = window.orientation;
     var fixTouchListener = function (listener) {
@@ -536,7 +490,7 @@ define([
           } catch (e) {}
           if (originalEvent.type) {
             // deleting properties doesn't work (older iOS), have to use delegation
-            if (has("mozilla")) {
+            if (has('mozilla')) {
               // Firefox doesn't like delegated properties, so we have to copy
               var event = {};
               for (var name in originalEvent) {
@@ -560,16 +514,16 @@ define([
             event.type = type;
           }
           originalEvent.corrected = event;
-          if (type == "resize") {
+          if (type == 'resize') {
             if (windowOrientation == window.orientation) {
               return null; //double tap causes an unexpected 'resize' in Android
             }
             windowOrientation = window.orientation;
-            event.type = "orientationchange";
+            event.type = 'orientationchange';
             return listener.call(this, event);
           }
           // We use the original event and augment, rather than doing an expensive mixin operation
-          if (!("rotation" in event)) {
+          if (!('rotation' in event)) {
             // test to see if it has rotation
             event.rotation = 0;
             event.scale = 1;

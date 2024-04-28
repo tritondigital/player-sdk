@@ -1,12 +1,4 @@
-define([
-  "../_base/lang",
-  "../_base/declare",
-  "../_base/array",
-  "../_base/json",
-  "../_base/kernel",
-  "./ItemFileReadStore",
-  "../date/stamp",
-], function (
+define(['../_base/lang', '../_base/declare', '../_base/array', '../_base/json', '../_base/kernel', './ItemFileReadStore', '../date/stamp'], function (
   lang,
   declare,
   arrayUtil,
@@ -18,7 +10,7 @@ define([
   // module:
   //		dojo/data/ItemFileWriteStore
 
-  return declare("dojo.data.ItemFileWriteStore", ItemFileReadStore, {
+  return declare('dojo.data.ItemFileWriteStore', ItemFileReadStore, {
     // summary:
     //		TODOC
 
@@ -42,18 +34,18 @@ define([
       // |	}
 
       // ItemFileWriteStore extends ItemFileReadStore to implement these additional dojo.data APIs
-      this._features["dojo.data.api.Write"] = true;
-      this._features["dojo.data.api.Notification"] = true;
+      this._features['dojo.data.api.Write'] = true;
+      this._features['dojo.data.api.Notification'] = true;
 
       // For keeping track of changes so that we can implement isDirty and revert
       this._pending = {
         _newItems: {},
         _modifiedItems: {},
-        _deletedItems: {},
+        _deletedItems: {}
       };
 
-      if (!this._datatypeMap["Date"].serialize) {
-        this._datatypeMap["Date"].serialize = function (obj) {
+      if (!this._datatypeMap['Date'].serialize) {
+        this._datatypeMap['Date'].serialize = function (obj) {
           return dateStamp.toISOString(obj, { zulu: true });
         };
       }
@@ -70,13 +62,13 @@ define([
 
     _assert: function (/* boolean */ condition) {
       if (!condition) {
-        throw new Error("assertion failed in ItemFileWriteStore");
+        throw new Error('assertion failed in ItemFileWriteStore');
       }
     },
 
     _getIdentifierAttribute: function () {
       // this._assert((identifierAttribute === Number) || (dojo.isString(identifierAttribute)));
-      return this.getFeatures()["dojo.data.api.Identity"];
+      return this.getFeatures()['dojo.data.api.Identity'];
     },
 
     /* dojo/data/api/Write */
@@ -93,8 +85,8 @@ define([
         this._forceLoad();
       }
 
-      if (typeof keywordArgs != "object" && typeof keywordArgs != "undefined") {
-        throw new Error("newItem() was passed something other than an object");
+      if (typeof keywordArgs != 'object' && typeof keywordArgs != 'undefined') {
+        throw new Error('newItem() was passed something other than an object');
       }
       var newIdentity = null;
       var identifierAttribute = this._getIdentifierAttribute();
@@ -102,13 +94,11 @@ define([
         newIdentity = this._arrayOfAllItems.length;
       } else {
         newIdentity = keywordArgs[identifierAttribute];
-        if (typeof newIdentity === "undefined") {
-          throw new Error(
-            "newItem() was not passed an identity for the new item"
-          );
+        if (typeof newIdentity === 'undefined') {
+          throw new Error('newItem() was not passed an identity for the new item');
         }
         if (lang.isArray(newIdentity)) {
-          throw new Error("newItem() was not passed an single-valued identity");
+          throw new Error('newItem() was not passed an single-valued identity');
         }
       }
 
@@ -116,12 +106,10 @@ define([
       // defined in the file.  Otherwise it would be the item count,
       // which should always be unique in this case.
       if (this._itemsByIdentity) {
-        this._assert(typeof this._itemsByIdentity[newIdentity] === "undefined");
+        this._assert(typeof this._itemsByIdentity[newIdentity] === 'undefined');
       }
-      this._assert(typeof this._pending._newItems[newIdentity] === "undefined");
-      this._assert(
-        typeof this._pending._deletedItems[newIdentity] === "undefined"
-      );
+      this._assert(typeof this._pending._newItems[newIdentity] === 'undefined');
+      this._assert(typeof this._pending._deletedItems[newIdentity] === 'undefined');
 
       var newItem = {};
       newItem[this._storeRefPropName] = this;
@@ -142,7 +130,7 @@ define([
         pInfo = {
           item: parentInfo.parent,
           attribute: parentInfo.attribute,
-          oldValue: undefined,
+          oldValue: undefined
         };
 
         //See if it is multi-valued or not and handle appropriately
@@ -157,23 +145,10 @@ define([
             pInfo.oldValue = values.slice(0, values.length);
           }
           tempValues.push(newItem);
-          this._setValueOrValues(
-            parentInfo.parent,
-            parentInfo.attribute,
-            tempValues,
-            false
-          );
-          pInfo.newValue = this.getValues(
-            parentInfo.parent,
-            parentInfo.attribute
-          );
+          this._setValueOrValues(parentInfo.parent, parentInfo.attribute, tempValues, false);
+          pInfo.newValue = this.getValues(parentInfo.parent, parentInfo.attribute);
         } else {
-          this._setValueOrValues(
-            parentInfo.parent,
-            parentInfo.attribute,
-            newItem,
-            false
-          );
+          this._setValueOrValues(parentInfo.parent, parentInfo.attribute, newItem, false);
           pInfo.newValue = newItem;
         }
       } else {
@@ -199,7 +174,7 @@ define([
           // But first we have to make sure the new "__S" variable is
           // not in use, which means we have to iterate over all the
           // items checking for that.
-          throw new Error("encountered bug in ItemFileWriteStore.newItem");
+          throw new Error('encountered bug in ItemFileWriteStore.newItem');
         }
         var value = keywordArgs[key];
         if (!lang.isArray(value)) {
@@ -251,9 +226,7 @@ define([
 
         //Backup the map, we'll have to restore it potentially, in a revert.
         if (item[this._reverseRefMap]) {
-          item["backup_" + this._reverseRefMap] = lang.clone(
-            item[this._reverseRefMap]
-          );
+          item['backup_' + this._reverseRefMap] = lang.clone(item[this._reverseRefMap]);
         }
 
         //TODO:  This causes a reversion problem.  This list won't be restored on revert since it is
@@ -268,12 +241,12 @@ define([
               function (value) {
                 if (this.isItem(value)) {
                   //We have to back up all the references we had to others so they can be restored on a revert.
-                  if (!item["backupRefs_" + this._reverseRefMap]) {
-                    item["backupRefs_" + this._reverseRefMap] = [];
+                  if (!item['backupRefs_' + this._reverseRefMap]) {
+                    item['backupRefs_' + this._reverseRefMap] = [];
                   }
-                  item["backupRefs_" + this._reverseRefMap].push({
+                  item['backupRefs_' + this._reverseRefMap].push({
                     id: this.getIdentity(value),
-                    attr: attribute,
+                    attr: attribute
                   });
                   this._removeReferenceFromMap(value, item, attribute);
                 }
@@ -303,22 +276,14 @@ define([
                 var newValues = arrayUtil.filter(
                   oldValues,
                   function (possibleItem) {
-                    return !(
-                      this.isItem(possibleItem) &&
-                      this.getIdentity(possibleItem) == identity
-                    );
+                    return !(this.isItem(possibleItem) && this.getIdentity(possibleItem) == identity);
                   },
                   this
                 );
                 //Remove the note of the reference to the item and set the values on the modified attribute.
                 this._removeReferenceFromMap(item, containingItem, attribute);
                 if (newValues.length < oldValues.length) {
-                  this._setValueOrValues(
-                    containingItem,
-                    attribute,
-                    newValues,
-                    true
-                  );
+                  this._setValueOrValues(containingItem, attribute, newValues, true);
                 }
               }
             }
@@ -342,54 +307,36 @@ define([
       return true;
     },
 
-    setValue: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* almost anything */ value
-    ) {
+    setValue: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* almost anything */ value) {
       // summary:
       //		See dojo/data/api/Write.set()
       return this._setValueOrValues(item, attribute, value, true); // boolean
     },
 
-    setValues: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* array */ values
-    ) {
+    setValues: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* array */ values) {
       // summary:
       //		See dojo/data/api/Write.setValues()
       return this._setValueOrValues(item, attribute, values, true); // boolean
     },
 
-    unsetAttribute: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute
-    ) {
+    unsetAttribute: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute) {
       // summary:
       //		See dojo/data/api/Write.unsetAttribute()
       return this._setValueOrValues(item, attribute, [], true);
     },
 
-    _setValueOrValues: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* anything */ newValueOrValues,
-      /*boolean?*/ callOnSet
-    ) {
+    _setValueOrValues: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* anything */ newValueOrValues, /*boolean?*/ callOnSet) {
       this._assert(!this._saveInProgress);
 
       // Check for valid arguments
       this._assertIsItem(item);
       this._assert(lang.isString(attribute));
-      this._assert(typeof newValueOrValues !== "undefined");
+      this._assert(typeof newValueOrValues !== 'undefined');
 
       // Make sure the user isn't trying to change the item's identity
       var identifierAttribute = this._getIdentifierAttribute();
       if (attribute == identifierAttribute) {
-        throw new Error(
-          "ItemFileWriteStore does not have support for changing the value of an item's identifier."
-        );
+        throw new Error("ItemFileWriteStore does not have support for changing the value of an item's identifier.");
       }
 
       // To implement the Notification API, we need to make a note of what
@@ -406,11 +353,7 @@ define([
         // have a record of the original state.
         var copyOfItemState = {};
         for (var key in item) {
-          if (
-            key === this._storeRefPropName ||
-            key === this._itemNumPropName ||
-            key === this._rootItemPropName
-          ) {
+          if (key === this._storeRefPropName || key === this._itemNumPropName || key === this._rootItemPropName) {
             copyOfItemState[key] = item[key];
           } else if (key === this._reverseRefMap) {
             copyOfItemState[key] = lang.clone(item[key]);
@@ -528,11 +471,7 @@ define([
       return success; // boolean
     },
 
-    _addReferenceToMap: function (
-      /* dojo/data/api/Item */ refItem,
-      /* dojo/data/api/Item */ parentItem,
-      /* string */ attribute
-    ) {
+    _addReferenceToMap: function (/* dojo/data/api/Item */ refItem, /* dojo/data/api/Item */ parentItem, /* string */ attribute) {
       // summary:
       //		Method to add an reference map entry for an item and attribute.
       // description:
@@ -557,11 +496,7 @@ define([
       itemRef[attribute] = true;
     },
 
-    _removeReferenceFromMap: function (
-      /* dojo/data/api/Item */ refItem,
-      /* dojo/data/api/Item */ parentItem,
-      /* string */ attribute
-    ) {
+    _removeReferenceFromMap: function (/* dojo/data/api/Item */ refItem, /* dojo/data/api/Item */ parentItem, /* string */ attribute) {
       // summary:
       //		Method to remove an reference map entry for an item and attribute.
       // description:
@@ -601,20 +536,12 @@ define([
       for (i = 0; i < this._arrayOfAllItems.length; i++) {
         var item = this._arrayOfAllItems[i];
         if (item && item[this._reverseRefMap]) {
-          console.log(
-            "Item: [" +
-              this.getIdentity(item) +
-              "] is referenced by: " +
-              jsonUtil.toJson(item[this._reverseRefMap])
-          );
+          console.log('Item: [' + this.getIdentity(item) + '] is referenced by: ' + jsonUtil.toJson(item[this._reverseRefMap]));
         }
       }
     },
 
-    _getValueOrValues: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute
-    ) {
+    _getValueOrValues: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute) {
       var valueOrValues = undefined;
       if (this.hasAttribute(item, attribute)) {
         var valueArray = this.getValues(item, attribute);
@@ -637,17 +564,13 @@ define([
         //	  {_reference:2}
         return { _reference: this.getIdentity(value) };
       } else {
-        if (typeof value === "object") {
+        if (typeof value === 'object') {
           for (var type in this._datatypeMap) {
             var typeMap = this._datatypeMap[type];
             if (lang.isObject(typeMap) && !lang.isFunction(typeMap)) {
               if (value instanceof typeMap.type) {
                 if (!typeMap.serialize) {
-                  throw new Error(
-                    "ItemFileWriteStore:  No serializer defined for type mapping: [" +
-                      type +
-                      "]"
-                  );
+                  throw new Error('ItemFileWriteStore:  No serializer defined for type mapping: [' + type + ']');
                 }
                 return { _type: type, _value: typeMap.serialize(value) };
               }
@@ -681,12 +604,7 @@ define([
         if (item !== null) {
           var serializableItem = {};
           for (var key in item) {
-            if (
-              key !== this._storeRefPropName &&
-              key !== this._itemNumPropName &&
-              key !== this._reverseRefMap &&
-              key !== this._rootItemPropName
-            ) {
+            if (key !== this._storeRefPropName && key !== this._itemNumPropName && key !== this._reverseRefMap && key !== this._rootItemPropName) {
               var valueArray = this.getValues(item, key);
               if (valueArray.length == 1) {
                 serializableItem[key] = this._flatten(valueArray[0]);
@@ -739,7 +657,7 @@ define([
         self._pending = {
           _newItems: {},
           _modifiedItems: {},
-          _deletedItems: {},
+          _deletedItems: {}
         };
 
         self._saveInProgress = false; // must come after this._pending is cleared, but before any callbacks
@@ -758,11 +676,7 @@ define([
 
       if (this._saveEverything) {
         var newFileContentString = this._getNewFileContentString();
-        this._saveEverything(
-          saveCompleteCallback,
-          saveFailedCallback,
-          newFileContentString
-        );
+        this._saveEverything(saveCompleteCallback, saveFailedCallback, newFileContentString);
       }
       if (this._saveCustom) {
         this._saveCustom(saveCompleteCallback, saveFailedCallback);
@@ -806,10 +720,9 @@ define([
         var index = deletedItem[this._itemNumPropName];
 
         //Restore the reverse refererence map, if any.
-        if (deletedItem["backup_" + this._reverseRefMap]) {
-          deletedItem[this._reverseRefMap] =
-            deletedItem["backup_" + this._reverseRefMap];
-          delete deletedItem["backup_" + this._reverseRefMap];
+        if (deletedItem['backup_' + this._reverseRefMap]) {
+          deletedItem[this._reverseRefMap] = deletedItem['backup_' + this._reverseRefMap];
+          delete deletedItem['backup_' + this._reverseRefMap];
         }
         this._arrayOfAllItems[index] = deletedItem;
         if (this._itemsByIdentity) {
@@ -823,9 +736,9 @@ define([
       //undeletes have occurred.
       for (identity in this._pending._deletedItems) {
         deletedItem = this._pending._deletedItems[identity];
-        if (deletedItem["backupRefs_" + this._reverseRefMap]) {
+        if (deletedItem['backupRefs_' + this._reverseRefMap]) {
           arrayUtil.forEach(
-            deletedItem["backupRefs_" + this._reverseRefMap],
+            deletedItem['backupRefs_' + this._reverseRefMap],
             function (reference) {
               var refItem;
               if (this._itemsByIdentity) {
@@ -837,7 +750,7 @@ define([
             },
             this
           );
-          delete deletedItem["backupRefs_" + this._reverseRefMap];
+          delete deletedItem['backupRefs_' + this._reverseRefMap];
         }
       }
 
@@ -858,7 +771,7 @@ define([
       this._pending = {
         _newItems: {},
         _modifiedItems: {},
-        _deletedItems: {},
+        _deletedItems: {}
       };
       return true; // boolean
     },
@@ -869,30 +782,17 @@ define([
       if (item) {
         // return true if the item is dirty
         var identity = this.getIdentity(item);
-        return new Boolean(
-          this._pending._newItems[identity] ||
-            this._pending._modifiedItems[identity] ||
-            this._pending._deletedItems[identity]
-        ).valueOf(); // boolean
+        return new Boolean(this._pending._newItems[identity] || this._pending._modifiedItems[identity] || this._pending._deletedItems[identity]).valueOf(); // boolean
       } else {
         // return true if the store is dirty -- which means return true
         // if there are any new items, dirty items, or modified items
-        return (
-          !this._isEmpty(this._pending._newItems) ||
-          !this._isEmpty(this._pending._modifiedItems) ||
-          !this._isEmpty(this._pending._deletedItems)
-        ); // boolean
+        return !this._isEmpty(this._pending._newItems) || !this._isEmpty(this._pending._modifiedItems) || !this._isEmpty(this._pending._deletedItems); // boolean
       }
     },
 
     /* dojo/data/api/Notification */
 
-    onSet: function (
-      /* dojo/data/api/Item */ item,
-      /*attribute-name-string*/ attribute,
-      /*object|array*/ oldValue,
-      /*object|array*/ newValue
-    ) {
+    onSet: function (/* dojo/data/api/Item */ item, /*attribute-name-string*/ attribute, /*object|array*/ oldValue, /*object|array*/ newValue) {
       // summary:
       //		See dojo/data/api/Notification.onSet()
       // No need to do anything. This method is here just so that the
@@ -927,11 +827,9 @@ define([
           this.inherited(arguments);
         } else {
           //Only throw an error if the store was dirty and we were loading from a url (cannot reload from url until state is saved).
-          throw new Error(
-            "dojo.data.ItemFileWriteStore: There are unsaved changes present in the store.  Please save or revert the changes before invoking close."
-          );
+          throw new Error('dojo.data.ItemFileWriteStore: There are unsaved changes present in the store.  Please save or revert the changes before invoking close.');
         }
       }
-    },
+    }
   });
 });

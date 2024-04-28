@@ -1,3 +1,3 @@
 define({
-  id: "impliedDep3",
+  id: 'impliedDep3'
 });

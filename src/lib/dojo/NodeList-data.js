@@ -1,10 +1,4 @@
-define([
-  "./_base/kernel",
-  "./query",
-  "./_base/lang",
-  "./_base/array",
-  "./dom-attr",
-], function (dojo, query, lang, array, attr) {
+define(['./_base/kernel', './query', './_base/lang', './_base/array', './dom-attr'], function (dojo, query, lang, array, attr) {
   // module:
   //		dojo/NodeList-data
 
@@ -19,13 +13,13 @@ define([
 
   var dataCache = {},
     x = 0,
-    dataattr = "data-dojo-dataid",
+    dataattr = 'data-dojo-dataid',
     dopid = function (node) {
       // summary:
       //		Return a uniqueish ID for the passed node reference
       var pid = attr.get(node, dataattr);
       if (!pid) {
-        pid = "pid" + x++;
+        pid = 'pid' + x++;
         attr.set(node, dataattr, pid);
       }
       return pid;
@@ -63,7 +57,7 @@ define([
     if (arguments.length == 1) {
       r = dataCache[pid];
     }
-    if (typeof key == "string") {
+    if (typeof key == 'string') {
       // either getter or setter, based on `value` presence
       if (arguments.length > 2) {
         dataCache[pid][key] = value;
@@ -107,7 +101,7 @@ define([
     //		content regions (eg: a dijit/layout/ContentPane with replacing data)
     //		There is NO automatic GC going on. If you dojo.destroy() a node, you should _removeNodeData
     //		prior to destruction.
-    var livePids = query("[" + dataattr + "]").map(dopid);
+    var livePids = query('[' + dataattr + ']').map(dopid);
     for (var i in dataCache) {
       if (array.indexOf(livePids, i) < 0) {
         delete dataCache[i];
@@ -118,9 +112,9 @@ define([
   // make nodeData and removeNodeData public on dojo/NodeList:
   lang.extend(NodeList, {
     data: NodeList._adaptWithCondition(dodata, function (a) {
-      return a.length === 0 || (a.length == 1 && typeof a[0] == "string");
+      return a.length === 0 || (a.length == 1 && typeof a[0] == 'string');
     }),
-    removeData: NodeList._adaptAsForEach(removeData),
+    removeData: NodeList._adaptAsForEach(removeData)
   });
 
   /*=====

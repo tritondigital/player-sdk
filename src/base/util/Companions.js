@@ -1,14 +1,4 @@
-define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "dojo/on",
-  "dojo/Evented",
-  "dojo/_base/array",
-  "dojo/dom",
-  "dojo/dom-construct",
-  "dojo/request",
-  "sdk/base/util/XhrProvider",
-], function (
+define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'dojo/_base/array', 'dojo/dom', 'dojo/dom-construct', 'dojo/request', 'sdk/base/util/XhrProvider'], function (
   declare,
   lang,
   on,
@@ -19,12 +9,12 @@ define([
   request,
   XhrProvider
 ) {
-  var fetch = require("whatwg-fetch");
+  var fetch = require('whatwg-fetch');
   var companions = (window.TdCompanions = declare([Evented], {
-    JS_BANNER_URL: "https://player.tritondigital.com/tpl/default/jsbanner.php",
+    JS_BANNER_URL: 'https://player.tritondigital.com/tpl/default/jsbanner.php',
 
     constructor: function () {
-      console.log("companions::constructor");
+      console.log('companions::constructor');
 
       this.listeners = [];
     },
@@ -33,17 +23,17 @@ define([
       var container = dom.byId(containerId, document);
       domConstruct.empty(container);
       domConstruct.create(
-        "iframe",
+        'iframe',
         {
           src: adSpotUrl,
           width: width,
           height: height,
-          scrolling: "no",
+          scrolling: 'no',
           frameborder: 0,
           marginheight: 0,
           marginwidth: 0,
           allowtransparency: true,
-          style: { margin: 0, padding: 0 },
+          style: { margin: 0, padding: 0 }
         },
         container
       );
@@ -60,100 +50,71 @@ define([
      * @param altText - optional
      * @param adSpotType - optional
      */
-    loadCompanionStatic: function (
-      containerId,
-      adSpotUrl,
-      width,
-      height,
-      clickThroughURL,
-      altText,
-      adSpotType
-    ) {
-      altText = altText || "";
-      adSpotType = adSpotType || "";
+    loadCompanionStatic: function (containerId, adSpotUrl, width, height, clickThroughURL, altText, adSpotType) {
+      altText = altText || '';
+      adSpotType = adSpotType || '';
 
       var container = dom.byId(containerId, document);
       domConstruct.empty(container);
 
-      var extFile = adSpotUrl
-        .substring(adSpotUrl.lastIndexOf(".") + 1)
-        .toLowerCase();
-      if (adSpotType == "application/x-shockwave-flash" || extFile == "swf") {
+      var extFile = adSpotUrl.substring(adSpotUrl.lastIndexOf('.') + 1).toLowerCase();
+      if (adSpotType == 'application/x-shockwave-flash' || extFile == 'swf') {
         if (!swfobject.getFlashPlayerVersion().major > 0) {
-          console.error(
-            "companions::loadCompanionStatic - SWF file embed error: Flash is not available. containerId=" +
-              containerId +
-              ", adSpotUrl=" +
-              adSpotUrl
-          );
-          this.emit("companion-load-error", {
+          console.error('companions::loadCompanionStatic - SWF file embed error: Flash is not available. containerId=' + containerId + ', adSpotUrl=' + adSpotUrl);
+          this.emit('companion-load-error', {
             containerId: containerId,
-            adSpotUrl: adSpotUrl,
+            adSpotUrl: adSpotUrl
           });
           return;
         }
 
-        adSpotUrl =
-          adSpotUrl +
-          (adSpotUrl.indexOf("?") > -1 ? "&" : "?") +
-          "cb_" +
-          new Date().getTime();
+        adSpotUrl = adSpotUrl + (adSpotUrl.indexOf('?') > -1 ? '&' : '?') + 'cb_' + new Date().getTime();
 
-        console.log("companions::loadCompanionStatic - adSpotURL=" + adSpotUrl);
+        console.log('companions::loadCompanionStatic - adSpotURL=' + adSpotUrl);
 
         var flashArgs = {
           expressInstall: true,
           path: adSpotUrl,
           width: width,
           height: height,
-          allowScriptAccess: "always",
+          allowScriptAccess: 'always',
           allowfullscreen: true,
-          allowNetworking: "all",
-          minimumVersion: "10.2.0",
+          allowNetworking: 'all',
+          minimumVersion: '10.2.0',
           vars: { clickTAG: encodeURIComponent(clickThroughURL) },
           params: {
-            scale: "showall",
-            wmode: "opaque",
-            allowScriptAccess: "always",
-            allowNetworking: "all",
-          },
+            scale: 'showall',
+            wmode: 'opaque',
+            allowScriptAccess: 'always',
+            allowNetworking: 'all'
+          }
         };
 
-        var flashContentId = "td_flash_companions";
-        domConstruct.create("div", { id: flashContentId }, container);
+        var flashContentId = 'td_flash_companions';
+        domConstruct.create('div', { id: flashContentId }, container);
         swfobject.embedSWF(
           adSpotUrl,
           flashContentId,
           width,
           height,
-          "10.2.0",
+          '10.2.0',
           false,
           { clickTAG: encodeURIComponent(clickThroughURL) },
           {
-            scale: "showall",
-            wmode: "opaque",
-            allowScriptAccess: "always",
-            allowNetworking: "all",
+            scale: 'showall',
+            wmode: 'opaque',
+            allowScriptAccess: 'always',
+            allowNetworking: 'all'
           },
           false,
           false
         );
       } else {
-        console.log("companions::loadCompanionStatic - adSpotURL=" + adSpotUrl);
-        var imgHtml = "";
-        if (clickThroughURL != undefined)
-          imgHtml = '<a href="' + clickThroughURL + '" target="_blank">';
-        imgHtml +=
-          '<img src="' +
-          adSpotUrl +
-          '" width="' +
-          width +
-          '" height="' +
-          height +
-          '" title="' +
-          altText +
-          '" border="0"/>';
-        if (clickThroughURL != undefined) imgHtml += "</a>";
+        console.log('companions::loadCompanionStatic - adSpotURL=' + adSpotUrl);
+        var imgHtml = '';
+        if (clickThroughURL != undefined) imgHtml = '<a href="' + clickThroughURL + '" target="_blank">';
+        imgHtml += '<img src="' + adSpotUrl + '" width="' + width + '" height="' + height + '" title="' + altText + '" border="0"/>';
+        if (clickThroughURL != undefined) imgHtml += '</a>';
 
         container.innerHTML = imgHtml;
       }
@@ -177,10 +138,7 @@ define([
      * 	creativeView - Event to track. The creativeView should always be requested when present
      */
     loadVASTCompanionAd: function (containerId, vastCompanionAd) {
-      console.log(
-        "companions::loadVASTCompanionAd - vastCompanionAd.resourceType.name=" +
-          vastCompanionAd.resourceType.name
-      );
+      console.log('companions::loadVASTCompanionAd - vastCompanionAd.resourceType.name=' + vastCompanionAd.resourceType.name);
 
       if (vastCompanionAd.content) {
         dom.byId(containerId, document).innerHTML = vastCompanionAd.content;
@@ -188,40 +146,26 @@ define([
       }
 
       switch (vastCompanionAd.resourceType.name) {
-        case "html":
-          if (
-            vastCompanionAd.code.indexOf("<script>") > -1 &&
-            vastCompanionAd.code.indexOf("document.write") > -1
-          ) {
+        case 'html':
+          if (vastCompanionAd.code.indexOf('<script>') > -1 && vastCompanionAd.code.indexOf('document.write') > -1) {
             dom.byId(containerId, document).innerHTML = vastCompanionAd.code;
-          } else if (vastCompanionAd.code.indexOf("document.write") > -1) {
-            vastCompanionAd.resourceType.name = "iframe";
-            vastCompanionAd.url =
-              this.JS_BANNER_URL +
-              "?code=" +
-              encodeURIComponent(vastCompanionAd.code);
+          } else if (vastCompanionAd.code.indexOf('document.write') > -1) {
+            vastCompanionAd.resourceType.name = 'iframe';
+            vastCompanionAd.url = this.JS_BANNER_URL + '?code=' + encodeURIComponent(vastCompanionAd.code);
             this.loadVASTCompanionAd(containerId, vastCompanionAd);
           } else {
             dom.byId(containerId, document).innerHTML = vastCompanionAd.code;
           }
           break;
 
-        case "iframe":
-          this.loadCompanionIframe(
-            containerId,
-            vastCompanionAd.url,
-            vastCompanionAd.width,
-            vastCompanionAd.height
-          );
+        case 'iframe':
+          this.loadCompanionIframe(containerId, vastCompanionAd.url, vastCompanionAd.width, vastCompanionAd.height);
           break;
 
-        case "static":
-          if (vastCompanionAd.creativeType == "text/javascript") {
-            vastCompanionAd.resourceType.name = "iframe";
-            vastCompanionAd.url =
-              this.JS_BANNER_URL +
-              "?url=" +
-              encodeURIComponent(vastCompanionAd.url);
+        case 'static':
+          if (vastCompanionAd.creativeType == 'text/javascript') {
+            vastCompanionAd.resourceType.name = 'iframe';
+            vastCompanionAd.url = this.JS_BANNER_URL + '?url=' + encodeURIComponent(vastCompanionAd.url);
             this.loadVASTCompanionAd(containerId, vastCompanionAd);
           } else {
             this.loadCompanionStatic(
@@ -243,7 +187,7 @@ define([
       if (vastCompanionAd.creativeView && vastCompanionAd.creativeView.length) {
         vastCompanionAd.creativeView.forEach(function (url) {
           window.fetch(url, {
-            mode: "no-cors",
+            mode: 'no-cors'
           });
         });
       }
@@ -260,8 +204,7 @@ define([
       array.forEach(
         this.listeners,
         function (item, index) {
-          if (item.eventName == eventName && item.callback == callback)
-            itemIndex = index;
+          if (item.eventName == eventName && item.callback == callback) itemIndex = index;
         },
         this
       );
@@ -270,7 +213,7 @@ define([
         this.listeners.push({
           eventName: eventName,
           callback: callback,
-          listener: on(this, eventName, lang.hitch(this, callback)),
+          listener: on(this, eventName, lang.hitch(this, callback))
         });
     },
 
@@ -284,8 +227,7 @@ define([
       array.forEach(
         this.listeners,
         function (item, index) {
-          if (item.eventName == eventName && item.callback == callback)
-            itemIndex = index;
+          if (item.eventName == eventName && item.callback == callback) itemIndex = index;
         },
         this
       );
@@ -294,7 +236,7 @@ define([
         this.listeners[itemIndex].listener.remove();
         this.listeners.splice(itemIndex, 1);
       }
-    },
+    }
   }));
 
   return companions;

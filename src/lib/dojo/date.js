@@ -1,4 +1,4 @@
-define(["./has", "./_base/lang"], function (has, lang) {
+define(['./has', './_base/lang'], function (has, lang) {
   // module:
   //		dojo/date
 
@@ -45,13 +45,13 @@ define(["./has", "./_base/lang"], function (has, lang) {
     //		inconsistent across browsers.
 
     var str = dateObject.toString(); // Start looking in toString
-    var tz = ""; // The result -- return empty string if nothing found
+    var tz = ''; // The result -- return empty string if nothing found
     var match;
 
     // First look for something in parentheses -- fast lookup, no regex
-    var pos = str.indexOf("(");
+    var pos = str.indexOf('(');
     if (pos > -1) {
-      tz = str.substring(++pos, str.indexOf(")"));
+      tz = str.substring(++pos, str.indexOf(')'));
     } else {
       // If at first you don't succeed ...
       // If IE knows about the TZ, it appears before the year
@@ -74,16 +74,12 @@ define(["./has", "./_base/lang"], function (has, lang) {
     }
 
     // Make sure it doesn't somehow end up return AM or PM
-    return tz == "AM" || tz == "PM" ? "" : tz; // String
+    return tz == 'AM' || tz == 'PM' ? '' : tz; // String
   };
 
   // Utility methods to do arithmetic calculations with Dates
 
-  date.compare = function (
-    /*Date*/ date1,
-    /*Date?*/ date2,
-    /*String?*/ portion
-  ) {
+  date.compare = function (/*Date*/ date1, /*Date?*/ date2, /*String?*/ portion) {
     // summary:
     //		Compare two date objects by date, time, or both.
     // description:
@@ -101,11 +97,11 @@ define(["./has", "./_base/lang"], function (has, lang) {
     date1 = new Date(+date1);
     date2 = new Date(+(date2 || new Date()));
 
-    if (portion == "date") {
+    if (portion == 'date') {
       // Ignore times and compare dates.
       date1.setHours(0, 0, 0, 0);
       date2.setHours(0, 0, 0, 0);
-    } else if (portion == "time") {
+    } else if (portion == 'time') {
       // Ignore dates and compare times.
       date1.setFullYear(0, 0, 0);
       date2.setFullYear(0, 0, 0);
@@ -134,12 +130,12 @@ define(["./has", "./_base/lang"], function (has, lang) {
 
     var sum = new Date(+date); // convert to Number before copying to accomodate IE (#3112)
     var fixOvershoot = false;
-    var property = "Date";
+    var property = 'Date';
 
     switch (interval) {
-      case "day":
+      case 'day':
         break;
-      case "weekday":
+      case 'weekday':
         //i18n FIXME: assumes Saturday/Sunday weekend, but this is not always true.  see dojo/cldr/supplemental
 
         // Divide the increment time span into weekspans plus leftover days
@@ -177,37 +173,33 @@ define(["./has", "./_base/lang"], function (has, lang) {
         // weekend adjustments
         amount = 7 * weeks + days + adj;
         break;
-      case "year":
-        property = "FullYear";
+      case 'year':
+        property = 'FullYear';
         // Keep increment/decrement from 2/29 out of March
         fixOvershoot = true;
         break;
-      case "week":
+      case 'week':
         amount *= 7;
         break;
-      case "quarter":
+      case 'quarter':
         // Naive quarter is just three months
         amount *= 3;
       // fallthrough...
-      case "month":
+      case 'month':
         // Reset to last day of month if you overshoot
         fixOvershoot = true;
-        property = "Month";
+        property = 'Month';
         break;
       //		case "hour":
       //		case "minute":
       //		case "second":
       //		case "millisecond":
       default:
-        property =
-          "UTC" +
-          interval.charAt(0).toUpperCase() +
-          interval.substring(1) +
-          "s";
+        property = 'UTC' + interval.charAt(0).toUpperCase() + interval.substring(1) + 's';
     }
 
     if (property) {
-      sum["set" + property](sum["get" + property]() + amount);
+      sum['set' + property](sum['get' + property]() + amount);
     }
 
     if (fixOvershoot && sum.getDate() < date.getDate()) {
@@ -217,11 +209,7 @@ define(["./has", "./_base/lang"], function (has, lang) {
     return sum; // Date
   };
 
-  date.difference = function (
-    /*Date*/ date1,
-    /*Date?*/ date2,
-    /*String?*/ interval
-  ) {
+  date.difference = function (/*Date*/ date1, /*Date?*/ date2, /*String?*/ interval) {
     // summary:
     //		Get the difference in a specific unit of time (e.g., number of
     //		months, weeks, days, etc.) between two dates, rounded to the
@@ -238,12 +226,12 @@ define(["./has", "./_base/lang"], function (has, lang) {
     //		Defaults to "day".
 
     date2 = date2 || new Date();
-    interval = interval || "day";
+    interval = interval || 'day';
     var yearDiff = date2.getFullYear() - date1.getFullYear();
     var delta = 1; // Integer return value
 
     switch (interval) {
-      case "quarter":
+      case 'quarter':
         var m1 = date1.getMonth();
         var m2 = date2.getMonth();
         // Figure out which quarter the months are in
@@ -253,9 +241,9 @@ define(["./has", "./_base/lang"], function (has, lang) {
         q2 += yearDiff * 4;
         delta = q2 - q1;
         break;
-      case "weekday":
-        var days = Math.round(date.difference(date1, date2, "day"));
-        var weeks = parseInt(date.difference(date1, date2, "week"));
+      case 'weekday':
+        var days = Math.round(date.difference(date1, date2, 'day'));
+        var weeks = parseInt(date.difference(date1, date2, 'week'));
         var mod = days % 7;
 
         // Even number of weeks
@@ -326,30 +314,30 @@ define(["./has", "./_base/lang"], function (has, lang) {
         }
         delta = days;
         break;
-      case "year":
+      case 'year':
         delta = yearDiff;
         break;
-      case "month":
+      case 'month':
         delta = date2.getMonth() - date1.getMonth() + yearDiff * 12;
         break;
-      case "week":
+      case 'week':
         // Truncate instead of rounding
         // Don't use Math.floor -- value may be negative
-        delta = parseInt(date.difference(date1, date2, "day") / 7);
+        delta = parseInt(date.difference(date1, date2, 'day') / 7);
         break;
-      case "day":
+      case 'day':
         delta /= 24;
       // fallthrough
-      case "hour":
+      case 'hour':
         delta /= 60;
       // fallthrough
-      case "minute":
+      case 'minute':
         delta /= 60;
       // fallthrough
-      case "second":
+      case 'second':
         delta /= 1000;
       // fallthrough
-      case "millisecond":
+      case 'millisecond':
         delta *= date2.getTime() - date1.getTime();
     }
 
@@ -358,7 +346,7 @@ define(["./has", "./_base/lang"], function (has, lang) {
   };
 
   // Don't use setObject() because it may overwrite dojo/date/stamp (if that has already been loaded)
-  has("extend-dojo") && lang.mixin(lang.getObject("dojo.date", true), date);
+  has('extend-dojo') && lang.mixin(lang.getObject('dojo.date', true), date);
 
   return date;
 });

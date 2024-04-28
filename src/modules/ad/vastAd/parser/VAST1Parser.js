@@ -1,4 +1,4 @@
-var xmlParser = require("sdk/base/util/XmlParser");
+var xmlParser = require('sdk/base/util/XmlParser');
 
 /**
  *
@@ -6,44 +6,30 @@ var xmlParser = require("sdk/base/util/XmlParser");
  *
  */
 define([
-  "dojo/_base/declare",
-  "sdk/modules/ad/vastAd/parser/VASTParser",
-  "sdk/modules/ad/vastAd/parser/VASTElement",
-  "sdk/modules/ad/vastAd/VASTDocument",
-  "sdk/modules/ad/vastAd/VASTAd",
-  "sdk/modules/ad/vastAd/VAST1InlineAd",
-  "sdk/modules/ad/vastAd/VASTWrapperAd",
-  "sdk/modules/ad/vastAd/VASTVideo",
-  "sdk/modules/ad/vastAd/VASTVideoClick",
-  "sdk/modules/ad/vastAd/VASTTrackingEvent",
-  "sdk/modules/ad/vastAd/VASTCompanionAd",
-  "sdk/modules/ad/vastAd/VASTMediaFile",
-  "sdk/modules/ad/vastAd/VASTResourceType",
-], function (
-  declare,
-  VASTParser,
-  VASTElement,
-  VASTDocument,
-  VASTAd,
-  VAST1InlineAd,
-  VASTWrapperAd,
-  VASTVideo,
-  VASTVideoClick,
-  VASTTrackingEvent,
-  VASTCompanionAd,
-  VASTMediaFile,
-  VASTResourceType
-) {
+  'dojo/_base/declare',
+  'sdk/modules/ad/vastAd/parser/VASTParser',
+  'sdk/modules/ad/vastAd/parser/VASTElement',
+  'sdk/modules/ad/vastAd/VASTDocument',
+  'sdk/modules/ad/vastAd/VASTAd',
+  'sdk/modules/ad/vastAd/VAST1InlineAd',
+  'sdk/modules/ad/vastAd/VASTWrapperAd',
+  'sdk/modules/ad/vastAd/VASTVideo',
+  'sdk/modules/ad/vastAd/VASTVideoClick',
+  'sdk/modules/ad/vastAd/VASTTrackingEvent',
+  'sdk/modules/ad/vastAd/VASTCompanionAd',
+  'sdk/modules/ad/vastAd/VASTMediaFile',
+  'sdk/modules/ad/vastAd/VASTResourceType'
+], function (declare, VASTParser, VASTElement, VASTDocument, VASTAd, VAST1InlineAd, VASTWrapperAd, VASTVideo, VASTVideoClick, VASTTrackingEvent, VASTCompanionAd, VASTMediaFile, VASTResourceType) {
   var vast1parser = declare([VASTParser], {
-    AD: "Ad",
-    VAST_AD_TAG_URL: "VASTAdTagURL",
-    VIDEO: "Video",
-    URL: "URL",
-    CODE: "Code",
-    RESOURCE_TYPE: "resourceType",
+    AD: 'Ad',
+    VAST_AD_TAG_URL: 'VASTAdTagURL',
+    VIDEO: 'Video',
+    URL: 'URL',
+    CODE: 'Code',
+    RESOURCE_TYPE: 'resourceType',
 
     constructor: function () {
-      console.log("vast1parser::constructor");
+      console.log('vast1parser::constructor');
 
       this.vastDocument = null;
 
@@ -51,7 +37,7 @@ define([
     },
 
     parse: function (xml) {
-      console.log("vast1parser::parse");
+      console.log('vast1parser::parse');
 
       this.vastDocument = new VASTDocument();
 
@@ -73,17 +59,11 @@ define([
       var xmlLength = xml.length;
       for (var i = 0; i < xmlLength; i++) {
         if (xml[i].getElementsByTagName(VASTElement.INLINE).length > 0) {
-          this.vastDocument.vastAd.inlineAd = this._parseInLineTag(
-            xml[i].getElementsByTagName(VASTElement.INLINE)
-          );
-        } else if (
-          xml[i].getElementsByTagName(VASTElement.WRAPPER).length > 0
-        ) {
-          this.vastDocument.vastAd.wrapperAd = this._parseWrapperTag(
-            xml[i].getElementsByTagName(VASTElement.WRAPPER)
-          );
+          this.vastDocument.vastAd.inlineAd = this._parseInLineTag(xml[i].getElementsByTagName(VASTElement.INLINE));
+        } else if (xml[i].getElementsByTagName(VASTElement.WRAPPER).length > 0) {
+          this.vastDocument.vastAd.wrapperAd = this._parseWrapperTag(xml[i].getElementsByTagName(VASTElement.WRAPPER));
         } else {
-          console.error("VAST - parseAdTag() - Unsupported VAST tag");
+          console.error('VAST - parseAdTag() - Unsupported VAST tag');
         }
       }
     },
@@ -103,26 +83,13 @@ define([
         }
       }
 
-      vast1Inline.video = this._parseVideo(
-        xml[0].getElementsByTagName(this.VIDEO)
-      );
-      vast1Inline.impressions = this._parseImpressions(
-        xml[0].getElementsByTagName(VASTElement.IMPRESSION)
-      );
-      var trackingEventsXML = xml[0].getElementsByTagName(
-        VASTElement.TRACKING_EVENTS
-      );
-      if (trackingEventsXML != undefined && trackingEventsXML.length > 0)
-        vast1Inline.trackingEvents = this._parseTrackingEvents(
-          trackingEventsXML[0]
-        );
+      vast1Inline.video = this._parseVideo(xml[0].getElementsByTagName(this.VIDEO));
+      vast1Inline.impressions = this._parseImpressions(xml[0].getElementsByTagName(VASTElement.IMPRESSION));
+      var trackingEventsXML = xml[0].getElementsByTagName(VASTElement.TRACKING_EVENTS);
+      if (trackingEventsXML != undefined && trackingEventsXML.length > 0) vast1Inline.trackingEvents = this._parseTrackingEvents(trackingEventsXML[0]);
 
-      vast1Inline.companionAds = this._parseCompanionsAds(
-        xml[0].getElementsByTagName(VASTElement.COMPANION_ADS)
-      );
-      vast1Inline.nonLinearAds = this._parseNonLinearAds(
-        xml[0].getElementsByTagName(VASTElement.NON_LINEAR_ADS)
-      );
+      vast1Inline.companionAds = this._parseCompanionsAds(xml[0].getElementsByTagName(VASTElement.COMPANION_ADS));
+      vast1Inline.nonLinearAds = this._parseNonLinearAds(xml[0].getElementsByTagName(VASTElement.NON_LINEAR_ADS));
 
       return vast1Inline;
     },
@@ -194,11 +161,9 @@ define([
         vastMediaFile.bitrate = mediaFiles[i].getAttribute(VASTElement.BITRATE);
         vastMediaFile.height = mediaFiles[i].getAttribute(VASTElement.HEIGHT);
         vastMediaFile.width = mediaFiles[i].getAttribute(VASTElement.WIDTH);
-        vastMediaFile.delivery = mediaFiles[i].getAttribute(
-          VASTElement.DELIVERY
-        );
+        vastMediaFile.delivery = mediaFiles[i].getAttribute(VASTElement.DELIVERY);
         vastMediaFile.type = mediaFiles[i].getAttribute(VASTElement.TYPE);
-        vastMediaFile.url = this.trim(this.getTagValue(mediaFiles[i], "URL"));
+        vastMediaFile.url = this.trim(this.getTagValue(mediaFiles[i], 'URL'));
         vastMediaFiles.push(vastMediaFile);
       }
 
@@ -219,9 +184,7 @@ define([
         urlArray = trackings[i].getElementsByTagName(this.URL);
         urlArrayLength = urlArray.length;
         for (var j = 0; j < urlArrayLength; j++) {
-          vastTrackingEvent.urls.push(
-            this.trim(xmlParser.textContent(urlArray[j]))
-          );
+          vastTrackingEvent.urls.push(this.trim(xmlParser.textContent(urlArray[j])));
         }
         vastTrackingEvent.type = trackings[i].getAttribute(VASTElement.EVENT);
         vastTrackingEvents.push(vastTrackingEvent);
@@ -243,21 +206,13 @@ define([
         vastCompanionAd.id = companions[i].getAttribute(VASTElement.ID);
         vastCompanionAd.width = companions[i].getAttribute(VASTElement.WIDTH);
         vastCompanionAd.height = companions[i].getAttribute(VASTElement.HEIGHT);
-        vastCompanionAd.expandedWidth = companions[i].getAttribute(
-          VASTElement.EXPANDED_WIDTH
-        );
-        vastCompanionAd.expandedHeight = companions[i].getAttribute(
-          VASTElement.EXPANDED_HEIGHT
-        );
+        vastCompanionAd.expandedWidth = companions[i].getAttribute(VASTElement.EXPANDED_WIDTH);
+        vastCompanionAd.expandedHeight = companions[i].getAttribute(VASTElement.EXPANDED_HEIGHT);
 
         var vastResourceType = new VASTResourceType();
-        vastResourceType.name = companions[i]
-          .getAttribute(this.RESOURCE_TYPE)
-          .toLowerCase();
+        vastResourceType.name = companions[i].getAttribute(this.RESOURCE_TYPE).toLowerCase();
         vastCompanionAd.resourceType = vastResourceType;
-        vastCompanionAd.creativeType = companions[i].getAttribute(
-          VASTElement.CREATIVE_TYPE
-        );
+        vastCompanionAd.creativeType = companions[i].getAttribute(VASTElement.CREATIVE_TYPE);
 
         nodeArray = companions[i].childNodes;
         nodeArrayLength = nodeArray.length;
@@ -266,20 +221,12 @@ define([
             vastCompanionAd.adParameters = xmlParser.textContent(nodeArray[j]);
           } else if (nodeArray[j].nodeName == VASTElement.ALT_TEXT) {
             vastCompanionAd.altText = xmlParser.textContent(nodeArray[j]);
-          } else if (
-            nodeArray[j].nodeName == VASTElement.COMPANION_CLICK_THROUGH
-          ) {
-            vastCompanionAd.clickThroughURL = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+          } else if (nodeArray[j].nodeName == VASTElement.COMPANION_CLICK_THROUGH) {
+            vastCompanionAd.clickThroughURL = this.trim(xmlParser.textContent(nodeArray[j]));
           } else if (nodeArray[j].nodeName == this.URL) {
-            vastCompanionAd.url = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+            vastCompanionAd.url = this.trim(xmlParser.textContent(nodeArray[j]));
           } else if (nodeArray[j].nodeName == this.CODE) {
-            vastCompanionAd.code = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+            vastCompanionAd.code = this.trim(xmlParser.textContent(nodeArray[j]));
           }
         }
 
@@ -300,23 +247,17 @@ define([
       var nodeArrayLength = nodeArray.length;
       for (var i = 0; i < nodeArrayLength; i++) {
         if (nodeArray[i].nodeName == this.VAST_AD_TAG_URL) {
-          vastWrapperAd.vastAdTagURL = this.trim(
-            xmlParser.textContent(nodeArray[i])
-          );
+          vastWrapperAd.vastAdTagURL = this.trim(xmlParser.textContent(nodeArray[i]));
         } else if (nodeArray[i].nodeName == VASTElement.VIDEO_CLICKS) {
           vastWrapperAd.videoClicks = this._parseVideoClick(nodeArray[i]);
         } else if (nodeArray[i].nodeName == VASTElement.ERROR) {
           vastWrapperAd.error = this.trim(xmlParser.textContent(nodeArray[i]));
         } else if (nodeArray[i].nodeName == VASTElement.TRACKING_EVENTS) {
-          vastWrapperAd.trackingEvents = this._parseTrackingEvents(
-            nodeArray[i]
-          );
+          vastWrapperAd.trackingEvents = this._parseTrackingEvents(nodeArray[i]);
         }
       }
 
-      vastWrapperAd.impressions = this._parseImpressions(
-        xml[0].getElementsByTagName(VASTElement.IMPRESSION)
-      );
+      vastWrapperAd.impressions = this._parseImpressions(xml[0].getElementsByTagName(VASTElement.IMPRESSION));
 
       return vastWrapperAd;
     },
@@ -333,7 +274,7 @@ define([
       }
 
       return urls;
-    },
+    }
   });
 
   return vast1parser;

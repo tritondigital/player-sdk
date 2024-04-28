@@ -1,19 +1,19 @@
-var Platform = require("sdk/base/util/Platform");
+var Platform = require('sdk/base/util/Platform');
 
-define([
-  "dojo/_base/declare",
-  "dojo/_base/Deferred",
-  "dojo/_base/lang",
-  "sdk/base/util/XhrProvider",
-  "sdk/modules/base/CoreModule",
-  "sdk/modules/npe/Song",
-], function (declare, Deferred, lang, XhrProvider, coreModule, Song) {
+define(['dojo/_base/declare', 'dojo/_base/Deferred', 'dojo/_base/lang', 'sdk/base/util/XhrProvider', 'sdk/modules/base/CoreModule', 'sdk/modules/npe/Song'], function (
+  declare,
+  Deferred,
+  lang,
+  XhrProvider,
+  coreModule,
+  Song
+) {
   /**
    * @namespace tdapi/modules/npe
    */
   var npe = declare([coreModule], {
     constructor: function (config, target) {
-      console.log("npe::constructor");
+      console.log('npe::constructor');
 
       this.platform = new Platform(config.platformId);
 
@@ -23,9 +23,9 @@ define([
     },
 
     start: function () {
-      console.log("npe::start");
+      console.log('npe::start');
 
-      this.emit("module-ready", { id: "Npe", module: this });
+      this.emit('module-ready', { id: 'Npe', module: this });
     },
 
     /**
@@ -36,33 +36,19 @@ define([
      * @param title
      */
     loadNpeMetadata: function (npUrl, artist, title) {
-      console.log(
-        "npe::loadNpeMetadata - npUrl=" +
-          npUrl +
-          ", artist=" +
-          artist +
-          ", title=" +
-          title
-      );
+      console.log('npe::loadNpeMetadata - npUrl=' + npUrl + ', artist=' + artist + ', title=' + title);
 
       var npeId = this._urlToNPEId(npUrl);
       var song = this.getSongByNpeId(npeId);
 
       if (song != null) {
-        this.emit("npe-song", { song: song });
+        this.emit('npe-song', { song: song });
 
         var deferred = new Deferred();
         deferred.resolve({ song: song });
         return deferred;
       } else {
-        return this._fetchData(
-          false,
-          npeId,
-          npUrl,
-          artist,
-          title,
-          new Deferred()
-        );
+        return this._fetchData(false, npeId, npUrl, artist, title, new Deferred());
       }
     },
 
@@ -104,23 +90,10 @@ define([
      * @returns {string}
      */
     _getDynamicSongUrl: function (artist, title) {
-      return (
-        this.getDynamicUrl() +
-        "song?artist=" +
-        encodeURIComponent(artist) +
-        "&title=" +
-        encodeURIComponent(title)
-      );
+      return this.getDynamicUrl() + 'song?artist=' + encodeURIComponent(artist) + '&title=' + encodeURIComponent(title);
     },
 
-    _fetchData: function (
-      isDynamicCall,
-      npeId,
-      npUrl,
-      artist,
-      title,
-      deferred
-    ) {
+    _fetchData: function (isDynamicCall, npeId, npUrl, artist, title, deferred) {
       if (isDynamicCall) npUrl = this._getDynamicSongUrl(artist, title);
 
       var xhrProv = new XhrProvider();
@@ -132,7 +105,7 @@ define([
           isDynamicCall: isDynamicCall,
           artist: artist,
           title: title,
-          deferred: deferred,
+          deferred: deferred
         },
         this._getRequestArgs(),
         lang.hitch(this, this._onLoadComplete),
@@ -143,43 +116,30 @@ define([
     },
 
     _onLoadError: function (requestData, error) {
-      console.error(
-        "npe::_onLoadError - npUrl=" + requestData.npUrl + " - error=" + error
-      );
+      console.error('npe::_onLoadError - npUrl=' + requestData.npUrl + ' - error=' + error);
 
       if (requestData.isDynamicCall == false) {
-        this._fetchData(
-          true,
-          requestData.npeId,
-          null,
-          requestData.artist,
-          requestData.title,
-          requestData.deferred
-        ); //Fallback to dynamic url
+        this._fetchData(true, requestData.npeId, null, requestData.artist, requestData.title, requestData.deferred); //Fallback to dynamic url
       } else {
-        this.emit("npe-song-error", {
-          npeId: this._urlToNPEId(requestData.npUrl),
+        this.emit('npe-song-error', {
+          npeId: this._urlToNPEId(requestData.npUrl)
         });
 
         return requestData.deferred.reject({
-          npeId: this._urlToNPEId(requestData.npUrl),
+          npeId: this._urlToNPEId(requestData.npUrl)
         });
       }
     },
 
     _onLoadComplete: function (requestData, data) {
-      console.log("npe::_onLoadComplete - npUrl=" + requestData.npUrl);
+      console.log('npe::_onLoadComplete - npUrl=' + requestData.npUrl);
       console.log(data);
 
-      var song = new Song(
-        data.song,
-        this._urlToNPEId(requestData.npUrl),
-        this.config.platformId
-      );
+      var song = new Song(data.song, this._urlToNPEId(requestData.npUrl), this.config.platformId);
 
       this.library.push(song);
 
-      this.emit("npe-song", { song: song });
+      this.emit('npe-song', { song: song });
 
       return requestData.deferred.resolve({ song: song });
     },
@@ -190,12 +150,12 @@ define([
      */
     _getRequestArgs: function () {
       return {
-        handleAs: "json",
+        handleAs: 'json',
         preventCache: false,
         headers: {
-          "X-Requested-With": null,
-          "Content-Type": "text/plain; charset=utf-8",
-        },
+          'X-Requested-With': null,
+          'Content-Type': 'text/plain; charset=utf-8'
+        }
       };
     },
 
@@ -207,14 +167,11 @@ define([
      * @private
      */
     _urlToNPEId: function (npUrl) {
-      if (npUrl == null || npUrl == undefined || npUrl == "") return null;
+      if (npUrl == null || npUrl == undefined || npUrl == '') return null;
 
-      var idx = npUrl.lastIndexOf("/");
-      return (
-        npUrl.substr(idx - 2, 2) +
-        npUrl.substring(idx + 1, npUrl.lastIndexOf("."))
-      );
-    },
+      var idx = npUrl.lastIndexOf('/');
+      return npUrl.substr(idx - 2, 2) + npUrl.substring(idx + 1, npUrl.lastIndexOf('.'));
+    }
   });
 
   return npe;

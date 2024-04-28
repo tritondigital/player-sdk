@@ -1,34 +1,19 @@
 define([
-  "../_base/array",
-  "../_base/declare",
-  "../_base/kernel",
-  "../_base/lang",
-  "../_base/window",
-  "../dom",
-  "../dom-class",
-  "../dom-construct",
-  "../Evented",
-  "../has",
-  "../on",
-  "../query",
-  "../touch",
-  "./common",
-], function (
-  array,
-  declare,
-  kernel,
-  lang,
-  win,
-  dom,
-  domClass,
-  domConstruct,
-  Evented,
-  has,
-  on,
-  query,
-  touch,
-  dnd
-) {
+  '../_base/array',
+  '../_base/declare',
+  '../_base/kernel',
+  '../_base/lang',
+  '../_base/window',
+  '../dom',
+  '../dom-class',
+  '../dom-construct',
+  '../Evented',
+  '../has',
+  '../on',
+  '../query',
+  '../touch',
+  './common'
+], function (array, declare, kernel, lang, win, dom, domClass, domConstruct, Evented, has, on, query, touch, dnd) {
   // module:
   //		dojo/dnd/Container
 
@@ -41,7 +26,7 @@ define([
 		"Over"	- mouse over a container item
 */
 
-  var Container = declare("dojo.dnd.Container", Evented, {
+  var Container = declare('dojo.dnd.Container', Evented, {
     // summary:
     //		a Container object, which knows when mouse hovers over it,
     //		and over which element it hovers
@@ -84,8 +69,8 @@ define([
       this.current = null;
 
       // states
-      this.containerState = "";
-      domClass.add(this.node, "dojoDndContainer");
+      this.containerState = '';
+      domClass.add(this.node, 'dojoDndContainer');
 
       // mark up children
       if (!(params && params._skipStartup)) {
@@ -94,11 +79,11 @@ define([
 
       // set up events
       this.events = [
-        on(this.node, touch.over, lang.hitch(this, "onMouseOver")),
-        on(this.node, touch.out, lang.hitch(this, "onMouseOut")),
+        on(this.node, touch.over, lang.hitch(this, 'onMouseOver')),
+        on(this.node, touch.out, lang.hitch(this, 'onMouseOut')),
         // cancel text selection and text dragging
-        on(this.node, "dragstart", lang.hitch(this, "onSelectStart")),
-        on(this.node, "selectstart", lang.hitch(this, "onSelectStart")),
+        on(this.node, 'dragstart', lang.hitch(this, 'onSelectStart')),
+        on(this.node, 'selectstart', lang.hitch(this, 'onSelectStart'))
       ];
     },
 
@@ -149,10 +134,7 @@ define([
     getAllNodes: function () {
       // summary:
       //		returns a list (an array) of all valid child nodes
-      return query(
-        (this.allowNested ? "" : "> ") + ".dojoDndItem",
-        this.parent
-      ); // NodeList
+      return query((this.allowNested ? '' : '> ') + '.dojoDndItem', this.parent); // NodeList
     },
     sync: function () {
       // summary:
@@ -168,11 +150,11 @@ define([
         } else {
           node.id = dnd.getUniqueId();
         }
-        var type = node.getAttribute("dndType"),
-          data = node.getAttribute("dndData");
+        var type = node.getAttribute('dndType'),
+          data = node.getAttribute('dndData');
         map[node.id] = {
           data: data || node.innerHTML,
-          type: type ? type.split(/\s*,\s*/) : ["text"],
+          type: type ? type.split(/\s*,\s*/) : ['text']
         };
       }, this);
       this.map = map;
@@ -237,8 +219,8 @@ define([
       if (!this.parent) {
         // use the standard algorithm, if not assigned
         this.parent = this.node;
-        if (this.parent.tagName.toLowerCase() == "table") {
-          var c = this.parent.getElementsByTagName("tbody");
+        if (this.parent.tagName.toLowerCase() == 'table') {
+          var c = this.parent.getElementsByTagName('tbody');
           if (c && c.length) {
             this.parent = c[0];
           }
@@ -268,7 +250,7 @@ define([
         }
       }
       if (!n) {
-        this._changeState("Container", "Over");
+        this._changeState('Container', 'Over');
         this.onOverEvent();
       }
       n = this._getChildByEvent(e);
@@ -276,10 +258,10 @@ define([
         return;
       }
       if (this.current) {
-        this._removeItemClass(this.current, "Over");
+        this._removeItemClass(this.current, 'Over');
       }
       if (n) {
-        this._addItemClass(n, "Over");
+        this._addItemClass(n, 'Over');
       }
       this.current = n;
     },
@@ -299,10 +281,10 @@ define([
         }
       }
       if (this.current) {
-        this._removeItemClass(this.current, "Over");
+        this._removeItemClass(this.current, 'Over');
         this.current = null;
       }
-      this._changeState("Container", "");
+      this._changeState('Container', '');
       this.onOutEvent();
     },
     onSelectStart: function (e) {
@@ -332,8 +314,8 @@ define([
       //		a name of the state to change
       // newState: String
       //		new state
-      var prefix = "dojoDnd" + type;
-      var state = type.toLowerCase() + "State";
+      var prefix = 'dojoDnd' + type;
+      var state = type.toLowerCase() + 'State';
       //domClass.replace(this.node, prefix + newState, prefix + this[state]);
       domClass.replace(this.node, prefix + newState, prefix + this[state]);
       this[state] = newState;
@@ -345,7 +327,7 @@ define([
       //		a node
       // type: String
       //		a variable suffix for a class name
-      domClass.add(node, "dojoDndItem" + type);
+      domClass.add(node, 'dojoDndItem' + type);
     },
     _removeItemClass: function (node, type) {
       // summary:
@@ -354,7 +336,7 @@ define([
       //		a node
       // type: String
       //		a variable suffix for a class name
-      domClass.remove(node, "dojoDndItem" + type);
+      domClass.remove(node, 'dojoDndItem' + type);
     },
     _getChildByEvent: function (e) {
       // summary:
@@ -363,15 +345,8 @@ define([
       //		a mouse event
       var node = e.target;
       if (node) {
-        for (
-          var parent = node.parentNode;
-          parent;
-          node = parent, parent = node.parentNode
-        ) {
-          if (
-            (parent == this.parent || this.allowNested) &&
-            domClass.contains(node, "dojoDndItem")
-          ) {
+        for (var parent = node.parentNode; parent; node = parent, parent = node.parentNode) {
+          if ((parent == this.parent || this.allowNested) && domClass.contains(node, 'dojoDndItem')) {
             return node;
           }
         }
@@ -383,14 +358,14 @@ define([
       //		adds all necessary data to the output of the user-supplied creator function
       var t = (this.creator || this.defaultCreator).call(this, item, hint);
       if (!lang.isArray(t.type)) {
-        t.type = ["text"];
+        t.type = ['text'];
       }
       if (!t.node.id) {
         t.node.id = dnd.getUniqueId();
       }
-      domClass.add(t.node, "dojoDndItem");
+      domClass.add(t.node, 'dojoDndItem');
       return t;
-    },
+    }
   });
 
   dnd._createNode = function (tag) {
@@ -413,8 +388,8 @@ define([
     //		creates a TR/TD structure with given text as an innerHTML of TD
     // text: String
     //		a text for TD
-    var tr = domConstruct.create("tr");
-    domConstruct.create("td", { innerHTML: text }, tr);
+    var tr = domConstruct.create('tr');
+    domConstruct.create('td', { innerHTML: text }, tr);
     return tr; // Node
   };
 
@@ -423,12 +398,12 @@ define([
     //		creates a SPAN element with given text as its innerHTML
     // text: String
     //		a text for SPAN
-    return domConstruct.create("span", { innerHTML: text }); // Node
+    return domConstruct.create('span', { innerHTML: text }); // Node
   };
 
   // dnd._defaultCreatorNodes: Object
   //		a dictionary that maps container tag names to child tag names
-  dnd._defaultCreatorNodes = { ul: "li", ol: "li", div: "div", p: "div" };
+  dnd._defaultCreatorNodes = { ul: 'li', ol: 'li', div: 'div', p: 'div' };
 
   dnd._defaultCreator = function (node) {
     // summary:
@@ -436,10 +411,7 @@ define([
     // node: Node
     //		a container node
     var tag = node.tagName.toLowerCase();
-    var c =
-      tag == "tbody" || tag == "thead"
-        ? dnd._createTrTd
-        : dnd._createNode(dnd._defaultCreatorNodes[tag]);
+    var c = tag == 'tbody' || tag == 'thead' ? dnd._createTrTd : dnd._createNode(dnd._defaultCreatorNodes[tag]);
     return function (item, hint) {
       // Function
       var isObj = item && lang.isObject(item),
@@ -448,15 +420,15 @@ define([
         n;
       if (isObj && item.tagName && item.nodeType && item.getAttribute) {
         // process a DOM node
-        data = item.getAttribute("dndData") || item.innerHTML;
-        type = item.getAttribute("dndType");
-        type = type ? type.split(/\s*,\s*/) : ["text"];
+        data = item.getAttribute('dndData') || item.innerHTML;
+        type = item.getAttribute('dndType');
+        type = type ? type.split(/\s*,\s*/) : ['text'];
         n = item; // this node is going to be moved rather than copied
       } else {
         // process a DnD item object or a string
         data = isObj && item.data ? item.data : item;
-        type = isObj && item.type ? item.type : ["text"];
-        n = (hint == "avatar" ? dnd._createSpan : c)(String(data));
+        type = isObj && item.type ? item.type : ['text'];
+        n = (hint == 'avatar' ? dnd._createSpan : c)(String(data));
       }
       if (!n.id) {
         n.id = dnd.getUniqueId();

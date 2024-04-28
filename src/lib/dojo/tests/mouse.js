@@ -1,51 +1,51 @@
-define(["doh", "dojo/mouse", "dojo/on"], function (doh, mouse, on) {
-  doh.register("tests.on", [
+define(['doh', 'dojo/mouse', 'dojo/on'], function (doh, mouse, on) {
+  doh.register('tests.on', [
     function mouseenter(t) {
       var order = [];
-      var div = document.body.appendChild(document.createElement("div"));
-      div2 = div.appendChild(document.createElement("div"));
-      div2.className = "item two";
+      var div = document.body.appendChild(document.createElement('div'));
+      div2 = div.appendChild(document.createElement('div'));
+      div2.className = 'item two';
       div2.id = 2;
-      div3 = div.appendChild(document.createElement("div"));
-      div3.className = "item three";
+      div3 = div.appendChild(document.createElement('div'));
+      div3.className = 'item three';
       div3.id = 3;
-      div4 = div2.appendChild(document.createElement("div"));
-      on(div, on.selector(".item", mouse.enter), function () {
+      div4 = div2.appendChild(document.createElement('div'));
+      on(div, on.selector('.item', mouse.enter), function () {
         order.push(this.id);
       });
-      on.emit(div, "mouseover", {
+      on.emit(div, 'mouseover', {
         bubbles: true,
-        relatedTarget: document.body,
+        relatedTarget: document.body
       });
-      on.emit(div3, "mouseover", {
+      on.emit(div3, 'mouseover', {
         bubbles: true,
-        relatedTarget: div,
+        relatedTarget: div
       });
-      on.emit(div3, "mouseover", {
+      on.emit(div3, 'mouseover', {
         bubbles: true,
-        relatedTarget: div3,
+        relatedTarget: div3
       });
-      on.emit(div2, "mouseover", {
+      on.emit(div2, 'mouseover', {
         bubbles: true,
-        relatedTarget: div3,
+        relatedTarget: div3
       });
-      on.emit(div4, "mouseover", {
+      on.emit(div4, 'mouseover', {
         bubbles: true,
-        relatedTarget: div2,
+        relatedTarget: div2
       });
-      on.emit(div2, "mouseover", {
+      on.emit(div2, 'mouseover', {
         bubbles: true,
-        relatedTarget: div4,
+        relatedTarget: div4
       });
-      on.emit(div, "mouseover", {
+      on.emit(div, 'mouseover', {
         bubbles: true,
-        relatedTarget: div2,
+        relatedTarget: div2
       });
-      on.emit(div4, "mouseover", {
+      on.emit(div4, 'mouseover', {
         bubbles: true,
-        relatedTarget: div,
+        relatedTarget: div
       });
       t.is(order, [3, 2, 2]);
-    },
+    }
   ]);
 });

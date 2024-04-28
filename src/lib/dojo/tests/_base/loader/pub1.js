@@ -1,3 +1,3 @@
 define([], function () {
-  return { status: "ok" };
+  return { status: 'ok' };
 });

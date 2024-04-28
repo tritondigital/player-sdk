@@ -11,91 +11,91 @@
 		http://dojotoolkit.org
 */
 
-if (!dojo._hasResource["i18nTest.legacyModule"]) {
+if (!dojo._hasResource['i18nTest.legacyModule']) {
   //_hasResource checks added by build. Do not use _hasResource directly in your code.
-  dojo._hasResource["i18nTest.legacyModule"] = true;
-  dojo.provide("i18nTest.legacyModule");
+  dojo._hasResource['i18nTest.legacyModule'] = true;
+  dojo.provide('i18nTest.legacyModule');
 
   window.i18nTest.legacyModule = function () {
-    var legacyBundle = dojo.i18n.getLocalization("i18nTest", "legacyBundle"),
+    var legacyBundle = dojo.i18n.getLocalization('i18nTest', 'legacyBundle'),
       result = [];
 
-    if (legacyBundle.rootValueOnly != "rootValueOnly") {
+    if (legacyBundle.rootValueOnly != 'rootValueOnly') {
       result.push('legacyBundle.rootValueOnly!="rootValueOnly"');
     }
     switch (dojo.locale) {
-      case "ab":
-      case "ab-cd":
-        if (legacyBundle.legacyBundle != "legacyBundle-ab") {
+      case 'ab':
+      case 'ab-cd':
+        if (legacyBundle.legacyBundle != 'legacyBundle-ab') {
           result.push('legacyBundle.legacyBundle!="legacyBundle-ab"');
         }
-        if (legacyBundle.abValueOnly != "abValueOnly") {
+        if (legacyBundle.abValueOnly != 'abValueOnly') {
           result.push('legacyBundle.abValueOnly!="abValueOnly"');
         }
         break;
-      case "ab-cd-ef":
-        if (legacyBundle.legacyBundle != "legacyBundle-ab-cd-ef") {
+      case 'ab-cd-ef':
+        if (legacyBundle.legacyBundle != 'legacyBundle-ab-cd-ef') {
           result.push('legacyBundle.legacyBundle!="legacyBundle-ab-cd-ef"');
         }
-        if (legacyBundle.abValueOnly != "abValueOnly") {
+        if (legacyBundle.abValueOnly != 'abValueOnly') {
           result.push('legacyBundle.abValueOnly!="abValueOnly"');
         }
-        if (legacyBundle.abCdEfValueOnly != "abCdEfValueOnly") {
+        if (legacyBundle.abCdEfValueOnly != 'abCdEfValueOnly') {
           result.push('legacyBundle.abCdEfValueOnly!="abCdEfValueOnly"');
         }
         break;
       default:
-        if (legacyBundle.legacyBundle != "legacyBundle") {
+        if (legacyBundle.legacyBundle != 'legacyBundle') {
           result.push('legacyBundle.legacyBundle!="legacyBundle"');
         }
     }
 
-    return result.length == 0 ? true : result.join(";");
+    return result.length == 0 ? true : result.join(';');
   };
 }
 
-dojo.i18n._preloadLocalizations("i18nTest.nls.legacyModule", [
-  "ROOT",
-  "ar",
-  "ca",
-  "cs",
-  "da",
-  "de",
-  "de-de",
-  "el",
-  "en",
-  "en-gb",
-  "en-us",
-  "es",
-  "es-es",
-  "fi",
-  "fi-fi",
-  "fr",
-  "fr-fr",
-  "he",
-  "he-il",
-  "hu",
-  "it",
-  "it-it",
-  "ja",
-  "ja-jp",
-  "ko",
-  "ko-kr",
-  "nb",
-  "nl",
-  "nl-nl",
-  "pl",
-  "pt",
-  "pt-br",
-  "pt-pt",
-  "ru",
-  "sk",
-  "sl",
-  "sv",
-  "th",
-  "tr",
-  "xx",
-  "zh",
-  "zh-cn",
-  "zh-tw",
+dojo.i18n._preloadLocalizations('i18nTest.nls.legacyModule', [
+  'ROOT',
+  'ar',
+  'ca',
+  'cs',
+  'da',
+  'de',
+  'de-de',
+  'el',
+  'en',
+  'en-gb',
+  'en-us',
+  'es',
+  'es-es',
+  'fi',
+  'fi-fi',
+  'fr',
+  'fr-fr',
+  'he',
+  'he-il',
+  'hu',
+  'it',
+  'it-it',
+  'ja',
+  'ja-jp',
+  'ko',
+  'ko-kr',
+  'nb',
+  'nl',
+  'nl-nl',
+  'pl',
+  'pt',
+  'pt-br',
+  'pt-pt',
+  'ru',
+  'sk',
+  'sl',
+  'sv',
+  'th',
+  'tr',
+  'xx',
+  'zh',
+  'zh-cn',
+  'zh-tw'
 ]);

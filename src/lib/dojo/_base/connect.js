@@ -1,37 +1,15 @@
-define([
-  "./kernel",
-  "../on",
-  "../topic",
-  "../aspect",
-  "./event",
-  "../mouse",
-  "./sniff",
-  "./lang",
-  "../keys",
-], function (dojo, on, hub, aspect, eventModule, mouse, has, lang) {
+define(['./kernel', '../on', '../topic', '../aspect', './event', '../mouse', './sniff', './lang', '../keys'], function (dojo, on, hub, aspect, eventModule, mouse, has, lang) {
   // module:
   //		dojo/_base/connect
 
-  has.add("events-keypress-typed", function () {
+  has.add('events-keypress-typed', function () {
     // keypresses should only occur a printable character is hit
     var testKeyEvent = { charCode: 0 };
     try {
-      testKeyEvent = document.createEvent("KeyboardEvent");
-      (testKeyEvent.initKeyboardEvent || testKeyEvent.initKeyEvent).call(
-        testKeyEvent,
-        "keypress",
-        true,
-        true,
-        null,
-        false,
-        false,
-        false,
-        false,
-        9,
-        3
-      );
+      testKeyEvent = document.createEvent('KeyboardEvent');
+      (testKeyEvent.initKeyboardEvent || testKeyEvent.initKeyEvent).call(testKeyEvent, 'keypress', true, true, null, false, false, false, false, 9, 3);
     } catch (e) {}
-    return testKeyEvent.charCode == 0 && !has("opera");
+    return testKeyEvent.charCode == 0 && !has('opera');
   });
 
   function connect_(obj, event, context, method, dontFix) {
@@ -41,7 +19,7 @@ define([
       // method like an event, must go right to aspect
       return aspect.after(obj || dojo.global, event, method, true);
     }
-    if (typeof event == "string" && event.substring(0, 2) == "on") {
+    if (typeof event == 'string' && event.substring(0, 2) == 'on') {
       event = event.substring(2);
     }
     if (!obj) {
@@ -50,13 +28,13 @@ define([
     if (!dontFix) {
       switch (event) {
         // dojo.connect has special handling for these event types
-        case "keypress":
+        case 'keypress':
           event = keypress;
           break;
-        case "mouseenter":
+        case 'mouseenter':
           event = mouse.enter;
           break;
-        case "mouseleave":
+        case 'mouseleave':
           event = mouse.leave;
           break;
       }
@@ -78,9 +56,9 @@ define([
     220: 92,
     221: 93,
     222: 39,
-    229: 113,
+    229: 113
   };
-  var evtCopyKey = has("mac") ? "metaKey" : "ctrlKey";
+  var evtCopyKey = has('mac') ? 'metaKey' : 'ctrlKey';
 
   var _synthesizeEvent = function (evt, props) {
     var faux = lang.mixin({}, evt, props);
@@ -97,11 +75,11 @@ define([
     return faux;
   };
   function setKeyChar(evt) {
-    evt.keyChar = evt.charCode ? String.fromCharCode(evt.charCode) : "";
+    evt.keyChar = evt.charCode ? String.fromCharCode(evt.charCode) : '';
     evt.charOrCode = evt.keyChar || evt.keyCode;
   }
   var keypress;
-  if (has("events-keypress-typed")) {
+  if (has('events-keypress-typed')) {
     // this emulates Firefox's keypress behavior where every keydown can correspond to a keypress
     var _trySetKeyCode = function (e, code) {
       try {
@@ -113,20 +91,12 @@ define([
       }
     };
     keypress = function (object, listener) {
-      var keydownSignal = on(object, "keydown", function (evt) {
+      var keydownSignal = on(object, 'keydown', function (evt) {
         // munge key/charCode
         var k = evt.keyCode;
         // These are Windows Virtual Key Codes
         // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/WinUI/WindowsUserInterface/UserInput/VirtualKeyCodes.asp
-        var unprintable =
-          k != 13 &&
-          k != 32 &&
-          (k != 27 || !has("ie")) &&
-          (k < 48 || k > 90) &&
-          (k < 96 || k > 111) &&
-          (k < 186 || k > 192) &&
-          (k < 219 || k > 222) &&
-          k != 229;
+        var unprintable = k != 13 && k != 32 && (k != 27 || !has('ie')) && (k < 48 || k > 90) && (k < 96 || k > 111) && (k < 186 || k > 192) && (k < 219 || k > 222) && k != 229;
         // synthesize keypress for most unprintables and CTRL-keys
         if (unprintable || evt.ctrlKey) {
           var c = unprintable ? 0 : k;
@@ -143,17 +113,17 @@ define([
           }
           // simulate a keypress event
           var faux = _synthesizeEvent(evt, {
-            type: "keypress",
+            type: 'keypress',
             faux: true,
-            charCode: c,
+            charCode: c
           });
           listener.call(evt.currentTarget, faux);
-          if (has("ie")) {
+          if (has('ie')) {
             _trySetKeyCode(evt, faux.keyCode);
           }
         }
       });
-      var keypressSignal = on(object, "keypress", function (evt) {
+      var keypressSignal = on(object, 'keypress', function (evt) {
         var c = evt.charCode;
         c = c >= 32 ? c : 0;
         evt = _synthesizeEvent(evt, { charCode: c, faux: true });
@@ -163,13 +133,13 @@ define([
         remove: function () {
           keydownSignal.remove();
           keypressSignal.remove();
-        },
+        }
       };
     };
   } else {
-    if (has("opera")) {
+    if (has('opera')) {
       keypress = function (object, listener) {
-        return on(object, "keypress", function (evt) {
+        return on(object, 'keypress', function (evt) {
           var c = evt.which;
           if (c == 3) {
             c = 99; // Mozilla maps CTRL-BREAK to CTRL-c
@@ -186,7 +156,7 @@ define([
       };
     } else {
       keypress = function (object, listener) {
-        return on(object, "keypress", function (evt) {
+        return on(object, 'keypress', function (evt) {
           setKeyChar(evt);
           return listener.call(this, evt);
         });
@@ -309,13 +279,10 @@ define([
         args = [],
         i = 0;
       // if a[0] is a String, obj was omitted
-      args.push(typeof a[0] == "string" ? null : a[i++], a[i++]);
+      args.push(typeof a[0] == 'string' ? null : a[i++], a[i++]);
       // if the arg-after-next is a String or Function, context was NOT omitted
       var a1 = a[i + 1];
-      args.push(
-        typeof a1 == "string" || typeof a1 == "function" ? a[i++] : null,
-        a[i++]
-      );
+      args.push(typeof a1 == 'string' || typeof a1 == 'function' ? a[i++] : null, a[i++]);
       // absorb any additional arguments
       for (var l = a.length; i < l; i++) {
         args.push(a[i]);
@@ -396,7 +363,7 @@ define([
       // e: Event
       //		Event object to examine
       return e[evtCopyKey]; // Boolean
-    },
+    }
   };
 
   connect.unsubscribe = connect.disconnect;
@@ -413,6 +380,6 @@ define([
  };
  =====*/
 
-  has("extend-dojo") && lang.mixin(dojo, connect);
+  has('extend-dojo') && lang.mixin(dojo, connect);
   return connect;
 });

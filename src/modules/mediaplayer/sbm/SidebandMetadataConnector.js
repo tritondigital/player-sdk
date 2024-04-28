@@ -4,15 +4,7 @@
  * Use by HTML5 technology ONLY
  */
 
-define([
-  "dojo/_base/declare",
-  "dojo/on",
-  "dojo/_base/array",
-  "dojo/_base/lang",
-  "sdk/base/cuepoints/TrackCuePoint",
-  "sdk/base/cuepoints/BreakCuePoint",
-  "sdk/base/cuepoints/HlsCuePoint",
-], function (
+define(['dojo/_base/declare', 'dojo/on', 'dojo/_base/array', 'dojo/_base/lang', 'sdk/base/cuepoints/TrackCuePoint', 'sdk/base/cuepoints/BreakCuePoint', 'sdk/base/cuepoints/HlsCuePoint'], function (
   declare,
   on,
   array,
@@ -25,12 +17,7 @@ define([
     /**
      * @var {string[]} Supported Events list
      */
-    SUPPORTED_EVENTS: [
-      "onMetaData",
-      "onCuePoint",
-      "onCuePointPreview",
-      "onCuePointPreviewExpired",
-    ],
+    SUPPORTED_EVENTS: ['onMetaData', 'onCuePoint', 'onCuePointPreview', 'onCuePointPreviewExpired'],
 
     /**
      * @var {integer} API refresh timeout
@@ -39,8 +26,8 @@ define([
 
     /* Map the xml properties with Track & Ad CuePoints properties */
     cuePointMap: {
-      timestamp: "timestamp",
-      type: "name",
+      timestamp: 'timestamp',
+      type: 'name',
       /*Track CuePoint*/
       cue_title: TrackCuePoint.CUE_TITLE,
       track_artist_name: TrackCuePoint.ARTIST_NAME,
@@ -61,11 +48,11 @@ define([
       ad_vast: BreakCuePoint.AD_VAST,
       /*HLS CuePoint*/
       hls_track_id: HlsCuePoint.HLS_TRACK_ID,
-      hls_segment_id: HlsCuePoint.HLS_SEGMENT_ID,
+      hls_segment_id: HlsCuePoint.HLS_SEGMENT_ID
     },
 
     constructor: function () {
-      console.log("sidebandMetadataConnector::constructor");
+      console.log('sidebandMetadataConnector::constructor');
 
       this._eventSource = null;
       this._eventQueue = [];
@@ -85,7 +72,7 @@ define([
      */
 
     connect: function (url) {
-      console.log("sidebandMetadataConnector:connect()");
+      console.log('sidebandMetadataConnector:connect()');
 
       this._currentSbmUrl = url;
 
@@ -98,7 +85,7 @@ define([
      *
      */
     destroy: function () {
-      console.log("sidebandMetadataConnector:destroy()");
+      console.log('sidebandMetadataConnector:destroy()');
 
       this.__unlisten();
       this.__close();
@@ -139,14 +126,14 @@ define([
     /* ########################################################### */
 
     __subscribe: function (url) {
-      console.log("sidebandMetadataConnector:subscribe() to " + url);
+      console.log('sidebandMetadataConnector:subscribe() to ' + url);
 
       if (this._eventSource != null) {
         this._eventSource.close();
         this._eventSource = null;
       }
 
-      if (typeof EventSource !== "undefined") {
+      if (typeof EventSource !== 'undefined') {
         this._eventSource = new EventSource(url);
       } else {
         //no Eventsource
@@ -157,23 +144,15 @@ define([
     },
 
     __listen: function () {
-      console.log("sidebandMetadataConnector:listen()");
+      console.log('sidebandMetadataConnector:listen()');
 
-      this._messageListener = on(
-        this._eventSource,
-        "message",
-        this.__onMessageHandler
-      );
-      this._openListener = on(this._eventSource, "open", this.__onOpenHandler);
-      this._errorListener = on(
-        this._eventSource,
-        "error",
-        this.__onErrorHandler
-      );
+      this._messageListener = on(this._eventSource, 'message', this.__onMessageHandler);
+      this._openListener = on(this._eventSource, 'open', this.__onOpenHandler);
+      this._errorListener = on(this._eventSource, 'error', this.__onErrorHandler);
     },
 
     __unlisten: function () {
-      console.log("sidebandMetadataConnector:unlisten()");
+      console.log('sidebandMetadataConnector:unlisten()');
 
       if (this._messageListener) {
         this._messageListener.remove();
@@ -194,7 +173,7 @@ define([
      */
 
     __close: function () {
-      console.log("sidebandMetadataConnector:close()");
+      console.log('sidebandMetadataConnector:close()');
 
       this._currentSbmUrl = null;
 
@@ -205,30 +184,29 @@ define([
     },
 
     __onMessage: function (e) {
-      console.log("sidebandMetadataConnector:message received");
+      console.log('sidebandMetadataConnector:message received');
       console.log(e.data);
 
       var message = JSON.parse(e.data);
 
-      if (message.type != undefined && !this.__isSupportedEvent(message))
-        return;
+      if (message.type != undefined && !this.__isSupportedEvent(message)) return;
 
       var cuePoint = {};
 
       switch (message.type) {
-        case "onMetaData":
+        case 'onMetaData':
           this.__onMetadata(message);
           break;
 
-        case "onCuePoint":
+        case 'onCuePoint':
           cuePoint = this.__onCuePoint(message);
           break;
 
-        case "onCuePointPreview":
+        case 'onCuePointPreview':
           cuePoint = this.__onCuePointPreview(message);
           break;
 
-        case "onCuePointPreviewExpired":
+        case 'onCuePointPreviewExpired':
           cuePoint = this.__onCuePointPreviewExpired(message);
           break;
 
@@ -240,7 +218,7 @@ define([
     },
 
     __onCuePoint: function (message) {
-      console.log("sidebandMetadataConnector:cuePoint received");
+      console.log('sidebandMetadataConnector:cuePoint received');
 
       var cuePoint = {};
 
@@ -255,38 +233,33 @@ define([
         }
       }
 
-      if (cuePoint.type == "ad")
-        cuePoint["isVastInStream"] =
-          (cuePoint[BreakCuePoint.AD_VAST_URL] != undefined &&
-            cuePoint[BreakCuePoint.AD_VAST_URL] != "") ||
-          (cuePoint[BreakCuePoint.AD_VAST] &&
-            cuePoint[BreakCuePoint.AD_VAST] != "")
-            ? true
-            : false;
+      if (cuePoint.type == 'ad')
+        cuePoint['isVastInStream'] =
+          (cuePoint[BreakCuePoint.AD_VAST_URL] != undefined && cuePoint[BreakCuePoint.AD_VAST_URL] != '') || (cuePoint[BreakCuePoint.AD_VAST] && cuePoint[BreakCuePoint.AD_VAST] != '') ? true : false;
 
       return cuePoint;
     },
 
     __onMetadata: function (message) {
-      console.log("sidebandMetadataConnector:__onMetadata");
+      console.log('sidebandMetadataConnector:__onMetadata');
     },
 
     __onCuePointPreview: function (message) {
-      console.log("sidebandMetadataConnector:__onCuePointPreview");
+      console.log('sidebandMetadataConnector:__onCuePointPreview');
     },
 
     __onCuePointPreviewExpired: function (message) {
-      console.log("sidebandMetadataConnector:__onCuePointPreviewExpired");
+      console.log('sidebandMetadataConnector:__onCuePointPreviewExpired');
     },
 
     __onOpen: function (e) {
-      console.log("sidebandMetadataConnector:connection opened");
+      console.log('sidebandMetadataConnector:connection opened');
 
       this.__resetBackOff();
     },
 
     __onError: function (e) {
-      console.error("sidebandMetadataConnector:error");
+      console.error('sidebandMetadataConnector:error');
       console.log(e);
 
       if (this._backOffRetry == this.MAX_BACKOFF_RETRY) {
@@ -305,17 +278,14 @@ define([
 
       if (this._currentSbmUrl != null) this.__subscribe(this._currentSbmUrl);
 
-      console.log(
-        "sidebandMetadataConnector::__reconnect - this.backOffRetry=" +
-          this._backOffRetry
-      );
+      console.log('sidebandMetadataConnector::__reconnect - this.backOffRetry=' + this._backOffRetry);
     },
 
     __resetBackOff: function () {
-      console.log("sidebandMetadataConnector::__resetBackOff");
+      console.log('sidebandMetadataConnector::__resetBackOff');
 
       this._backOffRetry = 0;
-    },
+    }
   });
 
   return sidebandMetadataConnector;

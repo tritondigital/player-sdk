@@ -1,4 +1,4 @@
-define(["../_base/lang", "../_base/array"], function (lang, array) {
+define(['../_base/lang', '../_base/array'], function (lang, array) {
   // module:
   //		dojo/date/stamp
 
@@ -6,14 +6,11 @@ define(["../_base/lang", "../_base/array"], function (lang, array) {
     // summary:
     //		TODOC
   };
-  lang.setObject("dojo.date.stamp", stamp);
+  lang.setObject('dojo.date.stamp', stamp);
 
   // Methods to convert dates to or from a wire (string) format using well-known conventions
 
-  stamp.fromISOString = function (
-    /*String*/ formattedString,
-    /*Number?*/ defaultTime
-  ) {
+  stamp.fromISOString = function (/*String*/ formattedString, /*Number?*/ defaultTime) {
     // summary:
     //		Returns a Date object given a string formatted according to a subset of the ISO-8601 standard.
     //
@@ -66,43 +63,24 @@ define(["../_base/lang", "../_base/array"], function (lang, array) {
         // mix in defaultTime.  Relatively expensive, so use || operators for the fast path of defaultTime === 0
         defaultTime = new Date(defaultTime);
         array.forEach(
-          array.map(
-            [
-              "FullYear",
-              "Month",
-              "Date",
-              "Hours",
-              "Minutes",
-              "Seconds",
-              "Milliseconds",
-            ],
-            function (prop) {
-              return defaultTime["get" + prop]();
-            }
-          ),
+          array.map(['FullYear', 'Month', 'Date', 'Hours', 'Minutes', 'Seconds', 'Milliseconds'], function (prop) {
+            return defaultTime['get' + prop]();
+          }),
           function (value, index) {
             match[index] = match[index] || value;
           }
         );
       }
-      result = new Date(
-        match[0] || 1970,
-        match[1] || 0,
-        match[2] || 1,
-        match[3] || 0,
-        match[4] || 0,
-        match[5] || 0,
-        match[6] || 0
-      ); //TODO: UTC defaults
+      result = new Date(match[0] || 1970, match[1] || 0, match[2] || 1, match[3] || 0, match[4] || 0, match[5] || 0, match[6] || 0); //TODO: UTC defaults
       if (match[0] < 100) {
         result.setFullYear(match[0] || 1970);
       }
 
       var offset = 0,
         zoneSign = match[7] && match[7].charAt(0);
-      if (zoneSign != "Z") {
+      if (zoneSign != 'Z') {
         offset = (match[8] || 0) * 60 + (Number(match[9]) || 0);
-        if (zoneSign != "-") {
+        if (zoneSign != '-') {
           offset *= -1;
         }
       }
@@ -142,45 +120,33 @@ var __Options = {
     //		A Date object
 
     var _ = function (n) {
-      return n < 10 ? "0" + n : n;
+      return n < 10 ? '0' + n : n;
     };
     options = options || {};
     var formattedDate = [],
-      getter = options.zulu ? "getUTC" : "get",
-      date = "";
-    if (options.selector != "time") {
-      var year = dateObject[getter + "FullYear"]();
-      date = [
-        "0000".substr((year + "").length) + year,
-        _(dateObject[getter + "Month"]() + 1),
-        _(dateObject[getter + "Date"]()),
-      ].join("-");
+      getter = options.zulu ? 'getUTC' : 'get',
+      date = '';
+    if (options.selector != 'time') {
+      var year = dateObject[getter + 'FullYear']();
+      date = ['0000'.substr((year + '').length) + year, _(dateObject[getter + 'Month']() + 1), _(dateObject[getter + 'Date']())].join('-');
     }
     formattedDate.push(date);
-    if (options.selector != "date") {
-      var time = [
-        _(dateObject[getter + "Hours"]()),
-        _(dateObject[getter + "Minutes"]()),
-        _(dateObject[getter + "Seconds"]()),
-      ].join(":");
-      var millis = dateObject[getter + "Milliseconds"]();
+    if (options.selector != 'date') {
+      var time = [_(dateObject[getter + 'Hours']()), _(dateObject[getter + 'Minutes']()), _(dateObject[getter + 'Seconds']())].join(':');
+      var millis = dateObject[getter + 'Milliseconds']();
       if (options.milliseconds) {
-        time += "." + (millis < 100 ? "0" : "") + _(millis);
+        time += '.' + (millis < 100 ? '0' : '') + _(millis);
       }
       if (options.zulu) {
-        time += "Z";
-      } else if (options.selector != "time") {
+        time += 'Z';
+      } else if (options.selector != 'time') {
         var timezoneOffset = dateObject.getTimezoneOffset();
         var absOffset = Math.abs(timezoneOffset);
-        time +=
-          (timezoneOffset > 0 ? "-" : "+") +
-          _(Math.floor(absOffset / 60)) +
-          ":" +
-          _(absOffset % 60);
+        time += (timezoneOffset > 0 ? '-' : '+') + _(Math.floor(absOffset / 60)) + ':' + _(absOffset % 60);
       }
       formattedDate.push(time);
     }
-    return formattedDate.join("T"); // String
+    return formattedDate.join('T'); // String
   };
 
   return stamp;

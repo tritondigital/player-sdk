@@ -1,14 +1,10 @@
-define(["doh/main", "dojo/Deferred", "dojo/promise/tracer"], function (
-  doh,
-  Deferred,
-  tracer
-) {
+define(['doh/main', 'dojo/Deferred', 'dojo/promise/tracer'], function (doh, Deferred, tracer) {
   var tests = {
-    "trace() resolved": function (t) {
+    'trace() resolved': function (t) {
       var td = new doh.Deferred();
       var obj = {};
       this.handles.push(
-        tracer.on("resolved", function (value) {
+        tracer.on('resolved', function (value) {
           t.t(value === obj);
           td.callback(true);
         })
@@ -18,11 +14,11 @@ define(["doh/main", "dojo/Deferred", "dojo/promise/tracer"], function (
       return td;
     },
 
-    "trace() rejected": function (t) {
+    'trace() rejected': function (t) {
       var td = new doh.Deferred();
       var obj = {};
       this.handles.push(
-        tracer.on("rejected", function (error) {
+        tracer.on('rejected', function (error) {
           t.t(error === obj);
           td.callback(true);
         })
@@ -32,11 +28,11 @@ define(["doh/main", "dojo/Deferred", "dojo/promise/tracer"], function (
       return td;
     },
 
-    "trace() progress": function (t) {
+    'trace() progress': function (t) {
       var td = new doh.Deferred();
       var obj = {};
       this.handles.push(
-        tracer.on("progress", function (update) {
+        tracer.on('progress', function (update) {
           t.t(update === obj);
           td.callback(true);
         })
@@ -46,27 +42,27 @@ define(["doh/main", "dojo/Deferred", "dojo/promise/tracer"], function (
       return td;
     },
 
-    "passing extra arguments to trace()": function (t) {
+    'passing extra arguments to trace()': function (t) {
       var td = new doh.Deferred();
       var obj = {};
       this.handles.push(
-        tracer.on("resolved", function (value, arg1, arg2) {
+        tracer.on('resolved', function (value, arg1, arg2) {
           t.t(value === obj);
-          t.is(arg1, "test");
+          t.is(arg1, 'test');
           t.t(arg2 === obj);
           td.callback(true);
         })
       );
-      this.deferred.promise.trace("test", obj);
+      this.deferred.promise.trace('test', obj);
       this.deferred.resolve(obj);
       return td;
     },
 
-    "traceRejected()": function (t) {
+    'traceRejected()': function (t) {
       var td = new doh.Deferred();
       var obj = {};
       this.handles.push(
-        tracer.on("rejected", function (error) {
+        tracer.on('rejected', function (error) {
           t.t(error === obj);
           td.callback(true);
         })
@@ -76,21 +72,21 @@ define(["doh/main", "dojo/Deferred", "dojo/promise/tracer"], function (
       return td;
     },
 
-    "passing extra arguments": function (t) {
+    'passing extra arguments': function (t) {
       var td = new doh.Deferred();
       var obj = {};
       this.handles.push(
-        tracer.on("rejected", function (error, arg1, arg2) {
+        tracer.on('rejected', function (error, arg1, arg2) {
           t.t(error === obj);
-          t.is(arg1, "test");
+          t.is(arg1, 'test');
           t.t(arg2 === obj);
           td.callback(true);
         })
       );
-      this.deferred.promise.traceRejected("test", obj);
+      this.deferred.promise.traceRejected('test', obj);
       this.deferred.reject(obj);
       return td;
-    },
+    }
   };
 
   var wrapped = [];
@@ -99,7 +95,7 @@ define(["doh/main", "dojo/Deferred", "dojo/promise/tracer"], function (
       name: name,
       setUp: setUp,
       tearDown: tearDown,
-      runTest: tests[name],
+      runTest: tests[name]
     });
   }
 
@@ -114,5 +110,5 @@ define(["doh/main", "dojo/Deferred", "dojo/promise/tracer"], function (
     }
   }
 
-  doh.register("tests.promise.tracer", wrapped);
+  doh.register('tests.promise.tracer', wrapped);
 });

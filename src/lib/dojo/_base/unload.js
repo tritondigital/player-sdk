@@ -1,4 +1,4 @@
-define(["./kernel", "./lang", "../on"], function (dojo, lang, on) {
+define(['./kernel', './lang', '../on'], function (dojo, lang, on) {
   // module:
   //		dojo/unload
 
@@ -8,10 +8,7 @@ define(["./kernel", "./lang", "../on"], function (dojo, lang, on) {
     // summary:
     //		This module contains the document and window unload detection API.
 
-    addOnWindowUnload: function (
-      /*Object|Function?*/ obj,
-      /*String|Function?*/ functionName
-    ) {
+    addOnWindowUnload: function (/*Object|Function?*/ obj, /*String|Function?*/ functionName) {
       // summary:
       //		registers a function to be triggered when window.onunload
       //		fires.
@@ -34,7 +31,7 @@ define(["./kernel", "./lang", "../on"], function (dojo, lang, on) {
       if (!dojo.windowUnloaded) {
         on(
           win,
-          "unload",
+          'unload',
           (dojo.windowUnloaded = function () {
             // summary:
             //		signal fired by impending window destruction. You may use
@@ -48,13 +45,10 @@ define(["./kernel", "./lang", "../on"], function (dojo, lang, on) {
           })
         );
       }
-      on(win, "unload", lang.hitch(obj, functionName));
+      on(win, 'unload', lang.hitch(obj, functionName));
     },
 
-    addOnUnload: function (
-      /*Object?|Function?*/ obj,
-      /*String|Function?*/ functionName
-    ) {
+    addOnUnload: function (/*Object?|Function?*/ obj, /*String|Function?*/ functionName) {
       // summary:
       //		registers a function to be triggered when the page unloads.
       // description:
@@ -79,8 +73,8 @@ define(["./kernel", "./lang", "../on"], function (dojo, lang, on) {
       //	|	dojo.addOnUnload(object, "functionName")
       //	|	dojo.addOnUnload(object, function(){ /* ... */});
 
-      on(win, "beforeunload", lang.hitch(obj, functionName));
-    },
+      on(win, 'beforeunload', lang.hitch(obj, functionName));
+    }
   };
 
   dojo.addOnWindowUnload = unload.addOnWindowUnload;

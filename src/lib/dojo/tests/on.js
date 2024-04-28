@@ -1,1 +1,1 @@
-define(["dojo/tests/on/on"], 1);
+define(['dojo/tests/on/on'], 1);

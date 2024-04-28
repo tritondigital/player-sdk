@@ -1,8 +1,4 @@
-define(["./query", "./_base/lang", "./_base/array"], function (
-  dquery,
-  lang,
-  array
-) {
+define(['./query', './_base/lang', './_base/array'], function (dquery, lang, array) {
   // module:
   //		dojo/NodeList-traverse
 
@@ -58,19 +54,13 @@ return function(){
       return ary._stash(this); // dojo/NodeList
     },
 
-    _getRelatedUniqueNodes: function (
-      /*String?*/ query,
-      /*Function*/ callback
-    ) {
+    _getRelatedUniqueNodes: function (/*String?*/ query, /*Function*/ callback) {
       // summary:
       //		cycles over all the nodes and calls a callback
       //		to collect nodes for a possible inclusion in a result.
       //		The callback will get two args: callback(node, ary),
       //		where ary is the array being used to collect the nodes.
-      return this._getUniqueNodeListWithParent(
-        this._buildArrayFromCallback(callback),
-        query
-      ); // dojo/NodeList
+      return this._getUniqueNodeListWithParent(this._buildArrayFromCallback(callback), query); // dojo/NodeList
     },
 
     children: function (/*String?*/ query) {
@@ -505,7 +495,7 @@ return function(){
       return this.filter(function (item, i) {
         return i % 2 == 0;
       }); // dojo/NodeList
-    },
+    }
   });
 
   return NodeList;

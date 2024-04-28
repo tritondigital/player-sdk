@@ -1,25 +1,15 @@
 define([
-  "../_base/lang",
-  "../_base/array",
-  "../date",
+  '../_base/lang',
+  '../_base/array',
+  '../date',
   /*===== "../_base/declare", =====*/
-  "../cldr/supplemental",
-  "../i18n",
-  "../regexp",
-  "../string",
-  "../i18n!../cldr/nls/gregorian",
-  "module",
-], function (
-  lang,
-  array,
-  date,
-  /*===== declare, =====*/ supplemental,
-  i18n,
-  regexp,
-  string,
-  gregorian,
-  module
-) {
+  '../cldr/supplemental',
+  '../i18n',
+  '../regexp',
+  '../string',
+  '../i18n!../cldr/nls/gregorian',
+  'module'
+], function (lang, array, date, /*===== declare, =====*/ supplemental, i18n, regexp, string, gregorian, module) {
   // module:
   //		dojo/date/locale
 
@@ -27,7 +17,7 @@ define([
     // summary:
     //		This modules defines dojo/date/locale, localization methods for Date.
   };
-  lang.setObject(module.id.replace(/\//g, "."), exports);
+  lang.setObject(module.id.replace(/\//g, '.'), exports);
 
   // Localization methods for Date.   Honor local customs using locale-dependent dojo.cldr data.
 
@@ -44,15 +34,12 @@ define([
         pad,
         c = match.charAt(0),
         l = match.length,
-        widthList = ["abbr", "wide", "narrow"];
+        widthList = ['abbr', 'wide', 'narrow'];
       switch (c) {
-        case "G":
-          s =
-            bundle[l < 4 ? "eraAbbr" : "eraNames"][
-              dateObject.getFullYear() < 0 ? 0 : 1
-            ];
+        case 'G':
+          s = bundle[l < 4 ? 'eraAbbr' : 'eraNames'][dateObject.getFullYear() < 0 ? 0 : 1];
           break;
-        case "y":
+        case 'y':
           s = dateObject.getFullYear();
           switch (l) {
             case 1:
@@ -68,8 +55,8 @@ define([
               pad = true;
           }
           break;
-        case "Q":
-        case "q":
+        case 'Q':
+        case 'q':
           s = Math.ceil((dateObject.getMonth() + 1) / 3);
           //					switch(l){
           //						case 1: case 2:
@@ -78,98 +65,88 @@ define([
           //						case 3: case 4: // unimplemented
           //					}
           break;
-        case "M":
-        case "L":
+        case 'M':
+        case 'L':
           var m = dateObject.getMonth();
           if (l < 3) {
             s = m + 1;
             pad = true;
           } else {
-            var propM = [
-              "months",
-              c == "L" ? "standAlone" : "format",
-              widthList[l - 3],
-            ].join("-");
+            var propM = ['months', c == 'L' ? 'standAlone' : 'format', widthList[l - 3]].join('-');
             s = bundle[propM][m];
           }
           break;
-        case "w":
+        case 'w':
           var firstDay = 0;
           s = exports._getWeekOfYear(dateObject, firstDay);
           pad = true;
           break;
-        case "d":
+        case 'd':
           s = dateObject.getDate();
           pad = true;
           break;
-        case "D":
+        case 'D':
           s = exports._getDayOfYear(dateObject);
           pad = true;
           break;
-        case "e":
-        case "c":
+        case 'e':
+        case 'c':
           var d = dateObject.getDay();
           if (l < 2) {
             s = (d - supplemental.getFirstDayOfWeek(options.locale) + 8) % 7;
             break;
           }
         // fallthrough
-        case "E":
+        case 'E':
           d = dateObject.getDay();
           if (l < 3) {
             s = d + 1;
             pad = true;
           } else {
-            var propD = [
-              "days",
-              c == "c" ? "standAlone" : "format",
-              widthList[l - 3],
-            ].join("-");
+            var propD = ['days', c == 'c' ? 'standAlone' : 'format', widthList[l - 3]].join('-');
             s = bundle[propD][d];
           }
           break;
-        case "a":
-          var timePeriod = dateObject.getHours() < 12 ? "am" : "pm";
-          s =
-            options[timePeriod] ||
-            bundle["dayPeriods-format-wide-" + timePeriod];
+        case 'a':
+          var timePeriod = dateObject.getHours() < 12 ? 'am' : 'pm';
+          s = options[timePeriod] || bundle['dayPeriods-format-wide-' + timePeriod];
           break;
-        case "h":
-        case "H":
-        case "K":
-        case "k":
+        case 'h':
+        case 'H':
+        case 'K':
+        case 'k':
           var h = dateObject.getHours();
           // strange choices in the date format make it impossible to write this succinctly
           switch (c) {
-            case "h": // 1-12
+            case 'h': // 1-12
               s = h % 12 || 12;
               break;
-            case "H": // 0-23
+            case 'H': // 0-23
               s = h;
               break;
-            case "K": // 0-11
+            case 'K': // 0-11
               s = h % 12;
               break;
-            case "k": // 1-24
+            case 'k': // 1-24
               s = h || 24;
               break;
           }
           pad = true;
           break;
-        case "m":
+        case 'm':
           s = dateObject.getMinutes();
           pad = true;
           break;
-        case "s":
+        case 's':
           s = dateObject.getSeconds();
           pad = true;
           break;
-        case "S":
+        case 'S':
           s = Math.round(dateObject.getMilliseconds() * Math.pow(10, l - 3));
           pad = true;
           break;
-        case "v": // FIXME: don't know what this is. seems to be same as z?
-        case "z":
+        case 'v': // FIXME: don't know what this is. seems to be same as z?
+        case 'z':
           // We only have one timezone to offer; the one from the browser
           s = exports._getZone(dateObject, true, options);
           if (s) {
@@ -177,25 +154,19 @@ define([
           }
           l = 4;
         // fallthrough... use GMT if tz not available
-        case "Z":
+        case 'Z':
           var offset = exports._getZone(dateObject, false, options);
-          var tz = [
-            offset <= 0 ? "+" : "-",
-            string.pad(Math.floor(Math.abs(offset) / 60), 2),
-            string.pad(Math.abs(offset) % 60, 2),
-          ];
+          var tz = [offset <= 0 ? '+' : '-', string.pad(Math.floor(Math.abs(offset) / 60), 2), string.pad(Math.abs(offset) % 60, 2)];
           if (l == 4) {
-            tz.splice(0, 0, "GMT");
-            tz.splice(3, 0, ":");
+            tz.splice(0, 0, 'GMT');
+            tz.splice(3, 0, ':');
           }
-          s = tz.join("");
+          s = tz.join('');
           break;
         //				case 'Y': case 'u': case 'W': case 'F': case 'g': case 'A':
         //					console.log(match+" modifier unimplemented");
         default:
-          throw new Error(
-            "dojo.date.locale.format: invalid pattern char: " + pattern
-          );
+          throw new Error('dojo.date.locale.format: invalid pattern char: ' + pattern);
       }
       if (pad) {
         s = string.pad(s, l);
@@ -227,11 +198,7 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
 });
 =====*/
 
-  exports._getZone = function (
-    /*Date*/ dateObject,
-    /*boolean*/ getName,
-    /*__FormatOptions?*/ options
-  ) {
+  exports._getZone = function (/*Date*/ dateObject, /*boolean*/ getName, /*__FormatOptions?*/ options) {
     // summary:
     //		Returns the zone (or offset) for the given date and options.  This
     //		is broken out into a separate function so that it can be overridden
@@ -252,10 +219,7 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
     }
   };
 
-  exports.format = function (
-    /*Date*/ dateObject,
-    /*__FormatOptions?*/ options
-  ) {
+  exports.format = function (/*Date*/ dateObject, /*__FormatOptions?*/ options) {
     // summary:
     //		Format a Date object as a String, using locale-specific settings.
     //
@@ -277,22 +241,22 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
     options = options || {};
 
     var locale = i18n.normalizeLocale(options.locale),
-      formatLength = options.formatLength || "short",
+      formatLength = options.formatLength || 'short',
       bundle = exports._getGregorianBundle(locale),
       str = [],
       sauce = lang.hitch(this, formatPattern, dateObject, bundle, options);
-    if (options.selector == "year") {
-      return _processPattern(bundle["dateFormatItem-yyyy"] || "yyyy", sauce);
+    if (options.selector == 'year') {
+      return _processPattern(bundle['dateFormatItem-yyyy'] || 'yyyy', sauce);
     }
     var pattern;
-    if (options.selector != "date") {
-      pattern = options.timePattern || bundle["timeFormat-" + formatLength];
+    if (options.selector != 'date') {
+      pattern = options.timePattern || bundle['timeFormat-' + formatLength];
       if (pattern) {
         str.push(_processPattern(pattern, sauce));
       }
     }
-    if (options.selector != "time") {
-      pattern = options.datePattern || bundle["dateFormat-" + formatLength];
+    if (options.selector != 'time') {
+      pattern = options.datePattern || bundle['dateFormat-' + formatLength];
       if (pattern) {
         str.push(_processPattern(pattern, sauce));
       }
@@ -300,11 +264,9 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
 
     return str.length == 1
       ? str[0]
-      : bundle["dateTimeFormat-" + formatLength]
-          .replace(/\'/g, "")
-          .replace(/\{(\d+)\}/g, function (match, key) {
-            return str[key];
-          }); // String
+      : bundle['dateTimeFormat-' + formatLength].replace(/\'/g, '').replace(/\{(\d+)\}/g, function (match, key) {
+          return str[key];
+        }); // String
   };
 
   exports.regexp = function (/*__FormatOptions?*/ options) {
@@ -318,28 +280,22 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
     options = options || {};
     var locale = i18n.normalizeLocale(options.locale),
       bundle = exports._getGregorianBundle(locale),
-      formatLength = options.formatLength || "short",
-      datePattern = options.datePattern || bundle["dateFormat-" + formatLength],
-      timePattern = options.timePattern || bundle["timeFormat-" + formatLength],
+      formatLength = options.formatLength || 'short',
+      datePattern = options.datePattern || bundle['dateFormat-' + formatLength],
+      timePattern = options.timePattern || bundle['timeFormat-' + formatLength],
       pattern;
-    if (options.selector == "date") {
+    if (options.selector == 'date') {
       pattern = datePattern;
-    } else if (options.selector == "time") {
+    } else if (options.selector == 'time') {
       pattern = timePattern;
     } else {
-      pattern = bundle["dateTimeFormat-" + formatLength].replace(
-        /\{(\d+)\}/g,
-        function (match, key) {
-          return [timePattern, datePattern][key];
-        }
-      );
+      pattern = bundle['dateTimeFormat-' + formatLength].replace(/\{(\d+)\}/g, function (match, key) {
+        return [timePattern, datePattern][key];
+      });
     }
 
     var tokens = [],
-      re = _processPattern(
-        pattern,
-        lang.hitch(this, _buildDateTimeRE, tokens, bundle, options)
-      );
+      re = _processPattern(pattern, lang.hitch(this, _buildDateTimeRE, tokens, bundle, options));
     return { regexp: re, tokens: tokens, bundle: bundle };
   };
 
@@ -370,19 +326,16 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
       info = exports._parseInfo(options),
       tokens = info.tokens,
       bundle = info.bundle,
-      re = new RegExp(
-        "^" + info.regexp.replace(controlChars, "") + "$",
-        info.strict ? "" : "i"
-      ),
-      match = re.exec(value && value.replace(controlChars, ""));
+      re = new RegExp('^' + info.regexp.replace(controlChars, '') + '$', info.strict ? '' : 'i'),
+      match = re.exec(value && value.replace(controlChars, ''));
 
     if (!match) {
       return null;
     } // null
 
-    var widthList = ["abbr", "wide", "narrow"],
+    var widthList = ['abbr', 'wide', 'narrow'],
       result = [1970, 0, 1, 0, 0, 0, 0], // will get converted to a Date at the end
-      amPm = "",
+      amPm = '',
       valid = array.every(match, function (v, i) {
         if (!i) {
           return true;
@@ -391,7 +344,7 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
           l = token.length,
           c = token.charAt(0);
         switch (c) {
-          case "y":
+          case 'y':
             if (l != 2 && options.strict) {
               //interpret year literally, so '5' would be 5 A.D.
               result[0] = v;
@@ -400,7 +353,7 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
                 v = Number(v);
                 //choose century to apply, according to a sliding window
                 //of 80 years before and 20 years after present year
-                var year = "" + new Date().getFullYear(),
+                var year = '' + new Date().getFullYear(),
                   century = year.substring(0, 2) * 100,
                   cutoff = Math.min(Number(year.substring(2, 4)) + 20, 99);
                 result[0] = v < cutoff ? century + v : century - 100 + v;
@@ -415,22 +368,16 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
               }
             }
             break;
-          case "M":
-          case "L":
+          case 'M':
+          case 'L':
             if (l > 2) {
-              var months =
-                bundle[
-                  "months-" +
-                    (c == "L" ? "standAlone" : "format") +
-                    "-" +
-                    widthList[l - 3]
-                ].concat();
+              var months = bundle['months-' + (c == 'L' ? 'standAlone' : 'format') + '-' + widthList[l - 3]].concat();
               if (!options.strict) {
                 //Tolerate abbreviating period in month part
                 //Case-insensitive comparison
-                v = v.replace(".", "").toLowerCase();
+                v = v.replace('.', '').toLowerCase();
                 months = array.map(months, function (s) {
-                  return s.replace(".", "").toLowerCase();
+                  return s.replace('.', '').toLowerCase();
                 });
               }
               v = array.indexOf(months, v);
@@ -443,16 +390,10 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
             }
             result[1] = v;
             break;
-          case "E":
-          case "e":
-          case "c":
-            var days =
-              bundle[
-                "days-" +
-                  (c == "c" ? "standAlone" : "format") +
-                  "-" +
-                  widthList[l - 3]
-              ].concat();
+          case 'E':
+          case 'e':
+          case 'c':
+            var days = bundle['days-' + (c == 'c' ? 'standAlone' : 'format') + '-' + widthList[l - 3]].concat();
             if (!options.strict) {
               //Case-insensitive comparison
               v = v.toLowerCase();
@@ -471,20 +412,20 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
             //without more context, can't affect the actual date
             //TODO: just validate?
             break;
-          case "D":
+          case 'D':
             result[1] = 0;
           // fallthrough...
-          case "d":
+          case 'd':
             result[2] = v;
             break;
-          case "a": //am/pm
-            var am = options.am || bundle["dayPeriods-format-wide-am"],
-              pm = options.pm || bundle["dayPeriods-format-wide-pm"];
+          case 'a': //am/pm
+            var am = options.am || bundle['dayPeriods-format-wide-am'],
+              pm = options.pm || bundle['dayPeriods-format-wide-pm'];
             if (!options.strict) {
               var period = /\./g;
-              v = v.replace(period, "").toLowerCase();
-              am = am.replace(period, "").toLowerCase();
-              pm = pm.replace(period, "").toLowerCase();
+              v = v.replace(period, '').toLowerCase();
+              am = am.replace(period, '').toLowerCase();
+              pm = pm.replace(period, '').toLowerCase();
             }
             if (options.strict && v != am && v != pm) {
               //					console.log("dojo/date/locale.parse: Could not parse am/pm part.");
@@ -492,16 +433,16 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
             }
 
             // we might not have seen the hours field yet, so store the state and apply hour change later
-            amPm = v == pm ? "p" : v == am ? "a" : "";
+            amPm = v == pm ? 'p' : v == am ? 'a' : '';
             break;
-          case "K": //hour (1-24)
+          case 'K': //hour (1-24)
             if (v == 24) {
               v = 0;
             }
           // fallthrough...
-          case "h": //hour (1-12)
-          case "H": //hour (0-23)
-          case "k": //hour (0-11)
+          case 'h': //hour (1-12)
+          case 'H': //hour (0-23)
+          case 'k': //hour (0-11)
             //TODO: strict bounds checking, padding
             if (v > 23) {
               //					console.log("dojo/date/locale.parse: Illegal hours value");
@@ -512,13 +453,13 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
             //which could come before or after the hour, so we will adjust later
             result[3] = v;
             break;
-          case "m": //minutes
+          case 'm': //minutes
             result[4] = v;
             break;
-          case "s": //seconds
+          case 's': //seconds
             result[5] = v;
             break;
-          case "S": //milliseconds
+          case 'S': //milliseconds
             result[6] = v;
           //				break;
           //			case 'w':
@@ -531,50 +472,35 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
       });
 
     var hours = +result[3];
-    if (amPm === "p" && hours < 12) {
+    if (amPm === 'p' && hours < 12) {
       result[3] = hours + 12; //e.g., 3pm -> 15
-    } else if (amPm === "a" && hours == 12) {
+    } else if (amPm === 'a' && hours == 12) {
       result[3] = 0; //12am -> 0
     }
 
     //TODO: implement a getWeekday() method in order to test
     //validity of input strings containing 'EEE' or 'EEEE'...
 
-    var dateObject = new Date(
-      result[0],
-      result[1],
-      result[2],
-      result[3],
-      result[4],
-      result[5],
-      result[6]
-    ); // Date
+    var dateObject = new Date(result[0], result[1], result[2], result[3], result[4], result[5], result[6]); // Date
     if (options.strict) {
       dateObject.setFullYear(result[0]);
     }
 
     // Check for overflow.  The Date() constructor normalizes things like April 32nd...
     //TODO: why isn't this done for times as well?
-    var allTokens = tokens.join(""),
-      dateToken = allTokens.indexOf("d") != -1,
-      monthToken = allTokens.indexOf("M") != -1;
+    var allTokens = tokens.join(''),
+      dateToken = allTokens.indexOf('d') != -1,
+      monthToken = allTokens.indexOf('M') != -1;
 
-    if (
-      !valid ||
-      (monthToken && dateObject.getMonth() > result[1]) ||
-      (dateToken && dateObject.getDate() > result[2])
-    ) {
+    if (!valid || (monthToken && dateObject.getMonth() > result[1]) || (dateToken && dateObject.getDate() > result[2])) {
       return null;
     }
 
     // Check for underflow, due to DST shifts.  See #9366
     // This assumes a 1 hour dst shift correction at midnight
     // We could compare the timezone offset after the shift and add the difference instead.
-    if (
-      (monthToken && dateObject.getMonth() < result[1]) ||
-      (dateToken && dateObject.getDate() < result[2])
-    ) {
-      dateObject = date.add(dateObject, "hour", 1);
+    if ((monthToken && dateObject.getMonth() < result[1]) || (dateToken && dateObject.getDate() < result[2])) {
+      dateObject = date.add(dateObject, 'hour', 1);
     }
 
     return dateObject; // Date
@@ -598,21 +524,19 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
 
     array.forEach(chunks, function (chunk, i) {
       if (!chunk) {
-        chunks[i] = "";
+        chunks[i] = '';
       } else {
-        chunks[i] = (literal ? applyLiteral : applyPattern)(
-          chunk.replace(/''/g, "'")
-        );
+        chunks[i] = (literal ? applyLiteral : applyPattern)(chunk.replace(/''/g, "'"));
         literal = !literal;
       }
     });
-    return applyAll(chunks.join(""));
+    return applyAll(chunks.join(''));
   }
 
   function _buildDateTimeRE(tokens, bundle, options, pattern) {
     pattern = regexp.escapeString(pattern);
     if (!options.strict) {
-      pattern = pattern.replace(" a", " ?a");
+      pattern = pattern.replace(' a', ' ?a');
     } // kludge to tolerate no space before am/pm
     return pattern
       .replace(/([a-z])\1*/gi, function (match) {
@@ -620,87 +544,82 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
         var s,
           c = match.charAt(0),
           l = match.length,
-          p2 = "",
-          p3 = "";
+          p2 = '',
+          p3 = '';
         if (options.strict) {
           if (l > 1) {
-            p2 = "0" + "{" + (l - 1) + "}";
+            p2 = '0' + '{' + (l - 1) + '}';
           }
           if (l > 2) {
-            p3 = "0" + "{" + (l - 2) + "}";
+            p3 = '0' + '{' + (l - 2) + '}';
           }
         } else {
-          p2 = "0?";
-          p3 = "0{0,2}";
+          p2 = '0?';
+          p3 = '0{0,2}';
         }
         switch (c) {
-          case "y":
-            s = "\\d{2,4}";
+          case 'y':
+            s = '\\d{2,4}';
             break;
-          case "M":
-          case "L":
-            s = l > 2 ? "\\S+?" : "1[0-2]|" + p2 + "[1-9]";
+          case 'M':
+          case 'L':
+            s = l > 2 ? '\\S+?' : '1[0-2]|' + p2 + '[1-9]';
             break;
-          case "D":
-            s =
-              "[12][0-9][0-9]|3[0-5][0-9]|36[0-6]|" +
-              p2 +
-              "[1-9][0-9]|" +
-              p3 +
-              "[1-9]";
+          case 'D':
+            s = '[12][0-9][0-9]|3[0-5][0-9]|36[0-6]|' + p2 + '[1-9][0-9]|' + p3 + '[1-9]';
             break;
-          case "d":
-            s = "3[01]|[12]\\d|" + p2 + "[1-9]";
+          case 'd':
+            s = '3[01]|[12]\\d|' + p2 + '[1-9]';
             break;
-          case "w":
-            s = "[1-4][0-9]|5[0-3]|" + p2 + "[1-9]";
+          case 'w':
+            s = '[1-4][0-9]|5[0-3]|' + p2 + '[1-9]';
             break;
-          case "E":
-          case "e":
-          case "c":
-            s = "\\S+";
+          case 'E':
+          case 'e':
+          case 'c':
+            s = '\\S+';
             break;
-          case "h": //hour (1-12)
-            s = "1[0-2]|" + p2 + "[1-9]";
+          case 'h': //hour (1-12)
+            s = '1[0-2]|' + p2 + '[1-9]';
             break;
-          case "k": //hour (0-11)
-            s = "1[01]|" + p2 + "\\d";
+          case 'k': //hour (0-11)
+            s = '1[01]|' + p2 + '\\d';
             break;
-          case "H": //hour (0-23)
-            s = "1\\d|2[0-3]|" + p2 + "\\d";
+          case 'H': //hour (0-23)
+            s = '1\\d|2[0-3]|' + p2 + '\\d';
             break;
-          case "K": //hour (1-24)
-            s = "1\\d|2[0-4]|" + p2 + "[1-9]";
+          case 'K': //hour (1-24)
+            s = '1\\d|2[0-4]|' + p2 + '[1-9]';
             break;
-          case "m":
-          case "s":
-            s = "[0-5]\\d";
+          case 'm':
+          case 's':
+            s = '[0-5]\\d';
             break;
-          case "S":
-            s = "\\d{" + l + "}";
+          case 'S':
+            s = '\\d{' + l + '}';
             break;
-          case "a":
-            var am = options.am || bundle["dayPeriods-format-wide-am"],
-              pm = options.pm || bundle["dayPeriods-format-wide-pm"];
-            s = am + "|" + pm;
+          case 'a':
+            var am = options.am || bundle['dayPeriods-format-wide-am'],
+              pm = options.pm || bundle['dayPeriods-format-wide-pm'];
+            s = am + '|' + pm;
             if (!options.strict) {
               if (am != am.toLowerCase()) {
-                s += "|" + am.toLowerCase();
+                s += '|' + am.toLowerCase();
               }
               if (pm != pm.toLowerCase()) {
-                s += "|" + pm.toLowerCase();
+                s += '|' + pm.toLowerCase();
               }
-              if (s.indexOf(".") != -1) {
-                s += "|" + s.replace(/\./g, "");
+              if (s.indexOf('.') != -1) {
+                s += '|' + s.replace(/\./g, '');
               }
             }
-            s = s.replace(/\./g, "\\.");
+            s = s.replace(/\./g, '\\.');
             break;
           default:
             // case 'v':
             // case 'z':
             // case 'Z':
-            s = ".*";
+            s = '.*';
           //				console.log("parse of date format, pattern=" + pattern);
         }
 
@@ -708,16 +627,13 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
           tokens.push(match);
         }
 
-        return "(" + s + ")"; // add capture
+        return '(' + s + ')'; // add capture
       })
-      .replace(/[\xa0 ]/g, "[\\s\\xa0]"); // normalize whitespace.  Need explicit handling of \xa0 for IE.
+      .replace(/[\xa0 ]/g, '[\\s\\xa0]'); // normalize whitespace.  Need explicit handling of \xa0 for IE.
   }
 
   var _customFormats = [];
-  exports.addCustomFormats = function (
-    /*String*/ packageName,
-    /*String*/ bundleName
-  ) {
+  exports.addCustomFormats = function (/*String*/ packageName, /*String*/ bundleName) {
     // summary:
     //		Add a reference to a bundle containing localized custom formats to be
     //		used by date/time formatting and parsing routines.
@@ -745,17 +661,9 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
     return gregorian; /*Object*/
   };
 
-  exports.addCustomFormats(
-    module.id.replace(/\/date\/locale$/, ".cldr"),
-    "gregorian"
-  );
+  exports.addCustomFormats(module.id.replace(/\/date\/locale$/, '.cldr'), 'gregorian');
 
-  exports.getNames = function (
-    /*String*/ item,
-    /*String*/ type,
-    /*String?*/ context,
-    /*String?*/ locale
-  ) {
+  exports.getNames = function (/*String*/ item, /*String*/ type, /*String?*/ context, /*String?*/ locale) {
     // summary:
     //		Used to get localized strings from dojo.cldr for day or month names.
     //
@@ -771,18 +679,18 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
     var label,
       lookup = exports._getGregorianBundle(locale),
       props = [item, context, type];
-    if (context == "standAlone") {
-      var key = props.join("-");
+    if (context == 'standAlone') {
+      var key = props.join('-');
       label = lookup[key];
       // Fall back to 'format' flavor of name
       if (label[0] == 1) {
         label = undefined;
       } // kludge, in the absence of real aliasing support in dojo.cldr
     }
-    props[1] = "format";
+    props[1] = 'format';
 
     // return by copy so changes won't be made accidentally to the in-memory model
-    return (label || lookup[props.join("-")]).concat(); /*Array*/
+    return (label || lookup[props.join('-')]).concat(); /*Array*/
   };
 
   exports.isWeekend = function (/*Date?*/ dateObject, /*String?*/ locale) {
@@ -805,18 +713,10 @@ var __FormatOptions = exports.__FormatOptions = declare(null, {
   exports._getDayOfYear = function (/*Date*/ dateObject) {
     // summary:
     //		gets the day of the year as represented by dateObject
-    return (
-      date.difference(
-        new Date(dateObject.getFullYear(), 0, 1, dateObject.getHours()),
-        dateObject
-      ) + 1
-    ); // Number
+    return date.difference(new Date(dateObject.getFullYear(), 0, 1, dateObject.getHours()), dateObject) + 1; // Number
   };
 
-  exports._getWeekOfYear = function (
-    /*Date*/ dateObject,
-    /*Number*/ firstDayOfWeek
-  ) {
+  exports._getWeekOfYear = function (/*Date*/ dateObject, /*Number*/ firstDayOfWeek) {
     if (arguments.length == 1) {
       firstDayOfWeek = 0;
     } // Sunday

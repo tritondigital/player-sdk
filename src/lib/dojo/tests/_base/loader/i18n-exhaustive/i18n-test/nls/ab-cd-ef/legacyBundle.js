@@ -1,4 +1,4 @@
 ({
-  legacyBundle: "legacyBundle-ab-cd-ef",
-  abCdEfValueOnly: "abCdEfValueOnly",
+  legacyBundle: 'legacyBundle-ab-cd-ef',
+  abCdEfValueOnly: 'abCdEfValueOnly'
 });

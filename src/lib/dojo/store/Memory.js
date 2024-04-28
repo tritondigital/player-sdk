@@ -1,8 +1,4 @@
-define([
-  "../_base/declare",
-  "./util/QueryResults",
-  "./util/SimpleQueryEngine" /*=====, "./api/Store" =====*/,
-], function (declare, QueryResults, SimpleQueryEngine /*=====, Store =====*/) {
+define(['../_base/declare', './util/QueryResults', './util/SimpleQueryEngine' /*=====, "./api/Store" =====*/], function (declare, QueryResults, SimpleQueryEngine /*=====, Store =====*/) {
   // module:
   //		dojo/store/Memory
 
@@ -10,7 +6,7 @@ define([
   var base = null;
   /*===== base = Store; =====*/
 
-  return declare("dojo.store.Memory", base, {
+  return declare('dojo.store.Memory', base, {
     // summary:
     //		This is a basic in-memory object store. It implements dojo/store/api/Store.
     constructor: function (options) {
@@ -31,7 +27,7 @@ define([
     // idProperty: String
     //		Indicates the property to use as the identity property. The values of this
     //		property should be unique.
-    idProperty: "id",
+    idProperty: 'id',
 
     // index: Object
     //		An index of data indices into the data array by id
@@ -69,16 +65,11 @@ define([
       var data = this.data,
         index = this.index,
         idProperty = this.idProperty;
-      var id = (object[idProperty] =
-        options && "id" in options
-          ? options.id
-          : idProperty in object
-          ? object[idProperty]
-          : Math.random());
+      var id = (object[idProperty] = options && 'id' in options ? options.id : idProperty in object ? object[idProperty] : Math.random());
       if (id in index) {
         // object exists
         if (options && options.overwrite === false) {
-          throw new Error("Object already exists");
+          throw new Error('Object already exists');
         }
         // replace the entry in data
         data[index[id]] = object;
@@ -165,6 +156,6 @@ define([
       for (var i = 0, l = data.length; i < l; i++) {
         this.index[data[i][this.idProperty]] = i;
       }
-    },
+    }
   });
 });

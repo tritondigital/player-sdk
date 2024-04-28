@@ -14,51 +14,36 @@
  * vast-companions-vpaid<br>
  * ad-blocker-detected<br>
  */
-var MediaElement = require("sdk/base/util/MediaElement");
+var MediaElement = require('sdk/base/util/MediaElement');
 
 define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "require",
-  "dojo/_base/Deferred",
-  "dojo/on",
-  "dojo/dom-construct",
-  "dojo/dom",
-  "sdk/base/ad/AdServerType",
-  "sdk/base/ad/TritonAdPlatformHelper",
-  "sdk/base/util/XhrProvider",
-  "sdk/modules/ad/ImaSdkModule",
-  "sdk/modules/ad/VASTAdModule",
-  "sdk/modules/ad/MediaAdModule",
-  "sdk/base/util/analytics/GAEventRequest",
-], function (
-  declare,
-  lang,
-  require,
-  Deferred,
-  on,
-  domConstruct,
-  dom,
-  AdServerType,
-  TritonAdPlatformHelper,
-  XhrProvider,
-  ImaSdkModule,
-  VASTAdModule,
-  MediaAdModule,
-  GAEventRequest
-) {
+  'dojo/_base/declare',
+  'dojo/_base/lang',
+  'require',
+  'dojo/_base/Deferred',
+  'dojo/on',
+  'dojo/dom-construct',
+  'dojo/dom',
+  'sdk/base/ad/AdServerType',
+  'sdk/base/ad/TritonAdPlatformHelper',
+  'sdk/base/util/XhrProvider',
+  'sdk/modules/ad/ImaSdkModule',
+  'sdk/modules/ad/VASTAdModule',
+  'sdk/modules/ad/MediaAdModule',
+  'sdk/base/util/analytics/GAEventRequest'
+], function (declare, lang, require, Deferred, on, domConstruct, dom, AdServerType, TritonAdPlatformHelper, XhrProvider, ImaSdkModule, VASTAdModule, MediaAdModule, GAEventRequest) {
   var adManager = declare([], {
     // External Events
-    AD_PLAYBACK_START: "ad-playback-start",
-    AD_PLAYBACK_COMPLETE: "ad-playback-complete",
-    AD_PLAYBACK_DESTROY: "ad-playback-destroy",
-    AD_PLAYBACK_ERROR: "ad-playback-error",
-    AD_COUNTDOWN: "ad-countdown",
-    AD_QUARTILE: "ad-quartile",
-    VAST_COMPANIONS_READY: "vast-companions-ready",
-    VAST_COMPANIONS_VPAID: "vast-companions-vpaid",
-    AD_BLOCKER_DETECTED: "ad-blocker-detected",
-    STREAMING_GUIDE_VERSION: "1.5.1",
+    AD_PLAYBACK_START: 'ad-playback-start',
+    AD_PLAYBACK_COMPLETE: 'ad-playback-complete',
+    AD_PLAYBACK_DESTROY: 'ad-playback-destroy',
+    AD_PLAYBACK_ERROR: 'ad-playback-error',
+    AD_COUNTDOWN: 'ad-countdown',
+    AD_QUARTILE: 'ad-quartile',
+    VAST_COMPANIONS_READY: 'vast-companions-ready',
+    VAST_COMPANIONS_VPAID: 'vast-companions-vpaid',
+    AD_BLOCKER_DETECTED: 'ad-blocker-detected',
+    STREAMING_GUIDE_VERSION: '1.5.1',
 
     /**
      * constructor
@@ -68,7 +53,7 @@ define([
      * @param config
      */
     constructor: function (tech, techType, target, config) {
-      console.log("adManager::constructor");
+      console.log('adManager::constructor');
 
       this.target = target;
       this.config = config;
@@ -97,16 +82,8 @@ define([
       this._adSource = null;
       this._adFormat = null;
 
-      on(
-        this.target,
-        "ad-playback-start",
-        lang.hitch(this, this._onAdPlaybackStart)
-      );
-      on(
-        this.target,
-        "ad-playback-error",
-        lang.hitch(this, this._onAdPlaybackError)
-      );
+      on(this.target, 'ad-playback-start', lang.hitch(this, this._onAdPlaybackStart));
+      on(this.target, 'ad-playback-error', lang.hitch(this, this._onAdPlaybackError));
     },
 
     /**
@@ -127,9 +104,8 @@ define([
         if (config.adBreak != true) {
           this.target.emit(this.AD_BLOCKER_DETECTED, {
             data: {
-              message:
-                "playAd function has been disabled because Ad Blocker is activated",
-            },
+              message: 'playAd function has been disabled because Ad Blocker is activated'
+            }
           });
         }
         return;
@@ -152,68 +128,47 @@ define([
         config.url = this._generateUrl(config); //add tracking query parameters (geographic data, banners capabilities, technology, ...)
       }
 
-      if (
-        config.url == null &&
-        config.mediaUrl == undefined &&
-        config.rawXML == undefined &&
-        config.sid == undefined
-      ) {
+      if (config.url == null && config.mediaUrl == undefined && config.rawXML == undefined && config.sid == undefined) {
         this.target.emit(this.AD_PLAYBACK_ERROR, {
-          data: { type: null, error: true },
+          data: { type: null, error: true }
         });
         return;
       }
 
       //DAAST || Ando lookup
       if (config.url) {
-        config.fallbackToVastPlugin =
-          config.url.toLowerCase().indexOf("daast") > -1 ||
-          config.url.toLowerCase().indexOf("/ondemand/ars") > -1 ||
-          config.url.toLowerCase().indexOf("s3") > -1;
-        this._adFormat =
-          config.url.toLowerCase().indexOf("daast") > -1 ? "DAAST" : "VAST";
-        this._adSource =
-          config.url.toLowerCase().indexOf("daast") > -1
-            ? "TAP"
-            : config.sid
-            ? "CM3"
-            : "Others";
+        config.fallbackToVastPlugin = config.url.toLowerCase().indexOf('daast') > -1 || config.url.toLowerCase().indexOf('/ondemand/ars') > -1 || config.url.toLowerCase().indexOf('s3') > -1;
+        this._adFormat = config.url.toLowerCase().indexOf('daast') > -1 ? 'DAAST' : 'VAST';
+        this._adSource = config.url.toLowerCase().indexOf('daast') > -1 ? 'TAP' : config.sid ? 'CM3' : 'Others';
       } else if (config.rawXML) {
-        config.fallbackToVastPlugin =
-          config.rawXML.toLowerCase().indexOf("daast") > -1;
-        this._adFormat =
-          config.rawXML.toLowerCase().indexOf("daast") > -1 ? "DAAST" : "VAST";
-        this._adSource =
-          config.rawXML.toLowerCase().indexOf("daast") > -1
-            ? "TAP"
-            : config.sid
-            ? "CM3"
-            : "Others";
+        config.fallbackToVastPlugin = config.rawXML.toLowerCase().indexOf('daast') > -1;
+        this._adFormat = config.rawXML.toLowerCase().indexOf('daast') > -1 ? 'DAAST' : 'VAST';
+        this._adSource = config.rawXML.toLowerCase().indexOf('daast') > -1 ? 'TAP' : config.sid ? 'CM3' : 'Others';
       }
 
       //create html5 media tag
-      this.tech.prepare("adModule");
+      this.tech.prepare('adModule');
 
       switch (adServerType) {
         case AdServerType.VAST_AD:
           //Vast in ad break not supported by IMA because our ad break VAST XML files are not compliant VAST 2.0
           if (config.adBreak || config.fallbackToVastPlugin) {
             this._initAdModule(this.VASTAdModule, config);
-            this._adParser = "VASTModule";
+            this._adParser = 'VASTModule';
           } else {
             this._initAdModule(this.imaSdkModule, config);
-            this._adParser = "IMA";
+            this._adParser = 'IMA';
           }
           break;
 
         case AdServerType.MEDIA_AD:
           this._initAdModule(this.mediaAdModule, config);
-          this._adParser = "Direct";
+          this._adParser = 'Direct';
           break;
 
         default:
           this.target.emit(this.AD_PLAYBACK_COMPLETE, {
-            data: { type: null, error: false },
+            data: { type: null, error: false }
           });
           break;
       }
@@ -223,9 +178,9 @@ define([
      * skipAd
      */
     skipAd: function () {
-      console.log("adManager::skipAd");
+      console.log('adManager::skipAd');
 
-      if (this.techType == "Flash") {
+      if (this.techType == 'Flash') {
         this.tech.skipAd();
         return;
       }
@@ -239,9 +194,9 @@ define([
      * destroyAd
      */
     destroyAd: function (shouldRemoveAdsRef) {
-      console.log("adManager::destroyAd");
+      console.log('adManager::destroyAd');
 
-      if (this.techType == "Flash") {
+      if (this.techType == 'Flash') {
         this.tech.destroyAd(shouldRemoveAdsRef);
         return;
       }
@@ -252,16 +207,13 @@ define([
     },
 
     reloadSyncBanner: function () {
-      if (this.techType == "Flash") {
+      if (this.techType == 'Flash') {
         this.tech.reloadSyncBanner();
         return;
       }
 
       if (this.currentAdModule) {
-        if (
-          this.adServerType == AdServerType.VAST_AD ||
-          this.adServerType == AdServerType.TRITON_AD_PLATFORM
-        ) {
+        if (this.adServerType == AdServerType.VAST_AD || this.adServerType == AdServerType.TRITON_AD_PLATFORM) {
           this.currentAdModule.reloadSyncBanner();
         }
       }
@@ -274,73 +226,25 @@ define([
      * @private
      */
     _initAdModule: function (module, adConfig) {
-      console.log("adManager::_initAdModule");
+      console.log('adManager::_initAdModule');
 
       this._removeListeners();
 
       this.currentAdModule = module;
 
       //init events
-      this._mediaAdReadyHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_MEDIA_READY,
-        lang.hitch(this, this._onMediaAdReady)
-      );
-      this._mediaAdEmptyHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_MEDIA_EMPTY,
-        lang.hitch(this, this._onMediaAdEmpty)
-      );
-      this._adCountdownHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_COUNTDOWN,
-        lang.hitch(this, this._onAdModuleCountdown)
-      );
-      this._adModulePlaybackStartHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_PLAYBACK_START,
-        lang.hitch(this, this._onAdModulePlaybackStart)
-      );
-      this._adModulePlaybackCompleteHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_PLAYBACK_COMPLETE,
-        lang.hitch(this, this._onAdModulePlaybackComplete)
-      );
-      this._adModulePlaybackDestroyHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_PLAYBACK_DESTROY,
-        lang.hitch(this, this._onAdModulePlaybackDestroy)
-      );
-      this._adModulePlaybackErrorHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_PLAYBACK_ERROR,
-        lang.hitch(this, this._onAdModulePlaybackError)
-      );
-      this._adModuleQuartileHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_QUARTILE,
-        lang.hitch(this, this._onAdModuleQuartile)
-      );
-      this._adModuleCompanionsHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_COMPANIONS,
-        lang.hitch(this, this._onAdModuleCompanions)
-      );
-      this._adModuleClickTrackingHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_CLICK_TRACKING,
-        lang.hitch(this, this._onAdModuleClickTracking)
-      );
-      this._adModuleVastEmptyHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_VAST_EMPTY,
-        lang.hitch(this, this._onAdError)
-      );
-      this._adModuleVastErrorHandler = on(
-        this.target,
-        this.currentAdModule.AD_MODULE_VAST_ERROR,
-        lang.hitch(this, this._onAdError)
-      );
+      this._mediaAdReadyHandler = on(this.target, this.currentAdModule.AD_MODULE_MEDIA_READY, lang.hitch(this, this._onMediaAdReady));
+      this._mediaAdEmptyHandler = on(this.target, this.currentAdModule.AD_MODULE_MEDIA_EMPTY, lang.hitch(this, this._onMediaAdEmpty));
+      this._adCountdownHandler = on(this.target, this.currentAdModule.AD_MODULE_COUNTDOWN, lang.hitch(this, this._onAdModuleCountdown));
+      this._adModulePlaybackStartHandler = on(this.target, this.currentAdModule.AD_MODULE_PLAYBACK_START, lang.hitch(this, this._onAdModulePlaybackStart));
+      this._adModulePlaybackCompleteHandler = on(this.target, this.currentAdModule.AD_MODULE_PLAYBACK_COMPLETE, lang.hitch(this, this._onAdModulePlaybackComplete));
+      this._adModulePlaybackDestroyHandler = on(this.target, this.currentAdModule.AD_MODULE_PLAYBACK_DESTROY, lang.hitch(this, this._onAdModulePlaybackDestroy));
+      this._adModulePlaybackErrorHandler = on(this.target, this.currentAdModule.AD_MODULE_PLAYBACK_ERROR, lang.hitch(this, this._onAdModulePlaybackError));
+      this._adModuleQuartileHandler = on(this.target, this.currentAdModule.AD_MODULE_QUARTILE, lang.hitch(this, this._onAdModuleQuartile));
+      this._adModuleCompanionsHandler = on(this.target, this.currentAdModule.AD_MODULE_COMPANIONS, lang.hitch(this, this._onAdModuleCompanions));
+      this._adModuleClickTrackingHandler = on(this.target, this.currentAdModule.AD_MODULE_CLICK_TRACKING, lang.hitch(this, this._onAdModuleClickTracking));
+      this._adModuleVastEmptyHandler = on(this.target, this.currentAdModule.AD_MODULE_VAST_EMPTY, lang.hitch(this, this._onAdError));
+      this._adModuleVastErrorHandler = on(this.target, this.currentAdModule.AD_MODULE_VAST_ERROR, lang.hitch(this, this._onAdError));
 
       this.currentAdModule.init(adConfig);
 
@@ -353,28 +257,18 @@ define([
      * @param e | event
      */
     _onAdPlaybackStart: function (e) {
-      console.log("adManager::_onAdPlaybackStart");
+      console.log('adManager::_onAdPlaybackStart');
       //send analytics preroll success
       //stop timer
       var gaDimensions = {};
       gaDimensions[GAEventRequest.DIM_AD_SOURCE] = this._adSource;
       gaDimensions[GAEventRequest.DIM_AD_FORMAT] = this._adFormat;
-      gaDimensions[GAEventRequest.DIM_AD_PARSER] = this._adParser
-        ? this._adParser
-        : e.data && e.data.playerData && e.data.playerData.adParser
-        ? e.data.playerData.adParser
-        : "";
+      gaDimensions[GAEventRequest.DIM_AD_PARSER] = this._adParser ? this._adParser : e.data && e.data.playerData && e.data.playerData.adParser ? e.data.playerData.adParser : '';
 
       var gaMetrics = {};
       gaMetrics[GAEventRequest.METRIC_CONNECTION_TIME] = this._adPrerollTime;
 
-      GAEventRequest.requestGA(
-        GAEventRequest.CATEGORY_AD,
-        GAEventRequest.ACTION_PREROLL,
-        GAEventRequest.LABEL_SUCCESS,
-        gaDimensions,
-        gaMetrics
-      );
+      GAEventRequest.requestGA(GAEventRequest.CATEGORY_AD, GAEventRequest.ACTION_PREROLL, GAEventRequest.LABEL_SUCCESS, gaDimensions, gaMetrics);
 
       clearInterval(this._adPrerollTimeIntervall);
     },
@@ -383,28 +277,18 @@ define([
      * _onAdPlaybackError
      */
     _onAdPlaybackError: function (e) {
-      console.log("adManager::_onAdPlaybackStart");
+      console.log('adManager::_onAdPlaybackStart');
       //send analytics preroll success
       //stop timer
       var gaDimensions = {};
       gaDimensions[GAEventRequest.DIM_AD_SOURCE] = this._adSource;
       gaDimensions[GAEventRequest.DIM_AD_FORMAT] = this._adFormat;
-      gaDimensions[GAEventRequest.DIM_AD_PARSER] = this._adParser
-        ? this._adParser
-        : e.data && e.data.playerData && e.data.playerData.adParser
-        ? e.data.playerData.adParser
-        : "";
+      gaDimensions[GAEventRequest.DIM_AD_PARSER] = this._adParser ? this._adParser : e.data && e.data.playerData && e.data.playerData.adParser ? e.data.playerData.adParser : '';
 
       var gaMetrics = {};
       gaMetrics[GAEventRequest.METRIC_CONNECTION_TIME] = this._adPrerollTime;
 
-      GAEventRequest.requestGA(
-        GAEventRequest.CATEGORY_AD,
-        GAEventRequest.ACTION_PREROLL,
-        GAEventRequest.LABEL_ERROR,
-        gaDimensions,
-        gaMetrics
-      );
+      GAEventRequest.requestGA(GAEventRequest.CATEGORY_AD, GAEventRequest.ACTION_PREROLL, GAEventRequest.LABEL_ERROR, gaDimensions, gaMetrics);
 
       clearInterval(this._adPrerollTimeIntervall);
     },
@@ -415,7 +299,7 @@ define([
      * @private
      */
     _onAdModuleCompanions: function (e) {
-      console.log("adManager::_onAdModuleCompanions");
+      console.log('adManager::_onAdModuleCompanions');
 
       this.currentAdModule.emit(this.VAST_COMPANIONS_READY, e.data);
     },
@@ -426,7 +310,7 @@ define([
      * @private
      */
     _onAdModulePlaybackStart: function (e) {
-      console.log("adManager::_onAdModulePlaybackStart");
+      console.log('adManager::_onAdModulePlaybackStart');
 
       this._callImpressions();
 
@@ -439,12 +323,12 @@ define([
      * @private
      */
     _onAdModulePlaybackComplete: function (e) {
-      console.log("adManager::_onAdModulePlaybackComplete");
+      console.log('adManager::_onAdModulePlaybackComplete');
 
       this._removeListeners();
 
       this.currentAdModule.emit(this.AD_PLAYBACK_COMPLETE, {
-        type: e.data.type,
+        type: e.data.type
       });
     },
 
@@ -454,7 +338,7 @@ define([
      * @private
      */
     _onAdModulePlaybackDestroy: function (e) {
-      console.log("adManager::_onAdModulePlaybackDestroy");
+      console.log('adManager::_onAdModulePlaybackDestroy');
 
       this._removeListeners();
 
@@ -467,7 +351,7 @@ define([
      * @private
      */
     _onAdModulePlaybackError: function (e) {
-      console.log("adManager::_onAdModulePlaybackError");
+      console.log('adManager::_onAdModulePlaybackError');
 
       this._removeListeners();
 
@@ -480,11 +364,11 @@ define([
      * @private
      */
     _onAdModuleCountdown: function (e) {
-      console.log("adManager::_onAdModuleCountdown");
+      console.log('adManager::_onAdModuleCountdown');
       console.log(e);
 
       this.currentAdModule.emit(this.AD_COUNTDOWN, {
-        countDown: e.data.countDown,
+        countDown: e.data.countDown
       });
     },
 
@@ -494,17 +378,14 @@ define([
      * @private
      */
     _onAdModuleClickTracking: function (e) {
-      console.log("adManager::_onAdModuleClickTracking");
+      console.log('adManager::_onAdModuleClickTracking');
 
       if (e == null || e.data == undefined) return;
 
-      var clickThrough =
-        e.data.clickThrough != undefined ? e.data.clickThrough : null;
-      var clickTrackings =
-        e.data.clickTrackings != undefined ? e.data.clickTrackings : null;
+      var clickThrough = e.data.clickThrough != undefined ? e.data.clickThrough : null;
+      var clickTrackings = e.data.clickTrackings != undefined ? e.data.clickTrackings : null;
 
-      var pattern =
-        /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+      var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
       var isWebUrl = pattern.test(clickThrough);
 
       if (clickThrough != null && isWebUrl == true) window.open(clickThrough);
@@ -514,12 +395,12 @@ define([
 
         for (var i = 0; i < clickTrackingsLength; i++) {
           this.xhrProv.request(clickTrackings[i], null, {
-            method: "GET",
-            handleAs: "text",
+            method: 'GET',
+            handleAs: 'text',
             headers: {
-              "X-Requested-With": null,
-              "Content-Type": "text/plain; charset=utf-8",
-            },
+              'X-Requested-With': null,
+              'Content-Type': 'text/plain; charset=utf-8'
+            }
           });
         }
       }
@@ -531,12 +412,10 @@ define([
      * @private
      */
     _onAdModuleQuartile: function (e) {
-      console.log("adManager::_onAdModuleQuartile");
+      console.log('adManager::_onAdModuleQuartile');
 
       if (this.currentAdModule.getVastInlineAd()) {
-        var trackingEvents = this.currentAdModule
-          .getVastInlineAd()
-          .getLinearTrackingEvents(this.currentAdModule._defaultSequence);
+        var trackingEvents = this.currentAdModule.getVastInlineAd().getLinearTrackingEvents(this.currentAdModule._defaultSequence);
 
         var trackingEventsLength = trackingEvents.length;
         for (var i = 0; i < trackingEventsLength; i++) {
@@ -545,12 +424,12 @@ define([
             var urlsLength = urls.length;
             for (var j = 0; j < urlsLength; j++) {
               this.xhrProv.request(urls[j], null, {
-                method: "GET",
-                handleAs: "text",
+                method: 'GET',
+                handleAs: 'text',
                 headers: {
-                  "X-Requested-With": null,
-                  "Content-Type": "text/plain; charset=utf-8",
-                },
+                  'X-Requested-With': null,
+                  'Content-Type': 'text/plain; charset=utf-8'
+                }
               });
             }
           }
@@ -564,7 +443,7 @@ define([
      * @private
      */
     _onMediaAdReady: function (e) {
-      console.log("adManager::onMediaAdReady");
+      console.log('adManager::onMediaAdReady');
 
       var data = e.data;
 
@@ -576,11 +455,11 @@ define([
           mediaUrl: mediaFile.url,
           mediaFormat: mediaFile.format,
           clickThrough: data.clickThrough,
-          clickTrackings: data.clickTrackings,
+          clickTrackings: data.clickTrackings
         });
       } else {
         this.target.emit(this.AD_PLAYBACK_ERROR, {
-          data: { type: data.adServerType, error: false },
+          data: { type: data.adServerType, error: false }
         });
       }
     },
@@ -591,7 +470,7 @@ define([
      * @private
      */
     _onMediaAdEmpty: function (e) {
-      console.log("adManager::onMediaAdEmpty");
+      console.log('adManager::onMediaAdEmpty');
 
       var data = e.data;
 
@@ -599,7 +478,7 @@ define([
 
       this.currentAdModule.emit(this.AD_PLAYBACK_COMPLETE, {
         type: data.adServerType,
-        error: false,
+        error: false
       });
     },
 
@@ -609,7 +488,7 @@ define([
      * @private
      */
     _onAdError: function (e) {
-      console.log("adManager::onAdError");
+      console.log('adManager::onAdError');
 
       var data = e.data;
 
@@ -617,7 +496,7 @@ define([
 
       this.currentAdModule.emit(this.AD_PLAYBACK_ERROR, {
         type: data.adServerType,
-        error: false,
+        error: false
       });
     },
 
@@ -626,7 +505,7 @@ define([
      * @private
      */
     _removeListeners: function () {
-      console.log("adManager::_removeListeners");
+      console.log('adManager::_removeListeners');
 
       if (this._mediaAdReadyHandler) {
         this._mediaAdReadyHandler.remove();
@@ -679,7 +558,7 @@ define([
      * @private
      */
     _callImpressions: function () {
-      console.log("adManager::_callImpressions");
+      console.log('adManager::_callImpressions');
 
       if (this.currentAdModule.getVastInlineAd()) {
         var impressions = this.currentAdModule.getVastInlineAd().impressions;
@@ -693,12 +572,12 @@ define([
 
           for (var i = 0; i < impressionsLength; i++) {
             this.xhrProv.request(impressions[i], null, {
-              method: "GET",
-              handleAs: "text",
+              method: 'GET',
+              handleAs: 'text',
               headers: {
-                "X-Requested-With": null,
-                "Content-Type": "text/plain; charset=utf-8",
-              },
+                'X-Requested-With': null,
+                'Content-Type': 'text/plain; charset=utf-8'
+              }
             });
           }
         }
@@ -722,8 +601,7 @@ define([
       }
 
       for (var i = 0; i < adModulesLength; i++) {
-        if (this.adModules[i].moduleId == moduleId)
-          return this.adModules[i].module;
+        if (this.adModules[i].moduleId == moduleId) return this.adModules[i].module;
       }
 
       var newModule = new Module(this.target, this.config);
@@ -743,71 +621,34 @@ define([
       switch (data.adServerType) {
         case AdServerType.VAST_AD:
         case AdServerType.MEDIA_AD:
-          if (data.mediaFiles == null || data.mediaFiles.length == 0)
-            return null;
+          if (data.mediaFiles == null || data.mediaFiles.length == 0) return null;
 
           var mediaFiles = data.mediaFiles;
           var mediaFilesLength = mediaFiles.length;
 
           for (var i = 0; i < mediaFilesLength; i++) {
-            var j = this._isTypeSupported("video", "video/mp4;");
+            var j = this._isTypeSupported('video', 'video/mp4;');
 
-            if (
-              (mediaFiles[i].type == "audio/aac" ||
-                mediaFiles[i].url.split(".").pop() == "aac") &&
-              this._isTypeSupported("audio", "audio/aac;")
-            )
-              return { url: mediaFiles[i].url, format: "audio" };
+            if ((mediaFiles[i].type == 'audio/aac' || mediaFiles[i].url.split('.').pop() == 'aac') && this._isTypeSupported('audio', 'audio/aac;')) return { url: mediaFiles[i].url, format: 'audio' };
+            else if ((mediaFiles[i].type == 'audio/mp4' || mediaFiles[i].url.split('.').pop() == 'm4a') && this._isTypeSupported('audio', 'audio/mp4;'))
+              return { url: mediaFiles[i].url, format: 'audio' };
+            else if ((mediaFiles[i].type == 'audio/mpeg' || mediaFiles[i].url.split('.').pop() == 'mp3') && this._isTypeSupported('audio', 'audio/mpeg;'))
+              return { url: mediaFiles[i].url, format: 'audio' };
+            else if ((mediaFiles[i].type == 'audio/wav' || mediaFiles[i].url.split('.').pop() == 'wav') && this._isTypeSupported('audio', 'audio/wav;'))
+              return { url: mediaFiles[i].url, format: 'audio' };
+            else if ((mediaFiles[i].type == 'audio/ogg' || mediaFiles[i].url.split('.').pop() == 'oga' || mediaFiles[i].url.split('.').pop() == 'ogg') && this._isTypeSupported('audio', 'audio/ogg;'))
+              return { url: mediaFiles[i].url, format: 'audio' };
+            else if (mediaFiles[i].type == 'audio/webm' && this._isTypeSupported('audio', 'audio/webm;')) return { url: mediaFiles[i].url, format: 'audio' };
             else if (
-              (mediaFiles[i].type == "audio/mp4" ||
-                mediaFiles[i].url.split(".").pop() == "m4a") &&
-              this._isTypeSupported("audio", "audio/mp4;")
-            )
-              return { url: mediaFiles[i].url, format: "audio" };
-            else if (
-              (mediaFiles[i].type == "audio/mpeg" ||
-                mediaFiles[i].url.split(".").pop() == "mp3") &&
-              this._isTypeSupported("audio", "audio/mpeg;")
-            )
-              return { url: mediaFiles[i].url, format: "audio" };
-            else if (
-              (mediaFiles[i].type == "audio/wav" ||
-                mediaFiles[i].url.split(".").pop() == "wav") &&
-              this._isTypeSupported("audio", "audio/wav;")
-            )
-              return { url: mediaFiles[i].url, format: "audio" };
-            else if (
-              (mediaFiles[i].type == "audio/ogg" ||
-                mediaFiles[i].url.split(".").pop() == "oga" ||
-                mediaFiles[i].url.split(".").pop() == "ogg") &&
-              this._isTypeSupported("audio", "audio/ogg;")
-            )
-              return { url: mediaFiles[i].url, format: "audio" };
-            else if (
-              mediaFiles[i].type == "audio/webm" &&
-              this._isTypeSupported("audio", "audio/webm;")
-            )
-              return { url: mediaFiles[i].url, format: "audio" };
-            else if (
-              (mediaFiles[i].type == "video/mp4" ||
-                mediaFiles[i].url.split(".").pop() == "mp4" ||
-                mediaFiles[i].url.split(".").pop() == "m4v") &&
-              this._isTypeSupported("video", "video/mp4;")
+              (mediaFiles[i].type == 'video/mp4' || mediaFiles[i].url.split('.').pop() == 'mp4' || mediaFiles[i].url.split('.').pop() == 'm4v') &&
+              this._isTypeSupported('video', 'video/mp4;')
             ) {
-              console.log({ url: mediaFiles[i].url, format: "video" });
-              return { url: mediaFiles[i].url, format: "video" };
-            } else if (
-              (mediaFiles[i].type == "video/ogg" ||
-                mediaFiles[i].url.split(".").pop() == "ogv") &&
-              this._isTypeSupported("video", "video/ogg;")
-            )
-              return { url: mediaFiles[i].url, format: "video" };
-            else if (
-              (mediaFiles[i].type == "video/webm" ||
-                mediaFiles[i].url.split(".").pop() == "webm") &&
-              this._isTypeSupported("video", "video/webm;")
-            )
-              return { url: mediaFiles[i].url, format: "video" };
+              console.log({ url: mediaFiles[i].url, format: 'video' });
+              return { url: mediaFiles[i].url, format: 'video' };
+            } else if ((mediaFiles[i].type == 'video/ogg' || mediaFiles[i].url.split('.').pop() == 'ogv') && this._isTypeSupported('video', 'video/ogg;'))
+              return { url: mediaFiles[i].url, format: 'video' };
+            else if ((mediaFiles[i].type == 'video/webm' || mediaFiles[i].url.split('.').pop() == 'webm') && this._isTypeSupported('video', 'video/webm;'))
+              return { url: mediaFiles[i].url, format: 'video' };
           }
           return null;
           break;
@@ -826,10 +667,8 @@ define([
      */
     _isTypeSupported: function (format, mimetype) {
       //var html5CheckerNode = domConstruct.create( format , { id: 'testAdHtml5Node' }, this.playerNode, 'first' );
-      var html5CheckerNode = dom.byId("tdplayer_od_videonode", document);
-      return (
-        !!html5CheckerNode.canPlayType && html5CheckerNode.canPlayType(mimetype)
-      );
+      var html5CheckerNode = dom.byId('tdplayer_od_videonode', document);
+      return !!html5CheckerNode.canPlayType && html5CheckerNode.canPlayType(mimetype);
     },
 
     /**
@@ -854,19 +693,15 @@ define([
      */
     _generateUrl: function (adConfig) {
       if (adConfig != undefined && adConfig.url != undefined) {
-        if (
-          adConfig.url.indexOf("/ondemand/ars") > -1 &&
-          adConfig.trackingParameters != undefined
-        ) {
+        if (adConfig.url.indexOf('/ondemand/ars') > -1 && adConfig.trackingParameters != undefined) {
           var delimiter;
 
           /**
            * Add tdsdk
            */
           if (adConfig.trackingParameters.tdsdk != undefined) {
-            delimiter = adConfig.url.indexOf("?") > -1 ? "&" : "?";
-            adConfig.url +=
-              delimiter + "tdsdk=" + adConfig.trackingParameters.tdsdk;
+            delimiter = adConfig.url.indexOf('?') > -1 ? '&' : '?';
+            adConfig.url += delimiter + 'tdsdk=' + adConfig.trackingParameters.tdsdk;
           }
 
           /**
@@ -878,48 +713,39 @@ define([
             adConfig.trackingParameters.position.coords != undefined &&
             adConfig.trackingParameters.position.coords.longitude != undefined
           ) {
-            delimiter = adConfig.url.indexOf("?") > -1 ? "&" : "?";
+            delimiter = adConfig.url.indexOf('?') > -1 ? '&' : '?';
             adConfig.url +=
               delimiter +
-              "lat=" +
-              parseFloat(
-                adConfig.trackingParameters.position.coords.latitude.toFixed(1)
-              ) +
-              "&long=" +
-              parseFloat(
-                adConfig.trackingParameters.position.coords.longitude.toFixed(1)
-              );
+              'lat=' +
+              parseFloat(adConfig.trackingParameters.position.coords.latitude.toFixed(1)) +
+              '&long=' +
+              parseFloat(adConfig.trackingParameters.position.coords.longitude.toFixed(1));
           }
 
           /**
            * Add banners query parameters to URL
            */
           if (adConfig.trackingParameters.banners != undefined) {
-            delimiter = adConfig.url.indexOf("?") > -1 ? "&" : "?";
-            adConfig.url +=
-              delimiter + "banners=" + adConfig.trackingParameters.banners;
+            delimiter = adConfig.url.indexOf('?') > -1 ? '&' : '?';
+            adConfig.url += delimiter + 'banners=' + adConfig.trackingParameters.banners;
           }
 
           //add custom trackingParameters
           var cloneTrackingParams = lang.clone(adConfig.trackingParameters);
           //removes non custom trackingParameters
-          delete cloneTrackingParams["tdsdk"];
-          delete cloneTrackingParams["position"];
-          delete cloneTrackingParams["banners"];
-          delete cloneTrackingParams["pname"];
-          delete cloneTrackingParams["pversion"];
+          delete cloneTrackingParams['tdsdk'];
+          delete cloneTrackingParams['position'];
+          delete cloneTrackingParams['banners'];
+          delete cloneTrackingParams['pname'];
+          delete cloneTrackingParams['pversion'];
 
           for (var key in cloneTrackingParams) {
-            delimiter = adConfig.url.indexOf("?") > -1 ? "&" : "?";
-            adConfig.url +=
-              delimiter +
-              key +
-              "=" +
-              encodeURIComponent(cloneTrackingParams[key]);
+            delimiter = adConfig.url.indexOf('?') > -1 ? '&' : '?';
+            adConfig.url += delimiter + key + '=' + encodeURIComponent(cloneTrackingParams[key]);
           }
 
           // Add streaming guide implementation version
-          adConfig.url += delimiter + "version=" + this.STREAMING_GUIDE_VERSION;
+          adConfig.url += delimiter + 'version=' + this.STREAMING_GUIDE_VERSION;
 
           return adConfig.url;
         } else {
@@ -928,7 +754,7 @@ define([
       } else {
         return undefined;
       }
-    },
+    }
   });
 
   return adManager;

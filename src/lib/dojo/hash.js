@@ -1,13 +1,4 @@
-define([
-  "./_base/kernel",
-  "require",
-  "./_base/config",
-  "./aspect",
-  "./_base/lang",
-  "./topic",
-  "./domReady",
-  "./sniff",
-], function (dojo, require, config, aspect, lang, topic, domReady, has) {
+define(['./_base/kernel', 'require', './_base/config', './aspect', './_base/lang', './topic', './domReady', './sniff'], function (dojo, require, config, aspect, lang, topic, domReady, has) {
   // module:
   //		dojo/hash
 
@@ -39,13 +30,13 @@ define([
       return _getHash();
     }
     // setter
-    if (hash.charAt(0) == "#") {
+    if (hash.charAt(0) == '#') {
       hash = hash.substring(1);
     }
     if (replace) {
       _replace(hash);
     } else {
-      location.href = "#" + hash;
+      location.href = '#' + hash;
     }
     return hash; // String
   };
@@ -59,15 +50,15 @@ define([
   //Internal functions
   function _getSegment(str, delimiter) {
     var i = str.indexOf(delimiter);
-    return i >= 0 ? str.substring(i + 1) : "";
+    return i >= 0 ? str.substring(i + 1) : '';
   }
 
   function _getHash() {
-    return _getSegment(location.href, "#");
+    return _getSegment(location.href, '#');
   }
 
   function _dispatchEvent() {
-    topic.publish("/dojo/hashchange", _getHash());
+    topic.publish('/dojo/hashchange', _getHash());
   }
 
   function _pollLocation() {
@@ -85,14 +76,12 @@ define([
         return;
       }
       var href = _ieUriMonitor.iframe.location.href;
-      var index = href.indexOf("?");
+      var index = href.indexOf('?');
       // main frame will detect and update itself
-      _ieUriMonitor.iframe.location.replace(
-        href.substring(0, index) + "?" + hash
-      );
+      _ieUriMonitor.iframe.location.replace(href.substring(0, index) + '?' + hash);
       return;
     }
-    location.replace("#" + hash);
+    location.replace('#' + hash);
     !_connect && _pollLocation();
   }
 
@@ -163,22 +152,19 @@ define([
     //		The hashchange event is always dispatched on the transition back to s1.
 
     // create and append iframe
-    var ifr = document.createElement("iframe"),
-      IFRAME_ID = "dojo-hash-iframe",
-      ifrSrc =
-        config.dojoBlankHtmlUrl || require.toUrl("./resources/blank.html");
+    var ifr = document.createElement('iframe'),
+      IFRAME_ID = 'dojo-hash-iframe',
+      ifrSrc = config.dojoBlankHtmlUrl || require.toUrl('./resources/blank.html');
 
     if (config.useXDomain && !config.dojoBlankHtmlUrl) {
       console.warn(
-        "dojo.hash: When using cross-domain Dojo builds," +
-          " please save dojo/resources/blank.html to your domain and set djConfig.dojoBlankHtmlUrl" +
-          " to the path on your domain to blank.html"
+        'dojo.hash: When using cross-domain Dojo builds,' + ' please save dojo/resources/blank.html to your domain and set djConfig.dojoBlankHtmlUrl' + ' to the path on your domain to blank.html'
       );
     }
 
     ifr.id = IFRAME_ID;
-    ifr.src = ifrSrc + "?" + _getHash();
-    ifr.style.display = "none";
+    ifr.src = ifrSrc + '?' + _getHash();
+    ifr.style.display = 'none';
     document.body.appendChild(ifr);
 
     this.iframe = dojo.global[IFRAME_ID];
@@ -191,9 +177,7 @@ define([
 
     function resetState() {
       _recentHash = _getHash();
-      recentIframeQuery = ifrOffline
-        ? _recentHash
-        : _getSegment(iframeLoc.href, "?");
+      recentIframeQuery = ifrOffline ? _recentHash : _getSegment(iframeLoc.href, '?');
       transitioning = false;
       expectedIFrameQuery = null;
     }
@@ -206,7 +190,7 @@ define([
       if (!ifrOffline) {
         try {
           //see if we can access the iframe's location without a permission denied error
-          var iframeSearch = _getSegment(iframeLoc.href, "?");
+          var iframeSearch = _getSegment(iframeLoc.href, '?');
           //good, the iframe is same origin (no thrown exception)
           if (document.title != docTitle) {
             //sync title of main window with title of iframe.
@@ -215,9 +199,7 @@ define([
         } catch (e) {
           //permission denied - server cannot be reached.
           ifrOffline = true;
-          console.error(
-            "dojo.hash: Error adding history entry. Server unreachable."
-          );
+          console.error('dojo.hash: Error adding history entry. Server unreachable.');
         }
       }
       var hash = _getHash();
@@ -232,10 +214,7 @@ define([
           setTimeout(lang.hitch(this, this.pollLocation), 0);
           return;
         }
-      } else if (
-        _recentHash === hash &&
-        (ifrOffline || recentIframeQuery === iframeSearch)
-      ) {
+      } else if (_recentHash === hash && (ifrOffline || recentIframeQuery === iframeSearch)) {
         // we're in stable state (s1, iframe query == main window hash), do nothing
       } else {
         // the user has initiated a URL change somehow.
@@ -245,13 +224,13 @@ define([
           _recentHash = hash;
           transitioning = true;
           expectedIFrameQuery = hash;
-          ifr.src = ifrSrc + "?" + expectedIFrameQuery;
+          ifr.src = ifrSrc + '?' + expectedIFrameQuery;
           ifrOffline = false; //we're updating the iframe src - set offline to false so we can check again on next poll.
           setTimeout(lang.hitch(this, this.pollLocation), 0); //yielded transition to s4 while iframe reloads.
           return;
         } else if (!ifrOffline) {
           // s3 (iframe location changed via back/forward button), set main window url and transition to s1.
-          location.href = "#" + iframeLoc.search.substring(1);
+          location.href = '#' + iframeLoc.search.substring(1);
           resetState();
           _dispatchEvent();
         }
@@ -262,17 +241,9 @@ define([
     setTimeout(lang.hitch(this, this.pollLocation), _pollFrequency);
   }
   domReady(function () {
-    if (
-      "onhashchange" in dojo.global &&
-      (!has("ie") || (has("ie") >= 8 && document.compatMode != "BackCompat"))
-    ) {
+    if ('onhashchange' in dojo.global && (!has('ie') || (has('ie') >= 8 && document.compatMode != 'BackCompat'))) {
       //need this IE browser test because "onhashchange" exists in IE8 in IE7 mode
-      _connect = aspect.after(
-        dojo.global,
-        "onhashchange",
-        _dispatchEvent,
-        true
-      );
+      _connect = aspect.after(dojo.global, 'onhashchange', _dispatchEvent, true);
     } else {
       if (document.addEventListener) {
         // Non-IE

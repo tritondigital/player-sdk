@@ -1,8 +1,8 @@
-define(["../../_base/declare", "./Read"], function (declare, Read) {
+define(['../../_base/declare', './Read'], function (declare, Read) {
   // module:
   //		dojo/data/api/Notification
 
-  return declare("dojo.data.api.Notification", Read, {
+  return declare('dojo.data.api.Notification', Read, {
     // summary:
     //		This is an abstract API that data provider implementations conform to.
     //		This file defines functions signatures and intentionally leaves all the
@@ -28,17 +28,12 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // summary:
       //		See dojo/data/api/Read.getFeatures()
       return {
-        "dojo.data.api.Read": true,
-        "dojo.data.api.Notification": true,
+        'dojo.data.api.Read': true,
+        'dojo.data.api.Notification': true
       };
     },
 
-    onSet: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* object|array */ oldValue,
-      /* object|array */ newValue
-    ) {
+    onSet: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* object|array */ oldValue, /* object|array */ newValue) {
       // summary:
       //		This function is called any time an item is modified via setValue, setValues, unsetAttribute, etc.
       // description:
@@ -60,7 +55,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       //		it will be an array.  In the case of unsetAttribute, the new value will be 'undefined'.
       // returns:
       //		Nothing.
-      throw new Error("Unimplemented API: dojo.data.api.Notification.onSet");
+      throw new Error('Unimplemented API: dojo.data.api.Notification.onSet');
     },
 
     onNew: function (/* dojo/data/api/Item */ newItem, /*object?*/ parentInfo) {
@@ -90,7 +85,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // |	}
       // returns:
       //		Nothing.
-      throw new Error("Unimplemented API: dojo.data.api.Notification.onNew");
+      throw new Error('Unimplemented API: dojo.data.api.Notification.onNew');
     },
 
     onDelete: function (/* dojo/data/api/Item */ deletedItem) {
@@ -104,7 +99,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       //		The item deleted.
       // returns:
       //		Nothing.
-      throw new Error("Unimplemented API: dojo.data.api.Notification.onDelete");
-    },
+      throw new Error('Unimplemented API: dojo.data.api.Notification.onDelete');
+    }
   });
 });

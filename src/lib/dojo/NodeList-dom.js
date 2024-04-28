@@ -1,14 +1,4 @@
-define([
-  "./_base/kernel",
-  "./query",
-  "./_base/array",
-  "./_base/lang",
-  "./dom-class",
-  "./dom-construct",
-  "./dom-geometry",
-  "./dom-attr",
-  "./dom-style",
-], function (
+define(['./_base/kernel', './query', './_base/array', './_base/lang', './dom-class', './dom-construct', './dom-geometry', './dom-attr', './dom-style'], function (
   dojo,
   query,
   array,
@@ -32,7 +22,7 @@ define([
   var magicGuard = function (a) {
     // summary:
     //		the guard function for dojo.attr() and dojo.style()
-    return a.length == 1 && typeof a[0] == "string"; // inline'd type check
+    return a.length == 1 && typeof a[0] == 'string'; // inline'd type check
   };
 
   var orphan = function (node) {
@@ -53,7 +43,7 @@ define([
   function getSet(module) {
     return function (node, name, value) {
       if (arguments.length == 2) {
-        return module[typeof name == "string" ? "get" : "set"](node, name);
+        return module[typeof name == 'string' ? 'get' : 'set'](node, name);
       }
       // setter
       return module.set(node, name, value);
@@ -61,10 +51,7 @@ define([
   }
 
   lang.extend(NodeList, {
-    _normalize: function (
-      /*String||Element||Object||NodeList*/ content,
-      /*DOMNode?*/ refNode
-    ) {
+    _normalize: function (/*String||Element||Object||NodeList*/ content, /*DOMNode?*/ refNode) {
       // summary:
       //		normalizes data to an array of items to insert.
       // description:
@@ -86,16 +73,13 @@ define([
       var parse = content.parse === true;
 
       //Do we have an object that needs to be run through a template?
-      if (typeof content.template == "string") {
-        var templateFunc =
-          content.templateFunc || (dojo.string && dojo.string.substitute);
-        content = templateFunc
-          ? templateFunc(content.template, content)
-          : content;
+      if (typeof content.template == 'string') {
+        var templateFunc = content.templateFunc || (dojo.string && dojo.string.substitute);
+        content = templateFunc ? templateFunc(content.template, content) : content;
       }
 
       var type = typeof content;
-      if (type == "string" || type == "number") {
+      if (type == 'string' || type == 'number') {
         content = domCtr.toDom(content, refNode && refNode.ownerDocument);
         if (content.nodeType == 11) {
           //DocumentFragment. It cannot handle cloneNode calls, so pull out the children.
@@ -126,12 +110,7 @@ define([
       return node.cloneNode(true);
     },
 
-    _place: function (
-      /*Array*/ ary,
-      /*DOMNode*/ refNode,
-      /*String*/ position,
-      /*Boolean*/ useClone
-    ) {
+    _place: function (/*Array*/ ary, /*DOMNode*/ refNode, /*String*/ position, /*Boolean*/ useClone) {
       // summary:
       //		private utility to handle placing an array of nodes relative to another node.
       // description:
@@ -139,7 +118,7 @@ define([
       //		optionally parsing widgets, if ary._runParse is true.
 
       //Avoid a disallowed operation if trying to do an innerHTML on a non-element node.
-      if (refNode.nodeType != 1 && position == "only") {
+      if (refNode.nodeType != 1 && position == 'only') {
         return;
       }
       var rNode = refNode,
@@ -156,7 +135,7 @@ define([
         //which could cause some already parsed widgets to be parsed again.
         if (ary._runParse && dojo.parser && dojo.parser.parse) {
           if (!tempNode) {
-            tempNode = rNode.ownerDocument.createElement("div");
+            tempNode = rNode.ownerDocument.createElement('div');
           }
           tempNode.appendChild(node);
           dojo.parser.parse(tempNode);
@@ -365,15 +344,10 @@ define([
       //		CSS selector like ".foo" or "div > span"
       // returns:
       //		NodeList containing the orphaned elements
-      return (filter ? query._filterResult(this, filter) : this).forEach(
-        orphan
-      ); // dojo/NodeList
+      return (filter ? query._filterResult(this, filter) : this).forEach(orphan); // dojo/NodeList
     },
 
-    adopt: function (
-      /*String||Array||DomNode*/ queryOrListOrNode,
-      /*String?*/ position
-    ) {
+    adopt: function (/*String||Array||DomNode*/ queryOrListOrNode, /*String?*/ position) {
       // summary:
       //		places any/all elements in queryOrListOrNode at a
       //		position relative to the first element in this list.
@@ -455,7 +429,7 @@ define([
       var a = arguments,
         items = this,
         start = 0;
-      if (typeof filter == "string") {
+      if (typeof filter == 'string') {
         // inline'd type check
         items = query._filterResult(this, a[0]);
         if (a.length == 1) {
@@ -477,10 +451,7 @@ define([
 		},
 		*/
 
-    addContent: function (
-      /*String||DomNode||Object||dojo/NodeList*/ content,
-      /*String||Integer?*/ position
-    ) {
+    addContent: function (/*String||DomNode||Object||dojo/NodeList*/ content, /*String||Integer?*/ position) {
       // summary:
       //		add a node, NodeList or some HTML as a string to every item in the
       //		list.  Returns the original list.
@@ -552,7 +523,7 @@ define([
         }
       }
       return this; // dojo/NodeList
-    },
+    }
   });
 
   return NodeList;

@@ -1,9 +1,4 @@
-define([
-  "./_base/kernel",
-  "./_base/lang",
-  "./_base/Color",
-  "./_base/array",
-], function (dojo, lang, Color, ArrayUtil) {
+define(['./_base/kernel', './_base/lang', './_base/Color', './_base/array'], function (dojo, lang, Color, ArrayUtil) {
   // module:
   //		dojo/colors
 
@@ -15,7 +10,7 @@ define([
 	=====*/
 
   var ColorExt = {};
-  lang.setObject("dojo.colors", ColorExt);
+  lang.setObject('dojo.colors', ColorExt);
 
   //TODO: this module appears to break naming conventions
 
@@ -40,10 +35,7 @@ define([
     return m1;
   };
   // Override base Color.fromRgb with the impl in this module
-  dojo.colorFromRgb = Color.fromRgb = function (
-    /*String*/ color,
-    /*dojo/_base/Color?*/ obj
-  ) {
+  dojo.colorFromRgb = Color.fromRgb = function (/*String*/ color, /*dojo/_base/Color?*/ obj) {
     // summary:
     //		get rgb(a) array from css-style color declarations
     // description:
@@ -55,9 +47,9 @@ define([
         l = c.length,
         t = m[1],
         a;
-      if ((t == "rgb" && l == 3) || (t == "rgba" && l == 4)) {
+      if ((t == 'rgb' && l == 3) || (t == 'rgba' && l == 4)) {
         var r = c[0];
-        if (r.charAt(r.length - 1) == "%") {
+        if (r.charAt(r.length - 1) == '%') {
           // 3 rgb percentage values
           a = ArrayUtil.map(c, function (x) {
             return parseFloat(x) * 2.56;
@@ -69,7 +61,7 @@ define([
         }
         return Color.fromArray(c, obj); // dojo/_base/Color
       }
-      if ((t == "hsl" && l == 3) || (t == "hsla" && l == 4)) {
+      if ((t == 'hsl' && l == 3) || (t == 'hsla' && l == 4)) {
         // normalize hsl values
         var H = (((parseFloat(c[0]) % 360) + 360) % 360) / 360,
           S = parseFloat(c[1]) / 100,
@@ -78,12 +70,7 @@ define([
           // recommended by the CSS3 Color Module
           m2 = L <= 0.5 ? L * (S + 1) : L + S - L * S,
           m1 = 2 * L - m2;
-        a = [
-          hue2rgb(m1, m2, H + 1 / 3) * 256,
-          hue2rgb(m1, m2, H) * 256,
-          hue2rgb(m1, m2, H - 1 / 3) * 256,
-          1,
-        ];
+        a = [hue2rgb(m1, m2, H + 1 / 3) * 256, hue2rgb(m1, m2, H) * 256, hue2rgb(m1, m2, H - 1 / 3) * 256, 1];
         if (l == 4) {
           a[3] = c[3];
         }
@@ -250,7 +237,7 @@ define([
     violet: [238, 130, 238],
     wheat: [245, 222, 179],
     whitesmoke: [245, 245, 245],
-    yellowgreen: [154, 205, 50],
+    yellowgreen: [154, 205, 50]
   });
 
   return Color; // TODO: return ColorExt, not Color

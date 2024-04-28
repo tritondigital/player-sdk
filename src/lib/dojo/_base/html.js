@@ -1,13 +1,4 @@
-define([
-  "./kernel",
-  "../dom",
-  "../dom-style",
-  "../dom-attr",
-  "../dom-prop",
-  "../dom-class",
-  "../dom-construct",
-  "../dom-geometry",
-], function (dojo, dom, style, attr, prop, cls, ctr, geom) {
+define(['./kernel', '../dom', '../dom-style', '../dom-attr', '../dom-prop', '../dom-class', '../dom-construct', '../dom-geometry'], function (dojo, dom, style, attr, prop, cls, ctr, geom) {
   // module:
   //		dojo/dom
 
@@ -112,7 +103,7 @@ define([
     //	|	dojo.style("someNode", obj);
 
     if (arguments.length == 2) {
-      return attr[typeof name == "string" ? "get" : "set"](node, name);
+      return attr[typeof name == 'string' ? 'get' : 'set'](node, name);
     }
     return attr.set(node, name, value);
   };
@@ -138,8 +129,7 @@ define([
   // mix-in dom-geometry
   dojo._getPadExtents = dojo.getPadExtents = geom.getPadExtents;
   dojo._getBorderExtents = dojo.getBorderExtents = geom.getBorderExtents;
-  dojo._getPadBorderExtents = dojo.getPadBorderExtents =
-    geom.getPadBorderExtents;
+  dojo._getPadBorderExtents = dojo.getPadBorderExtents = geom.getPadBorderExtents;
   dojo._getMarginExtents = dojo.getMarginExtents = geom.getMarginExtents;
   dojo._getMarginSize = dojo.getMarginSize = geom.getMarginSize;
   dojo._getMarginBox = dojo.getMarginBox = geom.getMarginBox;
@@ -148,16 +138,11 @@ define([
   dojo.setContentSize = geom.setContentSize;
   dojo._isBodyLtr = dojo.isBodyLtr = geom.isBodyLtr;
   dojo._docScroll = dojo.docScroll = geom.docScroll;
-  dojo._getIeDocumentElementOffset = dojo.getIeDocumentElementOffset =
-    geom.getIeDocumentElementOffset;
-  dojo._fixIeBiDiScrollLeft = dojo.fixIeBiDiScrollLeft =
-    geom.fixIeBiDiScrollLeft;
+  dojo._getIeDocumentElementOffset = dojo.getIeDocumentElementOffset = geom.getIeDocumentElementOffset;
+  dojo._fixIeBiDiScrollLeft = dojo.fixIeBiDiScrollLeft = geom.fixIeBiDiScrollLeft;
   dojo.position = geom.position;
 
-  dojo.marginBox = function marginBox(
-    /*DomNode|String*/ node,
-    /*Object?*/ box
-  ) {
+  dojo.marginBox = function marginBox(/*DomNode|String*/ node, /*Object?*/ box) {
     // summary:
     //		Getter/setter for the margin-box of node.
     // description:
@@ -186,10 +171,7 @@ define([
     return box ? geom.setMarginBox(node, box) : geom.getMarginBox(node); // Object
   };
 
-  dojo.contentBox = function contentBox(
-    /*DomNode|String*/ node,
-    /*Object?*/ box
-  ) {
+  dojo.contentBox = function contentBox(/*DomNode|String*/ node, /*Object?*/ box) {
     // summary:
     //		Getter/setter for the content-box of node.
     // description:
@@ -226,10 +208,7 @@ define([
     //|			{ l: 50, t: 200, w: 300: h: 150, x: 100, y: 300 }
     //		Does not act as a setter. If includeScroll is passed, the x and
     //		y params are affected as one would expect in dojo.position().
-    dojo.deprecated(
-      "dojo.coords()",
-      "Use dojo.position() or dojo.marginBox()."
-    );
+    dojo.deprecated('dojo.coords()', 'Use dojo.position() or dojo.marginBox().');
     node = dom.byId(node);
     var s = style.getComputedStyle(node),
       mb = geom.getMarginBox(node, s);
@@ -243,11 +222,7 @@ define([
   dojo.getProp = prop.get;
   dojo.setProp = prop.set;
 
-  dojo.prop = function (
-    /*DomNode|String*/ node,
-    /*String|Object*/ name,
-    /*String?*/ value
-  ) {
+  dojo.prop = function (/*DomNode|String*/ node, /*String|Object*/ name, /*String?*/ value) {
     // summary:
     //		Gets or sets a property on an HTML element.
     // description:
@@ -329,7 +304,7 @@ define([
     //	|	dojo.style("someNode", obj);
 
     if (arguments.length == 2) {
-      return prop[typeof name == "string" ? "get" : "set"](node, name);
+      return prop[typeof name == 'string' ? 'get' : 'set'](node, name);
     }
     // setter
     return prop.set(node, name, value);
@@ -412,7 +387,7 @@ define([
       case 1:
         return style.get(node);
       case 2:
-        return style[typeof name == "string" ? "get" : "set"](node, name);
+        return style[typeof name == 'string' ? 'get' : 'set'](node, name);
     }
     // setter
     return style.set(node, name, value);

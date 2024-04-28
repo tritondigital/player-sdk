@@ -1,13 +1,8 @@
-define([
-  "./_base/declare",
-  "./_base/lang",
-  "./_base/array",
-  "./when",
-], function (declare, lang, array, when) {
+define(['./_base/declare', './_base/lang', './_base/array', './when'], function (declare, lang, array, when) {
   // module:
   //		dojo/Stateful
 
-  return declare("dojo.Stateful", null, {
+  return declare('dojo.Stateful', null, {
     // summary:
     //		Base class for objects that provide named properties with optional getter/setter
     //		control and the ability to watch for property changes
@@ -43,8 +38,8 @@ define([
         return apn[name];
       }
       return (apn[name] = {
-        s: "_" + name + "Setter",
-        g: "_" + name + "Getter",
+        s: '_' + name + 'Setter',
+        g: '_' + name + 'Getter'
       });
     },
 
@@ -60,7 +55,7 @@ define([
       //		Private function that does a get based off a hash of names
       // names:
       //		Hash of names of custom attributes
-      return typeof this[names.g] === "function" ? this[names.g]() : this[name];
+      return typeof this[names.g] === 'function' ? this[names.g]() : this[name];
     },
     get: function (/*String*/ name) {
       // summary:
@@ -107,9 +102,9 @@ define([
       //	This is equivalent to calling set(foo, "Howdy") and set(bar, 3)
 
       // If an object is used, iterate through object
-      if (typeof name === "object") {
+      if (typeof name === 'object') {
         for (var x in name) {
-          if (name.hasOwnProperty(x) && x != "_watchCallbacks") {
+          if (name.hasOwnProperty(x) && x != '_watchCallbacks') {
             this.set(x, name[x]);
           }
         }
@@ -120,7 +115,7 @@ define([
         oldValue = this._get(name, names),
         setter = this[names.s],
         result;
-      if (typeof setter === "function") {
+      if (typeof setter === 'function') {
         // use the explicit setter
         result = setter.apply(this, Array.prototype.slice.call(arguments, 1));
       } else {
@@ -178,12 +173,7 @@ define([
       var callbacks = this._watchCallbacks;
       if (!callbacks) {
         var self = this;
-        callbacks = this._watchCallbacks = function (
-          name,
-          oldValue,
-          value,
-          ignoreCatchall
-        ) {
+        callbacks = this._watchCallbacks = function (name, oldValue, value, ignoreCatchall) {
           var notify = function (propertyCallbacks) {
             if (propertyCallbacks) {
               propertyCallbacks = propertyCallbacks.slice();
@@ -192,21 +182,21 @@ define([
               }
             }
           };
-          notify(callbacks["_" + name]);
+          notify(callbacks['_' + name]);
           if (!ignoreCatchall) {
-            notify(callbacks["*"]); // the catch-all
+            notify(callbacks['*']); // the catch-all
           }
         }; // we use a function instead of an object so it will be ignored by JSON conversion
       }
-      if (!callback && typeof name === "function") {
+      if (!callback && typeof name === 'function') {
         callback = name;
-        name = "*";
+        name = '*';
       } else {
         // prepend with dash to prevent name conflicts with function (like "name" property)
-        name = "_" + name;
+        name = '_' + name;
       }
       var propertyCallbacks = callbacks[name];
-      if (typeof propertyCallbacks !== "object") {
+      if (typeof propertyCallbacks !== 'object') {
         propertyCallbacks = callbacks[name] = [];
       }
       propertyCallbacks.push(callback);
@@ -220,6 +210,6 @@ define([
         }
       };
       return handle; //Object
-    },
+    }
   });
 });

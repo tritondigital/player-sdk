@@ -5,11 +5,7 @@
     {
       "name": "Africa",
       "type": "continent",
-      "children": [
-        { "_reference": "Egypt" },
-        { "_reference": "Kenya" },
-        { "_reference": "Sudan" }
-      ]
+      "children": [{ "_reference": "Egypt" }, { "_reference": "Kenya" }, { "_reference": "Sudan" }]
     },
     { "name": "Egypt", "type": "country" },
     {
@@ -28,12 +24,7 @@
     {
       "name": "Asia",
       "type": "continent",
-      "children": [
-        { "_reference": "China" },
-        { "_reference": "India" },
-        { "_reference": "Russia" },
-        { "_reference": "Mongolia" }
-      ]
+      "children": [{ "_reference": "China" }, { "_reference": "India" }, { "_reference": "Russia" }, { "_reference": "Mongolia" }]
     },
     { "name": "China", "type": "country" },
     { "name": "India", "type": "country" },
@@ -53,12 +44,7 @@
     {
       "name": "Europe",
       "type": "continent",
-      "children": [
-        { "_reference": "Germany" },
-        { "_reference": "France" },
-        { "_reference": "Spain" },
-        { "_reference": "Italy" }
-      ]
+      "children": [{ "_reference": "Germany" }, { "_reference": "France" }, { "_reference": "Spain" }, { "_reference": "Italy" }]
     },
     { "name": "Germany", "type": "country" },
     { "name": "France", "type": "country" },
@@ -67,21 +53,14 @@
     {
       "name": "North America",
       "type": "continent",
-      "children": [
-        { "_reference": "Mexico" },
-        { "_reference": "Canada" },
-        { "_reference": "United States of America" }
-      ]
+      "children": [{ "_reference": "Mexico" }, { "_reference": "Canada" }, { "_reference": "United States of America" }]
     },
     {
       "name": "Mexico",
       "type": "country",
       "population": "108 million",
       "area": "1,972,550 sq km",
-      "children": [
-        { "_reference": "Mexico City" },
-        { "_reference": "Guadalajara" }
-      ]
+      "children": [{ "_reference": "Mexico City" }, { "_reference": "Guadalajara" }]
     },
     {
       "name": "Mexico City",

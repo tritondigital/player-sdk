@@ -1,4 +1,4 @@
-define(["./kernel", "../json"], function (dojo, json) {
+define(['./kernel', '../json'], function (dojo, json) {
   // module:
   //		dojo/_base/json
 
@@ -22,7 +22,7 @@ return {
     //		a string literal of a JavaScript expression, for instance:
     //		`'{ "foo": [ "bar", 1, { "baz": "thud" } ] }'`
 
-    return eval("(" + js + ")"); // Object
+    return eval('(' + js + ')'); // Object
   };
 
   /*=====
@@ -35,7 +35,7 @@ dojo._escapeString = function(){
 =====*/
   dojo._escapeString = json.stringify; // just delegate to json.stringify
 
-  dojo.toJsonIndentStr = "\t";
+  dojo.toJsonIndentStr = '\t';
   dojo.toJson = function (/*Object*/ it, /*Boolean?*/ prettyPrint) {
     // summary:
     //		Returns a [JSON](http://json.org) serialization of an object.
@@ -80,7 +80,7 @@ dojo._escapeString = function(){
       function (key, value) {
         if (value) {
           var tf = value.__json__ || value.json;
-          if (typeof tf == "function") {
+          if (typeof tf == 'function') {
             return tf.call(value);
           }
         }

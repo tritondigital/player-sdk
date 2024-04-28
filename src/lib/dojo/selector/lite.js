@@ -1,17 +1,12 @@
-define(["../has", "../_base/kernel"], function (has, dojo) {
-  "use strict";
+define(['../has', '../_base/kernel'], function (has, dojo) {
+  'use strict';
 
-  var testDiv = document.createElement("div");
-  var matchesSelector =
-    testDiv.matchesSelector ||
-    testDiv.webkitMatchesSelector ||
-    testDiv.mozMatchesSelector ||
-    testDiv.msMatchesSelector ||
-    testDiv.oMatchesSelector; // IE9, WebKit, Firefox have this, but not Opera yet
+  var testDiv = document.createElement('div');
+  var matchesSelector = testDiv.matchesSelector || testDiv.webkitMatchesSelector || testDiv.mozMatchesSelector || testDiv.msMatchesSelector || testDiv.oMatchesSelector; // IE9, WebKit, Firefox have this, but not Opera yet
   var querySelectorAll = testDiv.querySelectorAll;
   var unionSplit = /([^\s,](?:"(?:\\.|[^"])+"|'(?:\\.|[^'])+'|[^,])*)/g;
-  has.add("dom-matches-selector", !!matchesSelector);
-  has.add("dom-qsa", !!querySelectorAll);
+  has.add('dom-matches-selector', !!matchesSelector);
+  has.add('dom-qsa', !!querySelectorAll);
 
   // this is a simple query engine. It has handles basic selectors, and for simple
   // common selectors is extremely fast
@@ -20,7 +15,7 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
     //		A small lightweight query selector engine that implements CSS2.1 selectors
     //		minus pseudo-classes and the sibling combinator, plus CSS3 attribute selectors
 
-    if (combine && selector.indexOf(",") > -1) {
+    if (combine && selector.indexOf(',') > -1) {
       return combine(selector, root);
     }
     // use the root's ownerDocument if provided, otherwise try to use dojo.doc. Note
@@ -40,9 +35,7 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
       if (match[2]) {
         // an #id
         // use dojo.byId if available as it fixes the id retrieval in IE, note that we can't use the dojo namespace in 2.0, but if there is a conditional module use, we will use that
-        var found = dojo.byId
-          ? dojo.byId(match[2], doc)
-          : doc.getElementById(match[2]);
+        var found = dojo.byId ? dojo.byId(match[2], doc) : doc.getElementById(match[2]);
         if (!found || (match[1] && match[1] != found.tagName.toLowerCase())) {
           // if there is a tag qualifer and it doesn't match, no matches
           return [];
@@ -68,7 +61,7 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
         // a tag
         found = root.getElementsByTagName(match[5]);
         if (match[4] || match[6]) {
-          selector = (match[4] || "") + match[6];
+          selector = (match[4] || '') + match[6];
         } else {
           // that was the entirety of the query, return results
           return found;
@@ -80,7 +73,7 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
       // We can work around this by specifying an extra ID on the root
       // and working up from there (Thanks to Andrew Dupont for the technique)
       // IE 8 doesn't work on object elements
-      if (root.nodeType === 1 && root.nodeName.toLowerCase() !== "object") {
+      if (root.nodeType === 1 && root.nodeName.toLowerCase() !== 'object') {
         return useRoot(root, selector, root.querySelectorAll);
       } else {
         // we can use the native qSA
@@ -88,7 +81,7 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
       }
     } else if (!found) {
       // search all children and then filter
-      found = root.getElementsByTagName("*");
+      found = root.getElementsByTagName('*');
     }
     // now we filter the nodes that were found using the matchesSelector
     var results = [];
@@ -104,8 +97,8 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
   var useRoot = function (context, query, method) {
     // this function creates a temporary id so we can do rooted qSA queries, this is taken from sizzle
     var oldContext = context,
-      old = context.getAttribute("id"),
-      nid = old || "__dojo__",
+      old = context.getAttribute('id'),
+      nid = old || '__dojo__',
       hasParent = context.parentNode,
       relativeHierarchySelector = /^\s*[+~]/.test(query);
 
@@ -113,9 +106,9 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
       return [];
     }
     if (!old) {
-      context.setAttribute("id", nid);
+      context.setAttribute('id', nid);
     } else {
-      nid = nid.replace(/'/g, "\\$&");
+      nid = nid.replace(/'/g, '\\$&');
     }
     if (relativeHierarchySelector && hasParent) {
       context = context.parentNode;
@@ -124,70 +117,62 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
     for (var i = 0; i < selectors.length; i++) {
       selectors[i] = "[id='" + nid + "'] " + selectors[i];
     }
-    query = selectors.join(",");
+    query = selectors.join(',');
 
     try {
       return method.call(context, query);
     } finally {
       if (!old) {
-        oldContext.removeAttribute("id");
+        oldContext.removeAttribute('id');
       }
     }
   };
 
-  if (!has("dom-matches-selector")) {
+  if (!has('dom-matches-selector')) {
     var jsMatchesSelector = (function () {
       // a JS implementation of CSS selector matching, first we start with the various handlers
-      var caseFix = testDiv.tagName == "div" ? "toLowerCase" : "toUpperCase";
+      var caseFix = testDiv.tagName == 'div' ? 'toLowerCase' : 'toUpperCase';
       var selectorTypes = {
-        "": function (tagName) {
+        '': function (tagName) {
           tagName = tagName[caseFix]();
           return function (node) {
             return node.tagName == tagName;
           };
         },
-        ".": function (className) {
-          var classNameSpaced = " " + className + " ";
+        '.': function (className) {
+          var classNameSpaced = ' ' + className + ' ';
           return function (node) {
-            return (
-              node.className.indexOf(className) > -1 &&
-              (" " + node.className + " ").indexOf(classNameSpaced) > -1
-            );
+            return node.className.indexOf(className) > -1 && (' ' + node.className + ' ').indexOf(classNameSpaced) > -1;
           };
         },
-        "#": function (id) {
+        '#': function (id) {
           return function (node) {
             return node.id == id;
           };
-        },
+        }
       };
       var attrComparators = {
-        "^=": function (attrValue, value) {
+        '^=': function (attrValue, value) {
           return attrValue.indexOf(value) == 0;
         },
-        "*=": function (attrValue, value) {
+        '*=': function (attrValue, value) {
           return attrValue.indexOf(value) > -1;
         },
-        "$=": function (attrValue, value) {
-          return (
-            attrValue.substring(
-              attrValue.length - value.length,
-              attrValue.length
-            ) == value
-          );
+        '$=': function (attrValue, value) {
+          return attrValue.substring(attrValue.length - value.length, attrValue.length) == value;
         },
-        "~=": function (attrValue, value) {
-          return (" " + attrValue + " ").indexOf(" " + value + " ") > -1;
+        '~=': function (attrValue, value) {
+          return (' ' + attrValue + ' ').indexOf(' ' + value + ' ') > -1;
         },
-        "|=": function (attrValue, value) {
-          return (attrValue + "-").indexOf(value + "-") == 0;
+        '|=': function (attrValue, value) {
+          return (attrValue + '-').indexOf(value + '-') == 0;
         },
-        "=": function (attrValue, value) {
+        '=': function (attrValue, value) {
           return attrValue == value;
         },
-        "": function (attrValue, value) {
+        '': function (attrValue, value) {
           return true;
-        },
+        }
       };
       function attr(name, value, type) {
         var firstChar = value.charAt(0);
@@ -195,8 +180,8 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
           // it is quoted, remove the quotes
           value = value.slice(1, -1);
         }
-        value = value.replace(/\\/g, "");
-        var comparator = attrComparators[type || ""];
+        value = value.replace(/\\/g, '');
+        var comparator = attrComparators[type || ''];
         return function (node) {
           var attrValue = node.getAttribute(name);
           return attrValue && comparator(attrValue, value);
@@ -234,30 +219,19 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
           if (
             selector.replace(
               /(?:\s*([> ])\s*)|(#|\.)?((?:\\.|[\w-])+)|\[\s*([\w-]+)\s*(.?=)?\s*("(?:\\.|[^"])+"|'(?:\\.|[^'])+'|(?:\\.|[^\]])*)\s*\]/g,
-              function (
-                t,
-                combinator,
-                type,
-                value,
-                attrName,
-                attrType,
-                attrValue
-              ) {
+              function (t, combinator, type, value, attrName, attrType, attrValue) {
                 if (value) {
-                  matcher = and(
-                    matcher,
-                    selectorTypes[type || ""](value.replace(/\\/g, ""))
-                  );
+                  matcher = and(matcher, selectorTypes[type || ''](value.replace(/\\/g, '')));
                 } else if (combinator) {
-                  matcher = (combinator == " " ? ancestor : parent)(matcher);
+                  matcher = (combinator == ' ' ? ancestor : parent)(matcher);
                 } else if (attrName) {
                   matcher = and(matcher, attr(attrName, attrValue, attrType));
                 }
-                return "";
+                return '';
               }
             )
           ) {
-            throw new Error("Syntax error in query");
+            throw new Error('Syntax error in query');
           }
           if (!matcher) {
             return true;
@@ -269,7 +243,7 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
       };
     })();
   }
-  if (!has("dom-qsa")) {
+  if (!has('dom-qsa')) {
     var combine = function (selector, root) {
       // combined queries
       var selectors = selector.match(unionSplit);
@@ -278,7 +252,7 @@ define(["../has", "../_base/kernel"], function (has, dojo) {
       // of known IE features, particularly sourceIndex which is unique and allows us to
       // order the results
       for (var i = 0; i < selectors.length; i++) {
-        selector = new String(selectors[i].replace(/\s*$/, ""));
+        selector = new String(selectors[i].replace(/\s*$/, ''));
         selector.indexOf = escape; // keep it from recursively entering combine
         var results = liteEngine(selector, root);
         for (var j = 0, l = results.length; j < l; j++) {

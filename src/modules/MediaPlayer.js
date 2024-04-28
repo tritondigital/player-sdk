@@ -37,54 +37,38 @@
  * stream-config-load-error
  */
 
-var AudioPriority = require("sdk/modules/mediaplayer/liveStreamConfigApi/AudioPriority");
-var OsPlatform = require("platform");
-var i18n = require("sdk/base/util/I18n");
-var ConnectionIterator = require("sdk/modules/mediaplayer/liveStreamConfigApi/ConnectionIterator");
-var LiveStreamConfig = require("sdk/modules/mediaplayer/liveStreamConfigApi/LiveStreamConfig");
-var LocationHelper = require("sdk/base/util/LocationHelper");
-var MediaElement = require("sdk/base/util/MediaElement");
-var _ = require("lodash");
+var AudioPriority = require('sdk/modules/mediaplayer/liveStreamConfigApi/AudioPriority');
+var OsPlatform = require('platform');
+var i18n = require('sdk/base/util/I18n');
+var ConnectionIterator = require('sdk/modules/mediaplayer/liveStreamConfigApi/ConnectionIterator');
+var LiveStreamConfig = require('sdk/modules/mediaplayer/liveStreamConfigApi/LiveStreamConfig');
+var LocationHelper = require('sdk/base/util/LocationHelper');
+var MediaElement = require('sdk/base/util/MediaElement');
+var _ = require('lodash');
 
 define([
-  "dojo/_base/array",
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "dojo/has",
-  "dojo/on",
-  "dojo/topic",
-  "dojo/_base/window",
-  "dojo/dom",
-  "dojo/dom-construct",
-  "dojo/dom-attr",
-  "sdk/modules/ad/AdManager",
-  "sdk/modules/base/CoreModule",
-  "sdk/modules/mediaplayer/Html5",
-  "sdk/modules/mediaplayer/Flash",
-  "sdk/base/playback/StreamingMode",
-], function (
-  array,
-  declare,
-  lang,
-  has,
-  on,
-  topic,
-  win,
-  dom,
-  domConstruct,
-  domAttr,
-  AdManager,
-  coreModule,
-  Html5,
-  Flash,
-  StreamingMode
-) {
+  'dojo/_base/array',
+  'dojo/_base/declare',
+  'dojo/_base/lang',
+  'dojo/has',
+  'dojo/on',
+  'dojo/topic',
+  'dojo/_base/window',
+  'dojo/dom',
+  'dojo/dom-construct',
+  'dojo/dom-attr',
+  'sdk/modules/ad/AdManager',
+  'sdk/modules/base/CoreModule',
+  'sdk/modules/mediaplayer/Html5',
+  'sdk/modules/mediaplayer/Flash',
+  'sdk/base/playback/StreamingMode'
+], function (array, declare, lang, has, on, topic, win, dom, domConstruct, domAttr, AdManager, coreModule, Html5, Flash, StreamingMode) {
   /**
    * @namespace tdapi/modules/MediaPlayer
    */
   var module = declare([coreModule], {
-    LIVE_PLAYING: "livePlaying",
-    LIVE_STOPPED: "liveStopped",
+    LIVE_PLAYING: 'livePlaying',
+    LIVE_STOPPED: 'liveStopped',
 
     /**
      * Convert stream status code to dojo i18n localized messages
@@ -93,53 +77,53 @@ define([
      */
     statusMap: {
       GETTING_STATION_INFORMATION: {
-        status: "gettingStationInformation",
-        code: "GETTING_STATION_INFORMATION",
+        status: 'gettingStationInformation',
+        code: 'GETTING_STATION_INFORMATION'
       },
       STREAM_GEO_BLOCKED: {
-        status: "streamGeoBlocked",
-        code: "STREAM_GEO_BLOCKED",
+        status: 'streamGeoBlocked',
+        code: 'STREAM_GEO_BLOCKED'
       },
       STREAM_GEO_BLOCKED_ALTERNATE: {
-        status: "streamGeoBlockedAlternate",
-        code: "STREAM_GEO_BLOCKED_ALTERNATE",
+        status: 'streamGeoBlockedAlternate',
+        code: 'STREAM_GEO_BLOCKED_ALTERNATE'
       },
       STREAM_GEO_BLOCKED_NO_ALTERNATE: {
-        status: "streamGeoBlockedNoAlternate",
-        code: "STREAM_GEO_BLOCKED_NO_ALTERNATE",
+        status: 'streamGeoBlockedNoAlternate',
+        code: 'STREAM_GEO_BLOCKED_NO_ALTERNATE'
       },
       STATION_NOT_FOUND: {
-        status: "stationNotFound",
-        code: "STATION_NOT_FOUND",
+        status: 'stationNotFound',
+        code: 'STATION_NOT_FOUND'
       },
       PLAY_NOT_ALLOWED: {
-        status: "playbackNotAllowed",
-        code: "PLAY_NOT_ALLOWED",
-      },
+        status: 'playbackNotAllowed',
+        code: 'PLAY_NOT_ALLOWED'
+      }
     },
 
     constructor: function (config, target) {
-      console.log("mediaPlayer::constructor");
+      console.log('mediaPlayer::constructor');
 
       this.inherited(arguments);
       var self = this;
-      if (typeof __cmp === "function") {
-        console.log("techModule::__cmp");
-        __cmp("getConsentData", null, function (consentData) {
+      if (typeof __cmp === 'function') {
+        console.log('techModule::__cmp');
+        __cmp('getConsentData', null, function (consentData) {
           self.consentData = consentData;
           if (self.config.idSync != undefined) {
             self._loadIdSync(self.config.idSync);
           }
         });
-      } else if (typeof __tcfapi === "function") {
-        __tcfapi("getTCData", 2, (tcData, success) => {
+      } else if (typeof __tcfapi === 'function') {
+        __tcfapi('getTCData', 2, (tcData, success) => {
           if (success) {
             self.consentData = tcData;
             if (self.config.idSync != undefined) {
               self._loadIdSync(self.config.idSync);
             }
           } else {
-            console.error("Failed to get the TCF data");
+            console.error('Failed to get the TCF data');
           }
         });
       } else if (this.config.idSync != undefined) {
@@ -153,24 +137,21 @@ define([
       this.tech = null; //Tech class instance
       this.techErrors = [];
 
-      this.techPriority =
-        this.config.techPriority && this.config.techPriority.length > 0
-          ? this.config.techPriority
-          : ["Html5", "Flash"];
+      this.techPriority = this.config.techPriority && this.config.techPriority.length > 0 ? this.config.techPriority : ['Html5', 'Flash'];
 
       this.geoTargeting =
         this.config.geoTargeting != undefined
           ? this.config.geoTargeting
           : {
               desktop: {
-                isActive: true,
+                isActive: true
               },
               iOS: {
-                isActive: false,
+                isActive: false
               },
               android: {
-                isActive: false,
-              },
+                isActive: false
+              }
             };
       this.isGeoTargetingActive = false;
       this.position = null; //Geographic position
@@ -180,8 +161,7 @@ define([
       }
 
       this.hls = config.hls != undefined ? config.hls : true;
-      this.audioAdaptive =
-        config.audioAdaptive != undefined ? config.audioAdaptive : false;
+      this.audioAdaptive = config.audioAdaptive != undefined ? config.audioAdaptive : false;
 
       if (config.audioAdaptive) {
         config.forceHls = true;
@@ -200,10 +180,7 @@ define([
         seekFromLive: lang.hitch(this, this._seekFromLive),
         seek: lang.hitch(this, this._seek),
         seekLive: lang.hitch(this, this.seekLive),
-        restartConnectionTimeOut: lang.hitch(
-          this,
-          this.restartConnectionTimeOut
-        ),
+        restartConnectionTimeOut: lang.hitch(this, this.restartConnectionTimeOut),
         setVolume: lang.hitch(this, this.setVolume),
         getVolume: lang.hitch(this, this.getVolume),
         mute: lang.hitch(this, this.mute),
@@ -215,23 +192,17 @@ define([
         destroy: lang.hitch(this, this._destroy),
         reloadSyncBanner: lang.hitch(this, this.reloadSyncBanner),
         getCloudStreamInfo: lang.hitch(this, this._getCloudStreamInfo),
-        playProgram: lang.hitch(this, this._playProgram),
+        playProgram: lang.hitch(this, this._playProgram)
       };
-      topic.subscribe(
-        "api/request",
-        lang.hitch(this, this._onApiInternalRequest)
-      );
-      topic.subscribe(
-        "streamingModeChange",
-        lang.hitch(this, this._switchStreamingMode)
-      );
+      topic.subscribe('api/request', lang.hitch(this, this._onApiInternalRequest));
+      topic.subscribe('streamingModeChange', lang.hitch(this, this._switchStreamingMode));
     },
 
     start: function () {
-      console.log("mediaPlayer::start");
+      console.log('mediaPlayer::start');
 
-      on(this.target, "tech-ready", lang.hitch(this, this._onTechReady));
-      on(this.target, "tech-error", lang.hitch(this, this._onTechError));
+      on(this.target, 'tech-ready', lang.hitch(this, this._onTechReady));
+      on(this.target, 'tech-error', lang.hitch(this, this._onTechError));
 
       this._loadTech(this.techPriority[0]);
     },
@@ -240,15 +211,13 @@ define([
       var action = arguments[0];
 
       var fn = lang.hitch(this, this.INTERNAL_REQUEST_API_FUNCTIONS[action]);
-      if (typeof fn === "function") {
+      if (typeof fn === 'function') {
         fn(arguments[1]); //arguments[1] = params
       }
     },
 
     _onApiRequestGetAlternateContent: function (alternateContent) {
-      console.log(
-        "MediaPlayer::_onApiRequestGetAlternateContent - alternateContent:"
-      );
+      console.log('MediaPlayer::_onApiRequestGetAlternateContent - alternateContent:');
       console.log(alternateContent);
 
       if (!alternateContent) return;
@@ -265,26 +234,26 @@ define([
         params.url = alternateContent.url;
         this.tech.isLiveStream = true;
         this.tech.play({
-          file: params.url,
+          file: params.url
         });
       }
     },
 
     _onApiRequestGetVastInstream: function (adBreakData) {
-      console.log("MediaPlayer::_onApiRequestGetVastInstream - adBreakData:");
+      console.log('MediaPlayer::_onApiRequestGetVastInstream - adBreakData:');
       console.log(adBreakData);
 
       if (adBreakData.vastUrl != null) {
-        this._getAdManager().playAd("vastAd", {
+        this._getAdManager().playAd('vastAd', {
           url: adBreakData.vastUrl,
           skipMediaAdPlayback: true,
-          adBreak: true,
+          adBreak: true
         });
       } else if (adBreakData.adVast != null) {
-        this._getAdManager().playAd("vastAd", {
+        this._getAdManager().playAd('vastAd', {
           rawXML: adBreakData.adVast,
           skipMediaAdPlayback: true,
-          adBreak: true,
+          adBreak: true
         });
       }
     },
@@ -333,7 +302,7 @@ define([
     /**
      * List of tags considered as LOW
      */
-    _lowTags: ["low-bw"],
+    _lowTags: ['low-bw'],
 
     /**
      * Add a new tag in the LOW tags
@@ -429,14 +398,12 @@ define([
     _refreshConnectionIterator: function (streamingConnections) {
       if (streamingConnections) {
         if (streamingConnections.length > 0) {
-          this.emit("stream-config-ready");
-          this.tech.setConnectionIterator(
-            new ConnectionIterator(streamingConnections)
-          );
+          this.emit('stream-config-ready');
+          this.tech.setConnectionIterator(new ConnectionIterator(streamingConnections));
           return true;
         } else {
-          this.emit("stream-config-error", {
-            errors: this.liveStreamConfig.mountPointsError,
+          this.emit('stream-config-error', {
+            errors: this.liveStreamConfig.mountPointsError
           });
 
           this.tech.setConnectionIterator(null);
@@ -458,18 +425,10 @@ define([
             this._emitStreamStatusByCode(this.statusMap.STREAM_GEO_BLOCKED);
 
             if (alternateContent) {
-              topic.publish(
-                "api/request",
-                "get-alternate-content",
-                alternateContent
-              );
-              this._emitStreamStatusByCode(
-                this.statusMap.STREAM_GEO_BLOCKED_ALTERNATE
-              );
+              topic.publish('api/request', 'get-alternate-content', alternateContent);
+              this._emitStreamStatusByCode(this.statusMap.STREAM_GEO_BLOCKED_ALTERNATE);
             } else {
-              this._emitStreamStatusByCode(
-                this.statusMap.STREAM_GEO_BLOCKED_NO_ALTERNATE
-              );
+              this._emitStreamStatusByCode(this.statusMap.STREAM_GEO_BLOCKED_NO_ALTERNATE);
             }
           } else {
             this._emitStreamStatusByCode(this.statusMap.STATION_NOT_FOUND);
@@ -486,16 +445,16 @@ define([
      * @private
      */
     _loadTech: function (techType) {
-      console.log("mediaPlayer::_loadTech techType:" + techType);
+      console.log('mediaPlayer::_loadTech techType:' + techType);
 
       var successCallback = lang.hitch(this, this._techLoaded);
       var errorCallback = lang.hitch(this, this._techLoadingError);
 
       switch (techType) {
-        case "Html5":
+        case 'Html5':
           this._techLoaded(Html5, techType);
           break;
-        case "Flash":
+        case 'Flash':
           this._techLoaded(Flash, techType);
           break;
         default:
@@ -504,23 +463,23 @@ define([
 
     //Tech loaded: instantiate it
     _techLoaded: function (TechInstance, techType) {
-      console.log("mediaPlayer::_techLoaded");
+      console.log('mediaPlayer::_techLoaded');
 
       this.tech = new TechInstance(this.config, this.target, techType);
       this.tech.start();
     },
 
     _techLoadingError: function (error) {
-      console.error("mediaPlayer::_techError - " + error);
+      console.error('mediaPlayer::_techError - ' + error);
 
-      this.emit("module-error", {
-        id: "MediaPlayer",
-        error: error,
+      this.emit('module-error', {
+        id: 'MediaPlayer',
+        error: error
       });
     },
 
     _onTechReady: function (e) {
-      console.log("mediaPlayer::_onTechReady");
+      console.log('mediaPlayer::_onTechReady');
       this.liveStreamConfig = new LiveStreamConfig(
         this.config.platformId,
         OsPlatform,
@@ -532,12 +491,12 @@ define([
         this.config.playerServicesRegion
       );
 
-      on(this.target, "stream-start", lang.hitch(this, this._onStreamStart));
-      on(this.target, "stream-stop", lang.hitch(this, this._onStreamStop));
+      on(this.target, 'stream-start', lang.hitch(this, this._onStreamStart));
+      on(this.target, 'stream-stop', lang.hitch(this, this._onStreamStop));
 
-      this.emit("module-ready", {
-        id: "MediaPlayer",
-        module: this,
+      this.emit('module-ready', {
+        id: 'MediaPlayer',
+        module: this
       });
     },
 
@@ -550,7 +509,7 @@ define([
     },
 
     _onTechError: function (e) {
-      console.error("mediaPlayer::_onTechError");
+      console.error('mediaPlayer::_onTechError');
 
       if (this.techPriority.length > 1 && this.fallbackTried == false) {
         this.techErrors.push(e);
@@ -558,31 +517,21 @@ define([
         this._loadTech(this.techPriority[1]);
       } else {
         this.techErrors.push(e);
-        this.emit("module-error", {
-          id: "MediaPlayer",
-          errors: this.techErrors,
+        this.emit('module-error', {
+          id: 'MediaPlayer',
+          errors: this.techErrors
         });
       }
     },
 
     _initGeoTargeting: function () {
-      if (
-        has("ios") != undefined &&
-        this.geoTargeting.iOS != undefined &&
-        this.geoTargeting.iOS.isActive != undefined &&
-        this.geoTargeting.iOS.isActive == true
-      ) {
+      if (has('ios') != undefined && this.geoTargeting.iOS != undefined && this.geoTargeting.iOS.isActive != undefined && this.geoTargeting.iOS.isActive == true) {
+        this.isGeoTargetingActive = true;
+      } else if (has('android') != undefined && this.geoTargeting.android != undefined && this.geoTargeting.android.isActive != undefined && this.geoTargeting.android.isActive == true) {
         this.isGeoTargetingActive = true;
       } else if (
-        has("android") != undefined &&
-        this.geoTargeting.android != undefined &&
-        this.geoTargeting.android.isActive != undefined &&
-        this.geoTargeting.android.isActive == true
-      ) {
-        this.isGeoTargetingActive = true;
-      } else if (
-        has("ios") == undefined &&
-        has("android") == undefined &&
+        has('ios') == undefined &&
+        has('android') == undefined &&
         this.geoTargeting.desktop != undefined &&
         this.geoTargeting.desktop.isActive != undefined &&
         this.geoTargeting.desktop.isActive == true
@@ -623,16 +572,7 @@ define([
       if (params.timeShift || params.forceTimeShift) {
         var transports = this.liveStreamConfig.TIMESHIFT_TRANSPORT;
         params.timeshiftEnabled = false; //This is the live play of the timeshift enabled station, so play HLS so that we can get the cookie header.
-        this.liveStreamConfig = new LiveStreamConfig( //Get a new LiveStreamConfig and force hls.
-          this.config.platformId,
-          OsPlatform,
-          this.tech.type,
-          true,
-          this.config.audioAdaptive,
-          true,
-          true,
-          this.config.playerServicesRegion
-        );
+        this.liveStreamConfig = new LiveStreamConfig(this.config.platformId, OsPlatform, this.tech.type, true, this.config.audioAdaptive, true, true, this.config.playerServicesRegion); //Get a new LiveStreamConfig and force hls.
       } else {
         var transports = this.liveStreamConfig.DEFAULT_TRANSPORTS;
         params.timeshiftEnabled = false;
@@ -647,34 +587,23 @@ define([
 
       var self = this;
 
-      params.trackingParameters = this._getFinalTrackingParameters(
-        params.trackingParameters
-      );
+      params.trackingParameters = this._getFinalTrackingParameters(params.trackingParameters);
 
-      if (params.file != undefined && params.file != "") {
-        console.log("mediaPlayer::play - file=" + params.file);
+      if (params.file != undefined && params.file != '') {
+        console.log('mediaPlayer::play - file=' + params.file);
 
         self.tech.play(params);
       } else {
-        console.log(
-          "mediaPlayer::play - station=" +
-            params.station +
-            ", connectionTimeOut=" +
-            params.connectionTimeOut +
-            ", timeShift=" +
-            params.timeShift
-        );
+        console.log('mediaPlayer::play - station=' + params.station + ', connectionTimeOut=' + params.connectionTimeOut + ', timeShift=' + params.timeShift);
 
-        this._emitStreamStatusByCode(
-          this.statusMap.GETTING_STATION_INFORMATION
-        ); //Fire Getting Station information status event
+        this._emitStreamStatusByCode(this.statusMap.GETTING_STATION_INFORMATION); //Fire Getting Station information status event
 
         this._liveApiParams = params; //Set Live API params
 
         var liveStreamConfigParams = {
           station: params.station,
           mount: params.mount,
-          transports: transports,
+          transports: transports
         };
 
         var mountTags = [];
@@ -682,12 +611,7 @@ define([
         if (this._lowEnabled) mountTags = mountTags.concat(this._lowTags);
 
         this.liveStreamConfig
-          .getStreamingConnections(
-            liveStreamConfigParams,
-            mountTags,
-            false,
-            false
-          )
+          .getStreamingConnections(liveStreamConfigParams, mountTags, false, false)
           .then(function (streamingConnections) {
             this.streamingConnections = streamingConnections;
             if (self._refreshConnectionIterator(streamingConnections)) {
@@ -695,8 +619,8 @@ define([
             }
           })
           .catch(function (error) {
-            self.emit("stream-config-load-error", {
-              error: error,
+            self.emit('stream-config-load-error', {
+              error: error
             });
           });
       }
@@ -716,14 +640,7 @@ define([
 
       var self = this;
 
-      console.log(
-        "mediaPlayer::play - station=" +
-          params.station +
-          ", connectionTimeOut=" +
-          params.connectionTimeOut +
-          ", timeShift=" +
-          params.timeShift
-      );
+      console.log('mediaPlayer::play - station=' + params.station + ', connectionTimeOut=' + params.connectionTimeOut + ', timeShift=' + params.timeShift);
 
       this._emitStreamStatusByCode(this.statusMap.GETTING_STATION_INFORMATION); //Fire Getting Station information status event
 
@@ -734,7 +651,7 @@ define([
         mount: params.mount,
         transports: transports,
         isProgram: isProgram,
-        programID: programID,
+        programID: programID
       };
 
       this.liveStreamConfig
@@ -742,16 +659,16 @@ define([
         .then(function (streamingConnections) {
           this.streamingConnections = streamingConnections;
           if (streamingConnections && streamingConnections.length == 0) {
-            self.emit("stream-config-load-error", {
-              error: "No Timeshift mount enabled",
+            self.emit('stream-config-load-error', {
+              error: 'No Timeshift mount enabled'
             });
           } else if (self._refreshConnectionIterator(streamingConnections)) {
             self.tech.play(params);
           }
         })
         .catch(function (error) {
-          self.emit("stream-config-load-error", {
-            error: error,
+          self.emit('stream-config-load-error', {
+            error: error
           });
         });
     },
@@ -828,7 +745,7 @@ define([
      * Pause the live audio/video stream OR a media file
      */
     _pause: function () {
-      console.log("mediaPlayer::pause");
+      console.log('mediaPlayer::pause');
 
       this.tech.pause();
     },
@@ -837,7 +754,7 @@ define([
      * Stop live stream or a media file
      */
     _stop: function () {
-      console.log("mediaPlayer::stop");
+      console.log('mediaPlayer::stop');
 
       this.tech.stop();
     },
@@ -846,7 +763,7 @@ define([
      * Resume live stream or a media file
      */
     _resume: function () {
-      console.log("mediaPlayer::resume");
+      console.log('mediaPlayer::resume');
 
       this.tech.resume();
     },
@@ -858,13 +775,13 @@ define([
      * @param {number} seekOffset
      */
     _seek: function (seekOffset) {
-      console.log("mediaPlayer::seek - seekOffset=" + seekOffset);
+      console.log('mediaPlayer::seek - seekOffset=' + seekOffset);
 
       this.tech.seek(seekOffset);
     },
 
     _seekFromLive: function (seconds) {
-      console.log("mediaPlayer::seekFromLive =" + seconds);
+      console.log('mediaPlayer::seekFromLive =' + seconds);
 
       this.tech.seekFromLive(seconds);
     },
@@ -873,11 +790,11 @@ define([
      * Get a list of the timeshift programs available
      */
     _getCloudStreamInfo: function (stationName) {
-      console.log("mediaPlayer::_getCloudStreamInfo");
+      console.log('mediaPlayer::_getCloudStreamInfo');
 
       var liveStreamConfigParams = {
         station: stationName,
-        transports: this.liveStreamConfig.TIMESHIFT_TRANSPORT,
+        transports: this.liveStreamConfig.TIMESHIFT_TRANSPORT
       };
 
       var context = this;
@@ -885,36 +802,29 @@ define([
         .getStreamingConnections(liveStreamConfigParams, [], false, true)
         .then(function (streamingConnections) {
           if (streamingConnections) {
-            let streamInfoUrl =
-              "https://" +
-              streamingConnections[0].mrHost +
-              "/" +
-              streamingConnections[0].mount +
-              "/CLOUD/stream-info";
+            let streamInfoUrl = 'https://' + streamingConnections[0].mrHost + '/' + streamingConnections[0].mount + '/CLOUD/stream-info';
 
             //streamInfoUrl = "http://0.0.0.0:8000/" + this.params.mount + "/CLOUD/programs"
-            console.log("Get The timeshift cloud stream info:" + streamInfoUrl);
+            console.log('Get The timeshift cloud stream info:' + streamInfoUrl);
             fetch(streamInfoUrl)
-              .then((response) => {
+              .then(response => {
                 if (!response.ok) {
-                  throw new Error(
-                    `Request failed with status ${reponse.status}`
-                  );
+                  throw new Error(`Request failed with status ${reponse.status}`);
                 }
 
                 return response.json();
               })
               .then(lang.hitch(context, context._onCloudStreamLoadInfoComplete))
-              .catch((error) => {
-                context.emit("timeshift-program-load-error", {
-                  error: error,
+              .catch(error => {
+                context.emit('timeshift-program-load-error', {
+                  error: error
                 });
               });
           }
         })
         .catch(function (error) {
-          context.emit("timeshift-program-load-error", {
-            error: "Could not load program",
+          context.emit('timeshift-program-load-error', {
+            error: 'Could not load program'
           });
         });
     },
@@ -922,20 +832,20 @@ define([
     _onCloudStreamLoadInfoComplete: function (data) {
       if (!data) {
         programs = '{"programs":[]}';
-        this.emit("timeshift-info", data.programs);
+        this.emit('timeshift-info', data.programs);
       }
 
       if (data.programs.properties) {
         programs = {
           maximum_rewind_time_sec: data.maximum_rewind_time_sec,
-          programs: [data.programs],
+          programs: [data.programs]
         };
-        this.emit("timeshift-info", programs);
+        this.emit('timeshift-info', programs);
       }
     },
 
     _playProgram: function (programID, offset, station) {
-      console.log("mediaPlayer::_playProgram - programID=" + programID);
+      console.log('mediaPlayer::_playProgram - programID=' + programID);
       this._stop();
       if (station == undefined) return;
 
@@ -947,7 +857,7 @@ define([
         this._liveApiParams = {
           station: station,
           timeShift: true,
-          timeshiftEnabled: true,
+          timeshiftEnabled: true
         };
       }
 
@@ -962,7 +872,7 @@ define([
      * Not supported: iOS, Android
      */
     seekLive: function () {
-      console.log("mediaPlayer::seekLive");
+      console.log('mediaPlayer::seekLive');
 
       this.tech.seekLive();
     },
@@ -971,7 +881,7 @@ define([
      * Restart the connection timeout
      */
     restartConnectionTimeOut: function () {
-      console.log("mediaPlayer::restartConnectionTimeOut");
+      console.log('mediaPlayer::restartConnectionTimeOut');
 
       this.tech.restartConnectionTimeOut();
     },
@@ -983,7 +893,7 @@ define([
      * @param {Number} volumePercent The volume percentage between 0 and 1
      */
     setVolume: function (volumePercent) {
-      console.log("mediaPlayer::setVolume - volumePercent=" + volumePercent);
+      console.log('mediaPlayer::setVolume - volumePercent=' + volumePercent);
 
       this.tech.setVolume(volumePercent);
     },
@@ -1003,7 +913,7 @@ define([
      * Not supported: iOS, Android
      */
     mute: function () {
-      console.log("mediaPlayer::mute");
+      console.log('mediaPlayer::mute');
 
       this.tech.mute();
     },
@@ -1013,7 +923,7 @@ define([
      * Not supported: iOS, Android
      */
     unMute: function () {
-      console.log("mediaPlayer::unMute");
+      console.log('mediaPlayer::unMute');
       this.tech.unMute();
     },
 
@@ -1024,11 +934,9 @@ define([
      * @param {object} config
      */
     playAd: function (adServerType, config) {
-      console.log("mediaPlayer::playAd - adServerType = " + adServerType);
+      console.log('mediaPlayer::playAd - adServerType = ' + adServerType);
 
-      config.trackingParameters = this._getFinalTrackingParameters(
-        config.trackingParameters
-      );
+      config.trackingParameters = this._getFinalTrackingParameters(config.trackingParameters);
 
       this._getAdManager().playAd(adServerType, config);
       this.tech.playAdCalled = true;
@@ -1039,7 +947,7 @@ define([
      *
      */
     skipAd: function () {
-      console.log("mediaPlayer::skipAd");
+      console.log('mediaPlayer::skipAd');
 
       this._getAdManager().skipAd();
     },
@@ -1048,7 +956,7 @@ define([
      *
      */
     reloadSyncBanner: function () {
-      console.log("mediaPlayer::reloadSyncBanner");
+      console.log('mediaPlayer::reloadSyncBanner');
 
       this._getAdManager().reloadSyncBanner();
     },
@@ -1058,13 +966,13 @@ define([
      *
      */
     destroyAd: function () {
-      console.log("mediaPlayer::destroyAd");
+      console.log('mediaPlayer::destroyAd');
 
       this._getAdManager().destroyAd(true);
     },
 
     _initMediaElement: function () {
-      console.log("mediaPlayer::_initMediaElement");
+      console.log('mediaPlayer::_initMediaElement');
 
       MediaElement.init();
     },
@@ -1072,7 +980,7 @@ define([
     _destroy: function () {
       this._stop();
       setTimeout(function () {
-        var playerElement = document.getElementById("tdplayer_ondemand");
+        var playerElement = document.getElementById('tdplayer_ondemand');
         if (playerElement) {
           domConstruct.destroy(playerElement);
         }
@@ -1082,13 +990,7 @@ define([
     },
 
     _getAdManager: function () {
-      if (this.adManager == null)
-        this.adManager = new AdManager(
-          this.tech,
-          this.tech.type,
-          this.target,
-          this.config
-        );
+      if (this.adManager == null) this.adManager = new AdManager(this.tech, this.tech.type, this.target, this.config);
 
       return this.adManager;
     },
@@ -1098,65 +1000,42 @@ define([
       if (statusMessages == undefined) return;
 
       if (statusMessages[statusMapEntry.status]) {
-        this.emit("stream-status", {
+        this.emit('stream-status', {
           code: statusMapEntry.code,
-          status: statusMessages[statusMapEntry.status],
+          status: statusMessages[statusMapEntry.status]
         });
       }
     },
 
     _getLocation: function () {
       if (window.navigator.geolocation) {
-        window.navigator.geolocation.getCurrentPosition(
-          lang.hitch(this, this._setPosition),
-          lang.hitch(this, this._getPositionErrorHandler),
-          {
-            enableHighAccuracy: true,
-            timeout: 2000,
-          }
-        );
+        window.navigator.geolocation.getCurrentPosition(lang.hitch(this, this._setPosition), lang.hitch(this, this._getPositionErrorHandler), {
+          enableHighAccuracy: true,
+          timeout: 2000
+        });
       }
     },
 
     _setPosition: function (position) {
-      this.position =
-        position != undefined &&
-        position.coords.latitude != undefined &&
-        position.coords.longitude != undefined
-          ? position
-          : null;
+      this.position = position != undefined && position.coords.latitude != undefined && position.coords.longitude != undefined ? position : null;
     },
 
     _getPositionErrorHandler: function (error) {
-      console.info(
-        "mediaPlayer::_getPositionErrorHandler, code : " +
-          error.code +
-          ", message : " +
-          error.message
-      );
+      console.info('mediaPlayer::_getPositionErrorHandler, code : ' + error.code + ', message : ' + error.message);
 
       this.position = null;
     },
 
     _getGeoTargetingPos: function (trackingParameters) {
-      if (
-        this.position != null &&
-        this.position != undefined &&
-        this.position.coords.latitude != undefined &&
-        this.position.coords.longitude != undefined
-      ) {
+      if (this.position != null && this.position != undefined && this.position.coords.latitude != undefined && this.position.coords.longitude != undefined) {
         if (trackingParameters != undefined) {
-          trackingParameters["lat"] = parseFloat(
-            this.position.coords.latitude.toFixed(1)
-          );
-          trackingParameters["long"] = parseFloat(
-            this.position.coords.longitude.toFixed(1)
-          );
+          trackingParameters['lat'] = parseFloat(this.position.coords.latitude.toFixed(1));
+          trackingParameters['long'] = parseFloat(this.position.coords.longitude.toFixed(1));
           return trackingParameters;
         } else {
           return {
             lat: parseFloat(this.position.coords.latitude.toFixed(1)),
-            long: parseFloat(this.position.coords.longitude.toFixed(1)),
+            long: parseFloat(this.position.coords.longitude.toFixed(1))
           };
         }
       } else {
@@ -1176,11 +1055,8 @@ define([
         trackingParameters = {};
       }
 
-      trackingParameters.tdsdk =
-        this.config.defaultTrackingParameters.log.tdsdk;
-      trackingParameters.swm = this.config.streamWhileMuted
-        ? this.config.streamWhileMuted
-        : false;
+      trackingParameters.tdsdk = this.config.defaultTrackingParameters.log.tdsdk;
+      trackingParameters.swm = this.config.streamWhileMuted ? this.config.streamWhileMuted : false;
 
       if (this.isGeoTargetingActive) {
         trackingParameters = this._getGeoTargetingPos(trackingParameters);
@@ -1188,70 +1064,42 @@ define([
 
       if (_.isEmpty(this.config.defaultTrackingParameters.banners)) {
         this.config.defaultTrackingParameters.banners = [];
-        this.config.defaultTrackingParameters.banners.push("none");
+        this.config.defaultTrackingParameters.banners.push('none');
       }
 
       //Banner capabilities for Flash: swf, vpaid only if AdBlocker not detected
-      if (
-        this.tech.type == "Flash" &&
-        !this.config.adBlockerDetected &&
-        this.config.defaultTrackingParameters.banners.indexOf("none") === -1
-      ) {
-        if (
-          array.indexOf(this.config.defaultTrackingParameters.banners, "swf") ==
-          -1
-        ) {
-          this.config.defaultTrackingParameters.banners.push("swf");
+      if (this.tech.type == 'Flash' && !this.config.adBlockerDetected && this.config.defaultTrackingParameters.banners.indexOf('none') === -1) {
+        if (array.indexOf(this.config.defaultTrackingParameters.banners, 'swf') == -1) {
+          this.config.defaultTrackingParameters.banners.push('swf');
         }
 
-        if (
-          array.indexOf(
-            this.config.defaultTrackingParameters.banners,
-            "vpaid"
-          ) == -1
-        ) {
-          this.config.defaultTrackingParameters.banners.push("vpaid");
+        if (array.indexOf(this.config.defaultTrackingParameters.banners, 'vpaid') == -1) {
+          this.config.defaultTrackingParameters.banners.push('vpaid');
         }
       }
 
       //Logging pname and pversion - if pname is already specified, do not override them with these values.
       if (!trackingParameters.pname) {
-        trackingParameters.pname =
-          this.config.defaultTrackingParameters.log.pname;
-        trackingParameters.pversion =
-          this.config.defaultTrackingParameters.log.pversion;
+        trackingParameters.pname = this.config.defaultTrackingParameters.log.pname;
+        trackingParameters.pversion = this.config.defaultTrackingParameters.log.pversion;
       }
 
-      if (
-        this.config.defaultTrackingParameters.banners != undefined &&
-        this.config.defaultTrackingParameters.banners.length
-      ) {
-        if (
-          trackingParameters.banners != undefined &&
-          trackingParameters.banners.length &&
-          trackingParameters.banners.indexOf(
-            this.config.defaultTrackingParameters.banners.join()
-          ) == -1
-        ) {
-          trackingParameters.banners +=
-            "," + this.config.defaultTrackingParameters.banners.join(); //merge defaultTrackingParameters['banners'] with trackingParameters['banners']
+      if (this.config.defaultTrackingParameters.banners != undefined && this.config.defaultTrackingParameters.banners.length) {
+        if (trackingParameters.banners != undefined && trackingParameters.banners.length && trackingParameters.banners.indexOf(this.config.defaultTrackingParameters.banners.join()) == -1) {
+          trackingParameters.banners += ',' + this.config.defaultTrackingParameters.banners.join(); //merge defaultTrackingParameters['banners'] with trackingParameters['banners']
         } else {
-          trackingParameters.banners =
-            this.config.defaultTrackingParameters.banners.join(); //assign defaultTrackingParameters['banners'] to trackingParameters['banners']
+          trackingParameters.banners = this.config.defaultTrackingParameters.banners.join(); //assign defaultTrackingParameters['banners'] to trackingParameters['banners']
         }
       }
 
       //User data (see tdapi/modules/base/UserRegPlayerMediator)
       for (var userData in this.config.defaultTrackingParameters.user) {
-        trackingParameters[userData] =
-          this.config.defaultTrackingParameters.user[userData];
+        trackingParameters[userData] = this.config.defaultTrackingParameters.user[userData];
       }
 
       if (this.consentData) {
         trackingParameters.gdpr = this.consentData.gdprApplies ? 1 : 0;
-        trackingParameters.gdpr_consent = this.consentData.consentData
-          ? this.consentData.consentData
-          : this.consentData.tcString;
+        trackingParameters.gdpr_consent = this.consentData.consentData ? this.consentData.consentData : this.consentData.tcString;
       }
 
       return trackingParameters;
@@ -1264,36 +1112,31 @@ define([
     _loadIdSync: function (config) {
       var queryParam = this._getIdSyncQueryParam(config);
 
-      if (dom.byId("idSyncScript", document))
-        domConstruct.destroy(dom.byId("idSyncScript", document));
+      if (dom.byId('idSyncScript', document)) domConstruct.destroy(dom.byId('idSyncScript', document));
 
       scriptTag = domConstruct.create(
-        "script",
+        'script',
         {
-          id: "idSyncScript",
+          id: 'idSyncScript'
         },
         dom.byId(this.config.playerId, document)
       );
-      domAttr.set(scriptTag, "type", "text/javascript");
+      domAttr.set(scriptTag, 'type', 'text/javascript');
 
-      domAttr.set(
-        scriptTag,
-        "src",
-        "//playerservices.live.streamtheworld.com/api/idsync.js?" + queryParam
-      );
+      domAttr.set(scriptTag, 'src', '//playerservices.live.streamtheworld.com/api/idsync.js?' + queryParam);
 
-      document.getElementsByTagName("body")[0].appendChild(scriptTag);
+      document.getElementsByTagName('body')[0].appendChild(scriptTag);
     },
 
     _getIdSyncQueryParam: function (config) {
       var queryParam;
 
       if (config.station) {
-        queryParam = "station=" + config.station;
+        queryParam = 'station=' + config.station;
       } else if (config.stationId) {
-        queryParam = "stationId=" + config.stationId;
+        queryParam = 'stationId=' + config.stationId;
       } else if (config.mount) {
-        queryParam = "mount=" + config.mount;
+        queryParam = 'mount=' + config.mount;
       }
 
       //return if no required param passed
@@ -1301,74 +1144,40 @@ define([
 
       if (this.consentData) {
         config.gdpr = this.consentData.gdprApplies ? 1 : 0;
-        config.gdpr_consent = this.consentData.consentData
-          ? this.consentData.consentData
-          : this.consentData.tcString;
+        config.gdpr_consent = this.consentData.consentData ? this.consentData.consentData : this.consentData.tcString;
       }
 
-      queryParam =
-        config.gdpr && config.gdpr.toString().match(/^[0,1]$/g)
-          ? queryParam + "&gdpr=" + config.gdpr
-          : queryParam;
+      queryParam = config.gdpr && config.gdpr.toString().match(/^[0,1]$/g) ? queryParam + '&gdpr=' + config.gdpr : queryParam;
 
-      queryParam = config.gdpr_consent
-        ? queryParam + "&gdpr_consent=" + config.gdpr_consent
-        : queryParam;
+      queryParam = config.gdpr_consent ? queryParam + '&gdpr_consent=' + config.gdpr_consent : queryParam;
 
       //adding Demographic Targeting from advertising guide params
       //dob String formatted as YYYY-MM-DD
-      var dob =
-        config.dob && !isNaN(Date.parse(config.dob))
-          ? new Date(config.dob.replace(/-/g, "/"))
-          : null;
+      var dob = config.dob && !isNaN(Date.parse(config.dob)) ? new Date(config.dob.replace(/-/g, '/')) : null;
       if (dob) {
         var year = dob.getFullYear();
-        var month =
-          dob.getMonth() + 1 < 10
-            ? "0" + (dob.getMonth() + 1)
-            : dob.getMonth() + 1;
-        var day = dob.getDate() < 10 ? "0" + dob.getDate() : dob.getDate();
-        queryParam = dob
-          ? queryParam + "&dob=" + year + "-" + month + "-" + day
-          : queryParam;
+        var month = dob.getMonth() + 1 < 10 ? '0' + (dob.getMonth() + 1) : dob.getMonth() + 1;
+        var day = dob.getDate() < 10 ? '0' + dob.getDate() : dob.getDate();
+        queryParam = dob ? queryParam + '&dob=' + year + '-' + month + '-' + day : queryParam;
       }
 
       //yob Integer value
-      queryParam =
-        config.yob && !isNaN(config.yob) && queryParam.indexOf("dob") === -1
-          ? queryParam + "&yob=" + config.yob
-          : queryParam;
+      queryParam = config.yob && !isNaN(config.yob) && queryParam.indexOf('dob') === -1 ? queryParam + '&yob=' + config.yob : queryParam;
 
       //age Integer value: 1 to 125
       queryParam =
-        config.age &&
-        !isNaN(config.age) &&
-        config.age > 0 &&
-        config.age <= 125 &&
-        queryParam.indexOf("dob") === -1 &&
-        queryParam.indexOf("yob") === -1
-          ? queryParam + "&age=" + config.age
+        config.age && !isNaN(config.age) && config.age > 0 && config.age <= 125 && queryParam.indexOf('dob') === -1 && queryParam.indexOf('yob') === -1
+          ? queryParam + '&age=' + config.age
           : queryParam;
 
       //gender "m" or "f" or "o" (other)(case-sensitive)
-      queryParam =
-        config.gender &&
-        config.gender.match(/[m,f,o]/g) &&
-        config.gender.length === 1
-          ? queryParam + "&gender=" + config.gender
-          : queryParam;
+      queryParam = config.gender && config.gender.match(/[m,f,o]/g) && config.gender.length === 1 ? queryParam + '&gender=' + config.gender : queryParam;
 
       //ip valide ip
-      queryParam =
-        config.ip &&
-        config.ip.match(
-          /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/g
-        )
-          ? queryParam + "&ip=" + config.ip
-          : queryParam;
+      queryParam = config.ip && config.ip.match(/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/g) ? queryParam + '&ip=' + config.ip : queryParam;
 
       return queryParam;
-    },
+    }
   });
 
   return module;

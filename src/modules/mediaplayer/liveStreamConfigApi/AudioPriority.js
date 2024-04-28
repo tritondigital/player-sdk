@@ -1,5 +1,5 @@
-const { times } = require("lodash");
-var _ = require("lodash");
+const { times } = require('lodash');
+var _ = require('lodash');
 
 /**
  * Return mountPoints with specific tags
@@ -9,7 +9,7 @@ var _ = require("lodash");
  * @returns {MountPoint[]}
  */
 function _filterByTag(mountPoints, tags, excludeUntagged) {
-  if (typeof tags == "string") {
+  if (typeof tags == 'string') {
     tags = [tags];
   }
 
@@ -52,11 +52,11 @@ function _sortMountpointsByBitrate(mountPoints) {
     var codec;
 
     if (mountPoint.mediaFormat.isAudioAdaptive) {
-      codec = "audioAdaptive";
+      codec = 'audioAdaptive';
     } else if (mountPoint.mediaFormat.audioTracks[0].isAAC) {
-      codec = "aac";
+      codec = 'aac';
     } else {
-      codec = "mp3";
+      codec = 'mp3';
     }
 
     return codec;
@@ -67,7 +67,7 @@ function _sortMountpointsByBitrate(mountPoints) {
   return _.flatMap(codecs, function (codec) {
     var mountPointsOfCodec = mountPointsByCodec[codec];
 
-    return _.orderBy(mountPointsOfCodec, "bitRate", "desc");
+    return _.orderBy(mountPointsOfCodec, 'bitRate', 'desc');
   });
 }
 
@@ -84,12 +84,7 @@ function _excludeTransport(mountPoints, transportExcluded) {
   _.forEach(mountPoints, function (mountpoint) {
     var transports = mountpoint.transports.filter(function (transport) {
       return !_.some(transportExcluded, function (transportToExclude) {
-        return (
-          transportToExclude.transport === transport.transport &&
-          mountpoint.mediaFormat.audioTracks[0].codec.indexOf(
-            transportToExclude.codec
-          ) > -1
-        );
+        return transportToExclude.transport === transport.transport && mountpoint.mediaFormat.audioTracks[0].codec.indexOf(transportToExclude.codec) > -1;
       });
     });
 
@@ -118,13 +113,13 @@ function _excludeAudioAdaptive(mountPoints) {
 function _excludeHLS(mountPoints) {
   return _excludeTransport(mountPoints, [
     {
-      transport: "hls",
-      codec: "aac",
+      transport: 'hls',
+      codec: 'aac'
     },
     {
-      transport: "hlsts",
-      codec: "aac",
-    },
+      transport: 'hlsts',
+      codec: 'aac'
+    }
   ]);
 }
 
@@ -135,17 +130,17 @@ function _excludeHLS(mountPoints) {
 function _forceHls(mountPoints, isHlsts) {
   return _excludeTransport(mountPoints, [
     {
-      transport: isHlsts ? "hls" : "hlsts",
-      codec: "aac",
+      transport: isHlsts ? 'hls' : 'hlsts',
+      codec: 'aac'
     },
     {
-      transport: "http",
-      codec: "aac",
+      transport: 'http',
+      codec: 'aac'
     },
     {
-      transport: "http",
-      codec: "mp3",
-    },
+      transport: 'http',
+      codec: 'mp3'
+    }
   ]);
 }
 
@@ -155,14 +150,11 @@ function _forceHls(mountPoints, isHlsts) {
  * @param transportPriorities array
  */
 function _sortTransport(mountPoints, transportPriorities) {
-  var transportPrioritiesFunctions = _.map(
-    transportPriorities,
-    function (transportPriority) {
-      return function (transport) {
-        return transport.transport === transportPriority ? 0 : 1;
-      };
-    }
-  );
+  var transportPrioritiesFunctions = _.map(transportPriorities, function (transportPriority) {
+    return function (transport) {
+      return transport.transport === transportPriority ? 0 : 1;
+    };
+  });
 
   _.forEach(mountPoints, function (mountPoint) {
     var transports = mountPoint.transports;
@@ -179,13 +171,13 @@ function _sortTransport(mountPoints, transportPriorities) {
  */
 function _filterByTimeshift(mountPoints, includeMount) {
   if (includeMount) {
-    mountPoints = mountPoints.filter((mount) => {
+    mountPoints = mountPoints.filter(mount => {
       return _.some(mount.transports, function (transport) {
         return transport.timeshift === true;
       });
     });
   } else {
-    mountPoints = mountPoints.filter((mount) => {
+    mountPoints = mountPoints.filter(mount => {
       return !_.some(mount.transports, function (transport) {
         return transport.timeshift === true;
       });
@@ -199,111 +191,108 @@ function _filterByTimeshift(mountPoints, includeMount) {
  * _filterByPlatform
  */
 function _filterByPlatform(mountPoints, platform, techType) {
-  if (techType.toLowerCase() == "flash") {
+  if (techType.toLowerCase() == 'flash') {
     mountPoints = _excludeAudioAdaptive(mountPoints);
     mountPoints = _excludeTransport(mountPoints, [
       {
-        transport: "hlsts",
-        codec: "aac",
+        transport: 'hlsts',
+        codec: 'aac'
       },
       {
-        transport: "hls",
-        codec: "aac",
-      },
+        transport: 'hls',
+        codec: 'aac'
+      }
     ]);
   } else {
     switch (platform.os.family) {
-      case "iOS":
+      case 'iOS':
         mountPoints = _excludeTransport(mountPoints, {
-          transport: "hlsts",
-          codec: "aac",
+          transport: 'hlsts',
+          codec: 'aac'
         });
 
-        if (platform.name === "Chrome Mobile") {
+        if (platform.name === 'Chrome Mobile') {
           mountPoints = _excludeTransport(mountPoints, [
             {
-              transport: "hls",
-              codec: "aac",
-            },
+              transport: 'hls',
+              codec: 'aac'
+            }
           ]);
         }
 
-        mountPoints = _sortTransport(mountPoints, ["hls", "http"]);
+        mountPoints = _sortTransport(mountPoints, ['hls', 'http']);
 
         break;
-      case "Android":
-        mountPoints = _sortTransport(mountPoints, ["hlsts", "http"]);
+      case 'Android':
+        mountPoints = _sortTransport(mountPoints, ['hlsts', 'http']);
 
         break;
       default:
         switch (platform.name) {
-          case "Safari":
+          case 'Safari':
             mountPoints = _excludeTransport(mountPoints, {
-              transport: "hlsts",
-              codec: "aac",
+              transport: 'hlsts',
+              codec: 'aac'
             });
-            mountPoints = _sortTransport(mountPoints, ["hls", "http"]);
+            mountPoints = _sortTransport(mountPoints, ['hls', 'http']);
             break;
 
-          case "IE":
-            if (
-              platform.version === "11.0" &&
-              parseInt(platform.os.version) > 7
-            ) {
+          case 'IE':
+            if (platform.version === '11.0' && parseInt(platform.os.version) > 7) {
               mountPoints = _excludeTransport(mountPoints, [
                 {
-                  transport: "http",
-                  codec: "aac",
+                  transport: 'http',
+                  codec: 'aac'
                 },
                 {
-                  transport: "hlsts",
-                  codec: "aac",
-                },
+                  transport: 'hlsts',
+                  codec: 'aac'
+                }
               ]);
             } else {
               mountPoints = _excludeTransport(mountPoints, [
                 {
-                  transport: "hls",
-                  codec: "aac",
+                  transport: 'hls',
+                  codec: 'aac'
                 },
                 {
-                  transport: "http",
-                  codec: "aac",
+                  transport: 'http',
+                  codec: 'aac'
                 },
                 {
-                  transport: "hlsts",
-                  codec: "aac",
-                },
+                  transport: 'hlsts',
+                  codec: 'aac'
+                }
               ]);
             }
 
-            mountPoints = _sortTransport(mountPoints, ["hls", "http"]);
+            mountPoints = _sortTransport(mountPoints, ['hls', 'http']);
             break;
 
-          case "Microsoft Edge":
+          case 'Microsoft Edge':
             mountPoints = _excludeTransport(mountPoints, [
               {
-                transport: "hlsts",
-                codec: "aac",
-              },
+                transport: 'hlsts',
+                codec: 'aac'
+              }
             ]);
-            mountPoints = _sortTransport(mountPoints, ["hls", "http"]);
+            mountPoints = _sortTransport(mountPoints, ['hls', 'http']);
             break;
 
           default:
             // For Chrome and Firefox
             mountPoints = _excludeTransport(mountPoints, [
               {
-                transport: "hlsts",
-                codec: "aac",
+                transport: 'hlsts',
+                codec: 'aac'
               },
               {
-                transport: "hls",
-                codec: "aac",
-              },
+                transport: 'hls',
+                codec: 'aac'
+              }
             ]);
 
-            mountPoints = _sortTransport(mountPoints, ["hls", "http"]);
+            mountPoints = _sortTransport(mountPoints, ['hls', 'http']);
             break;
         }
     }
@@ -322,18 +311,7 @@ module.exports = {
    * @param removeHLS boolean
    * @param removeAudioAdaptive boolean
    */
-  filterMountPoints: function (
-    mountPoints,
-    platform,
-    techType,
-    tags,
-    excludeUntagged,
-    removeHLS,
-    removeAudioAdaptive,
-    forceHls,
-    forceHlsts,
-    timeshift
-  ) {
+  filterMountPoints: function (mountPoints, platform, techType, tags, excludeUntagged, removeHLS, removeAudioAdaptive, forceHls, forceHlsts, timeshift) {
     if (removeHLS && !forceHls && !forceHlsts) {
       mountPoints = _excludeHLS(mountPoints);
     }
@@ -343,11 +321,7 @@ module.exports = {
     }
 
     mountPoints = _filterByTag(mountPoints, tags, excludeUntagged);
-    mountPoints = forceHls
-      ? _forceHls(mountPoints)
-      : forceHlsts
-      ? _forceHls(mountPoints, true)
-      : _filterByPlatform(mountPoints, platform, techType);
+    mountPoints = forceHls ? _forceHls(mountPoints) : forceHlsts ? _forceHls(mountPoints, true) : _filterByPlatform(mountPoints, platform, techType);
 
     if (timeshift) {
       mountPoints = _filterByTimeshift(mountPoints, true);
@@ -362,5 +336,5 @@ module.exports = {
     return mountPoints;
   },
   filterByTag: _filterByTag,
-  sortMountpoints: _sortMountpoints,
+  sortMountpoints: _sortMountpoints
 };

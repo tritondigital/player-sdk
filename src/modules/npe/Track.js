@@ -5,15 +5,10 @@
  * NPE Track metadata<br>
  *
  */
-define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "sdk/base/util/XhrProvider",
-  "sdk/modules/npe/base/Inpe",
-], function (declare, lang, XhrProvider, Inpe) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/base/util/XhrProvider', 'sdk/modules/npe/base/Inpe'], function (declare, lang, XhrProvider, Inpe) {
   var track = declare([Inpe], {
     constructor: function (data, platformId) {
-      console.log("track::constructor");
+      console.log('track::constructor');
 
       this.trackData = null;
 
@@ -61,7 +56,7 @@ define([
     },
 
     fetchData: function (isDynamicCall) {
-      console.log("track::fetchData - id:" + this.id);
+      console.log('track::fetchData - id:' + this.id);
 
       isDynamicCall = isDynamicCall == undefined ? false : isDynamicCall;
 
@@ -69,15 +64,9 @@ define([
 
       if (this.alreadyFetched == false) {
         var xhrProv = new XhrProvider();
-        xhrProv.request(
-          this.url,
-          { trackId: this.id, isDynamicCall: isDynamicCall },
-          this.getRequestArgs(),
-          lang.hitch(this, this._onLoadComplete),
-          lang.hitch(this, this._onLoadError)
-        );
+        xhrProv.request(this.url, { trackId: this.id, isDynamicCall: isDynamicCall }, this.getRequestArgs(), lang.hitch(this, this._onLoadComplete), lang.hitch(this, this._onLoadError));
       } else {
-        this.notify("track-complete", { trackId: this.id });
+        this.notify('track-complete', { trackId: this.id });
       }
     },
 
@@ -91,7 +80,7 @@ define([
       if (requestData.isDynamicCall == false) {
         this.fetchData(true); //Fallback to dynamic url
       } else {
-        this.notify("track-error", { trackId: requestData.trackId });
+        this.notify('track-error', { trackId: requestData.trackId });
       }
     },
 
@@ -102,8 +91,8 @@ define([
 
       this.alreadyFetched = true;
 
-      this.notify("track-complete", { trackId: requestData.trackId });
-    },
+      this.notify('track-complete', { trackId: requestData.trackId });
+    }
   });
 
   return track;

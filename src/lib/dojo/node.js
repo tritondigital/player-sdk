@@ -1,8 +1,6 @@
-define(["./has"], function (has) {
-  if (!has("host-node")) {
-    throw new Error(
-      "node plugin failed to load because environment is not Node.js"
-    );
+define(['./has'], function (has) {
+  if (!has('host-node')) {
+    throw new Error('node plugin failed to load because environment is not Node.js');
   }
 
   return {
@@ -20,7 +18,7 @@ define(["./has"], function (has) {
       //		for information.
 
       if (!require.nodeRequire) {
-        throw new Error("Cannot find native require function");
+        throw new Error('Cannot find native require function');
       }
 
       load(
@@ -44,11 +42,11 @@ define(["./has"], function (has) {
     },
 
     normalize: function (/**string*/ id) {
-      if (id.charAt(0) === ".") {
+      if (id.charAt(0) === '.') {
         id = require.baseUrl + id;
       }
 
       return id;
-    },
+    }
   };
 });

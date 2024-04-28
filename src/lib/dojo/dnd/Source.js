@@ -1,30 +1,17 @@
 define([
-  "../_base/array",
-  "../_base/declare",
-  "../_base/kernel",
-  "../_base/lang",
-  "../dom-class",
-  "../dom-geometry",
-  "../mouse",
-  "../ready",
-  "../topic",
-  "./common",
-  "./Selector",
-  "./Manager",
-], function (
-  array,
-  declare,
-  kernel,
-  lang,
-  domClass,
-  domGeom,
-  mouse,
-  ready,
-  topic,
-  dnd,
-  Selector,
-  Manager
-) {
+  '../_base/array',
+  '../_base/declare',
+  '../_base/kernel',
+  '../_base/lang',
+  '../dom-class',
+  '../dom-geometry',
+  '../mouse',
+  '../ready',
+  '../topic',
+  './common',
+  './Selector',
+  './Manager'
+], function (array, declare, kernel, lang, domClass, domGeom, mouse, ready, topic, dnd, Selector, Manager) {
   // module:
   //		dojo/dnd/Source
 
@@ -80,12 +67,12 @@ var __SourceArgs = {
   // For back-compat, remove in 2.0.
   if (!kernel.isAsync) {
     ready(0, function () {
-      var requires = ["dojo/dnd/AutoSource", "dojo/dnd/Target"];
+      var requires = ['dojo/dnd/AutoSource', 'dojo/dnd/Target'];
       require(requires); // use indirection so modules not rolled into a build
     });
   }
 
-  var Source = declare("dojo.dnd.Source", Selector, {
+  var Source = declare('dojo.dnd.Source', Selector, {
     // summary:
     //		a Source object, which can be used as a DnD source, or a DnD target
 
@@ -99,7 +86,7 @@ var __SourceArgs = {
     withHandles: false,
     autoSync: false,
     delay: 0, // pixels
-    accept: ["text"],
+    accept: ['text'],
     generateText: true,
 
     constructor: function (/*DOMNode|String*/ node, /*__SourceArgs?*/ params) {
@@ -127,26 +114,23 @@ var __SourceArgs = {
       this._lastX = 0;
       this._lastY = 0;
       // states
-      this.sourceState = "";
+      this.sourceState = '';
       if (this.isSource) {
-        domClass.add(this.node, "dojoDndSource");
+        domClass.add(this.node, 'dojoDndSource');
       }
-      this.targetState = "";
+      this.targetState = '';
       if (this.accept) {
-        domClass.add(this.node, "dojoDndTarget");
+        domClass.add(this.node, 'dojoDndTarget');
       }
       if (this.horizontal) {
-        domClass.add(this.node, "dojoDndHorizontal");
+        domClass.add(this.node, 'dojoDndHorizontal');
       }
       // set up events
       this.topics = [
-        topic.subscribe(
-          "/dnd/source/over",
-          lang.hitch(this, "onDndSourceOver")
-        ),
-        topic.subscribe("/dnd/start", lang.hitch(this, "onDndStart")),
-        topic.subscribe("/dnd/drop", lang.hitch(this, "onDndDrop")),
-        topic.subscribe("/dnd/cancel", lang.hitch(this, "onDndCancel")),
+        topic.subscribe('/dnd/source/over', lang.hitch(this, 'onDndSourceOver')),
+        topic.subscribe('/dnd/start', lang.hitch(this, 'onDndStart')),
+        topic.subscribe('/dnd/drop', lang.hitch(this, 'onDndDrop')),
+        topic.subscribe('/dnd/cancel', lang.hitch(this, 'onDndCancel'))
       ];
     },
 
@@ -217,25 +201,16 @@ var __SourceArgs = {
       //		event processor for onmousemove
       // e: Event
       //		mouse event
-      if (this.isDragging && this.targetState == "Disabled") {
+      if (this.isDragging && this.targetState == 'Disabled') {
         return;
       }
       Source.superclass.onMouseMove.call(this, e);
       var m = Manager.manager();
       if (!this.isDragging) {
-        if (
-          this.mouseDown &&
-          this.isSource &&
-          (Math.abs(e.pageX - this._lastX) > this.delay ||
-            Math.abs(e.pageY - this._lastY) > this.delay)
-        ) {
+        if (this.mouseDown && this.isSource && (Math.abs(e.pageX - this._lastX) > this.delay || Math.abs(e.pageY - this._lastY) > this.delay)) {
           var nodes = this.getSelectedNodes();
           if (nodes.length) {
-            m.startDrag(
-              this,
-              nodes,
-              this.copyState(dnd.getCopyKeyState(e), true)
-            );
+            m.startDrag(this, nodes, this.copyState(dnd.getCopyKeyState(e), true));
           }
         }
       }
@@ -248,20 +223,14 @@ var __SourceArgs = {
           }
           if (this.horizontal) {
             // In LTR mode, the left part of the object means "before", but in RTL mode it means "after".
-            before =
-              e.pageX - this.targetBox.x < this.targetBox.w / 2 ==
-              domGeom.isBodyLtr(this.current.ownerDocument);
+            before = e.pageX - this.targetBox.x < this.targetBox.w / 2 == domGeom.isBodyLtr(this.current.ownerDocument);
           } else {
             before = e.pageY - this.targetBox.y < this.targetBox.h / 2;
           }
         }
         if (this.current != this.targetAnchor || before != this.before) {
           this._markTargetAnchor(before);
-          m.canDrop(
-            !this.current ||
-              m.source != this ||
-              !(this.current.id in this.selection)
-          );
+          m.canDrop(!this.current || m.source != this || !(this.current.id in this.selection));
         }
       }
     },
@@ -270,11 +239,7 @@ var __SourceArgs = {
       //		event processor for onmousedown
       // e: Event
       //		mouse event
-      if (
-        !this.mouseDown &&
-        this._legalMouseDown(e) &&
-        (!this.skipForm || !dnd.isFormElement(e))
-      ) {
+      if (!this.mouseDown && this._legalMouseDown(e) && (!this.skipForm || !dnd.isFormElement(e))) {
         this.mouseDown = true;
         this._lastX = e.pageX;
         this._lastY = e.pageY;
@@ -305,12 +270,7 @@ var __SourceArgs = {
         }
       } else if (this.isDragging) {
         var m = Manager.manager();
-        m.canDrop(
-          this.targetState != "Disabled" &&
-            (!this.current ||
-              m.source != this ||
-              !(this.current.id in this.selection))
-        );
+        m.canDrop(this.targetState != 'Disabled' && (!this.current || m.source != this || !(this.current.id in this.selection)));
       }
     },
     onDndStart: function (source, nodes, copy) {
@@ -326,13 +286,10 @@ var __SourceArgs = {
         this.sync();
       }
       if (this.isSource) {
-        this._changeState(
-          "Source",
-          this == source ? (copy ? "Copied" : "Moved") : ""
-        );
+        this._changeState('Source', this == source ? (copy ? 'Copied' : 'Moved') : '');
       }
       var accepted = this.accept && this.checkAcceptance(source, nodes);
-      this._changeState("Target", accepted ? "" : "Disabled");
+      this._changeState('Target', accepted ? '' : 'Disabled');
       if (this == source) {
         Manager.manager().overSource(this);
       }
@@ -365,8 +322,8 @@ var __SourceArgs = {
       this.before = true;
       this.isDragging = false;
       this.mouseDown = false;
-      this._changeState("Source", "");
-      this._changeState("Target", "");
+      this._changeState('Source', '');
+      this._changeState('Target', '');
     },
 
     // local events
@@ -495,7 +452,7 @@ var __SourceArgs = {
       //		this function is called once, when mouse is over our container
       Source.superclass.onOverEvent.call(this);
       Manager.manager().overSource(this);
-      if (this.isDragging && this.targetState != "Disabled") {
+      if (this.isDragging && this.targetState != 'Disabled') {
         this.onDraggingOver();
       }
     },
@@ -504,7 +461,7 @@ var __SourceArgs = {
       //		this function is called once, when mouse is out of our container
       Source.superclass.onOutEvent.call(this);
       Manager.manager().outSource(this);
-      if (this.isDragging && this.targetState != "Disabled") {
+      if (this.isDragging && this.targetState != 'Disabled') {
         this.onDraggingOut();
       }
     },
@@ -517,16 +474,13 @@ var __SourceArgs = {
         return;
       }
       if (this.targetAnchor) {
-        this._removeItemClass(
-          this.targetAnchor,
-          this.before ? "Before" : "After"
-        );
+        this._removeItemClass(this.targetAnchor, this.before ? 'Before' : 'After');
       }
       this.targetAnchor = this.current;
       this.targetBox = null;
       this.before = before;
       if (this.targetAnchor) {
-        this._addItemClass(this.targetAnchor, this.before ? "Before" : "After");
+        this._addItemClass(this.targetAnchor, this.before ? 'Before' : 'After');
       }
     },
     _unmarkTargetAnchor: function () {
@@ -535,10 +489,7 @@ var __SourceArgs = {
       if (!this.targetAnchor) {
         return;
       }
-      this._removeItemClass(
-        this.targetAnchor,
-        this.before ? "Before" : "After"
-      );
+      this._removeItemClass(this.targetAnchor, this.before ? 'Before' : 'After');
       this.targetAnchor = null;
       this.targetBox = null;
       this.before = true;
@@ -546,7 +497,7 @@ var __SourceArgs = {
     _markDndStatus: function (copy) {
       // summary:
       //		changes source's state based on "copy" status
-      this._changeState("Source", copy ? "Copied" : "Moved");
+      this._changeState('Source', copy ? 'Copied' : 'Moved');
     },
     _legalMouseDown: function (e) {
       // summary:
@@ -555,7 +506,7 @@ var __SourceArgs = {
       //		mouse event
 
       // accept only the left mouse button, or the left finger
-      if (e.type != "touchstart" && !mouse.isLeft(e)) {
+      if (e.type != 'touchstart' && !mouse.isLeft(e)) {
         return false;
       }
 
@@ -564,23 +515,16 @@ var __SourceArgs = {
       }
 
       // check for handles
-      for (
-        var node = e.target;
-        node && node !== this.node;
-        node = node.parentNode
-      ) {
-        if (domClass.contains(node, "dojoDndHandle")) {
+      for (var node = e.target; node && node !== this.node; node = node.parentNode) {
+        if (domClass.contains(node, 'dojoDndHandle')) {
           return true;
         }
-        if (
-          domClass.contains(node, "dojoDndItem") ||
-          domClass.contains(node, "dojoDndIgnore")
-        ) {
+        if (domClass.contains(node, 'dojoDndItem') || domClass.contains(node, 'dojoDndIgnore')) {
           break;
         }
       }
       return false; // Boolean
-    },
+    }
   });
 
   return Source;

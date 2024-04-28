@@ -1,82 +1,73 @@
-define([
-  "doh/main",
-  "dojo/request/handlers",
-  "dojo/has",
-  "dojo/_base/kernel",
-  "dojo/json",
-], function (doh, handlers, has, kernel, JSON) {
+define(['doh/main', 'dojo/request/handlers', 'dojo/has', 'dojo/_base/kernel', 'dojo/json'], function (doh, handlers, has, kernel, JSON) {
   var tests = [
     function textContentHandler(t) {
       var response = handlers({
-        text: "foo bar baz ",
-        options: {},
+        text: 'foo bar baz ',
+        options: {}
       });
 
-      t.is("foo bar baz ", response.data);
+      t.is('foo bar baz ', response.data);
     },
     function jsonContentHandler(t) {
       var jsonObj = {
-        foo: "bar",
-        baz: [{ thonk: "blarg" }, "xyzzy!"],
+        foo: 'bar',
+        baz: [{ thonk: 'blarg' }, 'xyzzy!']
       };
       var responseData = handlers({
         text: JSON.stringify(jsonObj),
         options: {
-          handleAs: "json",
-        },
+          handleAs: 'json'
+        }
       });
       t.is(jsonObj, responseData.data);
     },
     function jsContentHandler(t) {
       var jsonObj = {
-        foo: "bar",
-        baz: [{ thonk: "blarg" }, "xyzzy!"],
+        foo: 'bar',
+        baz: [{ thonk: 'blarg' }, 'xyzzy!']
       };
       var responseData = handlers({
-        text: "(" + JSON.stringify(jsonObj) + ")",
+        text: '(' + JSON.stringify(jsonObj) + ')',
         options: {
-          handleAs: "javascript",
-        },
+          handleAs: 'javascript'
+        }
       });
       t.is(jsonObj, responseData.data);
 
       responseData = handlers({
-        text: "true;",
+        text: 'true;',
         options: {
-          handleAs: "javascript",
-        },
+          handleAs: 'javascript'
+        }
       });
       t.t(responseData.data);
 
       responseData = handlers({
-        text: "false;",
+        text: 'false;',
         options: {
-          handleAs: "javascript",
-        },
+          handleAs: 'javascript'
+        }
       });
       t.f(responseData.data);
-    },
+    }
   ];
 
-  if (has("host-browser")) {
+  if (has('host-browser')) {
     tests.push(function xmlContentHandler(t) {
       var responseData = {
         text: "<foo><bar baz='thonk'>blarg</bar></foo>",
         options: {
-          handleAs: "xml",
-        },
+          handleAs: 'xml'
+        }
       };
-      if ("DOMParser" in kernel.global) {
+      if ('DOMParser' in kernel.global) {
         var parser = new DOMParser();
-        responseData.data = parser.parseFromString(
-          responseData.text,
-          "text/xml"
-        );
+        responseData.data = parser.parseFromString(responseData.text, 'text/xml');
       }
 
       responseData = handlers(responseData);
-      t.is("foo", responseData.data.documentElement.tagName);
+      t.is('foo', responseData.data.documentElement.tagName);
     });
   }
-  doh.register("tests.request.handlers", tests);
+  doh.register('tests.request.handlers', tests);
 });

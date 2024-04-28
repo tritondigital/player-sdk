@@ -2,60 +2,54 @@
  * @module GAEventRequest
  */
 
-var Const = require("sdk/base/util/Const");
+var Const = require('sdk/base/util/Const');
 
-define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "dojo/_base/array",
-  "dojo/Deferred",
-  "sdk/base/util/analytics/GARequest",
-], function (declare, lang, array, deferred, GARequest) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/Deferred', 'sdk/base/util/analytics/GARequest'], function (declare, lang, array, deferred, GARequest) {
   /**
    * @namespace tdapi/modules/analytics/GAEventRequest
    */
   var GAEventRequest = declare([GARequest], {
     //categories
-    CATEGORY_INIT: "Init",
-    CATEGORY_STREAMING: "Streaming",
-    CATEGORY_AD: "Ad",
-    CATEGORY_ON_DEMAND: "On Demand",
-    CATEGORY_LISTENER: "Listener",
-    CATEGORY_DEFAULT: "Default",
+    CATEGORY_INIT: 'Init',
+    CATEGORY_STREAMING: 'Streaming',
+    CATEGORY_AD: 'Ad',
+    CATEGORY_ON_DEMAND: 'On Demand',
+    CATEGORY_LISTENER: 'Listener',
+    CATEGORY_DEFAULT: 'Default',
 
     //actions
-    ACTION_CONFIG: "Config",
-    ACTION_CONNECTION: "Connection",
-    ACTION_PREROLL: "Preroll",
-    ACTION_PLAY: "Play",
-    ACTION_STOP: "Stop",
-    ACTION_PAUSE: "Pause",
-    ACTION_RESUME: "Resume",
-    ACTION_TRACKING: "Tracking",
-    ACTION_MUTE: "Mute",
-    ACTION_UNMUTE: "Unmute",
+    ACTION_CONFIG: 'Config',
+    ACTION_CONNECTION: 'Connection',
+    ACTION_PREROLL: 'Preroll',
+    ACTION_PLAY: 'Play',
+    ACTION_STOP: 'Stop',
+    ACTION_PAUSE: 'Pause',
+    ACTION_RESUME: 'Resume',
+    ACTION_TRACKING: 'Tracking',
+    ACTION_MUTE: 'Mute',
+    ACTION_UNMUTE: 'Unmute',
     // All actions
-    ACTION_ALL: "All",
+    ACTION_ALL: 'All',
 
     //labels
-    LABEL_SUCCESS: "Success",
-    LABEL_ERROR: "Error",
-    LABEL_STREAM_ERROR: "Stream Error",
-    LABEL_GEOBLOCKING: "Geoblocking",
-    LABEL_UNAVAILABLE: "Unavailable",
-    LABEL_TRACK: "Track",
-    LABEL_CUSTOM: "Custom",
-    LABEL_SPEECH: "Speech",
-    LABEL_BREAK: "Break",
-    LABEL_END_BREAK: "End Break",
-    LABEL_SMART: "Smart",
-    LABEL_DUMB: "Dumb",
+    LABEL_SUCCESS: 'Success',
+    LABEL_ERROR: 'Error',
+    LABEL_STREAM_ERROR: 'Stream Error',
+    LABEL_GEOBLOCKING: 'Geoblocking',
+    LABEL_UNAVAILABLE: 'Unavailable',
+    LABEL_TRACK: 'Track',
+    LABEL_CUSTOM: 'Custom',
+    LABEL_SPEECH: 'Speech',
+    LABEL_BREAK: 'Break',
+    LABEL_END_BREAK: 'End Break',
+    LABEL_SMART: 'Smart',
+    LABEL_DUMB: 'Dumb',
 
     /**
      * constructor
      */
     constructor: function () {
-      console.log("GAEventRequest::constructor");
+      console.log('GAEventRequest::constructor');
       this.inherited(arguments);
       this.broadcasters = Array();
     },
@@ -86,14 +80,14 @@ define([
     requestGA: function (category, action, label, dimensions, metrics) {
       if (!this.shouldRequest(action)) return;
 
-      console.log("GAEventRequest::requestGA");
+      console.log('GAEventRequest::requestGA');
 
       var self = this;
       var data = {
-        hitType: "event",
+        hitType: 'event',
         eventCategory: category,
         eventAction: action,
-        eventLabel: label,
+        eventLabel: label
       };
       // Append the custom dimensions to the object to send
       lang.mixin(data, dimensions);
@@ -105,8 +99,7 @@ define([
           if (this.broadcasters[data[this.DIM_MOUNT]]) {
             //merge broadcaster avec current object
             var tmpObj = {};
-            tmpObj[this.DIM_BROADCASTER] =
-              this.broadcasters[data[this.DIM_MOUNT]];
+            tmpObj[this.DIM_BROADCASTER] = this.broadcasters[data[this.DIM_MOUNT]];
             lang.mixin(data, tmpObj);
             this.request(data);
           } else {
@@ -130,7 +123,7 @@ define([
         }
       } else {
         //error
-        console.log("error requestGA");
+        console.log('error requestGA');
       }
     },
 
@@ -168,12 +161,10 @@ define([
                       valid = this.validateStreamingConnectionSuccess(object);
                       break;
                     case this.LABEL_STREAM_ERROR:
-                      valid =
-                        this.validateStreamingConnectionStreamError(object);
+                      valid = this.validateStreamingConnectionStreamError(object);
                       break;
                     case this.LABEL_GEOBLOCKING:
-                      valid =
-                        this.validateStreamingConnectionGeoblocking(object);
+                      valid = this.validateStreamingConnectionGeoblocking(object);
                       break;
                     default:
                       valid = true;
@@ -220,9 +211,9 @@ define([
      * @param object | object
      */
     validateType: function (object) {
-      console.log("GAEventRequest::validateType");
+      console.log('GAEventRequest::validateType');
 
-      if (!_validateObject(object, this.TYPE, "event")) return false;
+      if (!_validateObject(object, this.TYPE, 'event')) return false;
 
       return true;
     },
@@ -232,26 +223,19 @@ define([
      * @param object | object
      */
     validateInitConfig: function (object) {
-      console.log("GAEventRequest::validateInitConfig");
+      console.log('GAEventRequest::validateInitConfig');
 
-      if (!_validateObject(object, this.CATEGORY, "Init")) return false;
-      if (!_validateObject(object, this.ACTION, "Config")) return false;
-      if (!_validateObject(object, this.LABEL, ["Success", "Error"]))
-        return false;
+      if (!_validateObject(object, this.CATEGORY, 'Init')) return false;
+      if (!_validateObject(object, this.ACTION, 'Config')) return false;
+      if (!_validateObject(object, this.LABEL, ['Success', 'Error'])) return false;
 
       //dimensions
-      if (!_validateObject(object, this.DIM_TECH, ["Flash", "Html5"]))
-        return false;
-      if (!_validateObject(object, this.DIM_ADBLOCK, ["true", "false"]))
-        return false;
-      if (!_validateObject(object, this.DIM_SBM, ["true", "false"]))
-        return false;
-      if (!_validateObject(object, this.DIM_HLS, ["true", "false"]))
-        return false;
-      if (!_validateObject(object, this.DIM_AUDIO_ADAPTIVE, ["true", "false"]))
-        return false;
-      if (!_validateObject(object, this.DIM_IDSYNC, ["true", "false"]))
-        return false;
+      if (!_validateObject(object, this.DIM_TECH, ['Flash', 'Html5'])) return false;
+      if (!_validateObject(object, this.DIM_ADBLOCK, ['true', 'false'])) return false;
+      if (!_validateObject(object, this.DIM_SBM, ['true', 'false'])) return false;
+      if (!_validateObject(object, this.DIM_HLS, ['true', 'false'])) return false;
+      if (!_validateObject(object, this.DIM_AUDIO_ADAPTIVE, ['true', 'false'])) return false;
+      if (!_validateObject(object, this.DIM_IDSYNC, ['true', 'false'])) return false;
 
       // //metrics
       if (!_validateNotEmptyValue(object, this.METRIC_LOAD_TIME)) return false;
@@ -264,22 +248,13 @@ define([
      * @param object | object
      */
     validateStreamingConnectionSuccess: function (object) {
-      console.log("GAEventRequest::validateStreamingConnectionSuccess");
+      console.log('GAEventRequest::validateStreamingConnectionSuccess');
 
-      if (
-        !_validateObject(object, this.DIM_MEDIA_TYPE, [
-          Const.AUDIO,
-          Const.VIDEO,
-        ])
-      )
-        return false;
-      if (!_validateObject(object, this.DIM_HLS, ["true", "false"]))
-        return false;
-      if (!_validateObject(object, this.DIM_AUDIO_ADAPTIVE, ["true", "false"]))
-        return false;
+      if (!_validateObject(object, this.DIM_MEDIA_TYPE, [Const.AUDIO, Const.VIDEO])) return false;
+      if (!_validateObject(object, this.DIM_HLS, ['true', 'false'])) return false;
+      if (!_validateObject(object, this.DIM_AUDIO_ADAPTIVE, ['true', 'false'])) return false;
 
-      if (!_validateNotEmptyValue(object, this.METRIC_CONNECTION_TIME))
-        return false;
+      if (!_validateNotEmptyValue(object, this.METRIC_CONNECTION_TIME)) return false;
 
       return true;
     },
@@ -289,19 +264,13 @@ define([
      * @param object | object
      */
     validateStreamingConnectionStreamError: function (object) {
-      console.log("GAEventRequest::validateStreamingConnectionStreamError");
+      console.log('GAEventRequest::validateStreamingConnectionStreamError');
 
-      if (
-        !_validateObject(object, this.DIM_MEDIA_FORMAT, ["AAC", "MP3", "FLV"])
-      )
-        return false;
-      if (!_validateObject(object, this.DIM_HLS, ["true", "false"]))
-        return false;
-      if (!_validateObject(object, this.DIM_AUDIO_ADAPTIVE, ["true", "false"]))
-        return false;
+      if (!_validateObject(object, this.DIM_MEDIA_FORMAT, ['AAC', 'MP3', 'FLV'])) return false;
+      if (!_validateObject(object, this.DIM_HLS, ['true', 'false'])) return false;
+      if (!_validateObject(object, this.DIM_AUDIO_ADAPTIVE, ['true', 'false'])) return false;
 
-      if (!_validateNotEmptyValue(object, this.METRIC_STREAM_ERROR_TIME))
-        return false;
+      if (!_validateNotEmptyValue(object, this.METRIC_STREAM_ERROR_TIME)) return false;
 
       return true;
     },
@@ -311,15 +280,9 @@ define([
      * @param object | object
      */
     validateStreamingConnectionGeoblocking: function (object) {
-      console.log("GAEventRequest::validateStreamingConnectionGeoblocking");
+      console.log('GAEventRequest::validateStreamingConnectionGeoblocking');
 
-      if (
-        !_validateNotEmptyValue(object, this.DIM_ALTERNATE_CONTENT, [
-          "true",
-          "false",
-        ])
-      )
-        return false;
+      if (!_validateNotEmptyValue(object, this.DIM_ALTERNATE_CONTENT, ['true', 'false'])) return false;
 
       return true;
     },
@@ -329,27 +292,14 @@ define([
      * @param object | object
      */
     validateStreamingConnection: function (object) {
-      console.log("GAEventRequest::validateStreamingConnection");
+      console.log('GAEventRequest::validateStreamingConnection');
 
-      if (!_validateObject(object, this.CATEGORY, "Streaming")) return false;
-      if (!_validateObject(object, this.ACTION, "Connection")) return false;
-      if (
-        !_validateObject(object, this.LABEL, [
-          "Success",
-          "Unavailable",
-          "Stream Error",
-          "Geoblocking",
-          "Failed",
-        ])
-      )
-        return false;
+      if (!_validateObject(object, this.CATEGORY, 'Streaming')) return false;
+      if (!_validateObject(object, this.ACTION, 'Connection')) return false;
+      if (!_validateObject(object, this.LABEL, ['Success', 'Unavailable', 'Stream Error', 'Geoblocking', 'Failed'])) return false;
 
       //dimensions
-      if (
-        !_validateNotEmptyValue(object, this.DIM_MOUNT) &&
-        !_validateNotEmptyValue(object, this.DIM_STATION)
-      )
-        return false;
+      if (!_validateNotEmptyValue(object, this.DIM_MOUNT) && !_validateNotEmptyValue(object, this.DIM_STATION)) return false;
 
       return true;
     },
@@ -359,32 +309,19 @@ define([
      * @param object | object
      */
     validateAdPreroll: function (object) {
-      console.log("GAEventRequest::validateAdPreroll");
+      console.log('GAEventRequest::validateAdPreroll');
 
-      if (!_validateObject(object, this.CATEGORY, "Ad")) return false;
-      if (!_validateObject(object, this.ACTION, "Preroll")) return false;
-      if (!_validateObject(object, this.LABEL, ["Success", "Error"]))
-        return false;
+      if (!_validateObject(object, this.CATEGORY, 'Ad')) return false;
+      if (!_validateObject(object, this.ACTION, 'Preroll')) return false;
+      if (!_validateObject(object, this.LABEL, ['Success', 'Error'])) return false;
 
       //dimensions
-      if (
-        !_validateObject(object, this.DIM_AD_SOURCE, ["TAP", "CM3", "Others"])
-      )
-        return false;
-      if (!_validateObject(object, this.DIM_AD_FORMAT, ["VAST", "DAAST"]))
-        return false;
-      if (
-        !_validateObject(object, this.DIM_AD_PARSER, [
-          "IMA",
-          "VASTModule",
-          "Direct",
-        ])
-      )
-        return false;
+      if (!_validateObject(object, this.DIM_AD_SOURCE, ['TAP', 'CM3', 'Others'])) return false;
+      if (!_validateObject(object, this.DIM_AD_FORMAT, ['VAST', 'DAAST'])) return false;
+      if (!_validateObject(object, this.DIM_AD_PARSER, ['IMA', 'VASTModule', 'Direct'])) return false;
 
       //metric
-      if (!_validateNotEmptyValue(object, this.METRIC_CONNECTION_TIME))
-        return false;
+      if (!_validateNotEmptyValue(object, this.METRIC_CONNECTION_TIME)) return false;
 
       return true;
     },
@@ -394,12 +331,11 @@ define([
      * @param object | object
      */
     validateOnDemand: function (object) {
-      console.log("GAEventRequest::validateOnDemand");
+      console.log('GAEventRequest::validateOnDemand');
 
-      if (!_validateObject(object, this.CATEGORY, "On Demand")) return false;
-      if (!_validateObject(object, this.ACTION, "Play")) return false;
-      if (!_validateObject(object, this.LABEL, ["Success", "Error"]))
-        return false;
+      if (!_validateObject(object, this.CATEGORY, 'On Demand')) return false;
+      if (!_validateObject(object, this.ACTION, 'Play')) return false;
+      if (!_validateObject(object, this.LABEL, ['Success', 'Error'])) return false;
 
       return true;
     },
@@ -409,21 +345,17 @@ define([
      * @param object | object
      */
     validateListener: function (object) {
-      console.log("GAEventRequest::validateListener");
+      console.log('GAEventRequest::validateListener');
 
-      if (!_validateObject(object, this.CATEGORY, "Listener")) return false;
-      if (!_validateObject(object, this.ACTION, "Tracking")) return false;
-      if (!_validateObject(object, this.LABEL, ["Smart", "Dumb"])) return false;
+      if (!_validateObject(object, this.CATEGORY, 'Listener')) return false;
+      if (!_validateObject(object, this.ACTION, 'Tracking')) return false;
+      if (!_validateObject(object, this.LABEL, ['Smart', 'Dumb'])) return false;
 
       //dimensions
-      if (
-        !_validateNotEmptyValue(object, this.DIM_MOUNT) &&
-        !_validateNotEmptyValue(object, this.DIM_STATION)
-      )
-        return false;
+      if (!_validateNotEmptyValue(object, this.DIM_MOUNT) && !_validateNotEmptyValue(object, this.DIM_STATION)) return false;
 
       return true;
-    },
+    }
   });
 
   /**
@@ -454,10 +386,7 @@ define([
    * @param validValue | String
    */
   function _validateValidValue(object, key, validValue) {
-    if (
-      !_validateNotEmptyValue(object, key) ||
-      object[key].toString() != validValue.toString()
-    ) {
+    if (!_validateNotEmptyValue(object, key) || object[key].toString() != validValue.toString()) {
       return false;
     }
 
@@ -470,12 +399,7 @@ define([
    * @param key | String
    */
   function _validateNotEmptyValue(object, key) {
-    if (
-      !object.hasOwnProperty(key) ||
-      object[key] == null ||
-      object[key].toString() == "" ||
-      object[key] === undefined
-    ) {
+    if (!object.hasOwnProperty(key) || object[key] == null || object[key].toString() == '' || object[key] === undefined) {
       return false;
     }
 

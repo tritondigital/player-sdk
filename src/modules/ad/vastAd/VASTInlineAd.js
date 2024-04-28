@@ -1,10 +1,10 @@
 /**
  * VAST Inline Ad
  */
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var vastInlineAd = declare([], {
     constructor: function () {
-      console.log("VASTInlineAd::constructor");
+      console.log('VASTInlineAd::constructor');
 
       this.adTitle = null;
       this.adSystem = null;
@@ -67,7 +67,7 @@ define(["dojo/_base/declare"], function (declare) {
 
     getLinearDuration: function (sequence) {
       return null;
-    },
+    }
   });
 
   return vastInlineAd;

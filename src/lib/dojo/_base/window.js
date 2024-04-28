@@ -1,4 +1,4 @@
-define(["./kernel", "./lang", "../sniff"], function (dojo, lang, has) {
+define(['./kernel', './lang', '../sniff'], function (dojo, lang, has) {
   // module:
   //		dojo/_base/window
 
@@ -18,7 +18,7 @@ define(["./kernel", "./lang", "../sniff"], function (dojo, lang, has) {
 	 },
 	 =====*/
 
-    doc: this["document"] || null,
+    doc: this['document'] || null,
     /*=====
 	doc: {
 		// summary:
@@ -41,13 +41,10 @@ define(["./kernel", "./lang", "../sniff"], function (dojo, lang, has) {
       // Note: document.body is not defined for a strict xhtml document
       // Would like to memoize this, but dojo.doc can change vi dojo.withDoc().
       doc = doc || dojo.doc;
-      return doc.body || doc.getElementsByTagName("body")[0]; // Node
+      return doc.body || doc.getElementsByTagName('body')[0]; // Node
     },
 
-    setContext: function (
-      /*Object*/ globalObject,
-      /*DocumentElement*/ globalDocument
-    ) {
+    setContext: function (/*Object*/ globalObject, /*DocumentElement*/ globalDocument) {
       // summary:
       //		changes the behavior of many core Dojo functions that deal with
       //		namespace and DOM lookup, changing them to work in a new global
@@ -58,12 +55,7 @@ define(["./kernel", "./lang", "../sniff"], function (dojo, lang, has) {
       dojo.doc = ret.doc = globalDocument;
     },
 
-    withGlobal: function (
-      /*Object*/ globalObject,
-      /*Function*/ callback,
-      /*Object?*/ thisObject,
-      /*Array?*/ cbArguments
-    ) {
+    withGlobal: function (/*Object*/ globalObject, /*Function*/ callback, /*Object?*/ thisObject, /*Array?*/ cbArguments) {
       // summary:
       //		Invoke callback with globalObject as dojo.global and
       //		globalObject.document as dojo.doc.
@@ -77,24 +69,13 @@ define(["./kernel", "./lang", "../sniff"], function (dojo, lang, has) {
       var oldGlob = dojo.global;
       try {
         dojo.global = ret.global = globalObject;
-        return ret.withDoc.call(
-          null,
-          globalObject.document,
-          callback,
-          thisObject,
-          cbArguments
-        );
+        return ret.withDoc.call(null, globalObject.document, callback, thisObject, cbArguments);
       } finally {
         dojo.global = ret.global = oldGlob;
       }
     },
 
-    withDoc: function (
-      /*DocumentElement*/ documentObject,
-      /*Function*/ callback,
-      /*Object?*/ thisObject,
-      /*Array?*/ cbArguments
-    ) {
+    withDoc: function (/*DocumentElement*/ documentObject, /*Function*/ callback, /*Object?*/ thisObject, /*Array?*/ cbArguments) {
       // summary:
       //		Invoke callback with documentObject as dojo/_base/window::doc.
       // description:
@@ -104,8 +85,8 @@ define(["./kernel", "./lang", "../sniff"], function (dojo, lang, has) {
       //		be restored to its previous state.
 
       var oldDoc = ret.doc,
-        oldQ = has("quirks"),
-        oldIE = has("ie"),
+        oldQ = has('quirks'),
+        oldIE = has('ie'),
         isIE,
         mode,
         pwin;
@@ -114,43 +95,36 @@ define(["./kernel", "./lang", "../sniff"], function (dojo, lang, has) {
         dojo.doc = ret.doc = documentObject;
         // update dojo.isQuirks and the value of the has feature "quirks".
         // remove setting dojo.isQuirks and dojo.isIE for 2.0
-        dojo.isQuirks = has.add(
-          "quirks",
-          dojo.doc.compatMode == "BackCompat",
-          true,
-          true
-        ); // no need to check for QuirksMode which was Opera 7 only
+        dojo.isQuirks = has.add('quirks', dojo.doc.compatMode == 'BackCompat', true, true); // no need to check for QuirksMode which was Opera 7 only
 
-        if (has("ie")) {
+        if (has('ie')) {
           if ((pwin = documentObject.parentWindow) && pwin.navigator) {
             // re-run IE detection logic and update dojo.isIE / has("ie")
             // (the only time parentWindow/navigator wouldn't exist is if we were not
             // passed an actual legitimate document object)
-            isIE =
-              parseFloat(pwin.navigator.appVersion.split("MSIE ")[1]) ||
-              undefined;
+            isIE = parseFloat(pwin.navigator.appVersion.split('MSIE ')[1]) || undefined;
             mode = documentObject.documentMode;
             if (mode && mode != 5 && Math.floor(isIE) != mode) {
               isIE = mode;
             }
-            dojo.isIE = has.add("ie", isIE, true, true);
+            dojo.isIE = has.add('ie', isIE, true, true);
           }
         }
 
-        if (thisObject && typeof callback == "string") {
+        if (thisObject && typeof callback == 'string') {
           callback = thisObject[callback];
         }
 
         return callback.apply(thisObject, cbArguments || []);
       } finally {
         dojo.doc = ret.doc = oldDoc;
-        dojo.isQuirks = has.add("quirks", oldQ, true, true);
-        dojo.isIE = has.add("ie", oldIE, true, true);
+        dojo.isQuirks = has.add('quirks', oldQ, true, true);
+        dojo.isIE = has.add('ie', oldIE, true, true);
       }
-    },
+    }
   };
 
-  has("extend-dojo") && lang.mixin(dojo, ret);
+  has('extend-dojo') && lang.mixin(dojo, ret);
 
   return ret;
 });

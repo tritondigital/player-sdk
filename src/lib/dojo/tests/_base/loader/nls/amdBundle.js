@@ -1,7 +1,7 @@
 define({
   root: {
-    amdBundle: "amdBundle",
+    amdBundle: 'amdBundle'
   },
   ab: 1,
-  "ab-cd-ef": 1,
+  'ab-cd-ef': 1
 });

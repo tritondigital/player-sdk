@@ -1,8 +1,4 @@
-define(["../../_base/array", "../../_base/lang", "../../when"], function (
-  array,
-  lang,
-  when
-) {
+define(['../../_base/array', '../../_base/lang', '../../when'], function (array, lang, when) {
   // module:
   //		dojo/store/util/QueryResults
 
@@ -47,9 +43,9 @@ define(["../../_base/array", "../../_base/lang", "../../when"], function (
         };
       }
     }
-    addIterativeMethod("forEach");
-    addIterativeMethod("filter");
-    addIterativeMethod("map");
+    addIterativeMethod('forEach');
+    addIterativeMethod('filter');
+    addIterativeMethod('map');
     if (!results.total) {
       results.total = when(results, function (results) {
         return results.length;
@@ -58,7 +54,7 @@ define(["../../_base/array", "../../_base/lang", "../../when"], function (
     return results; // Object
   };
 
-  lang.setObject("dojo.store.util.QueryResults", QueryResults);
+  lang.setObject('dojo.store.util.QueryResults', QueryResults);
 
   return QueryResults;
 });

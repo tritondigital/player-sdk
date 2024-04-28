@@ -1,8 +1,4 @@
-define(["../../_base/lang", "../../_base/kernel", "./sorter"], function (
-  lang,
-  kernel,
-  sorter
-) {
+define(['../../_base/lang', '../../_base/kernel', './sorter'], function (lang, kernel, sorter) {
   // module:
   //		dojo/data/util/simpleFetch
   // summary:
@@ -10,12 +6,9 @@ define(["../../_base/lang", "../../_base/kernel", "./sorter"], function (
   //		be mixed into other datastore implementations to accelerate their development.
 
   var simpleFetch = {};
-  lang.setObject("dojo.data.util.simpleFetch", simpleFetch);
+  lang.setObject('dojo.data.util.simpleFetch', simpleFetch);
 
-  simpleFetch.errorHandler = function (
-    /*Object*/ errorData,
-    /*Object*/ requestObject
-  ) {
+  simpleFetch.errorHandler = function (/*Object*/ errorData, /*Object*/ requestObject) {
     // summary:
     //		The error handler when there is an error fetching items.  This function should not be called
     //		directly and is used by simpleFetch.fetch().
@@ -25,20 +18,14 @@ define(["../../_base/lang", "../../_base/kernel", "./sorter"], function (
     }
   };
 
-  simpleFetch.fetchHandler = function (
-    /*Array*/ items,
-    /*Object*/ requestObject
-  ) {
+  simpleFetch.fetchHandler = function (/*Array*/ items, /*Object*/ requestObject) {
     // summary:
     //		The handler when items are sucessfully fetched.  This function should not be called directly
     //		and is used by simpleFetch.fetch().
     var oldAbortFunction = requestObject.abort || null,
       aborted = false,
       startIndex = requestObject.start ? requestObject.start : 0,
-      endIndex =
-        requestObject.count && requestObject.count !== Infinity
-          ? startIndex + requestObject.count
-          : items.length;
+      endIndex = requestObject.count && requestObject.count !== Infinity ? startIndex + requestObject.count : items.length;
 
     requestObject.abort = function () {
       aborted = true;
@@ -243,11 +230,7 @@ define(["../../_base/lang", "../../_base/kernel", "./sorter"], function (
       request.store = this;
     }
 
-    this._fetchItems(
-      request,
-      lang.hitch(this, "fetchHandler"),
-      lang.hitch(this, "errorHandler")
-    );
+    this._fetchItems(request, lang.hitch(this, 'fetchHandler'), lang.hitch(this, 'errorHandler'));
     return request; // Object
   };
 

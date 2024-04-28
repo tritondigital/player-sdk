@@ -1,5 +1,5 @@
-define(["doh", "../date"], function (doh, date) {
-  doh.register("tests.date.util", [
+define(['doh', '../date'], function (doh, date) {
+  doh.register('tests.date.util', [
     /* Informational Functions
      **************************/
 
@@ -48,8 +48,8 @@ define(["doh", "../date"], function (doh, date) {
       // Create a fake Date object with toString and toLocaleString
       // results manually set to simulate tests for multiple browsers
       function FakeDate(str, strLocale) {
-        this.str = str || "";
-        this.strLocale = strLocale || "";
+        this.str = str || '';
+        this.strLocale = strLocale || '';
         this.toString = function () {
           return this.str;
         };
@@ -60,43 +60,43 @@ define(["doh", "../date"], function (doh, date) {
       var dt = new FakeDate();
 
       // FF 1.5 Ubuntu Linux (Breezy)
-      dt.str = "Sun Sep 17 2006 22:25:51 GMT-0500 (CDT)";
-      dt.strLocale = "Sun 17 Sep 2006 10:25:51 PM CDT";
-      t.is("CDT", date.getTimezoneName(dt));
+      dt.str = 'Sun Sep 17 2006 22:25:51 GMT-0500 (CDT)';
+      dt.strLocale = 'Sun 17 Sep 2006 10:25:51 PM CDT';
+      t.is('CDT', date.getTimezoneName(dt));
 
       // Safari 2.0 Mac OS X 10.4
-      dt.str = "Sun Sep 17 2006 22:55:01 GMT-0500";
-      dt.strLocale = "September 17, 2006 10:55:01 PM CDT";
-      t.is("CDT", date.getTimezoneName(dt));
+      dt.str = 'Sun Sep 17 2006 22:55:01 GMT-0500';
+      dt.strLocale = 'September 17, 2006 10:55:01 PM CDT';
+      t.is('CDT', date.getTimezoneName(dt));
 
       // FF 1.5 Mac OS X 10.4
-      dt.str = "Sun Sep 17 2006 22:57:18 GMT-0500 (CDT)";
-      dt.strLocale = "Sun Sep 17 22:57:18 2006";
-      t.is("CDT", date.getTimezoneName(dt));
+      dt.str = 'Sun Sep 17 2006 22:57:18 GMT-0500 (CDT)';
+      dt.strLocale = 'Sun Sep 17 22:57:18 2006';
+      t.is('CDT', date.getTimezoneName(dt));
 
       // Opera 9 Mac OS X 10.4 -- no TZ data expect empty string return
-      dt.str = "Sun, 17 Sep 2006 22:58:06 GMT-0500";
-      dt.strLocale = "Sunday September 17, 22:58:06 GMT-0500 2006";
-      t.is("", date.getTimezoneName(dt));
+      dt.str = 'Sun, 17 Sep 2006 22:58:06 GMT-0500';
+      dt.strLocale = 'Sunday September 17, 22:58:06 GMT-0500 2006';
+      t.is('', date.getTimezoneName(dt));
 
       // IE 6 Windows XP
-      dt.str = "Mon Sep 18 11:21:07 CDT 2006";
-      dt.strLocale = "Monday, September 18, 2006 11:21:07 AM";
-      t.is("CDT", date.getTimezoneName(dt));
+      dt.str = 'Mon Sep 18 11:21:07 CDT 2006';
+      dt.strLocale = 'Monday, September 18, 2006 11:21:07 AM';
+      t.is('CDT', date.getTimezoneName(dt));
 
       // Opera 9 Ubuntu Linux (Breezy) -- no TZ data expect empty string return
-      dt.str = "Mon, 18 Sep 2006 13:30:32 GMT-0500";
-      dt.strLocale = "Monday September 18, 13:30:32 GMT-0500 2006";
-      t.is("", date.getTimezoneName(dt));
+      dt.str = 'Mon, 18 Sep 2006 13:30:32 GMT-0500';
+      dt.strLocale = 'Monday September 18, 13:30:32 GMT-0500 2006';
+      t.is('', date.getTimezoneName(dt));
 
       // IE 5.5 Windows 2000
-      dt.str = "Mon Sep 18 13:49:22 CDT 2006";
-      dt.strLocale = "Monday, September 18, 2006 1:49:22 PM";
-      t.is("CDT", date.getTimezoneName(dt));
-    },
+      dt.str = 'Mon Sep 18 13:49:22 CDT 2006';
+      dt.strLocale = 'Monday, September 18, 2006 1:49:22 PM';
+      t.is('CDT', date.getTimezoneName(dt));
+    }
   ]);
 
-  doh.register("tests.date.math", [
+  doh.register('tests.date.math', [
     function test_date_compare(t) {
       var d1 = new Date();
       d1.setHours(0);
@@ -104,17 +104,17 @@ define(["doh", "../date"], function (doh, date) {
       d2.setFullYear(2005);
       d2.setHours(12);
       t.is(0, date.compare(d1, d1));
-      t.is(1, date.compare(d1, d2, "date"));
-      t.is(-1, date.compare(d2, d1, "date"));
-      t.is(-1, date.compare(d1, d2, "time"));
-      t.is(1, date.compare(d1, d2, "datetime"));
+      t.is(1, date.compare(d1, d2, 'date'));
+      t.is(-1, date.compare(d2, d1, 'date'));
+      t.is(-1, date.compare(d1, d2, 'time'));
+      t.is(1, date.compare(d1, d2, 'datetime'));
     },
     function test_date_add(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
 
-      interv = "year";
+      interv = 'year';
       dtA = new Date(2005, 11, 27);
       dtB = new Date(2006, 11, 27);
       t.is(dtB, date.add(dtA, interv, 1));
@@ -139,7 +139,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2030, 11, 31);
       t.is(dtB, date.add(dtA, interv, 35));
 
-      interv = "quarter";
+      interv = 'quarter';
       dtA = new Date(2000, 0, 1);
       dtB = new Date(2000, 3, 1);
       t.is(dtB, date.add(dtA, interv, 1));
@@ -152,7 +152,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2001, 1, 28);
       t.is(dtB, date.add(dtA, interv, 4));
 
-      interv = "month";
+      interv = 'month';
       dtA = new Date(2000, 0, 1);
       dtB = new Date(2000, 1, 1);
       t.is(dtB, date.add(dtA, interv, 1));
@@ -165,12 +165,12 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2001, 1, 28);
       t.is(dtB, date.add(dtA, interv, 12));
 
-      interv = "week";
+      interv = 'week';
       dtA = new Date(2000, 0, 1);
       dtB = new Date(2000, 0, 8);
       t.is(dtB, date.add(dtA, interv, 1));
 
-      interv = "day";
+      interv = 'day';
       dtA = new Date(2000, 0, 1);
       dtB = new Date(2000, 0, 2);
       t.is(dtB, date.add(dtA, interv, 1));
@@ -203,7 +203,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(1999, 11, 31);
       t.is(dtB, date.add(dtA, interv, -1));
 
-      interv = "weekday";
+      interv = 'weekday';
       // Sat, Jan 1
       dtA = new Date(2000, 0, 1);
       // Should be Mon, Jan 3
@@ -252,7 +252,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2000, 0, 7);
       t.is(dtB, date.add(dtA, interv, -11));
 
-      interv = "hour";
+      interv = 'hour';
       dtA = new Date(2000, 0, 1, 11);
       dtB = new Date(2000, 0, 1, 12);
       t.is(dtB, date.add(dtA, interv, 1));
@@ -269,7 +269,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2002, 0, 1, 0);
       t.is(dtB, date.add(dtA, interv, 1));
 
-      interv = "minute";
+      interv = 'minute';
       dtA = new Date(2000, 11, 31, 23, 59);
       dtB = new Date(2001, 0, 1, 0, 0);
       t.is(dtB, date.add(dtA, interv, 1));
@@ -278,7 +278,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2000, 11, 27, 13, 2);
       t.is(dtB, date.add(dtA, interv, 60));
 
-      interv = "second";
+      interv = 'second';
       dtA = new Date(2000, 11, 31, 23, 59, 59);
       dtB = new Date(2001, 0, 1, 0, 0, 0);
       t.is(dtB, date.add(dtA, interv, 1));
@@ -301,9 +301,9 @@ define(["doh", "../date"], function (doh, date) {
     function test_date_diff(t) {
       var dtA = null; // First date to compare
       var dtB = null; // Second date to compare
-      var interv = ""; // Interval to compare on (e.g., year, month)
+      var interv = ''; // Interval to compare on (e.g., year, month)
 
-      interv = "year";
+      interv = 'year';
       dtA = new Date(2005, 11, 27);
       dtB = new Date(2006, 11, 27);
       t.is(1, date.difference(dtA, dtB, interv));
@@ -312,7 +312,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2001, 0, 1);
       t.is(1, date.difference(dtA, dtB, interv));
 
-      interv = "quarter";
+      interv = 'quarter';
       dtA = new Date(2000, 1, 29);
       dtB = new Date(2001, 2, 1);
       t.is(4, date.difference(dtA, dtB, interv));
@@ -321,7 +321,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2001, 0, 1);
       t.is(1, date.difference(dtA, dtB, interv));
 
-      interv = "month";
+      interv = 'month';
       dtA = new Date(2000, 1, 29);
       dtB = new Date(2001, 2, 1);
       t.is(13, date.difference(dtA, dtB, interv));
@@ -330,7 +330,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2001, 0, 1);
       t.is(1, date.difference(dtA, dtB, interv));
 
-      interv = "week";
+      interv = 'week';
       dtA = new Date(2000, 1, 1);
       dtB = new Date(2000, 1, 8);
       t.is(1, date.difference(dtA, dtB, interv));
@@ -343,7 +343,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2000, 1, 28);
       t.is(-1, date.difference(dtA, dtB, interv));
 
-      interv = "day";
+      interv = 'day';
       dtA = new Date(2000, 1, 29);
       dtB = new Date(2000, 2, 1);
       t.is(1, date.difference(dtA, dtB, interv));
@@ -359,7 +359,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2005, 3, 4);
       t.is(1, date.difference(dtA, dtB, interv));
 
-      interv = "weekday";
+      interv = 'weekday';
       dtA = new Date(2006, 7, 3);
       dtB = new Date(2006, 7, 11);
       t.is(6, date.difference(dtA, dtB, interv));
@@ -443,7 +443,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2006, 7, 6);
       t.is(0, date.difference(dtA, dtB, interv));
 
-      interv = "hour";
+      interv = 'hour';
       dtA = new Date(2000, 11, 31, 23);
       dtB = new Date(2001, 0, 1, 0);
       t.is(1, date.difference(dtA, dtB, interv));
@@ -452,7 +452,7 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2001, 0, 1, 0);
       t.is(12, date.difference(dtA, dtB, interv));
 
-      interv = "minute";
+      interv = 'minute';
       dtA = new Date(2000, 11, 31, 23, 59);
       dtB = new Date(2001, 0, 1, 0, 0);
       t.is(1, date.difference(dtA, dtB, interv));
@@ -461,12 +461,12 @@ define(["doh", "../date"], function (doh, date) {
       dtB = new Date(2000, 1, 29, 0, 0);
       t.is(1, date.difference(dtA, dtB, interv));
 
-      interv = "second";
+      interv = 'second';
       dtA = new Date(2000, 11, 31, 23, 59, 59);
       dtB = new Date(2001, 0, 1, 0, 0, 0);
       t.is(1, date.difference(dtA, dtB, interv));
 
-      interv = "millisecond";
+      interv = 'millisecond';
       dtA = new Date(2000, 11, 31, 23, 59, 59, 999);
       dtB = new Date(2001, 0, 1, 0, 0, 0, 0);
       t.is(1, date.difference(dtA, dtB, interv));
@@ -476,11 +476,11 @@ define(["doh", "../date"], function (doh, date) {
       t.is(1000, date.difference(dtA, dtB, interv));
     },
     function test_date_add_diff_year(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
 
-      interv = "year";
+      interv = 'year';
       dtA = new Date(2005, 11, 27);
       dtB = date.add(dtA, interv, 1);
       t.is(date.difference(dtA, dtB, interv), 1);
@@ -506,10 +506,10 @@ define(["doh", "../date"], function (doh, date) {
       t.is(date.difference(dtA, dtB, interv), 35);
     },
     function test_date_add_diff_quarter(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
-      interv = "quarter";
+      interv = 'quarter';
       dtA = new Date(2000, 0, 1);
       dtB = date.add(dtA, interv, 1);
       t.is(date.difference(dtA, dtB, interv), 1);
@@ -523,10 +523,10 @@ define(["doh", "../date"], function (doh, date) {
       t.is(date.difference(dtA, dtB, interv), 4);
     },
     function test_date_add_diff_month(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
-      interv = "month";
+      interv = 'month';
       dtA = new Date(2000, 0, 1);
       dtB = date.add(dtA, interv, 1);
       t.is(date.difference(dtA, dtB, interv), 1);
@@ -540,19 +540,19 @@ define(["doh", "../date"], function (doh, date) {
       t.is(date.difference(dtA, dtB, interv), 12);
     },
     function test_date_add_diff_week(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
-      interv = "week";
+      interv = 'week';
       dtA = new Date(2000, 0, 1);
       dtB = date.add(dtA, interv, 1);
       t.is(date.difference(dtA, dtB, interv), 1);
     },
     function test_date_add_diff_day(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
-      interv = "day";
+      interv = 'day';
       dtA = new Date(2000, 0, 1);
       dtB = date.add(dtA, interv, 1);
       t.is(date.difference(dtA, dtB, interv), 1);
@@ -586,10 +586,10 @@ define(["doh", "../date"], function (doh, date) {
       t.is(date.difference(dtA, dtB, interv), -1);
     },
     function test_date_add_diff_weekday(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
-      interv = "weekday";
+      interv = 'weekday';
       // Sat, Jan 1
       dtA = new Date(2000, 0, 1);
       // Should be Mon, Jan 3
@@ -639,10 +639,10 @@ define(["doh", "../date"], function (doh, date) {
       t.is(date.difference(dtA, dtB, interv), -11);
     },
     function test_date_add_diff_hour(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
-      interv = "hour";
+      interv = 'hour';
       dtA = new Date(2000, 0, 1, 11);
       dtB = date.add(dtA, interv, 1);
       t.is(date.difference(dtA, dtB, interv), 1);
@@ -660,10 +660,10 @@ define(["doh", "../date"], function (doh, date) {
       t.is(date.difference(dtA, dtB, interv), 1);
     },
     function test_date_add_diff_minute(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
-      interv = "minute";
+      interv = 'minute';
       dtA = new Date(2000, 11, 31, 23, 59);
       dtB = date.add(dtA, interv, 1);
       t.is(date.difference(dtA, dtB, interv), 1);
@@ -673,11 +673,11 @@ define(["doh", "../date"], function (doh, date) {
       t.is(date.difference(dtA, dtB, interv), 60);
     },
     function test_date_add_diff_second(t) {
-      var interv = ""; // Interval (e.g., year, month)
+      var interv = ''; // Interval (e.g., year, month)
       var dtA = null; // Date to increment
       var dtB = null; // Expected result date
-      console.debug("second");
-      interv = "second";
+      console.debug('second');
+      interv = 'second';
       dtA = new Date(2000, 11, 31, 23, 59, 59);
       dtB = date.add(dtA, interv, 1);
       t.is(date.difference(dtA, dtB, interv), 1);
@@ -696,6 +696,6 @@ define(["doh", "../date"], function (doh, date) {
       //dtA = new Date(2000, 11, 27, 8, 10, 53, 2);
       //dtB = date.add(dtA, interv, 1000);
       //t.is(date.difference(dtA, dtB, interv), 1000);
-    },
+    }
   ]);
 });

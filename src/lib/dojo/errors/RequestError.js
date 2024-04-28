@@ -1,4 +1,4 @@
-define(["./create"], function (create) {
+define(['./create'], function (create) {
   // module:
   //		dojo/errors/RequestError
 
@@ -9,7 +9,7 @@ define(["./create"], function (create) {
 	 };
 	 =====*/
 
-  return create("RequestError", function (message, response) {
+  return create('RequestError', function (message, response) {
     this.response = response;
   });
 });

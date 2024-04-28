@@ -20,7 +20,7 @@ function VideoTrack(data) {
     context.width = parseInt(data._attr.width._value);
     context.height = parseInt(data._attr.height._value);
     context.aspect = parseFloat(data._attr.aspect._value);
-    context.keyframeInterval = parseInt(data._attr["keyframe-interval"]._value);
+    context.keyframeInterval = parseInt(data._attr['keyframe-interval']._value);
   }
 }
 

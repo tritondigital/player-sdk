@@ -1,10 +1,10 @@
 /**
  * VAST 1 Inline Ad
  */
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var vast1InlineAd = declare([], {
     constructor: function () {
-      console.log("vast1InlineAd::constructor");
+      console.log('vast1InlineAd::constructor');
 
       this.trackingEvents = []; //Array of VASTTrackingEvent
       this.companionAds = []; //Array of VASTCompanionAd
@@ -21,8 +21,7 @@ define(["dojo/_base/declare"], function (declare) {
     addWrapperLinearVideoClickTracking: function (value) {
       if (this.video == null) return;
 
-      this.video.videoClick.clickTrackings =
-        this.video.videoClick.clickTrackings.concat(value);
+      this.video.videoClick.clickTrackings = this.video.videoClick.clickTrackings.concat(value);
     },
 
     addImpression: function (value) {
@@ -50,13 +49,11 @@ define(["dojo/_base/declare"], function (declare) {
       var dimensionFit = false;
       var arrayLength = companionAds.length;
       for (var i = 0; i < arrayLength; i++) {
-        dimensionFit =
-          companionAds[i].width == width && companionAds[i].height == height;
+        dimensionFit = companionAds[i].width == width && companionAds[i].height == height;
 
         if (dimensionFit != true) {
           if (vastResourceType == null) return companionAds[i];
-          else if (companionAds[i].resourceType == vastResourceType)
-            return companionAds[i];
+          else if (companionAds[i].resourceType == vastResourceType) return companionAds[i];
         }
       }
 
@@ -92,9 +89,7 @@ define(["dojo/_base/declare"], function (declare) {
         index = 0;
       }
 
-      return this.video != null && this.video.mediaFiles[index] != null
-        ? this.video.mediaFiles[index]
-        : null;
+      return this.video != null && this.video.mediaFiles[index] != null ? this.video.mediaFiles[index] : null;
     },
 
     getLinearVideoClick: function (sequence) {
@@ -130,7 +125,7 @@ define(["dojo/_base/declare"], function (declare) {
 
     addNonLinearAd: function (nonLinearAd) {
       this.nonLinearAds.push(nonLinearAd);
-    },
+    }
   });
 
   return vast1InlineAd;

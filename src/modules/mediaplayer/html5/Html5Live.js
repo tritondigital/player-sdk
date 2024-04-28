@@ -4,40 +4,29 @@
  * @class Manage HTML5 live player
  *
  */
-var i18n = require("sdk/base/util/I18n");
-var OsPlatform = require("platform");
-var Hls = require("hls.js");
-var Const = require("sdk/base/util/Const");
-var MediaElement = require("sdk/base/util/MediaElement");
-const { toPlainObject } = require("lodash");
+var i18n = require('sdk/base/util/I18n');
+var OsPlatform = require('platform');
+var Hls = require('hls.js');
+var Const = require('sdk/base/util/Const');
+var MediaElement = require('sdk/base/util/MediaElement');
+const { toPlainObject } = require('lodash');
 var isCloudStreaming = false;
 var ltUpdateIntervall = null;
 var switchingSeekTime = null;
 var vid = Math.floor(Math.random() * 10001);
 
 define([
-  "dojo/_base/declare",
-  "dojo/Evented",
-  "dojo/_base/lang",
-  "sdk/base/playback/PlaybackState",
-  "sdk/modules/mediaplayer/html5/Html5Player",
-  "sdk/modules/mediaplayer/sbm/SidebandMetadata",
-  "sdk/modules/mediaplayer/html5/ASyncCuePointDispatcher",
-  "dojo/topic",
-  "sdk/base/playback/StreamingMode",
-  "sdk/base/util/XhrProvider",
-], function (
-  declare,
-  Evented,
-  lang,
-  PlaybackState,
-  Html5Player,
-  SidebandMetadata,
-  ASyncCuePointDispatcher,
-  topic,
-  StreamingMode,
-  XhrProvider
-) {
+  'dojo/_base/declare',
+  'dojo/Evented',
+  'dojo/_base/lang',
+  'sdk/base/playback/PlaybackState',
+  'sdk/modules/mediaplayer/html5/Html5Player',
+  'sdk/modules/mediaplayer/sbm/SidebandMetadata',
+  'sdk/modules/mediaplayer/html5/ASyncCuePointDispatcher',
+  'dojo/topic',
+  'sdk/base/playback/StreamingMode',
+  'sdk/base/util/XhrProvider'
+], function (declare, Evented, lang, PlaybackState, Html5Player, SidebandMetadata, ASyncCuePointDispatcher, topic, StreamingMode, XhrProvider) {
   var html5Live = declare([Evented], {
     /**
      * Convert html5 playback status code to dojo i18n localized messages
@@ -46,77 +35,77 @@ define([
      */
     statusMap: {
       abort: {
-        status: "connecting",
-        code: "LIVE_CONNECTING",
+        status: 'connecting',
+        code: 'LIVE_CONNECTING'
       },
       canPlay: {
-        status: "buffering",
-        code: "LIVE_BUFFERING",
+        status: 'buffering',
+        code: 'LIVE_BUFFERING'
       },
       canPlayThrough: {
-        status: "onAir",
-        code: "LIVE_PLAYING",
+        status: 'onAir',
+        code: 'LIVE_PLAYING'
       },
       dataLoading: {
-        status: "buffering",
-        code: "LIVE_BUFFERING",
+        status: 'buffering',
+        code: 'LIVE_BUFFERING'
       },
       emptied: {
-        status: "connecting",
-        code: "LIVE_CONNECTING",
+        status: 'connecting',
+        code: 'LIVE_CONNECTING'
       },
       ended: {
-        status: "disconnected",
-        code: "LIVE_STOP",
+        status: 'disconnected',
+        code: 'LIVE_STOP'
       },
       error: {
-        status: "streamUnavailable",
-        code: "LIVE_FAILED",
+        status: 'streamUnavailable',
+        code: 'LIVE_FAILED'
       },
       loadStart: {
-        status: "connecting",
-        code: "LIVE_CONNECTING",
+        status: 'connecting',
+        code: 'LIVE_CONNECTING'
       },
       pause: {
-        status: "paused",
-        code: "LIVE_PAUSE",
+        status: 'paused',
+        code: 'LIVE_PAUSE'
       },
       play: {
-        status: "onAir",
-        code: "LIVE_PLAYING",
+        status: 'onAir',
+        code: 'LIVE_PLAYING'
       },
       progress: {
-        status: "onAir",
-        code: "LIVE_PLAYING",
+        status: 'onAir',
+        code: 'LIVE_PLAYING'
       },
       reconnecting: {
-        status: "reconnecting",
-        code: "LIVE_RECONNECTING",
+        status: 'reconnecting',
+        code: 'LIVE_RECONNECTING'
       },
       stalled: {
-        status: "disconnected",
-        code: "LIVE_STOP",
+        status: 'disconnected',
+        code: 'LIVE_STOP'
       },
       stop: {
-        status: "disconnected",
-        code: "LIVE_STOP",
+        status: 'disconnected',
+        code: 'LIVE_STOP'
       },
       suspend: {
-        status: "connecting",
-        code: "LIVE_CONNECTING",
+        status: 'connecting',
+        code: 'LIVE_CONNECTING'
       },
       waiting: {
-        status: "buffering",
-        code: "LIVE_BUFFERING",
+        status: 'buffering',
+        code: 'LIVE_BUFFERING'
       },
       playbackNotAllowed: {
-        status: "playbackNotAllowed",
-        code: "PLAY_NOT_ALLOWED",
-      },
+        status: 'playbackNotAllowed',
+        code: 'PLAY_NOT_ALLOWED'
+      }
     },
 
     constructor: function (node, cfg) {
-      console.log("html5Live::constructor");
+      console.log('html5Live::constructor');
 
       this.playerNode = node;
       this.cfg = cfg;
@@ -251,7 +240,7 @@ define([
       if (MediaElement.isStopped()) {
         if (params) {
           this.params = params;
-          console.log("html5Live::play", params);
+          console.log('html5Live::play', params);
 
           this._liveApiParams = params;
 
@@ -266,31 +255,15 @@ define([
             this.__activateAsyncCuePointDispatcher();
           }
 
-          console.log("html5Live::play - url : " + this._liveApiParams.url);
+          console.log('html5Live::play - url : ' + this._liveApiParams.url);
 
           this.__initAudioElement();
 
           // //enable hls lib only for ie11 > 8
-          if (
-            Hls.isSupported() &&
-            OsPlatform.os.family !== "iOS" &&
-            (this._liveApiParams.isHLS || this._liveApiParams.isHLSTS)
-          ) {
-            MediaElement.playAudio(
-              this._liveApiParams.url,
-              true,
-              true,
-              this._liveApiParams.timeshiftOffset,
-              this._liveApiParams.timeshiftEnabled
-            );
+          if (Hls.isSupported() && OsPlatform.os.family !== 'iOS' && (this._liveApiParams.isHLS || this._liveApiParams.isHLSTS)) {
+            MediaElement.playAudio(this._liveApiParams.url, true, true, this._liveApiParams.timeshiftOffset, this._liveApiParams.timeshiftEnabled);
           } else {
-            MediaElement.playAudio(
-              this._liveApiParams.url,
-              false,
-              true,
-              this._liveApiParams.timeshiftOffset,
-              this._liveApiParams.timeshiftEnabled
-            );
+            MediaElement.playAudio(this._liveApiParams.url, false, true, this._liveApiParams.timeshiftOffset, this._liveApiParams.timeshiftEnabled);
           }
         }
       }
@@ -322,7 +295,7 @@ define([
         MediaElement.seekStream(seconds);
       } else {
         switchingSeekTime = seconds;
-        topic.publish("streamingModeChange", StreamingMode.CLOUD_STREAMING);
+        topic.publish('streamingModeChange', StreamingMode.CLOUD_STREAMING);
         isCloudStreaming = true;
       }
     },
@@ -331,7 +304,7 @@ define([
       if (this._liveApiParams.forceTimeShift) {
         MediaElement.seekLive();
       } else {
-        topic.publish("streamingModeChange", StreamingMode.LIVE_STREAMING);
+        topic.publish('streamingModeChange', StreamingMode.LIVE_STREAMING);
         isCloudStreaming = false;
       }
     },
@@ -341,7 +314,7 @@ define([
         MediaElement.seekFromLive(seconds);
       } else {
         switchingSeekTime = seconds;
-        topic.publish("streamingModeChange", StreamingMode.CLOUD_STREAMING);
+        topic.publish('streamingModeChange', StreamingMode.CLOUD_STREAMING);
         isCloudStreaming = true;
       }
     },
@@ -359,11 +332,7 @@ define([
     },
 
     mute: function () {
-      if (
-        MediaElement.audioNode &&
-        !MediaElement.audioNode.paused &&
-        !MediaElement.isStopped()
-      ) {
+      if (MediaElement.audioNode && !MediaElement.audioNode.paused && !MediaElement.isStopped()) {
         if (isCloudStreaming) {
           MediaElement.audioNode.muted = true;
           this.stopLTInterval();
@@ -374,17 +343,10 @@ define([
     },
 
     unMute: function (params) {
-      if (
-        (this.cfg.streamWhileMuted && MediaElement.audioNode) ||
-        isCloudStreaming
-      ) {
+      if ((this.cfg.streamWhileMuted && MediaElement.audioNode) || isCloudStreaming) {
         MediaElement.audioNode.muted = false;
         if (isCloudStreaming) {
-          if (
-            MediaElement.audioNode &&
-            !MediaElement.audioNode.paused &&
-            !MediaElement.isStopped()
-          ) {
+          if (MediaElement.audioNode && !MediaElement.audioNode.paused && !MediaElement.isStopped()) {
             this.startLTInterval();
           }
         }
@@ -400,34 +362,25 @@ define([
 
     startLTInterval: function () {
       if (ltUpdateIntervall == null) {
-        var dist =
-          (this.params.trackingParameters != null &&
-            this.params.trackingParameters.dist) ||
-          "triton-web";
-        var url = `${
-          this._liveApiParams.listenerTrackingURL
-        }?autoplay=0&hasads=0&sid=${
-          this._liveApiParams.wcmStationId
-        }&ctype=timeshifted&dist=${dist}&cb=${new Date().getTime()}&vid=${vid}`;
+        var dist = (this.params.trackingParameters != null && this.params.trackingParameters.dist) || 'triton-web';
+        var url = `${this._liveApiParams.listenerTrackingURL}?autoplay=0&hasads=0&sid=${this._liveApiParams.wcmStationId}&ctype=timeshifted&dist=${dist}&cb=${new Date().getTime()}&vid=${vid}`;
         fetch(url)
-          .then((response) => {
+          .then(response => {
             if (!response.ok) {
               throw new Error(`Request failed with status ${reponse.status}`);
             }
 
             return response.text();
           })
-          .then((data) => {
-            var ltParams = data.split(",");
-            pingUrl = `${this._liveApiParams.listenerTrackingURL}?guid=${
-              ltParams[1]
-            }&cb=${new Date().getTime()}`;
+          .then(data => {
+            var ltParams = data.split(',');
+            pingUrl = `${this._liveApiParams.listenerTrackingURL}?guid=${ltParams[1]}&cb=${new Date().getTime()}`;
             fetch(pingUrl, function (data) {});
             ltUpdateIntervall = setInterval(function () {
               fetch(pingUrl, function (data) {});
             }, parseInt(ltParams[0]) * 1000);
           })
-          .catch((error) => console.log(error));
+          .catch(error => console.log(error));
       }
     },
 
@@ -435,7 +388,7 @@ define([
       if (ltUpdateIntervall != null) {
         clearInterval(ltUpdateIntervall);
         ltUpdateIntervall = null;
-        console.log("Final Ping");
+        console.log('Final Ping');
         fetch(pingUrl, function (data) {});
         pingUrl = null;
       }
@@ -456,26 +409,20 @@ define([
      * @ignore
      */
     __initAudioElement: function () {
-      console.log("html5Live::__initAudioElement");
+      console.log('html5Live::__initAudioElement');
       MediaElement.cfg = this.cfg;
       if (this.audioEventListenersAttached == false) {
-        MediaElement.on("destroyAudioElement", this.__destroyAudioElement);
-        MediaElement.on(
-          "html5-playback-status",
-          lang.hitch(this, this.__onHTML5PlayerStatus)
-        );
-        MediaElement.on(
-          "timeshift-info",
-          lang.hitch(this, this._timeshiftInfoCallback)
-        );
+        MediaElement.on('destroyAudioElement', this.__destroyAudioElement);
+        MediaElement.on('html5-playback-status', lang.hitch(this, this.__onHTML5PlayerStatus));
+        MediaElement.on('timeshift-info', lang.hitch(this, this._timeshiftInfoCallback));
         this.audioEventListenersAttached = true;
       }
     },
 
     __destroyAudioElement: function () {
-      console.log("html5Live::__destroyAudioElement");
-      MediaElement.removeAllListeners("html5-playback-status");
-      MediaElement.removeAllListeners("destroyAudioElement");
+      console.log('html5Live::__destroyAudioElement');
+      MediaElement.removeAllListeners('html5-playback-status');
+      MediaElement.removeAllListeners('destroyAudioElement');
       if (this.sidebandMetadata) {
         this.sidebandMetadata.destroy();
       }
@@ -488,21 +435,13 @@ define([
     },
 
     __onHTML5PlayerStatus: function (e) {
-      console.log("html5Live::_onHTML5PlayerStatus - type=" + e.type);
+      console.log('html5Live::_onHTML5PlayerStatus - type=' + e.type);
       e.isReconnect = this.params && this.params.isReconnect ? true : false;
-      if (
-        e.type == PlaybackState.CAN_PLAY_THROUGH &&
-        switchingSeekTime &&
-        isCloudStreaming
-      ) {
+      if (e.type == PlaybackState.CAN_PLAY_THROUGH && switchingSeekTime && isCloudStreaming) {
         this.seekFromLive(switchingSeekTime);
         switchingSeekTime = null;
       } else if (e.type == PlaybackState.PLAY) {
-        if (
-          !this.isPaused &&
-          this.__isSidebandMetadataActivated() &&
-          this.sidebandMetadata
-        ) {
+        if (!this.isPaused && this.__isSidebandMetadataActivated() && this.sidebandMetadata) {
           this.sidebandMetadata.init(this._liveApiParams);
         } else if (this.aSyncCuePointDispatcher) {
           this.aSyncCuePointDispatcher.startCuePointsListener(this.mount);
@@ -512,10 +451,7 @@ define([
 
         this._streamStartCallback();
         if (isCloudStreaming) {
-          if (
-            this._liveApiParams.wcmStationId &&
-            this._liveApiParams.listenerTrackingURL
-          ) {
+          if (this._liveApiParams.wcmStationId && this._liveApiParams.listenerTrackingURL) {
             this.startLTInterval();
           }
         }
@@ -531,12 +467,7 @@ define([
           this.aSyncCuePointDispatcher.stopCuePointsListener();
         }
 
-        if (
-          e.type == PlaybackState.STOP ||
-          e.type == PlaybackState.ERROR ||
-          e.type == PlaybackState.ABORT ||
-          e.type == PlaybackState.PLAY_NOT_ALLOWED
-        ) {
+        if (e.type == PlaybackState.STOP || e.type == PlaybackState.ERROR || e.type == PlaybackState.ABORT || e.type == PlaybackState.PLAY_NOT_ALLOWED) {
           if (this.__isSidebandMetadataActivated() && this.sidebandMetadata) {
             this.sidebandMetadata.destroy();
           }
@@ -569,11 +500,7 @@ define([
     },
 
     __isASyncCuePointDispatcherActivated: function () {
-      return (
-        this._liveApiParams != undefined &&
-        this._liveApiParams.sbmConfig &&
-        this._liveApiParams.sbmConfig.aSyncCuePointFallback
-      );
+      return this._liveApiParams != undefined && this._liveApiParams.sbmConfig && this._liveApiParams.sbmConfig.aSyncCuePointFallback;
     },
 
     __onCuePoint: function (e) {
@@ -606,29 +533,15 @@ define([
       if (!this.sidebandMetadata) {
         this.sidebandMetadata = new SidebandMetadata(this.audioNode);
       }
-      this._liveApiParams.url = this.sidebandMetadata.getStreamConnectionUrl(
-        this._liveApiParams.url
-      );
-      this.sidebandMetadata.setTrackCuePointCallback(
-        lang.hitch(this, this.__onCuePoint)
-      );
-      this.sidebandMetadata.setAdBreakCuePointCallback(
-        lang.hitch(this, this.__onAdBreak)
-      );
-      this.sidebandMetadata.setHlsCuePointCallback(
-        lang.hitch(this, this.__onHlsCuePoint)
-      );
-      this.sidebandMetadata.setSpeechCuePointCallback(
-        lang.hitch(this, this.__onSpeechCuePoint)
-      );
-      this.sidebandMetadata.setCustomCuePointCallback(
-        lang.hitch(this, this.__onCustomCuePoint)
-      );
+      this._liveApiParams.url = this.sidebandMetadata.getStreamConnectionUrl(this._liveApiParams.url);
+      this.sidebandMetadata.setTrackCuePointCallback(lang.hitch(this, this.__onCuePoint));
+      this.sidebandMetadata.setAdBreakCuePointCallback(lang.hitch(this, this.__onAdBreak));
+      this.sidebandMetadata.setHlsCuePointCallback(lang.hitch(this, this.__onHlsCuePoint));
+      this.sidebandMetadata.setSpeechCuePointCallback(lang.hitch(this, this.__onSpeechCuePoint));
+      this.sidebandMetadata.setCustomCuePointCallback(lang.hitch(this, this.__onCustomCuePoint));
 
       if (this._liveApiParams.sbmConfig.aSyncCuePointFallback) {
-        this.sidebandMetadata.setErrorCallback(
-          lang.hitch(this, this.__onSidebandMetadataError)
-        );
+        this.sidebandMetadata.setErrorCallback(lang.hitch(this, this.__onSidebandMetadataError));
       }
     },
 
@@ -641,12 +554,8 @@ define([
     __activateAsyncCuePointDispatcher: function () {
       if (this.aSyncCuePointDispatcher == undefined) {
         this.aSyncCuePointDispatcher = new ASyncCuePointDispatcher(this.cfg);
-        this.aSyncCuePointDispatcher.setTrackCuePointCallback(
-          lang.hitch(this, this.__onCuePoint)
-        );
-        this.aSyncCuePointDispatcher.setAdBreakCuePointCallback(
-          lang.hitch(this, this.__onAdBreak)
-        );
+        this.aSyncCuePointDispatcher.setTrackCuePointCallback(lang.hitch(this, this.__onCuePoint));
+        this.aSyncCuePointDispatcher.setAdBreakCuePointCallback(lang.hitch(this, this.__onAdBreak));
       }
     },
 
@@ -684,11 +593,11 @@ define([
             status: statusMessages[msg.status],
             code: msg.code,
             message: e.message,
-            isReconnect: e.isReconnect,
+            isReconnect: e.isReconnect
           });
         }
       }
-    },
+    }
   });
 
   return html5Live;

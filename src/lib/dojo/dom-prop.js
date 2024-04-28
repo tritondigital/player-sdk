@@ -1,13 +1,4 @@
-define([
-  "exports",
-  "./_base/kernel",
-  "./sniff",
-  "./_base/lang",
-  "./dom",
-  "./dom-style",
-  "./dom-construct",
-  "./_base/connect",
-], function (exports, dojo, has, lang, dom, style, ctr, conn) {
+define(['exports', './_base/kernel', './sniff', './_base/lang', './dom', './dom-style', './dom-construct', './_base/connect'], function (exports, dojo, has, lang, dom, style, ctr, conn) {
   // module:
   //		dojo/dom-prop
   // summary:
@@ -22,19 +13,19 @@ define([
   // helper to connect events
   var _evtHdlrMap = {},
     _ctr = 0,
-    _attrId = dojo._scopeName + "attrid";
+    _attrId = dojo._scopeName + 'attrid';
 
   exports.names = {
     // properties renamed to avoid clashes with reserved words
-    class: "className",
-    for: "htmlFor",
+    class: 'className',
+    for: 'htmlFor',
     // properties written as camelCase
-    tabindex: "tabIndex",
-    readonly: "readOnly",
-    colspan: "colSpan",
-    frameborder: "frameBorder",
-    rowspan: "rowSpan",
-    valuetype: "valueType",
+    tabindex: 'tabIndex',
+    readonly: 'readOnly',
+    colspan: 'colSpan',
+    frameborder: 'frameBorder',
+    rowspan: 'rowSpan',
+    valuetype: 'valueType'
   };
 
   exports.get = function getProp(/*DOMNode|String*/ node, /*String*/ name) {
@@ -62,11 +53,7 @@ define([
     return node[propName]; // Anything
   };
 
-  exports.set = function setProp(
-    /*DOMNode|String*/ node,
-    /*String|Object*/ name,
-    /*String?*/ value
-  ) {
+  exports.set = function setProp(/*DOMNode|String*/ node, /*String|Object*/ name, /*String?*/ value) {
     // summary:
     //		Sets a property on an HTML element.
     // description:
@@ -135,7 +122,7 @@ define([
 
     node = dom.byId(node);
     var l = arguments.length;
-    if (l == 2 && typeof name != "string") {
+    if (l == 2 && typeof name != 'string') {
       // inline'd type check
       // the object form of setter: the 2nd argument is a dictionary
       for (var x in name) {
@@ -145,17 +132,17 @@ define([
     }
     var lc = name.toLowerCase(),
       propName = exports.names[lc] || name;
-    if (propName == "style" && typeof value != "string") {
+    if (propName == 'style' && typeof value != 'string') {
       // inline'd type check
       // special case: setting a style
       style.set(node, value);
       return node; // DomNode
     }
-    if (propName == "innerHTML") {
+    if (propName == 'innerHTML') {
       // special case: assigning HTML
       // the hash lists elements with read-only innerHTML on IE
       if (
-        has("ie") &&
+        has('ie') &&
         node.tagName.toLowerCase() in
           {
             col: 1,
@@ -165,7 +152,7 @@ define([
             tfoot: 1,
             thead: 1,
             tr: 1,
-            title: 1,
+            title: 1
           }
       ) {
         ctr.empty(node);

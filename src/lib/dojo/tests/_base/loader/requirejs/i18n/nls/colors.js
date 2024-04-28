@@ -1,9 +1,9 @@
 define({
   root: {
-    red: "red",
-    blue: "blue",
-    green: "green",
+    red: 'red',
+    blue: 'blue',
+    green: 'green'
   },
-  "en-us-surfer": true,
-  fr: true,
+  'en-us-surfer': true,
+  fr: true
 });

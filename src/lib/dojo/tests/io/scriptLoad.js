@@ -1,1 +1,1 @@
-scriptLoad = "loaded";
+scriptLoad = 'loaded';

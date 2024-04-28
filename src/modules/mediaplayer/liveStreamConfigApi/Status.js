@@ -8,10 +8,8 @@ function Status(data) {
 
   function parse(context, data) {
     // Code
-    context.statusCode = data["status-code"] ? data["status-code"]._text : -1;
-    context.message = data["status-message"]
-      ? data["status-message"]._text
-      : null;
+    context.statusCode = data['status-code'] ? data['status-code']._text : -1;
+    context.message = data['status-message'] ? data['status-message']._text : null;
 
     context.isError = context.statusCode >= 300 || context.statusCode === -1;
     context.isGeoBlocked = context.statusCode === 453;

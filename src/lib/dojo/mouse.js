@@ -1,22 +1,13 @@
-define([
-  "./_base/kernel",
-  "./on",
-  "./has",
-  "./dom",
-  "./_base/window",
-], function (dojo, on, has, dom, win) {
+define(['./_base/kernel', './on', './has', './dom', './_base/window'], function (dojo, on, has, dom, win) {
   // module:
   //		dojo/mouse
 
-  has.add("dom-quirks", win.doc && win.doc.compatMode == "BackCompat");
-  has.add(
-    "events-mouseenter",
-    win.doc && "onmouseenter" in win.doc.createElement("div")
-  );
-  has.add("events-mousewheel", win.doc && "onmousewheel" in win.doc);
+  has.add('dom-quirks', win.doc && win.doc.compatMode == 'BackCompat');
+  has.add('events-mouseenter', win.doc && 'onmouseenter' in win.doc.createElement('div'));
+  has.add('events-mousewheel', win.doc && 'onmousewheel' in win.doc);
 
   var mouseButtons;
-  if ((has("dom-quirks") && has("ie")) || !has("dom-addeventlistener")) {
+  if ((has('dom-quirks') && has('ie')) || !has('dom-addeventlistener')) {
     mouseButtons = {
       LEFT: 1,
       MIDDLE: 4,
@@ -33,7 +24,7 @@ define([
       },
       isRight: function (e) {
         return e.button & 2;
-      },
+      }
     };
   } else {
     mouseButtons = {
@@ -52,7 +43,7 @@ define([
       },
       isRight: function (e) {
         return e.button == 2;
-      },
+      }
     };
   }
   dojo.mouseButtons = mouseButtons;
@@ -119,13 +110,7 @@ define([
         // using a selector, use the select function to determine if the mouse moved inside the selector and was previously outside the selector
         var target = select(evt.target);
         var relatedTarget = evt.relatedTarget;
-        if (
-          target &&
-          target !=
-            (relatedTarget &&
-              relatedTarget.nodeType == 1 &&
-              select(relatedTarget))
-        ) {
+        if (target && target != (relatedTarget && relatedTarget.nodeType == 1 && select(relatedTarget))) {
           return listener.call(target, evt);
         }
       });
@@ -133,12 +118,12 @@ define([
     return handler;
   }
   var wheel;
-  if (has("events-mousewheel")) {
-    wheel = "mousewheel";
+  if (has('events-mousewheel')) {
+    wheel = 'mousewheel';
   } else {
     //firefox
     wheel = function (node, listener) {
-      return on(node, "DOMMouseScroll", function (evt) {
+      return on(node, 'DOMMouseScroll', function (evt) {
         evt.wheelDelta = -evt.detail;
         listener.call(this, evt);
       });
@@ -163,12 +148,12 @@ define([
     // enter: Synthetic Event
     //		This is an extension event for the mouseenter that IE provides, emulating the
     //		behavior on other browsers.
-    enter: eventHandler("mouseover"),
+    enter: eventHandler('mouseover'),
 
     // leave: Synthetic Event
     //		This is an extension event for the mouseleave that IE provides, emulating the
     //		behavior on other browsers.
-    leave: eventHandler("mouseout"),
+    leave: eventHandler('mouseout'),
 
     // wheel: Normalized Mouse Wheel Event
     //		This is an extension event for the mousewheel that non-Mozilla browsers provide,
@@ -191,7 +176,7 @@ define([
 		 },
 		 =====*/
 
-    isRight: mouseButtons.isRight,
+    isRight: mouseButtons.isRight
     /*=====
 		 , isRight: function(){
 			 // summary:

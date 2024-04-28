@@ -45,21 +45,16 @@
  * cookie-test-fail<br>
  */
 
-var LazyLoad = require("sdk/base/util/LazyLoad");
-var Platform = require("sdk/base/util/Platform");
+var LazyLoad = require('sdk/base/util/LazyLoad');
+var Platform = require('sdk/base/util/Platform');
 
-define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "dojo/_base/Deferred",
-  "sdk/modules/base/CoreModule",
-], function (declare, lang, Deferred, coreModule) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/Deferred', 'sdk/modules/base/CoreModule'], function (declare, lang, Deferred, coreModule) {
   /**
    * @namespace tdapi/modules/UserRegistration
    */
   var module = declare([coreModule], {
     constructor: function (config, target) {
-      console.log("userRegistration::constructor");
+      console.log('userRegistration::constructor');
 
       this.inherited(arguments);
 
@@ -75,20 +70,16 @@ define([
     },
 
     start: function () {
-      console.log("userRegistration::start");
+      console.log('userRegistration::start');
 
-      this.emit("module-ready", {
-        id: "UserRegistration",
-        module: this,
+      this.emit('module-ready', {
+        id: 'UserRegistration',
+        module: this
       });
     },
 
     init: function () {
-      var seeApiUrl = (
-        this.seeApiUrl != undefined
-          ? this.seeApiUrl
-          : this.platform.endpoint.see
-      ).replace("{tenantId}", this.tenantId);
+      var seeApiUrl = (this.seeApiUrl != undefined ? this.seeApiUrl : this.platform.endpoint.see).replace('{tenantId}', this.tenantId);
 
       var def = new Deferred();
 
@@ -101,7 +92,7 @@ define([
 
       def.then(
         function () {
-          window._See.bindEvent("RegApiReady", successCallback);
+          window._See.bindEvent('RegApiReady', successCallback);
         },
         function (err) {
           errorCallback();
@@ -119,26 +110,26 @@ define([
      */
     _seeApiLoaded: function () {
       //execute code only once the see-api.js library has loaded
-      console.log("userRegistration::_seeApiLoaded");
+      console.log('userRegistration::_seeApiLoaded');
 
       this.see = window._See; //_See base object that will expose the data interfaces
       this.seeRegApi = window._See ? window._See.regApi : undefined;
       this.seeMetaApi = window._See ? window._See.metaApi : undefined;
 
       // Set source for see to StreamingPlayer
-      this.see.source = "StreamingPlayer";
+      this.see.source = 'StreamingPlayer';
 
       if (this.see != undefined) {
         // Bind an event to MetaApiReady at which point all apis will be loaded and
         // initialized.
         this.see.bindOrFireEvent(
-          "metaApiReady",
+          'metaApiReady',
           lang.hitch(this, function () {
             // Announce that the See api is ready
-            this.emit("see-api-loaded");
+            this.emit('see-api-loaded');
 
             if (this.isLoggedIn()) {
-              this.emit("user-logged-in");
+              this.emit('user-logged-in');
             }
           })
         );
@@ -154,10 +145,10 @@ define([
      * @return null
      */
     _seeApiError: function () {
-      console.log("userRegistration::_seeApiError");
+      console.log('userRegistration::_seeApiError');
 
       // Announce that the See api failed to load
-      this.emit("see-api-error");
+      this.emit('see-api-error');
     },
 
     /**
@@ -178,27 +169,22 @@ define([
      */
     login: function (params) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::login");
+      console.log('userRegistration::login');
 
       switch (params.method) {
-        case "Userpwd":
-          this.seeRegApi.login(
-            params.username,
-            params.password,
-            params.persist,
-            lang.hitch(this, this._onLoginHandler)
-          );
+        case 'Userpwd':
+          this.seeRegApi.login(params.username, params.password, params.persist, lang.hitch(this, this._onLoginHandler));
           break;
 
-        case "Facebook":
+        case 'Facebook':
           this.seeRegApi.loginFacebook(lang.hitch(this, this._onLoginHandler));
           break;
 
-        case "Google":
+        case 'Google':
           this.seeRegApi.loginGoogle(lang.hitch(this, this._onLoginHandler));
           break;
 
@@ -221,23 +207,19 @@ define([
      */
     connectSocial: function (network) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::connectSocial");
+      console.log('userRegistration::connectSocial');
 
       switch (network) {
-        case "Facebook":
-          this.seeRegApi.loginFacebook(
-            lang.hitch(this, this._onConnectSocialHandler)
-          );
+        case 'Facebook':
+          this.seeRegApi.loginFacebook(lang.hitch(this, this._onConnectSocialHandler));
           break;
 
-        case "Google":
-          this.seeRegApi.loginGoogle(
-            lang.hitch(this, this._onConnectSocialHandler)
-          );
+        case 'Google':
+          this.seeRegApi.loginGoogle(lang.hitch(this, this._onConnectSocialHandler));
           break;
 
         default:
@@ -254,25 +236,19 @@ define([
      */
     removeSocial: function (network) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::removeSocial");
+      console.log('userRegistration::removeSocial');
 
       switch (network) {
-        case "Facebook":
-          this.seeRegApi.removeSocial(
-            "facebook",
-            lang.hitch(this, this._onRemoveSocialHandler)
-          );
+        case 'Facebook':
+          this.seeRegApi.removeSocial('facebook', lang.hitch(this, this._onRemoveSocialHandler));
           break;
 
-        case "Google":
-          this.seeRegApi.removeSocial(
-            "google",
-            lang.hitch(this, this._onRemoveSocialHandler)
-          );
+        case 'Google':
+          this.seeRegApi.removeSocial('google', lang.hitch(this, this._onRemoveSocialHandler));
           break;
 
         default:
@@ -298,11 +274,11 @@ define([
      */
     logout: function () {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::logout");
+      console.log('userRegistration::logout');
 
       this.seeRegApi.logout(lang.hitch(this, this._onLogoutHandler));
     },
@@ -319,17 +295,13 @@ define([
      */
     forgotPassword: function (username, reseturl) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::forgotPassword");
+      console.log('userRegistration::forgotPassword');
 
-      this.seeRegApi.forgotPassword(
-        username,
-        lang.hitch(this, this._onForgotPasswordHandler),
-        reseturl
-      );
+      this.seeRegApi.forgotPassword(username, lang.hitch(this, this._onForgotPasswordHandler), reseturl);
     },
 
     /**
@@ -344,17 +316,13 @@ define([
      */
     resetPassword: function (token, password) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::resetPassword");
+      console.log('userRegistration::resetPassword');
 
-      this.seeRegApi.resetPassword(
-        token,
-        password,
-        lang.hitch(this, this._onResetPasswordHandler)
-      );
+      this.seeRegApi.resetPassword(token, password, lang.hitch(this, this._onResetPasswordHandler));
     },
 
     /**
@@ -368,16 +336,13 @@ define([
      */
     getUserDetails: function (refresh) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::getUserDetails");
+      console.log('userRegistration::getUserDetails');
 
-      this.seeRegApi.getUserDetails(
-        lang.hitch(this, this._onGetUserDetailsHandler),
-        refresh
-      );
+      this.seeRegApi.getUserDetails(lang.hitch(this, this._onGetUserDetailsHandler), refresh);
     },
 
     /**
@@ -389,15 +354,13 @@ define([
      */
     registerFields: function () {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::registerFields");
+      console.log('userRegistration::registerFields');
 
-      this.seeRegApi.registerFields(
-        lang.hitch(this, this._onRegisterFieldsHandler)
-      );
+      this.seeRegApi.registerFields(lang.hitch(this, this._onRegisterFieldsHandler));
     },
 
     /**
@@ -413,17 +376,13 @@ define([
      */
     registerUser: function (fields, persist) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::registerUser");
+      console.log('userRegistration::registerUser');
 
-      this.seeRegApi.registerUser(
-        fields,
-        persist,
-        lang.hitch(this, this._onRegisterUserHandler)
-      );
+      this.seeRegApi.registerUser(fields, persist, lang.hitch(this, this._onRegisterUserHandler));
     },
 
     /**
@@ -438,16 +397,13 @@ define([
      */
     updateUser: function (fields) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::updateUser");
+      console.log('userRegistration::updateUser');
 
-      this.seeRegApi.updateUser(
-        fields,
-        lang.hitch(this, this._onUpdateUserHandler)
-      );
+      this.seeRegApi.updateUser(fields, lang.hitch(this, this._onUpdateUserHandler));
     },
 
     /**
@@ -461,16 +417,13 @@ define([
      */
     completeRegisterUser: function (fields) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::updateUser");
+      console.log('userRegistration::updateUser');
 
-      this.seeRegApi.completeRegister(
-        fields,
-        lang.hitch(this, this._onLoginHandler)
-      );
+      this.seeRegApi.completeRegister(fields, lang.hitch(this, this._onLoginHandler));
     },
 
     /**
@@ -483,11 +436,8 @@ define([
      * @return null
      */
     setLanguage: function (language) {
-      console.log("userRegistration::setLanguage");
-      this.see.setLanguage(
-        language,
-        lang.hitch(this, this._onSetLanguageHandler)
-      );
+      console.log('userRegistration::setLanguage');
+      this.see.setLanguage(language, lang.hitch(this, this._onSetLanguageHandler));
     },
 
     /**
@@ -502,17 +452,13 @@ define([
      */
     getStatusLevel: function (ladder, refresh) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::getStatusLevel");
+      console.log('userRegistration::getStatusLevel');
 
-      this.seeRegApi.getStatusLevel(
-        ladder,
-        refresh,
-        lang.hitch(this, this._onGetStatusLevel)
-      );
+      this.seeRegApi.getStatusLevel(ladder, refresh, lang.hitch(this, this._onGetStatusLevel));
     },
 
     /**
@@ -526,16 +472,13 @@ define([
      */
     getLadderStatusLevels: function (ladder) {
       if (this.seeRegApi == undefined) {
-        this.emit("see-regapi-not-ready");
+        this.emit('see-regapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::getLadderStatusLevels");
+      console.log('userRegistration::getLadderStatusLevels');
 
-      this.seeRegApi.getLadderStatusLevels(
-        ladder,
-        lang.hitch(this, this._onGetLadderStatusLevels)
-      );
+      this.seeRegApi.getLadderStatusLevels(ladder, lang.hitch(this, this._onGetLadderStatusLevels));
     },
 
     /*********************************
@@ -567,13 +510,13 @@ define([
      */
     metaSet: function (doc, type, options) {
       if (!this.seeMetaApi) {
-        this.emit("see-metaapi-not-ready");
+        this.emit('see-metaapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::metaSet");
+      console.log('userRegistration::metaSet');
 
-      options = typeof options == "object" ? options : {};
+      options = typeof options == 'object' ? options : {};
       options.callback = lang.hitch(this, this._onMetaSetHandler);
 
       this.seeMetaApi.set(doc, type, options);
@@ -594,13 +537,13 @@ define([
      */
     metaGet: function (id, options) {
       if (!this.seeMetaApi) {
-        this.emit("see-metaapi-not-ready");
+        this.emit('see-metaapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::metaGet");
+      console.log('userRegistration::metaGet');
 
-      options = typeof options == "object" ? options : {};
+      options = typeof options == 'object' ? options : {};
       options.callback = lang.hitch(this, this._onMetaGetHandler);
 
       this.seeMetaApi.get(id, options);
@@ -618,14 +561,14 @@ define([
      */
     metaUpdate: function (id, doc) {
       if (!this.seeMetaApi) {
-        this.emit("see-metaapi-not-ready");
+        this.emit('see-metaapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::metaUpdate");
+      console.log('userRegistration::metaUpdate');
 
       var options = {
-        callback: lang.hitch(this, this._onMetaUpdateHandler),
+        callback: lang.hitch(this, this._onMetaUpdateHandler)
       };
 
       this.seeMetaApi.update(id, doc, options);
@@ -642,14 +585,14 @@ define([
      */
     metaDelete: function (id) {
       if (!this.seeMetaApi) {
-        this.emit("see-metaapi-not-ready");
+        this.emit('see-metaapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::metaDelete");
+      console.log('userRegistration::metaDelete');
 
       var options = {
-        callback: lang.hitch(this, this._onMetaDeleteHandler),
+        callback: lang.hitch(this, this._onMetaDeleteHandler)
       };
 
       this.seeMetaApi.del(id, options);
@@ -666,14 +609,14 @@ define([
      */
     metaClear: function (type) {
       if (!this.seeMetaApi) {
-        this.emit("see-metaapi-not-ready");
+        this.emit('see-metaapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::metaClear");
+      console.log('userRegistration::metaClear');
 
       var options = {
-        callback: lang.hitch(this, this._onMetaClearHandler),
+        callback: lang.hitch(this, this._onMetaClearHandler)
       };
 
       this.seeMetaApi.clear(type, options);
@@ -697,13 +640,13 @@ define([
      */
     metaList: function (type, options) {
       if (!this.seeMetaApi) {
-        this.emit("see-metaapi-not-ready");
+        this.emit('see-metaapi-not-ready');
         return;
       }
 
-      console.log("userRegistration::metaList");
+      console.log('userRegistration::metaList');
 
-      options = typeof options == "object" ? options : {};
+      options = typeof options == 'object' ? options : {};
       options.callback = lang.hitch(this, this._onMetaListHandler);
 
       this.seeMetaApi.list(type, options);
@@ -720,11 +663,11 @@ define([
      */
     triggerEvent: function (eventName) {
       if (!this.see) {
-        this.emit("see-not-ready");
+        this.emit('see-not-ready');
         return;
       }
 
-      console.log("userRegistration::triggerEvent");
+      console.log('userRegistration::triggerEvent');
 
       this.see.triggerEvent(eventName);
     },
@@ -744,11 +687,11 @@ define([
      */
     bindEvent: function (eventName, action, scope) {
       if (!this.see) {
-        this.emit("see-not-ready");
+        this.emit('see-not-ready');
         return;
       }
 
-      console.log("userRegistration::triggerEvent");
+      console.log('userRegistration::triggerEvent');
 
       this.see.bindEvent(eventName, action, scope);
     },
@@ -769,11 +712,11 @@ define([
      */
     bindOrFireEvent: function (eventName, action, scope) {
       if (!this.see) {
-        this.emit("see-not-ready");
+        this.emit('see-not-ready');
         return;
       }
 
-      console.log("userRegistration::triggerEvent");
+      console.log('userRegistration::triggerEvent');
 
       this.see.bindOrFireEvent(eventName, action, scope);
     },
@@ -787,11 +730,11 @@ define([
      */
     cookieTest: function () {
       if (!this.see) {
-        this.emit("see-not-ready");
+        this.emit('see-not-ready');
         return;
       }
 
-      console.log("userRegistration::cookieTest");
+      console.log('userRegistration::cookieTest');
 
       callback = lang.hitch(this, this._onCookieTest);
 
@@ -808,11 +751,11 @@ define([
      */
     isGamesEnabled: function () {
       if (!this.see) {
-        this.emit("see-not-ready");
+        this.emit('see-not-ready');
         return false;
       }
 
-      console.log("userRegistration::isGamesEnabled");
+      console.log('userRegistration::isGamesEnabled');
 
       return this.see.config.tenant.playerShowGames;
     },
@@ -824,11 +767,11 @@ define([
      */
     getUserConfig: function () {
       if (!this.see) {
-        this.emit("see-not-ready");
+        this.emit('see-not-ready');
         return false;
       }
 
-      console.log("userRegistration::getUserConfig");
+      console.log('userRegistration::getUserConfig');
 
       return this.see.config.user;
     },
@@ -840,11 +783,11 @@ define([
      */
     getConfig: function () {
       if (!this.see) {
-        this.emit("see-not-ready");
+        this.emit('see-not-ready');
         return false;
       }
 
-      console.log("userRegistration::getConfig");
+      console.log('userRegistration::getConfig');
 
       return this.see.config;
     },
@@ -856,11 +799,11 @@ define([
      */
     initWidgets: function (element) {
       if (!this.see) {
-        this.emit("see-not-ready");
+        this.emit('see-not-ready');
         return false;
       }
 
-      console.log("userRegistration::initWidgets");
+      console.log('userRegistration::initWidgets');
 
       this.see.initWidgets(element);
     },
@@ -880,17 +823,17 @@ define([
      */
     _onLoginHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the user is logged in
-          this.emit("user-logged-in", result.context);
+          this.emit('user-logged-in', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the login failed
-          this.emit("user-login-error", result.context);
+          this.emit('user-login-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -907,17 +850,17 @@ define([
      */
     _onConnectSocialHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the user is logged in
-          this.emit("social-connect", result.context);
+          this.emit('social-connect', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the login failed
-          this.emit("social-connect-error", result.context);
+          this.emit('social-connect-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -934,17 +877,17 @@ define([
      */
     _onRemoveSocialHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the social connection was removed
-          this.emit("social-remove", result.context);
+          this.emit('social-remove', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the social connection failed
-          this.emit("social-remove-error", result.context);
+          this.emit('social-remove-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -961,17 +904,17 @@ define([
      */
     _onLogoutHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the user has been logged out
-          this.emit("user-logged-out", result.context);
+          this.emit('user-logged-out', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the user logout failed
-          this.emit("user-logout-error", result.context);
+          this.emit('user-logout-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -988,17 +931,17 @@ define([
      */
     _onForgotPasswordHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the user forgot password request is sent
-          this.emit("forgot-password", result.context);
+          this.emit('forgot-password', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the user forgot password request failed
-          this.emit("forgot-password-error", result.context);
+          this.emit('forgot-password-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -1015,17 +958,17 @@ define([
      */
     _onResetPasswordHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the user password reset is complete
-          this.emit("reset-password", result.context);
+          this.emit('reset-password', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the user password reset failed
-          this.emit("reset-password-error", result.context);
+          this.emit('reset-password-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -1042,17 +985,17 @@ define([
      */
     _onGetUserDetailsHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce we received the user details
-          this.emit("user-details", result.context);
+          this.emit('user-details', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the user details call failed
-          this.emit("user-details-error", result.context);
+          this.emit('user-details-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -1069,17 +1012,17 @@ define([
      */
     _onRegisterFieldsHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the registerFields api call succeeded
-          this.emit("register-fields", result.context);
+          this.emit('register-fields', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the registerFields api call failed
-          this.emit("register-fields-error", result.context);
+          this.emit('register-fields-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -1096,17 +1039,17 @@ define([
      */
     _onRegisterUserHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the user is registered (and logged in)
-          this.emit("register-user", result.context);
+          this.emit('register-user', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the user registration has failed
-          this.emit("register-user-error", result.context);
+          this.emit('register-user-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -1123,15 +1066,15 @@ define([
      */
     _onUpdateUserHandler: function (result) {
       switch (result.status) {
-        case "PASS":
-          this.emit("user-update", result.context);
+        case 'PASS':
+          this.emit('user-update', result.context);
           break;
 
-        case "FAIL":
-          this.emit("user-update-error", result.context);
+        case 'FAIL':
+          this.emit('user-update-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -1148,14 +1091,14 @@ define([
      */
     _onSetLanguageHandler: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce the user's language has been changed
-          this.emit("language-change-success", result.context);
+          this.emit('language-change-success', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the user language change failed
-          this.emit("language-change-error", result.context);
+          this.emit('language-change-error', result.context);
           break;
 
         default:
@@ -1174,17 +1117,17 @@ define([
      */
     _onGetStatusLevel: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce we received the user details
-          this.emit("user-status", result.context);
+          this.emit('user-status', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the user details call failed
-          this.emit("user-status-error", result.context);
+          this.emit('user-status-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -1201,17 +1144,17 @@ define([
      */
     _onGetLadderStatusLevels: function (result) {
       switch (result.status) {
-        case "PASS":
+        case 'PASS':
           // Announce we received the user details
-          this.emit("status-levels", result.context);
+          this.emit('status-levels', result.context);
           break;
 
-        case "FAIL":
+        case 'FAIL':
           // Announce the user details call failed
-          this.emit("status-levels-error", result.context);
+          this.emit('status-levels-error', result.context);
           break;
 
-        case "DELAY":
+        case 'DELAY':
         default:
           break;
       }
@@ -1228,12 +1171,12 @@ define([
      */
     _onMetaSetHandler: function (result) {
       switch (result.status) {
-        case "PASS":
-          this.emit("meta-set", result.context);
+        case 'PASS':
+          this.emit('meta-set', result.context);
           break;
 
-        case "FAIL":
-          this.emit("meta-set-error", result.context);
+        case 'FAIL':
+          this.emit('meta-set-error', result.context);
           break;
 
         default:
@@ -1252,12 +1195,12 @@ define([
      */
     _onMetaGetHandler: function (result) {
       switch (result.status) {
-        case "PASS":
-          this.emit("meta-get", result.context);
+        case 'PASS':
+          this.emit('meta-get', result.context);
           break;
 
-        case "FAIL":
-          this.emit("meta-get-error", result.context);
+        case 'FAIL':
+          this.emit('meta-get-error', result.context);
           break;
 
         default:
@@ -1276,12 +1219,12 @@ define([
      */
     _onMetaUpdateHandler: function (result) {
       switch (result.status) {
-        case "PASS":
-          this.emit("meta-update", result.context);
+        case 'PASS':
+          this.emit('meta-update', result.context);
           break;
 
-        case "FAIL":
-          this.emit("meta-update-error", result.context);
+        case 'FAIL':
+          this.emit('meta-update-error', result.context);
           break;
 
         default:
@@ -1300,12 +1243,12 @@ define([
      */
     _onMetaDeleteHandler: function (result) {
       switch (result.status) {
-        case "PASS":
-          this.emit("meta-delete", result.context);
+        case 'PASS':
+          this.emit('meta-delete', result.context);
           break;
 
-        case "FAIL":
-          this.emit("meta-delete-error", result.context);
+        case 'FAIL':
+          this.emit('meta-delete-error', result.context);
           break;
 
         default:
@@ -1324,12 +1267,12 @@ define([
      */
     _onMetaClearHandler: function (result) {
       switch (result.status) {
-        case "PASS":
-          this.emit("meta-clear", result.context);
+        case 'PASS':
+          this.emit('meta-clear', result.context);
           break;
 
-        case "FAIL":
-          this.emit("meta-clear-error", result.context);
+        case 'FAIL':
+          this.emit('meta-clear-error', result.context);
           break;
 
         default:
@@ -1348,12 +1291,12 @@ define([
      */
     _onMetaListHandler: function (result) {
       switch (result.status) {
-        case "PASS":
-          this.emit("meta-list", result.context);
+        case 'PASS':
+          this.emit('meta-list', result.context);
           break;
 
-        case "FAIL":
-          this.emit("meta-list-error", result.context);
+        case 'FAIL':
+          this.emit('meta-list-error', result.context);
           break;
 
         default:
@@ -1372,18 +1315,18 @@ define([
      */
     _onCookieTest: function (result) {
       switch (result.status) {
-        case "PASS":
-          this.emit("cookie-test-pass");
+        case 'PASS':
+          this.emit('cookie-test-pass');
           break;
 
-        case "FAIL":
-          this.emit("cookie-test-fail");
+        case 'FAIL':
+          this.emit('cookie-test-fail');
           break;
 
         default:
           break;
       }
-    },
+    }
   });
 
   return module;

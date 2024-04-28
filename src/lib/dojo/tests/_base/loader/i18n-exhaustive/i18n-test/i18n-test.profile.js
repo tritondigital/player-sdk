@@ -6,31 +6,31 @@ var profile = (function () {
       },
 
       amd: function (filename, mid) {
-        return mid == "i18nTest/amdModule";
-      },
+        return mid == 'i18nTest/amdModule';
+      }
     },
 
     // relative to this file
-    basePath: "..",
+    basePath: '..',
 
     scopeMap: [
-      ["dojo", "dojo"],
-      ["dijit", 0],
-      ["dojox", 0],
+      ['dojo', 'dojo'],
+      ['dijit', 0],
+      ['dojox', 0]
     ],
 
     packages: [
       {
-        name: "dojo",
-        location: "./dojo",
+        name: 'dojo',
+        location: './dojo'
       },
       {
-        name: "i18nTest",
-        location: "./i18n-test",
-      },
+        name: 'i18nTest',
+        location: './i18n-test'
+      }
     ],
 
-    releaseDir: "./built-i18n-test",
-    releaseName: "built",
+    releaseDir: './built-i18n-test',
+    releaseName: 'built'
   };
 })();

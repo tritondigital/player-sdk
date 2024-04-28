@@ -1,33 +1,26 @@
-define([
-  "./_base/kernel",
-  "./aspect",
-  "./dom",
-  "./dom-class",
-  "./_base/lang",
-  "./on",
-  "./has",
-  "./mouse",
-  "./domReady",
-  "./_base/window",
-], function (dojo, aspect, dom, domClass, lang, on, has, mouse, domReady, win) {
+define(['./_base/kernel', './aspect', './dom', './dom-class', './_base/lang', './on', './has', './mouse', './domReady', './_base/window'], function (
+  dojo,
+  aspect,
+  dom,
+  domClass,
+  lang,
+  on,
+  has,
+  mouse,
+  domReady,
+  win
+) {
   // module:
   //		dojo/touch
 
-  var hasTouch = has("touch");
+  var hasTouch = has('touch');
 
-  var ios4 = has("ios") < 5;
+  var ios4 = has('ios') < 5;
 
   var msPointer = navigator.msPointerEnabled;
 
   // Click generation variables
-  var clicksInited,
-    clickTracker,
-    clickTarget,
-    clickX,
-    clickY,
-    clickDx,
-    clickDy,
-    clickTime;
+  var clicksInited, clickTracker, clickTarget, clickX, clickY, clickDx, clickDy, clickTime;
 
   // Time of most recent touchstart, touchmove, or touchend event
   var lastTouch;
@@ -53,7 +46,7 @@ define([
           remove: function () {
             handle1.remove();
             handle2.remove();
-          },
+          }
         };
       };
     } else {
@@ -85,18 +78,8 @@ define([
       clickTarget = e.target;
       clickX = e.touches ? e.touches[0].pageX : e.clientX;
       clickY = e.touches ? e.touches[0].pageY : e.clientY;
-      clickDx =
-        (typeof clickTracker == "object"
-          ? clickTracker.x
-          : typeof clickTracker == "number"
-          ? clickTracker
-          : 0) || 4;
-      clickDy =
-        (typeof clickTracker == "object"
-          ? clickTracker.y
-          : typeof clickTracker == "number"
-          ? clickTracker
-          : 0) || 4;
+      clickDx = (typeof clickTracker == 'object' ? clickTracker.x : typeof clickTracker == 'number' ? clickTracker : 0) || 4;
+      clickDy = (typeof clickTracker == 'object' ? clickTracker.y : typeof clickTracker == 'number' ? clickTracker : 0) || 4;
 
       // add move/end handlers only the first time a node with dojoClick is seen,
       // so we don't add too much overhead when dojoClick is never set.
@@ -109,10 +92,8 @@ define([
             clickTracker =
               clickTracker &&
               e.target == clickTarget &&
-              Math.abs((e.touches ? e.touches[0].pageX : e.clientX) - clickX) <=
-                clickDx &&
-              Math.abs((e.touches ? e.touches[0].pageY : e.clientY) - clickY) <=
-                clickDy;
+              Math.abs((e.touches ? e.touches[0].pageX : e.clientX) - clickX) <= clickDx &&
+              Math.abs((e.touches ? e.touches[0].pageY : e.clientY) - clickY) <= clickDy;
           },
           true
         );
@@ -123,15 +104,15 @@ define([
             if (clickTracker) {
               clickTime = new Date().getTime();
               var target = e.target;
-              if (target.tagName === "LABEL") {
+              if (target.tagName === 'LABEL') {
                 // when clicking on a label, forward click to its associated input if any
-                target = dom.byId(target.getAttribute("for")) || target;
+                target = dom.byId(target.getAttribute('for')) || target;
               }
               setTimeout(function () {
-                on.emit(target, "click", {
+                on.emit(target, 'click', {
                   bubbles: true,
                   cancelable: true,
-                  _dojo_click: true,
+                  _dojo_click: true
                 });
               });
             }
@@ -150,23 +131,10 @@ define([
               // sent shortly after ours, similar to what is done in dualEvent.
               // The INPUT.dijitOffScreen test is for offscreen inputs used in dijit/form/Button, on which
               // we call click() explicitly, we don't want to stop this event.
-              if (
-                !e._dojo_click &&
-                new Date().getTime() <= clickTime + 1000 &&
-                !(
-                  e.target.tagName == "INPUT" &&
-                  domClass.contains(e.target, "dijitOffScreen")
-                )
-              ) {
+              if (!e._dojo_click && new Date().getTime() <= clickTime + 1000 && !(e.target.tagName == 'INPUT' && domClass.contains(e.target, 'dijitOffScreen'))) {
                 e.stopPropagation();
                 e.stopImmediatePropagation && e.stopImmediatePropagation();
-                if (
-                  type == "click" &&
-                  (e.target.tagName != "INPUT" ||
-                    e.target.type == "radio" ||
-                    e.target.type == "checkbox") &&
-                  e.target.tagName != "TEXTAREA"
-                ) {
+                if (type == 'click' && (e.target.tagName != 'INPUT' || e.target.type == 'radio' || e.target.type == 'checkbox') && e.target.tagName != 'TEXTAREA') {
                   // preventDefault() breaks textual <input>s on android, keyboard doesn't popup,
                   // but it is still needed for checkboxes and radio buttons, otherwise in some cases
                   // the checked state becomes inconsistent with the widget's state
@@ -178,12 +146,12 @@ define([
           );
         }
 
-        stopNativeEvents("click");
+        stopNativeEvents('click');
 
         // We also stop mousedown/up since these would be sent well after with our "fast" click (300ms),
         // which can confuse some dijit widgets.
-        stopNativeEvents("mousedown");
-        stopNativeEvents("mouseup");
+        stopNativeEvents('mousedown');
+        stopNativeEvents('mouseup');
       }
     }
   }
@@ -195,9 +163,9 @@ define([
       // MSPointer (IE10+) already has support for over and out, so we just need to init click support
       domReady(function () {
         win.doc.addEventListener(
-          "MSPointerDown",
+          'MSPointerDown',
           function (evt) {
-            doClicks(evt, "MSPointerMove", "MSPointerUp");
+            doClicks(evt, 'MSPointerMove', 'MSPointerUp');
           },
           true
         );
@@ -208,7 +176,7 @@ define([
         hoveredNode = win.body(); // currently hovered node
 
         win.doc.addEventListener(
-          "touchstart",
+          'touchstart',
           function (evt) {
             lastTouch = new Date().getTime();
 
@@ -217,16 +185,16 @@ define([
             // and to ensure this code runs even if the listener on the node does event.stop().
             var oldNode = hoveredNode;
             hoveredNode = evt.target;
-            on.emit(oldNode, "dojotouchout", {
+            on.emit(oldNode, 'dojotouchout', {
               relatedTarget: hoveredNode,
-              bubbles: true,
+              bubbles: true
             });
-            on.emit(hoveredNode, "dojotouchover", {
+            on.emit(hoveredNode, 'dojotouchover', {
               relatedTarget: oldNode,
-              bubbles: true,
+              bubbles: true
             });
 
-            doClicks(evt, "touchmove", "touchend"); // init click generation
+            doClicks(evt, 'touchmove', 'touchend'); // init click generation
           },
           true
         );
@@ -234,10 +202,10 @@ define([
         function copyEventProps(evt) {
           // Make copy of event object and also set bubbles:true.  Used when calling on.emit().
           var props = lang.delegate(evt, {
-            bubbles: true,
+            bubbles: true
           });
 
-          if (has("ios") >= 6) {
+          if (has('ios') >= 6) {
             // On iOS6 "touches" became a non-enumerable property, which
             // is not hit by for...in.  Ditto for the other properties below.
             props.touches = evt.touches;
@@ -252,7 +220,7 @@ define([
           return props;
         }
 
-        on(win.doc, "touchmove", function (evt) {
+        on(win.doc, 'touchmove', function (evt) {
           lastTouch = new Date().getTime();
 
           var newNode = win.doc.elementFromPoint(
@@ -264,15 +232,15 @@ define([
             // Fire synthetic touchover and touchout events on nodes since the browser won't do it natively.
             if (hoveredNode !== newNode) {
               // touch out on the old node
-              on.emit(hoveredNode, "dojotouchout", {
+              on.emit(hoveredNode, 'dojotouchout', {
                 relatedTarget: newNode,
-                bubbles: true,
+                bubbles: true
               });
 
               // touchover on the new node
-              on.emit(newNode, "dojotouchover", {
+              on.emit(newNode, 'dojotouchover', {
                 relatedTarget: hoveredNode,
-                bubbles: true,
+                bubbles: true
               });
 
               hoveredNode = newNode;
@@ -280,13 +248,13 @@ define([
 
             // Unlike a listener on "touchmove", on(node, "dojotouchmove", listener) fires when the finger
             // drags over the specified node, regardless of which node the touch started on.
-            on.emit(newNode, "dojotouchmove", copyEventProps(evt));
+            on.emit(newNode, 'dojotouchmove', copyEventProps(evt));
           }
         });
 
         // Fire a dojotouchend event on the node where the finger was before it was removed from the screen.
         // This is different than the native touchend, which fires on the node where the drag started.
-        on(win.doc, "touchend", function (evt) {
+        on(win.doc, 'touchend', function (evt) {
           lastTouch = new Date().getTime();
           var node =
             win.doc.elementFromPoint(
@@ -294,7 +262,7 @@ define([
               evt.pageY - (ios4 ? 0 : win.global.pageYOffset)
             ) || win.body(); // if out of the screen
 
-          on.emit(node, "dojotouchend", copyEventProps(evt));
+          on.emit(node, 'dojotouchend', copyEventProps(evt));
         });
       });
     }
@@ -302,22 +270,14 @@ define([
 
   //device neutral events - touch.press|move|release|cancel/over/out
   var touch = {
-    press: dualEvent("mousedown", "touchstart", "MSPointerDown"),
-    move: dualEvent("mousemove", "dojotouchmove", "MSPointerMove"),
-    release: dualEvent("mouseup", "dojotouchend", "MSPointerUp"),
-    cancel: dualEvent(
-      mouse.leave,
-      "touchcancel",
-      hasTouch ? "MSPointerCancel" : null
-    ),
-    over: dualEvent("mouseover", "dojotouchover", "MSPointerOver"),
-    out: dualEvent("mouseout", "dojotouchout", "MSPointerOut"),
-    enter: mouse._eventHandler(
-      dualEvent("mouseover", "dojotouchover", "MSPointerOver")
-    ),
-    leave: mouse._eventHandler(
-      dualEvent("mouseout", "dojotouchout", "MSPointerOut")
-    ),
+    press: dualEvent('mousedown', 'touchstart', 'MSPointerDown'),
+    move: dualEvent('mousemove', 'dojotouchmove', 'MSPointerMove'),
+    release: dualEvent('mouseup', 'dojotouchend', 'MSPointerUp'),
+    cancel: dualEvent(mouse.leave, 'touchcancel', hasTouch ? 'MSPointerCancel' : null),
+    over: dualEvent('mouseover', 'dojotouchover', 'MSPointerOver'),
+    out: dualEvent('mouseout', 'dojotouchout', 'MSPointerOut'),
+    enter: mouse._eventHandler(dualEvent('mouseover', 'dojotouchover', 'MSPointerOver')),
+    leave: mouse._eventHandler(dualEvent('mouseout', 'dojotouchout', 'MSPointerOut'))
   };
 
   /*=====
@@ -439,7 +399,7 @@ define([
 	};
 	=====*/
 
-  has("extend-dojo") && (dojo.touch = touch);
+  has('extend-dojo') && (dojo.touch = touch);
 
   return touch;
 });

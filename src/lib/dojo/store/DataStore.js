@@ -1,11 +1,4 @@
-define([
-  "../_base/lang",
-  "../_base/declare",
-  "../Deferred",
-  "../_base/array",
-  "./util/QueryResults",
-  "./util/SimpleQueryEngine" /*=====, "./api/Store" =====*/,
-], function (
+define(['../_base/lang', '../_base/declare', '../Deferred', '../_base/array', './util/QueryResults', './util/SimpleQueryEngine' /*=====, "./api/Store" =====*/], function (
   lang,
   declare,
   Deferred,
@@ -20,19 +13,19 @@ define([
   var base = null;
   /*===== base = Store; =====*/
 
-  return declare("dojo.store.DataStore", base, {
+  return declare('dojo.store.DataStore', base, {
     // summary:
     //		This is an adapter for using Dojo Data stores with an object store consumer.
     //		You can provide a Dojo data store and use this adapter to interact with it through
     //		the Dojo object store API
 
-    target: "",
+    target: '',
     constructor: function (options) {
       // options: Object?
       //		This provides any configuration information that will be mixed into the store,
       //		including a reference to the Dojo data store under the property "store".
       lang.mixin(this, options);
-      if (!"idProperty" in options) {
+      if (!'idProperty' in options) {
         var idAttribute;
         try {
           idAttribute = this.store.getIdentityAttributes();
@@ -45,19 +38,19 @@ define([
       }
       var features = this.store.getFeatures();
       // check the feature set and null out any methods that shouldn't be available
-      if (!features["dojo.data.api.Read"]) {
+      if (!features['dojo.data.api.Read']) {
         this.get = null;
       }
-      if (!features["dojo.data.api.Identity"]) {
+      if (!features['dojo.data.api.Identity']) {
         this.getIdentity = null;
       }
-      if (!features["dojo.data.api.Write"]) {
+      if (!features['dojo.data.api.Write']) {
         this.put = this.add = null;
       }
     },
     // idProperty: String
     //		The object property to use to store the identity of the store items.
-    idProperty: "id",
+    idProperty: 'id',
     // store:
     //		The object store to convert to a data store
     store: null,
@@ -77,14 +70,14 @@ define([
           if (values.length > 1) {
             for (var j = 0; j < values.length; j++) {
               var value = values[j];
-              if (typeof value == "object" && store.isItem(value)) {
+              if (typeof value == 'object' && store.isItem(value)) {
                 values[j] = convert(value);
               }
             }
             value = values;
           } else {
             var value = store.getValue(item, attribute);
-            if (typeof value == "object" && store.isItem(value)) {
+            if (typeof value == 'object' && store.isItem(value)) {
               value = convert(value);
             }
           }
@@ -113,7 +106,7 @@ define([
         }),
         onError: function (error) {
           deferred.reject((returnedError = error));
-        },
+        }
       });
       if (returnedObject) {
         // if it was returned synchronously
@@ -132,12 +125,10 @@ define([
       // options: Object?
       //		Additional metadata for storing the data.  Includes a reference to an id
       //		that the object may be stored with (i.e. { id: "foo" }).
-      var id =
-        (options && typeof options.id != "undefined") ||
-        this.getIdentity(object);
+      var id = (options && typeof options.id != 'undefined') || this.getIdentity(object);
       var store = this.store;
       var idProperty = this.idProperty;
-      if (typeof id == "undefined") {
+      if (typeof id == 'undefined') {
         store.newItem(object);
         store.save();
       } else {
@@ -157,7 +148,7 @@ define([
               store.newItem(object);
             }
             store.save();
-          },
+          }
         });
       }
     },
@@ -172,7 +163,7 @@ define([
         onItem: function (item) {
           store.deleteItem(item);
           store.save();
-        },
+        }
       });
     },
     query: function (query, options) {
@@ -204,7 +195,7 @@ define([
             },
             onError: function (error) {
               deferred.reject(error);
-            },
+            }
           },
           options
         )
@@ -219,6 +210,6 @@ define([
       // returns: Number
       //		The id of the given object.
       return object[this.idProperty];
-    },
+    }
   });
 });

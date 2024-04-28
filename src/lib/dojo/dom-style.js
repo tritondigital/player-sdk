@@ -1,4 +1,4 @@
-define(["./sniff", "./dom"], function (has, dom) {
+define(['./sniff', './dom'], function (has, dom) {
   // module:
   //		dojo/dom-style
 
@@ -25,32 +25,28 @@ define(["./sniff", "./dom"], function (has, dom) {
       // summary:
       //		This module defines the core dojo DOM style API.
     };
-  if (has("webkit")) {
+  if (has('webkit')) {
     getComputedStyle = function (/*DomNode*/ node) {
       var s;
       if (node.nodeType == 1) {
         var dv = node.ownerDocument.defaultView;
         s = dv.getComputedStyle(node, null);
         if (!s && node.style) {
-          node.style.display = "";
+          node.style.display = '';
           s = dv.getComputedStyle(node, null);
         }
       }
       return s || {};
     };
-  } else if (has("ie") && (has("ie") < 9 || has("quirks"))) {
+  } else if (has('ie') && (has('ie') < 9 || has('quirks'))) {
     getComputedStyle = function (node) {
       // IE (as of 7) doesn't expose Element like sane browsers
       // currentStyle can be null on IE8!
-      return node.nodeType == 1 /* ELEMENT_NODE*/ && node.currentStyle
-        ? node.currentStyle
-        : {};
+      return node.nodeType == 1 /* ELEMENT_NODE*/ && node.currentStyle ? node.currentStyle : {};
     };
   } else {
     getComputedStyle = function (node) {
-      return node.nodeType == 1 /* ELEMENT_NODE*/
-        ? node.ownerDocument.defaultView.getComputedStyle(node, null)
-        : {};
+      return node.nodeType == 1 /* ELEMENT_NODE*/ ? node.ownerDocument.defaultView.getComputedStyle(node, null) : {};
     };
   }
   style.getComputedStyle = getComputedStyle;
@@ -88,7 +84,7 @@ define(["./sniff", "./dom"], function (has, dom) {
 	=====*/
 
   var toPixel;
-  if (!has("ie")) {
+  if (!has('ie')) {
     toPixel = function (element, value) {
       // style values can be floats, client code may want
       // to round for integer pixels.
@@ -100,12 +96,12 @@ define(["./sniff", "./dom"], function (has, dom) {
         return 0;
       }
       // on IE7, medium is usually 4 pixels
-      if (avalue == "medium") {
+      if (avalue == 'medium') {
         return 4;
       }
       // style values can be floats, client code may
       // want to round this value for integer pixels.
-      if (avalue.slice && avalue.slice(-2) == "px") {
+      if (avalue.slice && avalue.slice(-2) == 'px') {
         return parseFloat(avalue);
       }
       var s = element.style,
@@ -142,7 +138,7 @@ define(["./sniff", "./dom"], function (has, dom) {
 
   // FIXME: there opacity quirks on FF that we haven't ported over. Hrm.
 
-  var astr = "DXImageTransform.Microsoft.Alpha";
+  var astr = 'DXImageTransform.Microsoft.Alpha';
   var af = function (n, f) {
     try {
       return n.filters.item(astr);
@@ -152,7 +148,7 @@ define(["./sniff", "./dom"], function (has, dom) {
   };
 
   var _getOpacity =
-    has("ie") < 9 || (has("ie") < 10 && has("quirks"))
+    has('ie') < 9 || (has('ie') < 10 && has('quirks'))
       ? function (node) {
           try {
             return af(node).Opacity / 100; // Number
@@ -165,9 +161,9 @@ define(["./sniff", "./dom"], function (has, dom) {
         };
 
   var _setOpacity =
-    has("ie") < 9 || (has("ie") < 10 && has("quirks"))
+    has('ie') < 9 || (has('ie') < 10 && has('quirks'))
       ? function (/*DomNode*/ node, /*Number*/ opacity) {
-          if (opacity === "") {
+          if (opacity === '') {
             opacity = 1;
           }
           var ov = opacity * 100,
@@ -178,26 +174,23 @@ define(["./sniff", "./dom"], function (has, dom) {
           // af(node, 1).Enabled = !fullyOpaque;
 
           if (fullyOpaque) {
-            node.style.zoom = "";
+            node.style.zoom = '';
             if (af(node)) {
-              node.style.filter = node.style.filter.replace(
-                new RegExp("\\s*progid:" + astr + "\\([^\\)]+?\\)", "i"),
-                ""
-              );
+              node.style.filter = node.style.filter.replace(new RegExp('\\s*progid:' + astr + '\\([^\\)]+?\\)', 'i'), '');
             }
           } else {
             node.style.zoom = 1;
             if (af(node)) {
               af(node, 1).Opacity = ov;
             } else {
-              node.style.filter += " progid:" + astr + "(Opacity=" + ov + ")";
+              node.style.filter += ' progid:' + astr + '(Opacity=' + ov + ')';
             }
             af(node, 1).Enabled = true;
           }
 
-          if (node.tagName.toLowerCase() == "tr") {
+          if (node.tagName.toLowerCase() == 'tr') {
             for (var td = node.firstChild; td; td = td.nextSibling) {
-              if (td.tagName.toLowerCase() == "td") {
+              if (td.tagName.toLowerCase() == 'td') {
                 _setOpacity(td, opacity);
               }
             }
@@ -210,28 +203,28 @@ define(["./sniff", "./dom"], function (has, dom) {
 
   var _pixelNamesCache = {
     left: true,
-    top: true,
+    top: true
   };
   var _pixelRegExp = /margin|padding|width|height|max|min|offset/; // |border
   function _toStyleValue(node, type, value) {
     //TODO: should we really be doing string case conversion here? Should we cache it? Need to profile!
     type = type.toLowerCase();
-    if (has("ie")) {
-      if (value == "auto") {
-        if (type == "height") {
+    if (has('ie')) {
+      if (value == 'auto') {
+        if (type == 'height') {
           return node.offsetHeight;
         }
-        if (type == "width") {
+        if (type == 'width') {
           return node.offsetWidth;
         }
       }
-      if (type == "fontweight") {
+      if (type == 'fontweight') {
         switch (value) {
           case 700:
-            return "bold";
+            return 'bold';
           case 400:
           default:
-            return "normal";
+            return 'normal';
         }
       }
     }
@@ -271,30 +264,16 @@ define(["./sniff", "./dom"], function (has, dom) {
 
     var n = dom.byId(node),
       l = arguments.length,
-      op = name == "opacity";
+      op = name == 'opacity';
     if (l == 2 && op) {
       return _getOpacity(n);
     }
-    name = _floatAliases[name]
-      ? "cssFloat" in n.style
-        ? "cssFloat"
-        : "styleFloat"
-      : name;
+    name = _floatAliases[name] ? ('cssFloat' in n.style ? 'cssFloat' : 'styleFloat') : name;
     var s = style.getComputedStyle(n);
-    return l == 1
-      ? s
-      : _toStyleValue(
-          n,
-          name,
-          s[name] || n.style[name]
-        ); /* CSS2Properties||String||Number */
+    return l == 1 ? s : _toStyleValue(n, name, s[name] || n.style[name]); /* CSS2Properties||String||Number */
   };
 
-  style.set = function setStyle(
-    /*DOMNode|String*/ node,
-    /*String|Object*/ name,
-    /*String?*/ value
-  ) {
+  style.set = function setStyle(/*DOMNode|String*/ node, /*String|Object*/ name, /*String?*/ value) {
     // summary:
     //		Sets styles on a node.
     // node: DOMNode|String
@@ -342,12 +321,8 @@ define(["./sniff", "./dom"], function (has, dom) {
 
     var n = dom.byId(node),
       l = arguments.length,
-      op = name == "opacity";
-    name = _floatAliases[name]
-      ? "cssFloat" in n.style
-        ? "cssFloat"
-        : "styleFloat"
-      : name;
+      op = name == 'opacity';
+    name = _floatAliases[name] ? ('cssFloat' in n.style ? 'cssFloat' : 'styleFloat') : name;
     if (l == 3) {
       return op ? _setOpacity(n, value) : (n.style[name] = value); // Number
     }

@@ -1,16 +1,13 @@
-define(["../../_base/lang"], function (lang) {
+define(['../../_base/lang'], function (lang) {
   // module:
   //		dojo/data/util/filter
   // summary:
   //		TODOC
 
   var filter = {};
-  lang.setObject("dojo.data.util.filter", filter);
+  lang.setObject('dojo.data.util.filter', filter);
 
-  filter.patternToRegExp = function (
-    /*String*/ pattern,
-    /*boolean?*/ ignoreCase
-  ) {
+  filter.patternToRegExp = function (/*String*/ pattern, /*boolean?*/ ignoreCase) {
     // summary:
     //		Helper function to convert a simple pattern to a regular expression for matching.
     // description:
@@ -36,44 +33,44 @@ define(["../../_base/lang"], function (lang) {
     //		An optional flag to indicate if the pattern matching should be treated as case-sensitive or not when comparing
     //		By default, it is assumed case sensitive.
 
-    var rxp = "^";
+    var rxp = '^';
     var c = null;
     for (var i = 0; i < pattern.length; i++) {
       c = pattern.charAt(i);
       switch (c) {
-        case "\\":
+        case '\\':
           rxp += c;
           i++;
           rxp += pattern.charAt(i);
           break;
-        case "*":
-          rxp += ".*";
+        case '*':
+          rxp += '.*';
           break;
-        case "?":
-          rxp += ".";
+        case '?':
+          rxp += '.';
           break;
-        case "$":
-        case "^":
-        case "/":
-        case "+":
-        case ".":
-        case "|":
-        case "(":
-        case ")":
-        case "{":
-        case "}":
-        case "[":
-        case "]":
-          rxp += "\\"; //fallthrough
+        case '$':
+        case '^':
+        case '/':
+        case '+':
+        case '.':
+        case '|':
+        case '(':
+        case ')':
+        case '{':
+        case '}':
+        case '[':
+        case ']':
+          rxp += '\\'; //fallthrough
         default:
           rxp += c;
       }
     }
-    rxp += "$";
+    rxp += '$';
     if (ignoreCase) {
-      return new RegExp(rxp, "mi"); //RegExp
+      return new RegExp(rxp, 'mi'); //RegExp
     } else {
-      return new RegExp(rxp, "m"); //RegExp
+      return new RegExp(rxp, 'm'); //RegExp
     }
   };
 

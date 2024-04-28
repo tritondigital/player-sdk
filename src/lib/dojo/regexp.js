@@ -1,4 +1,4 @@
-define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
+define(['./_base/kernel', './_base/lang'], function (dojo, lang) {
   // module:
   //		dojo/regexp
 
@@ -6,7 +6,7 @@ define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
     // summary:
     //		Regular expressions and Builder resources
   };
-  lang.setObject("dojo.regexp", regexp);
+  lang.setObject('dojo.regexp', regexp);
 
   regexp.escapeString = function (/*String*/ str, /*String?*/ except) {
     // summary:
@@ -18,15 +18,11 @@ define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
       if (except && except.indexOf(ch) != -1) {
         return ch;
       }
-      return "\\" + ch;
+      return '\\' + ch;
     }); // String
   };
 
-  regexp.buildGroupRE = function (
-    /*Object|Array*/ arr,
-    /*Function*/ re,
-    /*Boolean?*/ nonCapture
-  ) {
+  regexp.buildGroupRE = function (/*Object|Array*/ arr, /*Function*/ re, /*Boolean?*/ nonCapture) {
     // summary:
     //		Builds a regular expression that groups subexpressions
     // description:
@@ -57,7 +53,7 @@ define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
     }
 
     // join the REs as alternatives in a RE group.
-    return regexp.group(b.join("|"), nonCapture); // String
+    return regexp.group(b.join('|'), nonCapture); // String
   };
 
   regexp.group = function (/*String*/ expression, /*Boolean?*/ nonCapture) {
@@ -66,7 +62,7 @@ define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
     // nonCapture:
     //		If true, uses non-capturing match, otherwise matches are retained
     //		by regular expression.
-    return "(" + (nonCapture ? "?:" : "") + expression + ")"; // String
+    return '(' + (nonCapture ? '?:' : '') + expression + ')'; // String
   };
 
   return regexp;

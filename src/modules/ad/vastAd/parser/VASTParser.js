@@ -1,12 +1,12 @@
-var xmlParser = require("sdk/base/util/XmlParser");
+var xmlParser = require('sdk/base/util/XmlParser');
 
 /**
  * VAST Parser
  */
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var vastParser = declare([], {
     constructor: function (target) {
-      console.log("vastParser::constructor");
+      console.log('vastParser::constructor');
 
       this.target = target;
     },
@@ -20,8 +20,7 @@ define(["dojo/_base/declare"], function (declare) {
      */
     getTagValue: function (xmldata, tagName) {
       if (xmldata.getElementsByTagName(tagName).length == 0) return null;
-      else
-        return xmlParser.textContent(xmldata.getElementsByTagName(tagName)[0]);
+      else return xmlParser.textContent(xmldata.getElementsByTagName(tagName)[0]);
     },
 
     /**
@@ -40,8 +39,7 @@ define(["dojo/_base/declare"], function (declare) {
       var array = [];
 
       for (var i = 0; i < data.length; i++) {
-        if (data[i].nodeName == nodeName)
-          array.push(xmlParser.textContent(data[i]));
+        if (data[i].nodeName == nodeName) array.push(xmlParser.textContent(data[i]));
       }
       return array;
     },
@@ -49,8 +47,8 @@ define(["dojo/_base/declare"], function (declare) {
     trim: function (value) {
       if (value == undefined) return null;
 
-      return value.replace(/^\s+|\s+$/g, "");
-    },
+      return value.replace(/^\s+|\s+$/g, '');
+    }
   });
 
   return vastParser;

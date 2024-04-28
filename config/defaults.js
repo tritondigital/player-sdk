@@ -4,10 +4,10 @@
  * Using [].push will add to the base array, so a require will alter
  * the base array output.
  */
-"use strict";
+'use strict';
 
-const path = require("path");
-const srcPath = path.resolve(__dirname, "../src");
+const path = require('path');
+const srcPath = path.resolve(__dirname, '../src');
 const dfltPort = 4000;
 /**
  * Get the default modules object for webpack
@@ -25,13 +25,13 @@ function getDefaultModules() {
     loaders: [
       {
         test: /\.js$/,
-        loaders: ["dojo-webpack-loader"],
-        include: path.join(srcPath, "lib/dojo"),
+        loaders: ['dojo-webpack-loader'],
+        include: path.join(srcPath, 'lib/dojo')
       },
       {
         test: /\.json$/,
-        loader: "json",
-      },
+        loader: 'json'
+      }
       // {
       //     test: /(\.|\/)(js|jsx)$/,
       //     exclude: [ /node_modules/,/dojo/,/swfobject-2.2/, /EventSourceJS/],
@@ -47,13 +47,13 @@ function getDefaultModules() {
       //         presets: [ 'es2015' ]
       //     }
       // }
-    ],
+    ]
   };
 }
 
 module.exports = {
   srcPath: srcPath,
-  publicPath: "/",
+  publicPath: '/',
   port: dfltPort,
-  getDefaultModules: getDefaultModules,
+  getDefaultModules: getDefaultModules
 };

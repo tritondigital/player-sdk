@@ -1,11 +1,11 @@
-define([
-  "./has",
-  "./_base/lang",
-  "./errors/CancelError",
-  "./promise/Promise",
-  "./has!config-deferredInstrumentation?./promise/instrumentation",
-], function (has, lang, CancelError, Promise, instrumentation) {
-  "use strict";
+define(['./has', './_base/lang', './errors/CancelError', './promise/Promise', './has!config-deferredInstrumentation?./promise/instrumentation'], function (
+  has,
+  lang,
+  CancelError,
+  Promise,
+  instrumentation
+) {
+  'use strict';
 
   // module:
   //		dojo/Deferred
@@ -13,17 +13,13 @@ define([
   var PROGRESS = 0,
     RESOLVED = 1,
     REJECTED = 2;
-  var FULFILLED_ERROR_MESSAGE = "This deferred has already been fulfilled.";
+  var FULFILLED_ERROR_MESSAGE = 'This deferred has already been fulfilled.';
 
   var freezeObject = Object.freeze || function () {};
 
   var signalWaiting = function (waiting, type, result, rejection, deferred) {
-    if (has("config-deferredInstrumentation")) {
-      if (
-        type === REJECTED &&
-        Deferred.instrumentRejected &&
-        waiting.length === 0
-      ) {
+    if (has('config-deferredInstrumentation')) {
+      if (type === REJECTED && Deferred.instrumentRejected && waiting.length === 0) {
         Deferred.instrumentRejected(result, false, rejection, deferred);
       }
     }
@@ -40,11 +36,11 @@ define([
       try {
         var newResult = func(result);
         if (type === PROGRESS) {
-          if (typeof newResult !== "undefined") {
+          if (typeof newResult !== 'undefined') {
             signalDeferred(deferred, type, newResult);
           }
         } else {
-          if (newResult && typeof newResult.then === "function") {
+          if (newResult && typeof newResult.then === 'function') {
             listener.cancel = newResult.cancel;
             newResult.then(
               // Only make resolvers if they're actually going to be used
@@ -63,14 +59,9 @@ define([
       signalDeferred(deferred, type, result);
     }
 
-    if (has("config-deferredInstrumentation")) {
+    if (has('config-deferredInstrumentation')) {
       if (type === REJECTED && Deferred.instrumentRejected) {
-        Deferred.instrumentRejected(
-          result,
-          !!func,
-          rejection,
-          deferred.promise
-        );
+        Deferred.instrumentRejected(result, !!func, rejection, deferred.promise);
       }
     }
   };
@@ -121,7 +112,7 @@ define([
     var canceled = false;
     var waiting = [];
 
-    if (has("config-deferredInstrumentation") && Error.captureStackTrace) {
+    if (has('config-deferredInstrumentation') && Error.captureStackTrace) {
       Error.captureStackTrace(deferred, Deferred);
       Error.captureStackTrace(promise, Deferred);
     }
@@ -199,13 +190,7 @@ define([
       if (!fulfilled) {
         // Set fulfilled, store value. After signaling waiting listeners unset
         // waiting.
-        signalWaiting(
-          waiting,
-          (fulfilled = RESOLVED),
-          (result = value),
-          null,
-          deferred
-        );
+        signalWaiting(waiting, (fulfilled = RESOLVED), (result = value), null, deferred);
         waiting = null;
         return promise;
       } else if (strict === true) {
@@ -229,16 +214,10 @@ define([
       //		Returns the original promise for the deferred.
 
       if (!fulfilled) {
-        if (has("config-deferredInstrumentation") && Error.captureStackTrace) {
+        if (has('config-deferredInstrumentation') && Error.captureStackTrace) {
           Error.captureStackTrace((rejection = {}), reject);
         }
-        signalWaiting(
-          waiting,
-          (fulfilled = REJECTED),
-          (result = error),
-          rejection,
-          deferred
-        );
+        signalWaiting(waiting, (fulfilled = REJECTED), (result = error), rejection, deferred);
         waiting = null;
         return promise;
       } else if (strict === true) {
@@ -306,13 +285,12 @@ define([
         // Cancel can be called even after the deferred is fulfilled
         if (canceler) {
           var returnedReason = canceler(reason);
-          reason =
-            typeof returnedReason === "undefined" ? reason : returnedReason;
+          reason = typeof returnedReason === 'undefined' ? reason : returnedReason;
         }
         canceled = true;
         if (!fulfilled) {
           // Allow canceler to provide its own reason, but fall back to a CancelError
-          if (typeof reason === "undefined") {
+          if (typeof reason === 'undefined') {
             reason = new CancelError();
           }
           reject(reason);
@@ -332,7 +310,7 @@ define([
     // returns: String
     //		Returns `[object Deferred]`.
 
-    return "[object Deferred]";
+    return '[object Deferred]';
   };
 
   if (instrumentation) {

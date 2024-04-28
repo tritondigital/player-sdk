@@ -1,18 +1,8 @@
-define([
-  "./_base/kernel",
-  "./_base/lang",
-  "./_base/array",
-  "./_base/connect",
-  "./query",
-  "./domReady",
-], function (dojo, lang, darray, connect, query, domReady) {
+define(['./_base/kernel', './_base/lang', './_base/array', './_base/connect', './query', './domReady'], function (dojo, lang, darray, connect, query, domReady) {
   // module:
   //		dojo/behavior
 
-  dojo.deprecated(
-    "dojo.behavior",
-    "Use dojo/on with event delegation (on.selector())"
-  );
+  dojo.deprecated('dojo.behavior', 'Use dojo/on with event delegation (on.selector())');
 
   var Behavior = function () {
     // summary:
@@ -41,7 +31,7 @@ define([
     function forIn(obj, scope, func) {
       var tmpObj = {};
       for (var x in obj) {
-        if (typeof tmpObj[x] == "undefined") {
+        if (typeof tmpObj[x] == 'undefined') {
           if (!func) {
             scope(obj[x], x);
           } else {
@@ -165,7 +155,7 @@ define([
 
       forIn(behaviorObj, this, function (behavior, name) {
         var tBehavior = arrIn(this._behaviors, name);
-        if (typeof tBehavior["id"] != "number") {
+        if (typeof tBehavior['id'] != 'number') {
           tBehavior.id = _inc++;
         }
         var cversion = [];
@@ -181,7 +171,7 @@ define([
 
     var _applyToNode = function (node, action, ruleSetName) {
       if (lang.isString(action)) {
-        if (ruleSetName == "found") {
+        if (ruleSetName == 'found') {
           connect.publish(action, [node]);
         } else {
           connect.connect(node, ruleSetName, function () {
@@ -189,7 +179,7 @@ define([
           });
         }
       } else if (lang.isFunction(action)) {
-        if (ruleSetName == "found") {
+        if (ruleSetName == 'found') {
           action(node);
         } else {
           connect.connect(node, ruleSetName, action);
@@ -223,8 +213,8 @@ define([
       forIn(this._behaviors, function (tBehavior, id) {
         query(id).forEach(function (elem) {
           var runFrom = 0;
-          var bid = "_dj_behavior_" + tBehavior.id;
-          if (typeof elem[bid] == "number") {
+          var bid = '_dj_behavior_' + tBehavior.id;
+          if (typeof elem[bid] == 'number') {
             runFrom = elem[bid];
             if (runFrom == tBehavior.length) {
               return;

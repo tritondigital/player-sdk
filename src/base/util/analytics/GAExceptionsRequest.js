@@ -1,10 +1,7 @@
 /**
  *  @module GAExceptionRequest
  */
-define(["dojo/_base/declare", "sdk/base/util/analytics/GARequest"], function (
-  declare,
-  GARequest
-) {
+define(['dojo/_base/declare', 'sdk/base/util/analytics/GARequest'], function (declare, GARequest) {
   /**
    * @namespace tdapi/modules/analytics/GAEventRequest
    */
@@ -13,10 +10,10 @@ define(["dojo/_base/declare", "sdk/base/util/analytics/GARequest"], function (
      * constructor
      */
     constructor: function () {
-      console.log("GAExceptionRequest::constructor");
+      console.log('GAExceptionRequest::constructor');
 
       this.inherited(arguments);
-    },
+    }
   });
 
   //singleton

@@ -1,3 +1,3 @@
-define(["./declareStepsOnProvide"], function (result) {
+define(['./declareStepsOnProvide'], function (result) {
   return result;
 });

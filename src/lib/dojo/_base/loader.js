@@ -1,12 +1,4 @@
-define([
-  "./kernel",
-  "../has",
-  "require",
-  "module",
-  "../json",
-  "./lang",
-  "./array",
-], function (dojo, has, require, thisModule, json, lang, array) {
+define(['./kernel', '../has', 'require', 'module', '../json', './lang', './array'], function (dojo, has, require, thisModule, json, lang, array) {
   // module:
   //		dojo/_base/loader
 
@@ -15,32 +7,32 @@ define([
   // signal the loader in sync mode...
   //>>pure-amd
 
-  if (!has("dojo-loader")) {
-    console.error("cannot load the Dojo v1.x loader with a foreign loader");
+  if (!has('dojo-loader')) {
+    console.error('cannot load the Dojo v1.x loader with a foreign loader');
     return 0;
   }
 
-  has.add("dojo-fast-sync-require", 1);
+  has.add('dojo-fast-sync-require', 1);
 
   var makeErrorToken = function (id) {
       return { src: thisModule.id, id: id };
     },
     slashName = function (name) {
-      return name.replace(/\./g, "/");
+      return name.replace(/\./g, '/');
     },
     buildDetectRe = /\/\/>>built/,
     dojoRequireCallbacks = [],
     dojoRequireModuleStack = [],
     dojoRequirePlugin = function (mid, require, loaded) {
       dojoRequireCallbacks.push(loaded);
-      array.forEach(mid.split(","), function (mid) {
+      array.forEach(mid.split(','), function (mid) {
         var module = getModule(mid, require.module);
         dojoRequireModuleStack.push(module);
         injectModule(module);
       });
       checkDojoRequirePlugin();
     },
-    checkDojoRequirePlugin = has("dojo-fast-sync-require")
+    checkDojoRequirePlugin = has('dojo-fast-sync-require')
       ? // This version of checkDojoRequirePlugin makes the observation that all dojoRequireCallbacks can be released
         // when all *non-dojo/require!, dojo/loadInit!* modules are either executed, not requested, or arrived. This is
         // the case since there are no more modules the loader is waiting for, therefore, dojo/require! must have
@@ -57,14 +49,9 @@ define([
             module = modules[mid];
             if (module.noReqPluginCheck === undefined) {
               // tag the module as either a loadInit or require plugin or not for future reference
-              module.noReqPluginCheck =
-                /loadInit\!/.test(mid) || /require\!/.test(mid) ? 1 : 0;
+              module.noReqPluginCheck = /loadInit\!/.test(mid) || /require\!/.test(mid) ? 1 : 0;
             }
-            if (
-              !module.executed &&
-              !module.noReqPluginCheck &&
-              module.injected == requested
-            ) {
+            if (!module.executed && !module.noReqPluginCheck && module.injected == requested) {
               return;
             }
           }
@@ -110,11 +97,7 @@ define([
           var touched,
             traverse = function (m) {
               touched[m.mid] = 1;
-              for (
-                var t, module, deps = m.deps || [], i = 0;
-                i < deps.length;
-                i++
-              ) {
+              for (var t, module, deps = m.deps || [], i = 0; i < deps.length; i++) {
                 module = deps[i];
                 if (!(t = touched[module.mid])) {
                   if (t === 0 || !traverse(module)) {
@@ -143,8 +126,7 @@ define([
               } else {
                 if (module.noReqPluginCheck !== 0) {
                   // tag the module as either a loadInit or require plugin or not for future reference
-                  module.noReqPluginCheck =
-                    /loadInit\!/.test(mid) || /require\!/.test(mid) ? 1 : 0;
+                  module.noReqPluginCheck = /loadInit\!/.test(mid) || /require\!/.test(mid) ? 1 : 0;
                 }
                 if (module.noReqPluginCheck) {
                   touched[mid] = 1;
@@ -154,11 +136,7 @@ define([
                 } // else, leave undefined and we'll traverse the dependencies
               }
             }
-            for (
-              var t, i = 0, end = dojoRequireModuleStack.length;
-              i < end;
-              i++
-            ) {
+            for (var t, i = 0, end = dojoRequireModuleStack.length; i < end; i++) {
               module = dojoRequireModuleStack[i];
               if (!(t = touched[module.mid])) {
                 if (t === 0 || !traverse(module)) {
@@ -230,12 +208,8 @@ define([
         // notice how names is resolved with respect to the module that demanded the plugin resource
         require(bundle.names, function () {
           // bring the bundle names into scope
-          for (
-            var scopeText = "", args = [], i = 0;
-            i < arguments.length;
-            i++
-          ) {
-            scopeText += "var " + bundle.names[i] + "= arguments[" + i + "]; ";
+          for (var scopeText = '', args = [], i = 0; i < arguments.length; i++) {
+            scopeText += 'var ' + bundle.names[i] + '= arguments[' + i + ']; ';
             args.push(arguments[i]);
           }
           eval(scopeText);
@@ -256,32 +230,27 @@ define([
               },
               require: function (moduleName, omitModuleCheck) {
                 moduleName = slashName(moduleName);
-                omitModuleCheck &&
-                  (getModule(moduleName, callingModule).result = nonmodule);
+                omitModuleCheck && (getModule(moduleName, callingModule).result = nonmodule);
                 requireList.push(moduleName);
               },
               requireLocalization: function (moduleName, bundleName, locale) {
                 // since we're going to need dojo/i8n, add it to i18nDeps if not already there
                 if (!i18nDeps) {
                   // don't have to map since that will occur when the dependency is resolved
-                  i18nDeps = ["dojo/i18n"];
+                  i18nDeps = ['dojo/i18n'];
                 }
 
                 // figure out if the bundle is xdomain; if so, add it to the i18nDepsSet
                 locale = (locale || dojo.locale).toLowerCase();
-                moduleName =
-                  slashName(moduleName) +
-                  "/nls/" +
-                  (/root/i.test(locale) ? "" : locale + "/") +
-                  slashName(bundleName);
+                moduleName = slashName(moduleName) + '/nls/' + (/root/i.test(locale) ? '' : locale + '/') + slashName(bundleName);
                 if (getModule(moduleName, callingModule).isXd) {
                   // don't have to map since that will occur when the dependency is resolved
-                  i18nDeps.push("dojo/i18n!" + moduleName);
+                  i18nDeps.push('dojo/i18n!' + moduleName);
                 } // else the bundle will be loaded synchronously when the module is evaluated
               },
               loadInit: function (f) {
                 f();
-              },
+              }
             },
             hold = {},
             p;
@@ -294,7 +263,7 @@ define([
             }
             bundle.def.apply(null, args);
           } catch (e) {
-            signal("error", [makeErrorToken("failedDojoLoadInit"), e]);
+            signal('error', [makeErrorToken('failedDojoLoadInit'), e]);
           } finally {
             for (p in syncLoaderApi) {
               dojo[p] = hold[p];
@@ -306,7 +275,7 @@ define([
           }
 
           if (requireList.length) {
-            dojoRequirePlugin(requireList.join(","), require, loaded);
+            dojoRequirePlugin(requireList.join(','), require, loaded);
           } else {
             loaded();
           }
@@ -325,7 +294,7 @@ define([
         match;
       parenRe.lastIndex = startSearch;
       while ((match = parenRe.exec(text))) {
-        if (match[0] == ")") {
+        if (match[0] == ')') {
           matchCount -= 1;
         } else {
           matchCount += 1;
@@ -336,19 +305,11 @@ define([
       }
 
       if (matchCount != 0) {
-        throw (
-          "unmatched paren around character " +
-          parenRe.lastIndex +
-          " in: " +
-          text
-        );
+        throw 'unmatched paren around character ' + parenRe.lastIndex + ' in: ' + text;
       }
 
       //Put the master matching string in the results.
-      return [
-        dojo.trim(text.substring(startApplication, parenRe.lastIndex)) + ";\n",
-        parenRe.lastIndex,
-      ];
+      return [dojo.trim(text.substring(startApplication, parenRe.lastIndex)) + ';\n', parenRe.lastIndex];
     },
     // the following regex is taken from 1.6. It is a very poor technique to remove comments and
     // will fail in some cases; for example, consider the code...
@@ -363,8 +324,7 @@ define([
     // backcompat/unbuilt-xdomain layer. In the end, since it's been this way for a while, we won't change it.
     // See the opening paragraphs of Chapter 7 or ECME-262 which describes the lexical abiguity further.
     removeCommentRe = /(\/\*([\s\S]*?)\*\/|\/\/(.*)$)/gm,
-    syncLoaderApiRe =
-      /(^|\s)dojo\.(loadInit|require|provide|requireLocalization|requireIf|requireAfterIf|platformRequire)\s*\(/gm,
+    syncLoaderApiRe = /(^|\s)dojo\.(loadInit|require|provide|requireLocalization|requireIf|requireAfterIf|platformRequire)\s*\(/gm,
     amdLoaderApiRe = /(^|\s)(require|define)\s*\(/m,
     extractLegacyApiApplications = function (text, noCommentText) {
       // scan the noCommentText for any legacy loader API applications. Copy such applications into result (this is
@@ -399,21 +359,15 @@ define([
           // remove iff the detected comment has text that looks like a sync loader API application; this helps by
           // removing as little as possible, minimizing the changes the janky regex will kill the module
           syncLoaderApiRe.lastIndex = amdLoaderApiRe.lastIndex = 0;
-          return syncLoaderApiRe.test(match) || amdLoaderApiRe.test(match)
-            ? ""
-            : match;
+          return syncLoaderApiRe.test(match) || amdLoaderApiRe.test(match) ? '' : match;
         });
 
       // find and extract all dojo.loadInit applications
       while ((match = syncLoaderApiRe.exec(noCommentText))) {
         startSearch = syncLoaderApiRe.lastIndex;
         startApplication = startSearch - match[0].length;
-        application = extractApplication(
-          noCommentText,
-          startSearch,
-          startApplication
-        );
-        if (match[2] == "loadInit") {
+        application = extractApplication(noCommentText, startSearch, startApplication);
+        if (match[2] == 'loadInit') {
           loadInitApplications.push(application[0]);
         } else {
           otherApplications.push(application[0]);
@@ -423,11 +377,7 @@ define([
       allApplications = loadInitApplications.concat(otherApplications);
       if (allApplications.length || !amdLoaderApiRe.test(noCommentText)) {
         // either there were some legacy loader API applications or there were no AMD API applications
-        return [
-          text.replace(/(^|\s)dojo\.loadInit\s*\(/g, "\n0 && dojo.loadInit("),
-          allApplications.join(""),
-          allApplications,
-        ];
+        return [text.replace(/(^|\s)dojo\.loadInit\s*\(/g, '\n0 && dojo.loadInit('), allApplications.join(''), allApplications];
       } else {
         // legacy loader API *was not* detected and AMD API *was* detected; therefore, assume it's an AMD module
         return 0;
@@ -461,22 +411,19 @@ define([
         id,
         names = [],
         namesAsStrings = [];
-      if (
-        buildDetectRe.test(text) ||
-        !(extractResult = extractLegacyApiApplications(text))
-      ) {
+      if (buildDetectRe.test(text) || !(extractResult = extractLegacyApiApplications(text))) {
         // buildDetectRe.test(text) => a built module, always AMD
         // extractResult==0 => no sync API
         return 0;
       }
 
       // manufacture a synthetic module id that can never be a real mdule id (just like require does)
-      id = module.mid + "-*loadInit";
+      id = module.mid + '-*loadInit';
 
       // construct the dojo/loadInit names vector which causes any relocated names to be defined as lexical variables under their not-relocated name
       // the dojo/loadInit plugin assumes the first name in names is "dojo"
 
-      for (var p in getModule("dojo", module).result.scopeMap) {
+      for (var p in getModule('dojo', module).result.scopeMap) {
         names.push(p);
         namesAsStrings.push('"' + p + '"');
       }
@@ -484,35 +431,31 @@ define([
       // rewrite the module as a synthetic dojo/loadInit plugin resource + the module expressed as an AMD module that depends on this synthetic resource
       // don't have to map dojo/init since that will occur when the dependency is resolved
       return (
-        "// xdomain rewrite of " +
+        '// xdomain rewrite of ' +
         module.mid +
-        "\n" +
+        '\n' +
         "define('" +
         id +
         "',{\n" +
-        "\tnames:" +
+        '\tnames:' +
         json.stringify(names) +
-        ",\n" +
-        "\tdef:function(" +
-        names.join(",") +
-        "){" +
+        ',\n' +
+        '\tdef:function(' +
+        names.join(',') +
+        '){' +
         extractResult[1] +
-        "}" +
-        "});\n\n" +
-        "define(" +
-        json.stringify(names.concat(["dojo/loadInit!" + id])) +
-        ", function(" +
-        names.join(",") +
-        "){\n" +
+        '}' +
+        '});\n\n' +
+        'define(' +
+        json.stringify(names.concat(['dojo/loadInit!' + id])) +
+        ', function(' +
+        names.join(',') +
+        '){\n' +
         extractResult[0] +
-        "});"
+        '});'
       );
     },
-    loaderVars = require.initSyncLoader(
-      dojoRequirePlugin,
-      checkDojoRequirePlugin,
-      transformToAmd
-    ),
+    loaderVars = require.initSyncLoader(dojoRequirePlugin, checkDojoRequirePlugin, transformToAmd),
     sync = loaderVars.sync,
     requested = loaderVars.requested,
     arrived = loaderVars.arrived,
@@ -538,22 +481,20 @@ define([
     var executingModule = syncExecStack[0],
       module = lang.mixin(getModule(slashName(mid), require.module), {
         executed: executing,
-        result: lang.getObject(mid, true),
+        result: lang.getObject(mid, true)
       });
     setArrived(module);
     if (executingModule) {
-      (executingModule.provides || (executingModule.provides = [])).push(
-        function () {
-          module.result = lang.getObject(mid);
-          delete module.provides;
-          module.executed !== executed && finishExec(module);
-        }
-      );
+      (executingModule.provides || (executingModule.provides = [])).push(function () {
+        module.result = lang.getObject(mid);
+        delete module.provides;
+        module.executed !== executed && finishExec(module);
+      });
     } // else dojo.provide called not consequent to loading; therefore, give up trying to publish module value to loader namespace
     return module.result;
   };
 
-  has.add("config-publishRequireResult", 1, 0, 0);
+  has.add('config-publishRequireResult', 1, 0, 0);
 
   dojo.require = function (moduleName, omitModuleCheck) {
     // summary:
@@ -706,11 +647,7 @@ define([
     }
 
     var result = doRequire(moduleName, omitModuleCheck);
-    if (
-      has("config-publishRequireResult") &&
-      !lang.exists(moduleName) &&
-      result !== undefined
-    ) {
+    if (has('config-publishRequireResult') && !lang.exists(moduleName) && result !== undefined) {
       lang.setObject(moduleName, result);
     }
     return result;
@@ -720,10 +657,7 @@ define([
     f();
   };
 
-  dojo.registerModulePath = function (
-    /*String*/ moduleName,
-    /*String*/ prefix
-  ) {
+  dojo.registerModulePath = function (/*String*/ moduleName, /*String*/ prefix) {
     // summary:
     //		Maps a module name to a path
     // description:
@@ -753,7 +687,7 @@ define([
     //	|	</script>
 
     var paths = {};
-    paths[moduleName.replace(/\./g, "/")] = prefix;
+    paths[moduleName.replace(/\./g, '/')] = prefix;
     require({ paths: paths });
   };
 
@@ -781,9 +715,7 @@ define([
     //		|		common: [ "important.module.common" ]
     //		|	});
 
-    var result = (modMap.common || []).concat(
-        modMap[dojo._name] || modMap["default"] || []
-      ),
+    var result = (modMap.common || []).concat(modMap[dojo._name] || modMap['default'] || []),
       temp;
     while (result.length) {
       if (lang.isArray((temp = result.shift()))) {
@@ -794,11 +726,7 @@ define([
     }
   };
 
-  dojo.requireIf = dojo.requireAfterIf = function (
-    /*Boolean*/ condition,
-    /*String*/ moduleName,
-    /*Boolean?*/ omitModuleCheck
-  ) {
+  dojo.requireIf = dojo.requireAfterIf = function (/*Boolean*/ condition, /*String*/ moduleName, /*Boolean?*/ omitModuleCheck) {
     // summary:
     //		If the condition is true then call `dojo.require()` for the specified
     //		resource
@@ -811,12 +739,8 @@ define([
     }
   };
 
-  dojo.requireLocalization = function (
-    /*String*/ moduleName,
-    /*String*/ bundleName,
-    /*String?*/ locale
-  ) {
-    require(["../i18n"], function (i18n) {
+  dojo.requireLocalization = function (/*String*/ moduleName, /*String*/ bundleName, /*String?*/ locale) {
+    require(['../i18n'], function (i18n) {
       i18n.getLocalization(moduleName, bundleName, locale);
     });
   };
@@ -827,6 +751,6 @@ define([
 
     extractLegacyApiApplications: extractLegacyApiApplications,
     require: dojoRequirePlugin,
-    loadInit: dojoLoadInitPlugin,
+    loadInit: dojoLoadInitPlugin
   };
 });

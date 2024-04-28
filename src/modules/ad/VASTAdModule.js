@@ -6,46 +6,34 @@
  *
  */
 
-var xmlParser = require("sdk/base/util/XmlParser");
+var xmlParser = require('sdk/base/util/XmlParser');
 
 define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "dojo/_base/array",
-  "dojo/request",
-  "sdk/base/util/XhrProvider",
-  "sdk/modules/ad/base/AdModule",
-  "sdk/modules/ad/vastAd/parser/VAST1Parser",
-  "sdk/modules/ad/vastAd/parser/VAST2Parser",
-  "sdk/modules/ad/vastAd/parser/DAASTParser",
-  "sdk/base/ad/AdServerType",
-  "sdk/base/ad/TritonRunSpot4Helper",
-], function (
-  declare,
-  lang,
-  array,
-  request,
-  XhrProvider,
-  adModule,
-  vast1Parser,
-  vast2Parser,
-  daastParser,
-  AdServerType,
-  TritonRunSpot4Helper
-) {
+  'dojo/_base/declare',
+  'dojo/_base/lang',
+  'dojo/_base/array',
+  'dojo/request',
+  'sdk/base/util/XhrProvider',
+  'sdk/modules/ad/base/AdModule',
+  'sdk/modules/ad/vastAd/parser/VAST1Parser',
+  'sdk/modules/ad/vastAd/parser/VAST2Parser',
+  'sdk/modules/ad/vastAd/parser/DAASTParser',
+  'sdk/base/ad/AdServerType',
+  'sdk/base/ad/TritonRunSpot4Helper'
+], function (declare, lang, array, request, XhrProvider, adModule, vast1Parser, vast2Parser, daastParser, AdServerType, TritonRunSpot4Helper) {
   /**
    * @namespace tdapi/modules/vastAd
    */
   var vastAdModule = declare([adModule], {
-    VAST_1_ROOT: "VideoAdServingTemplate",
-    VAST_2_ROOT: "VAST",
-    DAAST_ROOT: "DAAST",
-    VERSION_1_0: "1.0",
-    VERSION_2_0: "2.0",
-    DAAST_VERSION_1_0: "DAAST_1.0",
+    VAST_1_ROOT: 'VideoAdServingTemplate',
+    VAST_2_ROOT: 'VAST',
+    DAAST_ROOT: 'DAAST',
+    VERSION_1_0: '1.0',
+    VERSION_2_0: '2.0',
+    DAAST_VERSION_1_0: 'DAAST_1.0',
 
     constructor: function (target) {
-      console.log("vastAdModule::constructor");
+      console.log('vastAdModule::constructor');
 
       this.target = target;
 
@@ -72,24 +60,13 @@ define([
     },
 
     init: function (adConfig) {
-      console.log(
-        "vastAdModule::init - url : " +
-          adConfig.url +
-          " - skipMediaAdPlayback : " +
-          adConfig.skipMediaAdPlayback +
-          " - sequence : " +
-          adConfig.sequence
-      );
+      console.log('vastAdModule::init - url : ' + adConfig.url + ' - skipMediaAdPlayback : ' + adConfig.skipMediaAdPlayback + ' - sequence : ' + adConfig.sequence);
       this._adConfig = adConfig;
       this.inherited(arguments);
 
       this._adBreak = adConfig.adBreak ? true : false;
-      this._skipMediaAdPlayback =
-        adConfig.skipMediaAdPlayback != undefined
-          ? adConfig.skipMediaAdPlayback
-          : false;
-      this._defaultSequence =
-        adConfig.sequence != undefined ? adConfig.sequence : -1;
+      this._skipMediaAdPlayback = adConfig.skipMediaAdPlayback != undefined ? adConfig.skipMediaAdPlayback : false;
+      this._defaultSequence = adConfig.sequence != undefined ? adConfig.sequence : -1;
 
       this.loadVast(adConfig);
     },
@@ -102,37 +79,17 @@ define([
 
         var requestArgs = this._getRequestArgs();
 
-        if (
-          config.url.indexOf("od-spy.live.streamtheworld.com") > -1 ||
-          config.url.indexOf("frequencyads") > -1 ||
-          config.url.indexOf("s3") > -1
-        ) {
+        if (config.url.indexOf('od-spy.live.streamtheworld.com') > -1 || config.url.indexOf('frequencyads') > -1 || config.url.indexOf('s3') > -1) {
           requestArgs.withCredentials = false;
         }
 
-        this.xhrProv.request(
-          config.url,
-          config.url,
-          requestArgs,
-          lang.hitch(this, this._onVastLoadComplete),
-          lang.hitch(this, this._onVastLoadError)
-        );
+        this.xhrProv.request(config.url, config.url, requestArgs, lang.hitch(this, this._onVastLoadComplete), lang.hitch(this, this._onVastLoadError));
       } else if (config.sid != undefined) {
         var tritonRunSpot4Helper = new TritonRunSpot4Helper();
-        var vastUrl = tritonRunSpot4Helper.getVastUri(
-          tritonRunSpot4Helper.ENDPOINT,
-          this.config.sid,
-          config.mediaformat
-        );
+        var vastUrl = tritonRunSpot4Helper.getVastUri(tritonRunSpot4Helper.ENDPOINT, this.config.sid, config.mediaformat);
         this.setMediaAdBlankFiles(tritonRunSpot4Helper.mediaAdBlankFiles);
 
-        this.xhrProv.request(
-          vastUrl,
-          vastUrl,
-          this._getRequestArgs(),
-          lang.hitch(this, this._onVastLoadComplete),
-          lang.hitch(this, this._onVastLoadError)
-        );
+        this.xhrProv.request(vastUrl, vastUrl, this._getRequestArgs(), lang.hitch(this, this._onVastLoadComplete), lang.hitch(this, this._onVastLoadError));
       }
     },
 
@@ -141,7 +98,7 @@ define([
     },
 
     getVastInlineAd: function () {
-      console.log("vastAdModule::getVastInlineAd");
+      console.log('vastAdModule::getVastInlineAd');
 
       return this.vastDocument.vastAd.inlineAd;
     },
@@ -157,28 +114,17 @@ define([
     /***************************************/
 
     _onVastLoadComplete: function (url, data) {
-      console.log("vastAdModule::_onVastLoadComplete - url =" + url);
+      console.log('vastAdModule::_onVastLoadComplete - url =' + url);
 
       this._parseVast(data);
     },
 
     _onVastLoadError: function (url, error) {
-      console.error(
-        "vastAdModule::_onVastLoadError - url =" + url + " - error=" + error
-      );
+      console.error('vastAdModule::_onVastLoadError - url =' + url + ' - error=' + error);
 
       if (this._vastWrapperAd != null) {
-        if (
-          this._vastWrapperAd.error != null &&
-          this._vastWrapperAd.error != ""
-        ) {
-          this.xhrProv.request(
-            this._vastWrapperAd.error,
-            this._vastWrapperAd.error,
-            this._getRequestArgs(),
-            null,
-            null
-          );
+        if (this._vastWrapperAd.error != null && this._vastWrapperAd.error != '') {
+          this.xhrProv.request(this._vastWrapperAd.error, this._vastWrapperAd.error, this._getRequestArgs(), null, null);
         }
 
         this._vastWrapperAd = null;
@@ -195,7 +141,7 @@ define([
 
       if (data == undefined || data.nodeName == undefined) {
         this.emit(this.AD_MODULE_VAST_EMPTY, {
-          adServerType: AdServerType.VAST_AD,
+          adServerType: AdServerType.VAST_AD
         });
         return;
       }
@@ -203,8 +149,7 @@ define([
       var version = this._getVersion(data.nodeName);
 
       this.vastParser = this._getVastParser(version);
-      if (this.vastParser != null)
-        this.vastDocument = this.vastParser.parse(data);
+      if (this.vastParser != null) this.vastDocument = this.vastParser.parse(data);
 
       if (this.vastDocument != null) {
         if (this._shouldLoadVASTWrapper(this.vastDocument.vastAd)) {
@@ -216,22 +161,16 @@ define([
           this.loadVast({
             url: this.vastDocument.vastAd.wrapperAd.vastAdTagURL,
             skipMediaAdPlayback: this._skipMediaAdPlayback,
-            sequence: this._defaultSequence,
+            sequence: this._defaultSequence
           });
         } else {
           this._loadTimes = 0;
           if (this._vastWrapperAd != null) {
-            this.vastDocument.vastAd.inlineAd.addWrapperLinearTrackingEvents(
-              this._wrapperCachedData.wrapperTrackingEvents
-            );
+            this.vastDocument.vastAd.inlineAd.addWrapperLinearTrackingEvents(this._wrapperCachedData.wrapperTrackingEvents);
 
-            this.vastDocument.vastAd.inlineAd.addImpressions(
-              this._wrapperCachedData.wrapperImpressions
-            );
+            this.vastDocument.vastAd.inlineAd.addImpressions(this._wrapperCachedData.wrapperImpressions);
 
-            this.vastDocument.vastAd.inlineAd.addWrapperLinearVideoClickTracking(
-              this._wrapperCachedData.wrapperVideoClickTracking
-            );
+            this.vastDocument.vastAd.inlineAd.addWrapperLinearVideoClickTracking(this._wrapperCachedData.wrapperVideoClickTracking);
 
             this._vastWrapperAd = null;
             this._wrapperCachedData = null;
@@ -242,55 +181,37 @@ define([
           // Only used to prevent emitting an AD_MODULE_MEDIA_EMPTY (which will wipe the ads):
           var adEmpty = true;
 
-          if (
-            this.vastDocument.vastAd.inlineAd.getCompanionAds(
-              this._defaultSequence
-            ) != undefined &&
-            this.vastDocument.vastAd.inlineAd.getCompanionAds(
-              this._defaultSequence
-            ).length > 0
-          ) {
+          if (this.vastDocument.vastAd.inlineAd.getCompanionAds(this._defaultSequence) != undefined && this.vastDocument.vastAd.inlineAd.getCompanionAds(this._defaultSequence).length > 0) {
             adEmpty = false;
             this.emit(this.AD_MODULE_COMPANIONS, {
-              companions: this.vastDocument.vastAd.inlineAd.getCompanionAds(
-                this._defaultSequence
-              ),
+              companions: this.vastDocument.vastAd.inlineAd.getCompanionAds(this._defaultSequence)
             });
           }
 
           if (this._skipMediaAdPlayback == true) return;
 
-          var mediaFiles = this._checkMediaAdBlankFiles(
-            this.vastDocument.vastAd.inlineAd.getLinearMediaFiles(
-              this._defaultSequence
-            )
-          );
+          var mediaFiles = this._checkMediaAdBlankFiles(this.vastDocument.vastAd.inlineAd.getLinearMediaFiles(this._defaultSequence));
 
           if (mediaFiles != null) {
             adEmpty = false;
-            var videoClick =
-              this.vastDocument.vastAd.inlineAd.getLinearVideoClick(
-                this._defaultSequence
-              );
-            var clickThrough =
-              videoClick != null ? videoClick.clickThrough : null;
-            var clickTrackings =
-              videoClick != null ? videoClick.clickTrackings : null;
+            var videoClick = this.vastDocument.vastAd.inlineAd.getLinearVideoClick(this._defaultSequence);
+            var clickThrough = videoClick != null ? videoClick.clickThrough : null;
+            var clickTrackings = videoClick != null ? videoClick.clickTrackings : null;
 
             this.emit(this.AD_MODULE_MEDIA_READY, {
               adServerType: AdServerType.VAST_AD,
               mediaFiles: mediaFiles,
               clickThrough: clickThrough,
-              clickTrackings: clickTrackings,
+              clickTrackings: clickTrackings
             });
           } else if (adEmpty) {
             this.emit(this.AD_MODULE_MEDIA_EMPTY, {
-              adServerType: AdServerType.VAST_AD,
+              adServerType: AdServerType.VAST_AD
             });
           }
         }
       } else {
-        if (version === "2.0") {
+        if (version === '2.0') {
           var errorURL = this.vastParser.parseMissedOpportunityError(data);
           if (errorURL) {
             var requestArgs = this._getRequestArgs();
@@ -300,7 +221,7 @@ define([
         }
         this._loadTimes = 0;
         this.emit(this.AD_MODULE_VAST_EMPTY, {
-          adServerType: AdServerType.VAST_AD,
+          adServerType: AdServerType.VAST_AD
         });
       }
     },
@@ -325,59 +246,36 @@ define([
         this._wrapperCachedData = {
           wrapperImpressions: [],
           wrapperTrackingEvents: [],
-          wrapperVideoClickTracking: [],
+          wrapperVideoClickTracking: []
         };
 
-      var wrapperTrackingEvents = this._vastWrapperAd.getLinearTrackingEvents(
-        this._defaultSequence
-      );
+      var wrapperTrackingEvents = this._vastWrapperAd.getLinearTrackingEvents(this._defaultSequence);
       if (wrapperTrackingEvents != null && wrapperTrackingEvents.length > 0)
-        this._wrapperCachedData.wrapperTrackingEvents =
-          this._wrapperCachedData.wrapperTrackingEvents.concat(
-            wrapperTrackingEvents
-          );
+        this._wrapperCachedData.wrapperTrackingEvents = this._wrapperCachedData.wrapperTrackingEvents.concat(wrapperTrackingEvents);
 
       var wrapperImpressions = this._vastWrapperAd.impressions;
-      if (wrapperImpressions != null && wrapperImpressions.length > 0)
-        this._wrapperCachedData.wrapperImpressions =
-          this._wrapperCachedData.wrapperImpressions.concat(wrapperImpressions);
+      if (wrapperImpressions != null && wrapperImpressions.length > 0) this._wrapperCachedData.wrapperImpressions = this._wrapperCachedData.wrapperImpressions.concat(wrapperImpressions);
 
-      var wrapperVideoClick = this._vastWrapperAd.getLinearVideoClick(
-        this._defaultSequence
-      );
-      if (
-        wrapperVideoClick != null &&
-        wrapperVideoClick.clickTrackings.length > 0
-      )
-        this._wrapperCachedData.wrapperVideoClickTracking =
-          this._wrapperCachedData.wrapperVideoClickTracking.concat(
-            wrapperVideoClick.clickTrackings
-          );
+      var wrapperVideoClick = this._vastWrapperAd.getLinearVideoClick(this._defaultSequence);
+      if (wrapperVideoClick != null && wrapperVideoClick.clickTrackings.length > 0)
+        this._wrapperCachedData.wrapperVideoClickTracking = this._wrapperCachedData.wrapperVideoClickTracking.concat(wrapperVideoClick.clickTrackings);
     },
 
     _shouldLoadVASTWrapper: function (adVast) {
-      if (
-        adVast.wrapperAd != null &&
-        adVast.wrapperAd.vastAdTagURL != null &&
-        this._loadTimes <= this._maxLoadTimes
-      )
-        return true;
+      if (adVast.wrapperAd != null && adVast.wrapperAd.vastAdTagURL != null && this._loadTimes <= this._maxLoadTimes) return true;
       else return false;
     },
 
     _getVastParser: function (version) {
       switch (version) {
         case this.VERSION_1_0:
-          if (this.vastParser == null)
-            this.vastParser = new vast1Parser(this.target);
+          if (this.vastParser == null) this.vastParser = new vast1Parser(this.target);
           return this.vastParser;
         case this.VERSION_2_0:
-          if (this.vastParser == null)
-            this.vastParser = new vast2Parser(this.target);
+          if (this.vastParser == null) this.vastParser = new vast2Parser(this.target);
           return this.vastParser;
         case this.DAAST_VERSION_1_0:
-          if (this.vastParser == null)
-            this.vastParser = new daastParser(this.target);
+          if (this.vastParser == null) this.vastParser = new daastParser(this.target);
           return this.vastParser;
       }
 
@@ -391,20 +289,15 @@ define([
 
       var mediaFilesLength = mediaFiles.length;
       for (var i = 0; i < mediaFilesLength; i++) {
-        if (!this._isMediaAdBlankFile(mediaFiles[i].url))
-          mediaFilesArr.push(mediaFiles[i]);
+        if (!this._isMediaAdBlankFile(mediaFiles[i].url)) mediaFilesArr.push(mediaFiles[i]);
       }
       return mediaFilesArr;
     },
 
     _isMediaAdBlankFile: function (url) {
-      if (
-        this._mediaAdBlankFiles == null ||
-        this._mediaAdBlankFiles.length == 0
-      )
-        return false;
+      if (this._mediaAdBlankFiles == null || this._mediaAdBlankFiles.length == 0) return false;
 
-      var mediaFileName = url.substr(url.lastIndexOf("/") + 1);
+      var mediaFileName = url.substr(url.lastIndexOf('/') + 1);
       var mediaAdBlankFilesLength = this._mediaAdBlankFiles.length;
 
       for (var i = 0; i < mediaAdBlankFilesLength; i++) {
@@ -419,15 +312,15 @@ define([
      */
     _getRequestArgs: function () {
       return {
-        handleAs: "xml",
+        handleAs: 'xml',
         preventCache: false,
         withCredentials: true,
         headers: {
-          "X-Requested-With": null,
-          "Content-Type": "text/plain; charset=utf-8",
-        },
+          'X-Requested-With': null,
+          'Content-Type': 'text/plain; charset=utf-8'
+        }
       };
-    },
+    }
   });
 
   return vastAdModule;

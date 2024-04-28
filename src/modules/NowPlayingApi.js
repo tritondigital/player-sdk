@@ -1,31 +1,23 @@
-var xmlParser = require("sdk/base/util/XmlParser");
-var Platform = require("sdk/base/util/Platform");
+var xmlParser = require('sdk/base/util/XmlParser');
+var Platform = require('sdk/base/util/Platform');
 
 define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "sdk/modules/base/CoreModule",
-  "sdk/base/cuepoints/TrackCuePoint",
-  "sdk/base/cuepoints/BreakCuePoint",
-  "sdk/base/util/XhrProvider",
-  "dojo/_base/Deferred",
-], function (
-  declare,
-  lang,
-  coreModule,
-  TrackCuePoint,
-  BreakCuePoint,
-  XhrProvider,
-  Deferred
-) {
+  'dojo/_base/declare',
+  'dojo/_base/lang',
+  'sdk/modules/base/CoreModule',
+  'sdk/base/cuepoints/TrackCuePoint',
+  'sdk/base/cuepoints/BreakCuePoint',
+  'sdk/base/util/XhrProvider',
+  'dojo/_base/Deferred'
+], function (declare, lang, coreModule, TrackCuePoint, BreakCuePoint, XhrProvider, Deferred) {
   /**
    * @namespace tdapi/modules/NowPlayingApi
    */
   var module = declare([coreModule], {
     /* Map the xml properties with Track & Ad CuePoints properties */
     cuePointMap: {
-      timestamp: "timestamp",
-      type: "type",
+      timestamp: 'timestamp',
+      type: 'type',
       /*Track CuePoint*/
       cue_title: TrackCuePoint.CUE_TITLE,
       track_artist_name: TrackCuePoint.ARTIST_NAME,
@@ -41,11 +33,11 @@ define([
       ad_type: BreakCuePoint.AD_TYPE,
       cue_title: BreakCuePoint.CUE_TITLE,
       cue_time_duration: BreakCuePoint.CUE_TIME_DURATION,
-      ad_url: BreakCuePoint.AD_URL,
+      ad_url: BreakCuePoint.AD_URL
     },
 
     constructor: function (config, target) {
-      console.log("nowPlayingApi::constructor");
+      console.log('nowPlayingApi::constructor');
 
       this.inherited(arguments);
 
@@ -53,9 +45,9 @@ define([
     },
 
     start: function () {
-      console.log("nowPlayingApi::start");
+      console.log('nowPlayingApi::start');
 
-      this.emit("module-ready", { id: "NowPlayingApi", module: this });
+      this.emit('module-ready', { id: 'NowPlayingApi', module: this });
     },
 
     /**
@@ -73,19 +65,14 @@ define([
      */
     load: function (data) {
       var deferred = new Deferred();
-      var requestArgs = this._getRequestArgs(
-        data.hd ? data.mount + "AAC" : data.mount,
-        data.numberToFetch,
-        data.eventType || "track",
-        data.mode
-      );
+      var requestArgs = this._getRequestArgs(data.hd ? data.mount + 'AAC' : data.mount, data.numberToFetch, data.eventType || 'track', data.mode);
       var xhrProv = new XhrProvider();
       xhrProv.request(
         this.platform.endpoint.nowPlayingHistory,
         {
           mount: data.mount,
-          mode: data.mode || "songHistory",
-          deferred: deferred,
+          mode: data.mode || 'songHistory',
+          deferred: deferred
         },
         requestArgs,
         lang.hitch(this, this._onLoadComplete),
@@ -96,47 +83,39 @@ define([
     },
 
     _onLoadError: function (requestData, error) {
-      console.error(
-        "nowPlayingApi::_onLoadError - mount=" +
-          requestData.mount +
-          " - error=" +
-          error
-      );
+      console.error('nowPlayingApi::_onLoadError - mount=' + requestData.mount + ' - error=' + error);
 
-      this.emit("nowplaying-api-error", {
+      this.emit('nowplaying-api-error', {
         mount: requestData.mount,
-        error: requestData.error,
+        error: requestData.error
       });
 
       return requestData.deferred.reject({
         mount: requestData.mount,
-        error: requestData.error,
+        error: requestData.error
       });
     },
 
     _onLoadComplete: function (requestData, data) {
-      console.log(
-        "nowPlayingApi::_onLoadComplete - mount=" + requestData.mount
-      );
+      console.log('nowPlayingApi::_onLoadComplete - mount=' + requestData.mount);
 
-      data = data.getElementsByTagName("nowplaying-info");
+      data = data.getElementsByTagName('nowplaying-info');
 
       var list = [];
       var cuePoint, npInfoAttr, propName, propValue, type, timestamp;
       for (var i = 0; i < data.length; i++) {
-        type = data[i].getAttribute("type");
-        timestamp = data[i].getAttribute("timestamp");
+        type = data[i].getAttribute('type');
+        timestamp = data[i].getAttribute('timestamp');
         npInfoAttr = data[i].childNodes;
         cuePoint = { parameters: {} };
-        cuePoint[this.cuePointMap["type"]] = type;
-        cuePoint[this.cuePointMap["timestamp"]] = parseInt(timestamp);
+        cuePoint[this.cuePointMap['type']] = type;
+        cuePoint[this.cuePointMap['timestamp']] = parseInt(timestamp);
         for (var j = 0; j < npInfoAttr.length; j++) {
-          propName = npInfoAttr[j].getAttribute("name");
+          propName = npInfoAttr[j].getAttribute('name');
           propValue = xmlParser.textContent(npInfoAttr[j]);
 
           //cuePoint properties names are map with the object this.cuePointMap
-          if (this.cuePointMap[propName] != undefined)
-            cuePoint[this.cuePointMap[propName]] = propValue;
+          if (this.cuePointMap[propName] != undefined) cuePoint[this.cuePointMap[propName]] = propValue;
 
           //cuePoint.parameters keep reference to the original parameters from the xml file
           cuePoint.parameters[propName] = propValue;
@@ -166,10 +145,10 @@ define([
 
     _emitNotificationByMode: function (mount, mode, list) {
       switch (mode) {
-        case "songHistory":
+        case 'songHistory':
           this._emitSongHistoryNotification(mount, list);
           break;
-        case "nowPlaying":
+        case 'nowPlaying':
           this._emitNowPlayingNotification(mount, list);
           break;
         default:
@@ -178,15 +157,13 @@ define([
     },
 
     _emitSongHistoryNotification: function (mount, list) {
-      if (list.length > 0)
-        this.emit("list-loaded", { mount: mount, list: list });
-      else this.emit("list-empty", { mount: mount });
+      if (list.length > 0) this.emit('list-loaded', { mount: mount, list: list });
+      else this.emit('list-empty', { mount: mount });
     },
 
     _emitNowPlayingNotification: function (mount, list) {
-      if (list.length > 0)
-        this.emit("cue-point", { mount: mount, cuePoint: list[0] });
-      else this.emit("cue-point-empty", { mount: mount });
+      if (list.length > 0) this.emit('cue-point', { mount: mount, cuePoint: list[0] });
+      else this.emit('cue-point-empty', { mount: mount });
     },
 
     /**
@@ -195,19 +172,19 @@ define([
      */
     _getRequestArgs: function (mount, numberToFetch, eventType, mode) {
       return {
-        handleAs: "xml",
+        handleAs: 'xml',
         preventCache: true,
         headers: {
-          "X-Requested-With": null,
-          "Content-Type": "text/plain; charset=utf-8",
+          'X-Requested-With': null,
+          'Content-Type': 'text/plain; charset=utf-8'
         },
         query: {
           mountName: mount,
-          numberToFetch: mode == "nowPlaying" ? 1 : numberToFetch,
-          eventType: eventType,
-        },
+          numberToFetch: mode == 'nowPlaying' ? 1 : numberToFetch,
+          eventType: eventType
+        }
       };
-    },
+    }
   });
 
   return module;

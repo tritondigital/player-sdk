@@ -1,25 +1,15 @@
 /**
  * Omny Consumption Analytics API
  */
-define([
-  "dojo/_base/declare",
-  "dojo/on",
-  "dojo/_base/lang",
-  "sdk/base/playback/PlaybackState",
-  "dojo/request",
-], function (declare, on, lang, PlaybackState, request) {
+define(['dojo/_base/declare', 'dojo/on', 'dojo/_base/lang', 'sdk/base/playback/PlaybackState', 'dojo/request'], function (declare, on, lang, PlaybackState, request) {
   var consumptionAnalytics = declare([], {
     constructor: function (html5Player) {
       var context = this;
-      console.log("ConsumptionAnalytics::constructor");
-      this.LocalStorageKeyPrefix = "omnyfm:ConsumptionData:";
-      this.pushUrl =
-        "https://traffic.omny.fm/api/consumption/events?organizationId=";
+      console.log('ConsumptionAnalytics::constructor');
+      this.LocalStorageKeyPrefix = 'omnyfm:ConsumptionData:';
+      this.pushUrl = 'https://traffic.omny.fm/api/consumption/events?organizationId=';
       this.html5Player = html5Player; //Instance of HTML5 Playback Class
-      this.html5Player.on(
-        "html5-playback-status",
-        lang.hitch(this, this.__onHTML5PlayerStatus)
-      );
+      this.html5Player.on('html5-playback-status', lang.hitch(this, this.__onHTML5PlayerStatus));
       this.events = [];
       this.nextSeqNumber = 1;
       this.position = 0;
@@ -29,7 +19,7 @@ define([
 
       this.flushAndSendAnyLocalStorageConsumptionData();
 
-      on(window, "beforeunload", function () {
+      on(window, 'beforeunload', function () {
         context.onPageUnload();
       });
     },
@@ -73,7 +63,7 @@ define([
 
       try {
         storage = window[type];
-        const x = "__storage_test__";
+        const x = '__storage_test__';
         storage.setItem(x, x);
         storage.removeItem(x);
         return true;
@@ -86,9 +76,9 @@ define([
             e.code === 1014 ||
             // test name field too, because code might not be present
             // everything except Firefox
-            e.name === "QuotaExceededError" ||
+            e.name === 'QuotaExceededError' ||
             // Firefox
-            e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
           // acknowledge QuotaExceededError only if there's something already stored
           storage &&
           storage.length !== 0
@@ -116,14 +106,11 @@ define([
     },
 
     isLocalStorageSupported: function () {
-      return this.isStorageAvailable("localStorage");
+      return this.isStorageAvailable('localStorage');
     },
 
     onPageUnload: function () {
-      if (
-        !this.isBeaconSupported() &&
-        !this.isUsingLocalStorageTransmissionMode()
-      ) {
+      if (!this.isBeaconSupported() && !this.isUsingLocalStorageTransmissionMode()) {
         return;
       }
 
@@ -147,9 +134,7 @@ define([
 
     pushEvent: function (eventType) {
       if (!this.sessionId) {
-        console.log(
-          "ConsumptionAnalytics: pushEvent() called before a Session Id was assigned"
-        );
+        console.log('ConsumptionAnalytics: pushEvent() called before a Session Id was assigned');
         return;
       }
 
@@ -160,7 +145,7 @@ define([
         Type: eventType,
         Position: this.position,
         SeqNumber: this.nextSeqNumber++,
-        Timestamp: Math.floor(Date.now() / 1000),
+        Timestamp: Math.floor(Date.now() / 1000)
       });
     },
 
@@ -172,7 +157,7 @@ define([
       this.setCurrentPosition(position, true);
 
       this.started = true;
-      this.pushEvent("Start");
+      this.pushEvent('Start');
     },
 
     setCurrentPosition: function (position, force) {
@@ -183,7 +168,7 @@ define([
     },
 
     finished: function () {
-      this.pushEvent("Stop");
+      this.pushEvent('Stop');
       this.started = false;
     },
 
@@ -223,17 +208,14 @@ define([
 
       // Send request
       var jsonData = JSON.stringify({
-        Source: "CustomWeb",
+        Source: 'CustomWeb',
         Events: this.events,
-        Completed: true,
+        Completed: true
       });
 
       // If we are operating in localStorage transmission mode, we need to instead stash this data for later transmission on the next page load
       if (this.isUsingLocalStorageTransmissionMode()) {
-        window.localStorage.setItem(
-          this.LocalStorageKeyPrefix + this.sessionId,
-          jsonData
-        );
+        window.localStorage.setItem(this.LocalStorageKeyPrefix + this.sessionId, jsonData);
       } else {
         // Send data
         this.sendConsumptionPayloadToRemoteService(jsonData);
@@ -263,11 +245,11 @@ define([
         request
           .post(this.pushUrl + this.organizationId, {
             data: jsonData,
-            handleAs: "json",
+            handleAs: 'json',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json'
             },
-            timeout: 10000,
+            timeout: 10000
           })
           .then(function (data) {
             if (!data.Enabled) {
@@ -277,7 +259,7 @@ define([
             }
           });
       }
-    },
+    }
   });
 
   return consumptionAnalytics;

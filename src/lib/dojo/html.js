@@ -1,12 +1,4 @@
-define([
-  "./_base/kernel",
-  "./_base/lang",
-  "./_base/array",
-  "./_base/declare",
-  "./dom",
-  "./dom-construct",
-  "./parser",
-], function (kernel, lang, darray, declare, dom, domConstruct, parser) {
+define(['./_base/kernel', './_base/lang', './_base/array', './_base/declare', './dom', './dom-construct', './parser'], function (kernel, lang, darray, declare, dom, domConstruct, parser) {
   // module:
   //		dojo/html
 
@@ -14,7 +6,7 @@ define([
     // summary:
     //		TODOC
   };
-  lang.setObject("dojo.html", html);
+  lang.setObject('dojo.html', html);
 
   // the parser might be needed..
 
@@ -30,10 +22,7 @@ define([
     // cont:
     //		An html string for insertion into the dom
     //
-    return cont.replace(
-      /(?:\s*<!DOCTYPE\s[^>]+>|<title[^>]*>[\s\S]*?<\/title>)/gi,
-      ""
-    ); // String
+    return cont.replace(/(?:\s*<!DOCTYPE\s[^>]+>|<title[^>]*>[\s\S]*?<\/title>)/gi, ''); // String
   };
 
   html._emptyNode = domConstruct.empty;
@@ -47,10 +36,7 @@ define([
 	 };
 	 =====*/
 
-  html._setNodeContent = function (
-    /*DomNode*/ node,
-    /*String|DomNode|NodeList*/ cont
-  ) {
+  html._setNodeContent = function (/*DomNode*/ node, /*String|DomNode|NodeList*/ cont) {
     // summary:
     //		inserts the given content into the given node
     // node:
@@ -63,21 +49,17 @@ define([
     domConstruct.empty(node);
 
     if (cont) {
-      if (typeof cont == "string") {
+      if (typeof cont == 'string') {
         cont = domConstruct.toDom(cont, node.ownerDocument);
       }
       if (!cont.nodeType && lang.isArrayLike(cont)) {
         // handle as enumerable, but it may shrink as we enumerate it
-        for (
-          var startlen = cont.length, i = 0;
-          i < cont.length;
-          i = startlen == cont.length ? i + 1 : 0
-        ) {
-          domConstruct.place(cont[i], node, "last");
+        for (var startlen = cont.length, i = 0; i < cont.length; i = startlen == cont.length ? i + 1 : 0) {
+          domConstruct.place(cont[i], node, 'last');
         }
       } else {
         // pass nodes, documentFragments and unknowns through to dojo.place
-        domConstruct.place(cont, node, "last");
+        domConstruct.place(cont, node, 'last');
       }
     }
 
@@ -86,18 +68,18 @@ define([
   };
 
   // we wrap up the content-setting operation in a object
-  html._ContentSetter = declare("dojo.html._ContentSetter", null, {
+  html._ContentSetter = declare('dojo.html._ContentSetter', null, {
     // node: DomNode|String
     //		An node which will be the parent element that we set content into
-    node: "",
+    node: '',
 
     // content: String|DomNode|DomNode[]
     //		The content to be placed in the node. Can be an HTML string, a node reference, or a enumerable list of nodes
-    content: "",
+    content: '',
 
     // id: String?
     //		Usually only used internally, and auto-generated with each instance
-    id: "",
+    id: '',
 
     // cleanContent: Boolean
     //		Should the content be treated as a full html document,
@@ -138,11 +120,7 @@ define([
       node = this.node = dom.byId(this.node || node);
 
       if (!this.id) {
-        this.id = [
-          "Setter",
-          node ? node.id || node.tagName : "",
-          idCounter++,
-        ].join("_");
+        this.id = ['Setter', node ? node.id || node.tagName : '', idCounter++].join('_');
       }
     },
     set: function (/* String|DomNode|NodeList? */ cont, /*Object?*/ params) {
@@ -181,7 +159,7 @@ define([
       var node = this.node;
       if (!node) {
         // can't proceed
-        throw new Error(this.declaredClass + ": setContent given no node");
+        throw new Error(this.declaredClass + ': setContent given no node');
       }
       try {
         node = html._setNodeContent(node, this.content);
@@ -194,13 +172,7 @@ define([
         try {
           node.innerHTML = errMess;
         } catch (e) {
-          console.error(
-            "Fatal " +
-              this.declaredClass +
-              ".setContent could not change content due to " +
-              e.message,
-            e
-          );
+          console.error('Fatal ' + this.declaredClass + '.setContent could not change content due to ' + e.message, e);
         }
       }
       // always put back the node for the next method
@@ -291,11 +263,11 @@ define([
     },
 
     onContentError: function (err) {
-      return "Error occurred setting content: " + err;
+      return 'Error occurred setting content: ' + err;
     },
 
     onExecError: function (err) {
-      return "Error occurred executing scripts: " + err;
+      return 'Error occurred executing scripts: ' + err;
     },
 
     _mixin: function (params) {
@@ -325,7 +297,7 @@ define([
         // store the results (widgets, whatever) for potential retrieval
         var inherited = {};
         darray.forEach(
-          ["dir", "lang", "textDir"],
+          ['dir', 'lang', 'textDir'],
           function (name) {
             if (this[name]) {
               inherited[name] = this[name];
@@ -339,26 +311,18 @@ define([
             rootNode: rootNode,
             noStart: !this.startup,
             inherited: inherited,
-            scope: this.parserScope,
+            scope: this.parserScope
           })
           .then(
             function (results) {
               return (self.parseResults = results);
             },
             function (e) {
-              self._onError(
-                "Content",
-                e,
-                "Error parsing in _ContentSetter#" + this.id
-              );
+              self._onError('Content', e, 'Error parsing in _ContentSetter#' + this.id);
             }
           );
       } catch (e) {
-        this._onError(
-          "Content",
-          e,
-          "Error parsing in _ContentSetter#" + this.id
-        );
+        this._onError('Content', e, 'Error parsing in _ContentSetter#' + this.id);
       }
     },
 
@@ -366,21 +330,17 @@ define([
       // summary:
       //		shows user the string that is returned by on[type]Error
       //		override/implement on[type]Error and return your own string to customize
-      var errText = this["on" + type + "Error"].call(this, err);
+      var errText = this['on' + type + 'Error'].call(this, err);
       if (consoleText) {
         console.error(consoleText, err);
       } else if (errText) {
         // a empty string won't change current content
         html._setNodeContent(this.node, errText, true);
       }
-    },
+    }
   }); // end declare()
 
-  html.set = function (
-    /*DomNode*/ node,
-    /*String|DomNode|NodeList*/ cont,
-    /*Object?*/ params
-  ) {
+  html.set = function (/*DomNode*/ node, /*String|DomNode|NodeList*/ cont, /*Object?*/ params) {
     // summary:
     //		inserts (replaces) the given content into the given node. dojo.place(cont, node, "only")
     //		may be a better choice for simple HTML insertion.
@@ -404,10 +364,8 @@ define([
     //	|	html.set(node, contentNode, {options});
     //	|	html.set(node, myNode.childNodes, {options});
     if (undefined == cont) {
-      console.warn(
-        "dojo.html.set: no cont argument provided, using empty string"
-      );
-      cont = "";
+      console.warn('dojo.html.set: no cont argument provided, using empty string');
+      cont = '';
     }
     if (!params) {
       // simple and fast
@@ -415,9 +373,7 @@ define([
     } else {
       // more options but slower
       // note the arguments are reversed in order, to match the convention for instantiation via the parser
-      var op = new html._ContentSetter(
-        lang.mixin(params, { content: cont, node: node })
-      );
+      var op = new html._ContentSetter(lang.mixin(params, { content: cont, node: node }));
       return op.set();
     }
   };

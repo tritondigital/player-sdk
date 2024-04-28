@@ -1,5 +1,5 @@
 define(//begin v1.x content
 {
-  hello: "Hujambo",
+  hello: 'Hujambo'
 });
 //end v1.x content

@@ -1,4 +1,4 @@
 module.exports = {
-  AUDIO: "Audio",
-  VIDEO: "Video",
+  AUDIO: 'Audio',
+  VIDEO: 'Video'
 };

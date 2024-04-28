@@ -1,74 +1,74 @@
-var _ = require("lodash");
-var EventEmitter = require("events").EventEmitter;
-var Hls = require("hls.js");
-var PlaybackState = require("sdk/base/playback/PlaybackState");
-var StateMachine = require("javascript-state-machine");
-var OsPlatform = require("platform");
+var _ = require('lodash');
+var EventEmitter = require('events').EventEmitter;
+var Hls = require('hls.js');
+var PlaybackState = require('sdk/base/playback/PlaybackState');
+var StateMachine = require('javascript-state-machine');
+var OsPlatform = require('platform');
 var stwLSID = null;
 var timeupdateCounter = 0;
 
 var STATE = {
-  IDLE: "IDLE",
-  PLAYING: "PLAYING",
-  STOPPED: "STOPPED",
-  PAUSED: "PAUSED",
+  IDLE: 'IDLE',
+  PLAYING: 'PLAYING',
+  STOPPED: 'STOPPED',
+  PAUSED: 'PAUSED'
 };
 
 var fsm = StateMachine.create({
   initial: STATE.STOPPED,
   error: function (eventName, from) {
-    console.warn("Event", eventName, "inappropriate in current state", from);
+    console.warn('Event', eventName, 'inappropriate in current state', from);
   },
   events: [
     {
-      name: "play",
+      name: 'play',
       from: STATE.STOPPED,
-      to: STATE.PLAYING,
+      to: STATE.PLAYING
     },
     {
-      name: "play",
+      name: 'play',
       from: STATE.PLAYING,
-      to: STATE.PLAYING,
+      to: STATE.PLAYING
     },
     {
-      name: "stop",
+      name: 'stop',
       from: STATE.PLAYING,
-      to: STATE.STOPPED,
+      to: STATE.STOPPED
     },
     {
-      name: "stop",
+      name: 'stop',
       from: STATE.PAUSED,
-      to: STATE.STOPPED,
+      to: STATE.STOPPED
     },
     {
-      name: "pause",
+      name: 'pause',
       from: STATE.PLAYING,
-      to: STATE.PAUSED,
+      to: STATE.PAUSED
     },
     {
-      name: "resume",
+      name: 'resume',
       from: STATE.PAUSED,
-      to: STATE.PLAYING,
-    },
-  ],
+      to: STATE.PLAYING
+    }
+  ]
 });
 
 var isProgramPlaying = false;
 function _onLoadedData() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
-  this.emit("html5-playback-status", {
+  this.emit('html5-playback-status', {
     type: PlaybackState.DATA_LOADING,
-    mediaNode: this.audioNode,
+    mediaNode: this.audioNode
   });
 }
 
 function _onLoadStart() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
-  this.emit("html5-playback-status", {
+  this.emit('html5-playback-status', {
     type: PlaybackState.LOAD_START,
-    mediaNode: this.audioNode,
+    mediaNode: this.audioNode
   });
 }
 
@@ -78,10 +78,10 @@ function _onCanPlay() {
   if (this.timeshiftEnabled) {
     var context = this;
 
-    if (OsPlatform.name === "Safari") {
+    if (OsPlatform.name === 'Safari') {
       setTimeout(() => {
-        context.emit("timeshift-info", {
-          programStartTime: context.audioNode.getStartDate().getTime(),
+        context.emit('timeshift-info', {
+          programStartTime: context.audioNode.getStartDate().getTime()
         });
       }, 1000);
     }
@@ -89,16 +89,12 @@ function _onCanPlay() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
   if (this.url !== null) {
-    if (
-      OsPlatform.name === "IE" &&
-      OsPlatform.version === "11.0" &&
-      parseInt(OsPlatform.os.version) >= 7
-    ) {
+    if (OsPlatform.name === 'IE' && OsPlatform.version === '11.0' && parseInt(OsPlatform.os.version) >= 7) {
       this.audioNode.play();
     } else {
-      context.emit("html5-playback-status", {
+      context.emit('html5-playback-status', {
         type: PlaybackState.CAN_PLAY,
-        mediaNode: context.audioNode,
+        mediaNode: context.audioNode
       });
 
       this.audioNode
@@ -107,12 +103,7 @@ function _onCanPlay() {
         .catch(function (e) {
           context.handleHTMLPlayError(e);
         });
-      if (
-        this.url.indexOf("CLOUD/HLS/program") > -1 &&
-        this.timeshiftOffset != null &&
-        this.timeshiftOffset >= 0 &&
-        !this.hls
-      ) {
+      if (this.url.indexOf('CLOUD/HLS/program') > -1 && this.timeshiftOffset != null && this.timeshiftOffset >= 0 && !this.hls) {
         this.seekStream(this.timeshiftOffset);
         this.timeshiftOffset = null;
       }
@@ -125,19 +116,15 @@ function _onCanPlayThrough() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
   if (this.url !== null) {
-    if (
-      OsPlatform.name === "IE" &&
-      OsPlatform.version === "11.0" &&
-      parseInt(OsPlatform.os.version) >= 7
-    ) {
+    if (OsPlatform.name === 'IE' && OsPlatform.version === '11.0' && parseInt(OsPlatform.os.version) >= 7) {
       this.audioNode.play();
     } else {
       this.audioNode
         .play()
         .then(function () {
-          context.emit("html5-playback-status", {
+          context.emit('html5-playback-status', {
             type: PlaybackState.CAN_PLAY_THROUGH,
-            mediaNode: context.audioNode,
+            mediaNode: context.audioNode
           });
         })
         .catch(function (e) {
@@ -150,63 +137,63 @@ function _onCanPlayThrough() {
 function _onWaiting() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
-  this.emit("html5-playback-status", {
+  this.emit('html5-playback-status', {
     type: PlaybackState.WAITING,
-    mediaNode: this.audioNode,
+    mediaNode: this.audioNode
   });
 }
 
 function _onEmptied() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
-  this.emit("html5-playback-status", {
+  this.emit('html5-playback-status', {
     type: PlaybackState.EMPTIED,
-    mediaNode: this.audioNode,
+    mediaNode: this.audioNode
   });
 }
 
 function _onAbort() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
-  this.emit("html5-playback-status", {
+  this.emit('html5-playback-status', {
     type: PlaybackState.ABORT,
-    mediaNode: this.audioNode,
+    mediaNode: this.audioNode
   });
 }
 
 function _onEnded() {
   if (fsm.is(STATE.STOPPED)) return;
-  this.emit("html5-playback-status", {
+  this.emit('html5-playback-status', {
     type: PlaybackState.ENDED,
-    mediaNode: this.audioNode,
+    mediaNode: this.audioNode
   });
 }
 
 function _onPlay() {
   if (this.url !== null) {
-    this.emit("html5-playback-status", {
+    this.emit('html5-playback-status', {
       type: PlaybackState.PLAY,
-      mediaNode: this.audioNode,
+      mediaNode: this.audioNode
     });
   }
 }
 
 function _onPause() {
   if (!fsm.is(STATE.STOPPED)) {
-    this.emit("html5-playback-status", {
+    this.emit('html5-playback-status', {
       type: PlaybackState.PAUSE,
-      mediaNode: this.audioNode,
+      mediaNode: this.audioNode
     });
   } else {
-    this.emit("html5-playback-status", {
+    this.emit('html5-playback-status', {
       type: PlaybackState.STOP,
-      mediaNode: this.audioNode,
+      mediaNode: this.audioNode
     });
   }
 }
 
 function _onError(event) {
-  let errorMessage = "";
+  let errorMessage = '';
   let errorCode = null;
 
   if (event && event.currentTarget && event.currentTarget.error) {
@@ -217,29 +204,29 @@ function _onError(event) {
   var audioNode = this.audioNode;
 
   if (fsm.is(STATE.STOPPED)) {
-    this.emit("html5-playback-status", {
+    this.emit('html5-playback-status', {
       type: PlaybackState.STOP,
-      mediaNode: audioNode,
+      mediaNode: audioNode
     });
   } else if (audioNode.readyState != 3) {
     this.resetAudioNode();
-    this.emit("html5-playback-status", {
+    this.emit('html5-playback-status', {
       type: PlaybackState.ERROR,
       mediaNode: audioNode,
       message: errorMessage,
-      code: errorCode,
+      code: errorCode
     });
   } else {
-    this.emit("html5-playback-status", {
+    this.emit('html5-playback-status', {
       type: PlaybackState.STOP,
-      mediaNode: audioNode,
+      mediaNode: audioNode
     });
   }
 }
 
 function _onOffline() {
-  console.log("MediaElement::offline");
-  if (OsPlatform.name === "Safari") {
+  console.log('MediaElement::offline');
+  if (OsPlatform.name === 'Safari') {
     this.stop();
   }
 }
@@ -247,36 +234,29 @@ function _onOffline() {
 function _onTimeUpdate() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
-  if (
-    this.audioNode.currentTime.toFixed(1) == this.audioNode.duration.toFixed(1)
-  ) {
-    this.emit("html5-playback-status", {
+  if (this.audioNode.currentTime.toFixed(1) == this.audioNode.duration.toFixed(1)) {
+    this.emit('html5-playback-status', {
       type: PlaybackState.ENDED,
-      mediaNode: this.audioNode,
+      mediaNode: this.audioNode
     });
   } else {
     if (!this.isLive) {
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.TIME_UPDATE,
-        mediaNode: this.audioNode,
+        mediaNode: this.audioNode
       });
     }
   }
   if (this.timeshiftEnabled && !this.hls) {
     if (timeupdateCounter == 0) {
       timeupdateCounter++;
-      let startSeconds =
-        parseInt(new Date().getTime() / 1000) -
-        parseInt(this.audioNode.getStartDate().getTime() / 1000) -
-        this.audioNode.currentTime;
+      let startSeconds = parseInt(new Date().getTime() / 1000) - parseInt(this.audioNode.getStartDate().getTime() / 1000) - this.audioNode.currentTime;
       let c = parseInt(new Date().getTime()) - startSeconds * 1000;
 
-      this.emit("timeshift-info", {
+      this.emit('timeshift-info', {
         currentTime: c,
         programStartTime: this.audioNode.getStartDate().getTime(),
-        totalduration:
-          parseInt(new Date().getTime() / 1000) -
-          parseInt(this.audioNode.getStartDate().getTime() / 1000),
+        totalduration: parseInt(new Date().getTime() / 1000) - parseInt(this.audioNode.getStartDate().getTime() / 1000)
       });
     } else {
       timeupdateCounter++;
@@ -289,39 +269,36 @@ function _onTimeUpdate() {
 
 function attachEvents() {
   this.boundOnOffline = _onOffline.bind(this);
-  this.audioNode.addEventListener("loadeddata", _onLoadedData.bind(this));
-  this.audioNode.addEventListener("loadstart", _onLoadStart.bind(this));
-  this.audioNode.addEventListener("canplay", _onCanPlay.bind(this));
-  this.audioNode.addEventListener(
-    "canplaythrough",
-    _onCanPlayThrough.bind(this)
-  );
-  this.audioNode.addEventListener("waiting", _onWaiting.bind(this));
-  this.audioNode.addEventListener("emptied", _onEmptied.bind(this));
-  this.audioNode.addEventListener("abort", _onAbort.bind(this));
-  this.audioNode.addEventListener("ended", _onEnded.bind(this));
-  this.audioNode.addEventListener("play", _onPlay.bind(this));
-  this.audioNode.addEventListener("pause", _onPause.bind(this));
-  this.audioNode.addEventListener("timeupdate", _onTimeUpdate.bind(this));
-  this.audioNode.addEventListener("error", _onError.bind(this));
-  window.addEventListener("offline", this.boundOnOffline);
+  this.audioNode.addEventListener('loadeddata', _onLoadedData.bind(this));
+  this.audioNode.addEventListener('loadstart', _onLoadStart.bind(this));
+  this.audioNode.addEventListener('canplay', _onCanPlay.bind(this));
+  this.audioNode.addEventListener('canplaythrough', _onCanPlayThrough.bind(this));
+  this.audioNode.addEventListener('waiting', _onWaiting.bind(this));
+  this.audioNode.addEventListener('emptied', _onEmptied.bind(this));
+  this.audioNode.addEventListener('abort', _onAbort.bind(this));
+  this.audioNode.addEventListener('ended', _onEnded.bind(this));
+  this.audioNode.addEventListener('play', _onPlay.bind(this));
+  this.audioNode.addEventListener('pause', _onPause.bind(this));
+  this.audioNode.addEventListener('timeupdate', _onTimeUpdate.bind(this));
+  this.audioNode.addEventListener('error', _onError.bind(this));
+  window.addEventListener('offline', this.boundOnOffline);
 }
 
 function removeEvents() {
   if (this.audioNode) {
-    this.audioNode.removeEventListener("loadeddata", _onLoadedData);
-    this.audioNode.removeEventListener("loadstart", _onLoadStart);
-    this.audioNode.removeEventListener("canplay", _onCanPlay);
-    this.audioNode.removeEventListener("canplaythrough", _onCanPlayThrough);
-    this.audioNode.removeEventListener("waiting", _onWaiting);
-    this.audioNode.removeEventListener("emptied", _onEmptied);
-    this.audioNode.removeEventListener("abort", _onAbort);
-    this.audioNode.removeEventListener("ended", _onEnded);
-    this.audioNode.removeEventListener("play", _onPlay);
-    this.audioNode.removeEventListener("pause", _onPause);
-    this.audioNode.removeEventListener("timeupdate", _onTimeUpdate);
-    this.audioNode.removeEventListener("error", _onError);
-    window.removeEventListener("offline", this.boundOnOffline);
+    this.audioNode.removeEventListener('loadeddata', _onLoadedData);
+    this.audioNode.removeEventListener('loadstart', _onLoadStart);
+    this.audioNode.removeEventListener('canplay', _onCanPlay);
+    this.audioNode.removeEventListener('canplaythrough', _onCanPlayThrough);
+    this.audioNode.removeEventListener('waiting', _onWaiting);
+    this.audioNode.removeEventListener('emptied', _onEmptied);
+    this.audioNode.removeEventListener('abort', _onAbort);
+    this.audioNode.removeEventListener('ended', _onEnded);
+    this.audioNode.removeEventListener('play', _onPlay);
+    this.audioNode.removeEventListener('pause', _onPause);
+    this.audioNode.removeEventListener('timeupdate', _onTimeUpdate);
+    this.audioNode.removeEventListener('error', _onError);
+    window.removeEventListener('offline', this.boundOnOffline);
   }
 }
 
@@ -329,7 +306,7 @@ function getAudioNode() {
   if (!this.audioNode) {
     this.audioNode = new Audio();
     this.audioNode.autoplay = false;
-    this.audioNode.preload = "none";
+    this.audioNode.preload = 'none';
     attachEvents.call(this);
   }
 
@@ -346,13 +323,7 @@ module.exports = _.assign(new EventEmitter(), {
     this.audioNode.src = null;
   },
 
-  playAudio: function (
-    url,
-    useHlsLibrary,
-    isLive,
-    timeshiftOffset,
-    timeshiftEnabled
-  ) {
+  playAudio: function (url, useHlsLibrary, isLive, timeshiftOffset, timeshiftEnabled) {
     this.timeshiftEnabled = timeshiftEnabled;
     if (this.audioNode) {
       this.stop();
@@ -361,7 +332,7 @@ module.exports = _.assign(new EventEmitter(), {
     this.audioNode = getAudioNode.call(this);
     this.url = url || this.url;
     if (stwLSID) {
-      this.url = this.url + "&lsid=" + stwLSID;
+      this.url = this.url + '&lsid=' + stwLSID;
     }
     this.isLive = isLive || this.isLive;
     this.useHlsLibrary = useHlsLibrary || this.useHlsLibrary;
@@ -370,7 +341,7 @@ module.exports = _.assign(new EventEmitter(), {
     if (useHlsLibrary) {
       var config = {
         maxBufferLength: 30,
-        autoStartLoad: false,
+        autoStartLoad: false
       };
       this.hls = new Hls(config);
 
@@ -379,11 +350,11 @@ module.exports = _.assign(new EventEmitter(), {
         xhr.onload = function () {
           let headers = xhr.getAllResponseHeaders();
 
-          if (headers && headers.indexOf("x-stw-lsid") > 0) {
-            if (xhr.getResponseHeader("x-stw-lsid")) {
-              stwLSID = xhr.getResponseHeader("x-stw-lsid");
+          if (headers && headers.indexOf('x-stw-lsid') > 0) {
+            if (xhr.getResponseHeader('x-stw-lsid')) {
+              stwLSID = xhr.getResponseHeader('x-stw-lsid');
             }
-            console.log("X-STW-LSID:" + stwLSID);
+            console.log('X-STW-LSID:' + stwLSID);
           }
         };
       };
@@ -395,10 +366,7 @@ module.exports = _.assign(new EventEmitter(), {
 
       this.hls.on(Hls.Events.ERROR, this.hlsError.bind(this));
       this.hls.on(Hls.Events.MEDIA_ATTACHED, this.hlsMediaAttached.bind(this));
-      this.hls.on(
-        Hls.Events.MANIFEST_PARSED,
-        this.hlsManifestParsed.bind(this)
-      );
+      this.hls.on(Hls.Events.MANIFEST_PARSED, this.hlsManifestParsed.bind(this));
       this.hls.loadSource(this.url);
       this.hls.attachMedia(this.audioNode);
     } else {
@@ -412,28 +380,26 @@ module.exports = _.assign(new EventEmitter(), {
   hlsMediaAttached: function () {},
 
   hlsFragChanged: function (id, data) {
-    this.emit("timeshift-info", {
-      currentTime: data.frag.programDateTime,
+    this.emit('timeshift-info', {
+      currentTime: data.frag.programDateTime
     });
   },
 
   levelsLoaded: function (event, data) {
-    this.emit("timeshift-info", {
+    this.emit('timeshift-info', {
       totalduration: data.details.totalduration,
-      programStartTime: data.details.fragments[0].programDateTime,
+      programStartTime: data.details.fragments[0].programDateTime
     });
   },
 
   hlsManifestParsed: function (event, data) {
-    console.log("MediaElement::HLS-event:" + JSON.stringify(data));
+    console.log('MediaElement::HLS-event:' + JSON.stringify(data));
     this.hls.startLoad(this.timeshiftOffset);
   },
 
   hlsError: function (event, data) {
     if (data.fatal) {
-      console.log(
-        "MediaElement::HLS-error:" + data.type + " - " + data.details
-      );
+      console.log('MediaElement::HLS-error:' + data.type + ' - ' + data.details);
       this.stop();
     }
   },
@@ -447,11 +413,7 @@ module.exports = _.assign(new EventEmitter(), {
     fsm.stop();
 
     this.audioNode.pause();
-    if (
-      OsPlatform.name !== "Safari" ||
-      this.audioNode.src.indexOf("m3u8") > -1 ||
-      this.useHlsLibrary
-    ) {
+    if (OsPlatform.name !== 'Safari' || this.audioNode.src.indexOf('m3u8') > -1 || this.useHlsLibrary) {
       setTimeout(function () {
         context.audioNode.src = null;
         context.url = null;
@@ -464,7 +426,7 @@ module.exports = _.assign(new EventEmitter(), {
       }, 300);
     }
 
-    if (OsPlatform.os.family === "iOS" && OsPlatform.name === "Chrome Mobile") {
+    if (OsPlatform.os.family === 'iOS' && OsPlatform.name === 'Chrome Mobile') {
       window.stop();
     }
 
@@ -472,10 +434,7 @@ module.exports = _.assign(new EventEmitter(), {
       // Remove hls listeners:
       this.hls.off(Hls.Events.MEDIA_ATTACHED, this.hlsMediaAttached.bind(this));
       this.hls.off(Hls.Events.LEVEL_LOADED, this.levelsLoaded.bind(this));
-      this.hls.off(
-        Hls.Events.MANIFEST_PARSED,
-        this.hlsManifestParsed.bind(this)
-      );
+      this.hls.off(Hls.Events.MANIFEST_PARSED, this.hlsManifestParsed.bind(this));
       this.hls.off(Hls.Events.ERROR, this.hlsError.bind(this));
       this.hls.off(Hls.Events.FRAG_CHANGED, this.hlsFragChanged.bind(this));
 
@@ -484,9 +443,9 @@ module.exports = _.assign(new EventEmitter(), {
       this.hls.detachMedia();
       this.hls.destroy();
       // emit stop event after hls listeners killed
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.STOP,
-        mediaNode: this.audioNode,
+        mediaNode: this.audioNode
       });
     }
   },
@@ -501,11 +460,9 @@ module.exports = _.assign(new EventEmitter(), {
 
   //This should only happen on iOS
   seekFromLiveNative: function (seconds) {
-    let startSeconds =
-      parseInt(new Date().getTime() / 1000) -
-      parseInt(this.audioNode.getStartDate().getTime() / 1000);
+    let startSeconds = parseInt(new Date().getTime() / 1000) - parseInt(this.audioNode.getStartDate().getTime() / 1000);
     //Must be the total length in seconds minus the param.
-    console.log("SEEK NATIVE!!!" + seconds);
+    console.log('SEEK NATIVE!!!' + seconds);
     if (seconds >= 0) {
       this.audioNode.currentTime = startSeconds - seconds;
     } else {
@@ -544,11 +501,7 @@ module.exports = _.assign(new EventEmitter(), {
     if (!fsm.is(STATE.PAUSED)) return;
 
     this.audioNode = getAudioNode.call(this);
-    if (
-      OsPlatform.name === "IE" &&
-      OsPlatform.version === "11.0" &&
-      parseInt(OsPlatform.os.version) >= 7
-    ) {
+    if (OsPlatform.name === 'IE' && OsPlatform.version === '11.0' && parseInt(OsPlatform.os.version) >= 7) {
       this.audioNode.play();
     } else {
       this.audioNode.play().catch(function (e) {
@@ -595,22 +548,22 @@ module.exports = _.assign(new EventEmitter(), {
       this.audioNode = null;
     }
 
-    if (fsm.can("stop")) {
+    if (fsm.can('stop')) {
       fsm.stop();
     }
   },
 
   destroyAudioElement: function () {
-    this.emit("destroyAudioElement");
+    this.emit('destroyAudioElement');
   },
 
   handleHTMLPlayError: function (e) {
     var context = this;
-    if (e.name !== "NotSupportedError") {
-      if (e.name === "NotAllowedError") {
-        this.emit("html5-playback-status", {
+    if (e.name !== 'NotSupportedError') {
+      if (e.name === 'NotAllowedError') {
+        this.emit('html5-playback-status', {
           type: PlaybackState.PLAY_NOT_ALLOWED,
-          mediaNode: context.audioNode,
+          mediaNode: context.audioNode
         });
       }
     }
@@ -625,5 +578,5 @@ module.exports = _.assign(new EventEmitter(), {
     } else {
       this.audioNode.currentTime = seconds;
     }
-  },
+  }
 });

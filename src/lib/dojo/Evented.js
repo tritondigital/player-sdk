@@ -1,8 +1,8 @@
-define(["./aspect", "./on"], function (aspect, on) {
+define(['./aspect', './on'], function (aspect, on) {
   // module:
   //		dojo/Evented
 
-  "use strict";
+  'use strict';
   var after = aspect.after;
   function Evented() {
     // summary:
@@ -22,14 +22,14 @@ define(["./aspect", "./on"], function (aspect, on) {
   Evented.prototype = {
     on: function (type, listener) {
       return on.parse(this, type, listener, function (target, type) {
-        return after(target, "on" + type, listener, true);
+        return after(target, 'on' + type, listener, true);
       });
     },
     emit: function (type, event) {
       var args = [this];
       args.push.apply(args, arguments);
       return on.emit.apply(on, args);
-    },
+    }
   };
   return Evented;
 });

@@ -1,4 +1,4 @@
-define(["./_base/kernel", "./regexp"], function (dojo, regexp) {
+define(['./_base/kernel', './regexp'], function (dojo, regexp) {
   // module:
   //		dojo/cookie
 
@@ -18,11 +18,7 @@ var __cookieProps = {
 };
 =====*/
 
-  dojo.cookie = function (
-    /*String*/ name,
-    /*String?*/ value,
-    /*__cookieProps?*/ props
-  ) {
+  dojo.cookie = function (/*String*/ name, /*String?*/ value, /*__cookieProps?*/ props) {
     // summary:
     //		Get or set a cookie.
     // description:
@@ -55,15 +51,13 @@ var __cookieProps = {
     var c = document.cookie,
       ret;
     if (arguments.length == 1) {
-      var matches = c.match(
-        new RegExp("(?:^|; )" + regexp.escapeString(name) + "=([^;]*)")
-      );
+      var matches = c.match(new RegExp('(?:^|; )' + regexp.escapeString(name) + '=([^;]*)'));
       ret = matches ? decodeURIComponent(matches[1]) : undefined;
     } else {
       props = props || {};
       // FIXME: expires=0 seems to disappear right away, not on close? (FF3)  Change docs?
       var exp = props.expires;
-      if (typeof exp == "number") {
+      if (typeof exp == 'number') {
         var d = new Date();
         d.setTime(d.getTime() + exp * 24 * 60 * 60 * 1000);
         exp = props.expires = d;
@@ -73,13 +67,13 @@ var __cookieProps = {
       }
 
       value = encodeURIComponent(value);
-      var updatedCookie = name + "=" + value,
+      var updatedCookie = name + '=' + value,
         propName;
       for (propName in props) {
-        updatedCookie += "; " + propName;
+        updatedCookie += '; ' + propName;
         var propValue = props[propName];
         if (propValue !== true) {
-          updatedCookie += "=" + propValue;
+          updatedCookie += '=' + propValue;
         }
       }
       document.cookie = updatedCookie;
@@ -94,11 +88,11 @@ var __cookieProps = {
     //		Returns true if user allows cookies.
     //		Returns false if user doesn't allow cookies.
 
-    if (!("cookieEnabled" in navigator)) {
-      this("__djCookieTest__", "CookiesAllowed");
-      navigator.cookieEnabled = this("__djCookieTest__") == "CookiesAllowed";
+    if (!('cookieEnabled' in navigator)) {
+      this('__djCookieTest__', 'CookiesAllowed');
+      navigator.cookieEnabled = this('__djCookieTest__') == 'CookiesAllowed';
       if (navigator.cookieEnabled) {
-        this("__djCookieTest__", "", { expires: -1 });
+        this('__djCookieTest__', '', { expires: -1 });
       }
     }
     return navigator.cookieEnabled;

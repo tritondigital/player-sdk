@@ -1,4 +1,4 @@
-var xmlParser = require("sdk/base/util/XmlParser");
+var xmlParser = require('sdk/base/util/XmlParser');
 
 /**
  *
@@ -6,21 +6,21 @@ var xmlParser = require("sdk/base/util/XmlParser");
  *
  */
 define([
-  "dojo/_base/declare",
-  "sdk/modules/ad/vastAd/parser/VASTParser",
-  "sdk/modules/ad/vastAd/parser/VASTElement",
-  "sdk/modules/ad/vastAd/VASTDocument",
-  "sdk/modules/ad/vastAd/VASTAd",
-  "sdk/modules/ad/vastAd/VAST2InlineAd",
-  "sdk/modules/ad/vastAd/VASTWrapperAd",
-  "sdk/modules/ad/vastAd/VAST2Creative",
-  "sdk/modules/ad/vastAd/VASTLinearElement",
-  "sdk/modules/ad/vastAd/VASTNonLinearAd",
-  "sdk/modules/ad/vastAd/DAASTCompanionAd",
-  "sdk/modules/ad/vastAd/VASTTrackingEvent",
-  "sdk/modules/ad/vastAd/VASTVideoClick",
-  "sdk/modules/ad/vastAd/VASTMediaFile",
-  "sdk/modules/ad/vastAd/VASTResourceType",
+  'dojo/_base/declare',
+  'sdk/modules/ad/vastAd/parser/VASTParser',
+  'sdk/modules/ad/vastAd/parser/VASTElement',
+  'sdk/modules/ad/vastAd/VASTDocument',
+  'sdk/modules/ad/vastAd/VASTAd',
+  'sdk/modules/ad/vastAd/VAST2InlineAd',
+  'sdk/modules/ad/vastAd/VASTWrapperAd',
+  'sdk/modules/ad/vastAd/VAST2Creative',
+  'sdk/modules/ad/vastAd/VASTLinearElement',
+  'sdk/modules/ad/vastAd/VASTNonLinearAd',
+  'sdk/modules/ad/vastAd/DAASTCompanionAd',
+  'sdk/modules/ad/vastAd/VASTTrackingEvent',
+  'sdk/modules/ad/vastAd/VASTVideoClick',
+  'sdk/modules/ad/vastAd/VASTMediaFile',
+  'sdk/modules/ad/vastAd/VASTResourceType'
 ], function (
   declare,
   VASTParser,
@@ -39,14 +39,14 @@ define([
   VASTResourceType
 ) {
   var daastparser = declare([VASTParser], {
-    AD: "Ad",
-    IMPRESSION: "Impression",
-    DAAST_AD_TAG_URI: "DAASTAdTagURI",
-    CREATIVES: "Creatives",
-    CREATIVE: "Creative",
+    AD: 'Ad',
+    IMPRESSION: 'Impression',
+    DAAST_AD_TAG_URI: 'DAASTAdTagURI',
+    CREATIVES: 'Creatives',
+    CREATIVE: 'Creative',
 
     constructor: function () {
-      console.log("daastparser::constructor");
+      console.log('daastparser::constructor');
 
       this.vastDocument = null;
 
@@ -74,17 +74,11 @@ define([
       var xmlLength = xml.length;
       for (var i = 0; i < xmlLength; i++) {
         if (xml[i].getElementsByTagName(VASTElement.INLINE).length > 0) {
-          this.vastDocument.vastAd.inlineAd = this._parseInLineTag(
-            xml[i].getElementsByTagName(VASTElement.INLINE)
-          );
-        } else if (
-          xml[i].getElementsByTagName(VASTElement.WRAPPER).length > 0
-        ) {
-          this.vastDocument.vastAd.wrapperAd = this._parseWrapperTag(
-            xml[i].getElementsByTagName(VASTElement.WRAPPER)
-          );
+          this.vastDocument.vastAd.inlineAd = this._parseInLineTag(xml[i].getElementsByTagName(VASTElement.INLINE));
+        } else if (xml[i].getElementsByTagName(VASTElement.WRAPPER).length > 0) {
+          this.vastDocument.vastAd.wrapperAd = this._parseWrapperTag(xml[i].getElementsByTagName(VASTElement.WRAPPER));
         } else {
-          console.error("VAST - parseAdTag() - Unsupported VAST tag");
+          console.error('VAST - parseAdTag() - Unsupported VAST tag');
         }
       }
     },
@@ -114,12 +108,8 @@ define([
         }
       }
 
-      daastInline.impressions = this._parseImpressionTag(
-        xml[0].getElementsByTagName(this.IMPRESSION)
-      );
-      daastInline.creatives = this._parseCreatives(
-        xml[0].getElementsByTagName(this.CREATIVES)
-      );
+      daastInline.impressions = this._parseImpressionTag(xml[0].getElementsByTagName(this.IMPRESSION));
+      daastInline.creatives = this._parseCreatives(xml[0].getElementsByTagName(this.CREATIVES));
 
       return daastInline;
     },
@@ -131,20 +121,14 @@ define([
       var nodeArrayLength = nodeArray.length;
       for (var i = 0; i < nodeArrayLength; i++) {
         if (nodeArray[i].nodeName == this.DAAST_AD_TAG_URI) {
-          vastWrapperAd.vastAdTagURL = this.trim(
-            xmlParser.textContent(nodeArray[i])
-          );
+          vastWrapperAd.vastAdTagURL = this.trim(xmlParser.textContent(nodeArray[i]));
         } else if (nodeArray[i].nodeName == VASTElement.ERROR) {
           vastWrapperAd.error = this.trim(xmlParser.textContent(nodeArray[i]));
         }
       }
 
-      vastWrapperAd.impressions = this._parseImpressionTag(
-        xml[0].getElementsByTagName(this.IMPRESSION)
-      );
-      vastWrapperAd.creatives = this._parseCreatives(
-        xml[0].getElementsByTagName(this.CREATIVES)
-      );
+      vastWrapperAd.impressions = this._parseImpressionTag(xml[0].getElementsByTagName(this.IMPRESSION));
+      vastWrapperAd.creatives = this._parseCreatives(xml[0].getElementsByTagName(this.CREATIVES));
 
       return vastWrapperAd;
     },
@@ -165,15 +149,9 @@ define([
     _parseCreatives: function (xml) {
       var creativesArray = [];
 
-      if (
-        xml[0] == undefined ||
-        xml[0].getElementsByTagName(this.CREATIVE) == undefined
-      )
-        return creativesArray;
+      if (xml[0] == undefined || xml[0].getElementsByTagName(this.CREATIVE) == undefined) return creativesArray;
 
-      var creativesArrayLength = xml[0].getElementsByTagName(
-        this.CREATIVE
-      ).length;
+      var creativesArrayLength = xml[0].getElementsByTagName(this.CREATIVE).length;
       var creativeArray = xml[0].getElementsByTagName(this.CREATIVE);
 
       for (var i = 0; i < creativesArrayLength; i++) {
@@ -192,21 +170,11 @@ define([
       creative.sequence = xml.getAttribute(VASTElement.SEQUENCE);
 
       if (xml.getElementsByTagName(VASTElement.LINEAR).length != 0) {
-        creative.linearElement = this._parseCreativeLinear(
-          xml.getElementsByTagName(VASTElement.LINEAR)
-        );
-      } else if (
-        xml.getElementsByTagName(VASTElement.NON_LINEAR_ADS).length != 0
-      ) {
-        creative.nonLinearAds = this._parseCreativeNonLinearAds(
-          xml.getElementsByTagName(VASTElement.NON_LINEAR_ADS)
-        );
-      } else if (
-        xml.getElementsByTagName(VASTElement.COMPANION_ADS).length != 0
-      ) {
-        creative.companionAds = this._parseCreativeCompanionAds(
-          xml.getElementsByTagName(VASTElement.COMPANION_ADS)
-        );
+        creative.linearElement = this._parseCreativeLinear(xml.getElementsByTagName(VASTElement.LINEAR));
+      } else if (xml.getElementsByTagName(VASTElement.NON_LINEAR_ADS).length != 0) {
+        creative.nonLinearAds = this._parseCreativeNonLinearAds(xml.getElementsByTagName(VASTElement.NON_LINEAR_ADS));
+      } else if (xml.getElementsByTagName(VASTElement.COMPANION_ADS).length != 0) {
+        creative.companionAds = this._parseCreativeCompanionAds(xml.getElementsByTagName(VASTElement.COMPANION_ADS));
       }
 
       return creative;
@@ -221,9 +189,7 @@ define([
         if (nodeArray[i].nodeName == VASTElement.DURATION) {
           vastLinearElement.duration = xmlParser.textContent(nodeArray[i]);
         } else if (nodeArray[i].nodeName == VASTElement.TRACKING_EVENTS) {
-          vastLinearElement.trackingEvents = this._parseTrackingEvents(
-            nodeArray[i]
-          );
+          vastLinearElement.trackingEvents = this._parseTrackingEvents(nodeArray[i]);
         } else if (nodeArray[i].nodeName == VASTElement.AUDIO_INTERACTIONS) {
           vastLinearElement.videoClick = this._parseVideoClick(nodeArray[i]);
         } else if (nodeArray[i].nodeName == VASTElement.MEDIA_FILES) {
@@ -243,49 +209,26 @@ define([
         var vastNonLinearAd = new VASTNonLinearAd();
         vastNonLinearAd.id = nonLinearAd[i].getAttribute(VASTElement.ID);
         vastNonLinearAd.width = nonLinearAd[i].getAttribute(VASTElement.WIDTH);
-        vastNonLinearAd.height = nonLinearAd[i].getAttribute(
-          VASTElement.HEIGHT
-        );
-        vastNonLinearAd.expandedWidth = nonLinearAd[i].getAttribute(
-          VASTElement.EXPANDED_WIDTH
-        );
-        vastNonLinearAd.expandedHeight = nonLinearAd[i].getAttribute(
-          VASTElement.EXPANDED_HEIGHT
-        );
-        vastNonLinearAd.scalable =
-          nonLinearAd[i].getAttribute(VASTElement.SCALABLE) == "true"
-            ? true
-            : false;
-        vastNonLinearAd.maintainAspectRatio =
-          nonLinearAd[i].getAttribute(VASTElement.MAINTAIN_ASPECT_RATIO) ==
-          "true"
-            ? true
-            : false;
-        vastNonLinearAd.apiFramework = nonLinearAd[i].getAttribute(
-          VASTElement.API_FRAMEWORK
-        );
-        vastNonLinearAd.minSuggestedDuration = nonLinearAd[i].getAttribute(
-          VASTElement.MIN_SUGGESTED_DURATION
-        );
+        vastNonLinearAd.height = nonLinearAd[i].getAttribute(VASTElement.HEIGHT);
+        vastNonLinearAd.expandedWidth = nonLinearAd[i].getAttribute(VASTElement.EXPANDED_WIDTH);
+        vastNonLinearAd.expandedHeight = nonLinearAd[i].getAttribute(VASTElement.EXPANDED_HEIGHT);
+        vastNonLinearAd.scalable = nonLinearAd[i].getAttribute(VASTElement.SCALABLE) == 'true' ? true : false;
+        vastNonLinearAd.maintainAspectRatio = nonLinearAd[i].getAttribute(VASTElement.MAINTAIN_ASPECT_RATIO) == 'true' ? true : false;
+        vastNonLinearAd.apiFramework = nonLinearAd[i].getAttribute(VASTElement.API_FRAMEWORK);
+        vastNonLinearAd.minSuggestedDuration = nonLinearAd[i].getAttribute(VASTElement.MIN_SUGGESTED_DURATION);
 
         var nodeArray = nonLinearAd[i].childNodes;
         var nodeArrayLength = nodeArray.length;
         for (var j = 0; j < nodeArrayLength; j++) {
           if (nodeArray[j].nodeName == VASTElement.AD_PARAMETERS) {
             vastNonLinearAd.adParameters = xmlParser.textContent(nodeArray[j]);
-          } else if (
-            nodeArray[j].nodeName == VASTElement.NON_LINEAR_CLICK_THROUGH
-          ) {
-            vastNonLinearAd.clickThroughURL = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+          } else if (nodeArray[j].nodeName == VASTElement.NON_LINEAR_CLICK_THROUGH) {
+            vastNonLinearAd.clickThroughURL = this.trim(xmlParser.textContent(nodeArray[j]));
           } else if (nodeArray[j].nodeName == VASTElement.IFRAME_RESOURCE) {
             var vastResourceType = new VASTResourceType();
             vastResourceType.name = vastResourceType.IFRAME;
             vastNonLinearAd.resourceType = vastResourceType;
-            vastNonLinearAd.url = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+            vastNonLinearAd.url = this.trim(xmlParser.textContent(nodeArray[j]));
           } else if (nodeArray[j].nodeName == VASTElement.HTML_RESOURCE) {
             var vastResourceType = new VASTResourceType();
             vastResourceType.name = vastResourceType.HTML;
@@ -295,12 +238,8 @@ define([
             var vastResourceType = new VASTResourceType();
             vastResourceType.name = vastResourceType.STATIC;
             vastNonLinearAd.resourceType = vastResourceType;
-            vastNonLinearAd.creativeType = nodeArray[j].getAttribute(
-              VASTElement.CREATIVE_TYPE
-            );
-            vastNonLinearAd.url = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+            vastNonLinearAd.creativeType = nodeArray[j].getAttribute(VASTElement.CREATIVE_TYPE);
+            vastNonLinearAd.url = this.trim(xmlParser.textContent(nodeArray[j]));
           }
         }
 
@@ -319,27 +258,13 @@ define([
         var daastCompanionAd = new DAASTCompanionAd();
         daastCompanionAd.id = companions[i].getAttribute(VASTElement.ID);
         daastCompanionAd.width = companions[i].getAttribute(VASTElement.WIDTH);
-        daastCompanionAd.height = companions[i].getAttribute(
-          VASTElement.HEIGHT
-        );
-        daastCompanionAd.expandedWidth = companions[i].getAttribute(
-          VASTElement.EXPANDED_WIDTH
-        );
-        daastCompanionAd.expandedHeight = companions[i].getAttribute(
-          VASTElement.EXPANDED_HEIGHT
-        );
-        daastCompanionAd.logoTile = companions[i].getAttribute(
-          VASTElement.LOGO_TILE
-        );
-        daastCompanionAd.logoTitle = companions[i].getAttribute(
-          VASTElement.LOGO_TITLE
-        );
-        daastCompanionAd.logoArtist = companions[i].getAttribute(
-          VASTElement.LOGO_ARTIST
-        );
-        daastCompanionAd.logoTile = companions[i].getAttribute(
-          VASTElement.LOGO_TILE
-        );
+        daastCompanionAd.height = companions[i].getAttribute(VASTElement.HEIGHT);
+        daastCompanionAd.expandedWidth = companions[i].getAttribute(VASTElement.EXPANDED_WIDTH);
+        daastCompanionAd.expandedHeight = companions[i].getAttribute(VASTElement.EXPANDED_HEIGHT);
+        daastCompanionAd.logoTile = companions[i].getAttribute(VASTElement.LOGO_TILE);
+        daastCompanionAd.logoTitle = companions[i].getAttribute(VASTElement.LOGO_TITLE);
+        daastCompanionAd.logoArtist = companions[i].getAttribute(VASTElement.LOGO_ARTIST);
+        daastCompanionAd.logoTile = companions[i].getAttribute(VASTElement.LOGO_TILE);
 
         var nodeArray = companions[i].childNodes;
         var nodeArrayLength = nodeArray.length;
@@ -348,19 +273,13 @@ define([
             daastCompanionAd.adParameters = xmlParser.textContent(nodeArray[j]);
           } else if (nodeArray[j].nodeName == VASTElement.ALT_TEXT) {
             daastCompanionAd.altText = xmlParser.textContent(nodeArray[j]);
-          } else if (
-            nodeArray[j].nodeName == VASTElement.COMPANION_CLICK_THROUGH
-          ) {
-            daastCompanionAd.clickThroughURL = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+          } else if (nodeArray[j].nodeName == VASTElement.COMPANION_CLICK_THROUGH) {
+            daastCompanionAd.clickThroughURL = this.trim(xmlParser.textContent(nodeArray[j]));
           } else if (nodeArray[j].nodeName == VASTElement.IFRAME_RESOURCE) {
             var vastResourceType = new VASTResourceType();
             vastResourceType.name = vastResourceType.IFRAME;
             daastCompanionAd.resourceType = vastResourceType;
-            daastCompanionAd.url = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+            daastCompanionAd.url = this.trim(xmlParser.textContent(nodeArray[j]));
           } else if (nodeArray[j].nodeName == VASTElement.HTML_RESOURCE) {
             var vastResourceType = new VASTResourceType();
             vastResourceType.name = vastResourceType.HTML;
@@ -370,23 +289,14 @@ define([
             var vastResourceType = new VASTResourceType();
             vastResourceType.name = vastResourceType.STATIC;
             daastCompanionAd.resourceType = vastResourceType;
-            daastCompanionAd.creativeType = nodeArray[j].getAttribute(
-              VASTElement.CREATIVE_TYPE
-            );
-            daastCompanionAd.url = this.trim(
-              xmlParser.textContent(nodeArray[j])
-            );
+            daastCompanionAd.creativeType = nodeArray[j].getAttribute(VASTElement.CREATIVE_TYPE);
+            daastCompanionAd.url = this.trim(xmlParser.textContent(nodeArray[j]));
           } else if (nodeArray[j].nodeName == VASTElement.TRACKING_EVENTS) {
-            var trackings = nodeArray[j].getElementsByTagName(
-              VASTElement.TRACKING
-            );
+            var trackings = nodeArray[j].getElementsByTagName(VASTElement.TRACKING);
             var trackingsLength = trackings.length;
             if (trackingsLength > 0) {
               var type = trackings[0].getAttribute(VASTElement.EVENT);
-              if (type == VASTElement.CREATIVE_VIEW)
-                daastCompanionAd.creativeView = this.trim(
-                  xmlParser.textContent(nodeArray[j])
-                );
+              if (type == VASTElement.CREATIVE_VIEW) daastCompanionAd.creativeView = this.trim(xmlParser.textContent(nodeArray[j]));
             }
           }
         }
@@ -419,17 +329,11 @@ define([
       var nodeArrayLength = nodeArray.length;
       for (var i = 0; i < nodeArrayLength; i++) {
         if (nodeArray[i].nodeName == VASTElement.CLICK_THROUGH) {
-          vastVideoClick.clickThrough = this.trim(
-            xmlParser.textContent(nodeArray[i])
-          );
+          vastVideoClick.clickThrough = this.trim(xmlParser.textContent(nodeArray[i]));
         } else if (nodeArray[i].nodeName == VASTElement.CLICK_TRACKING) {
-          vastVideoClick.clickTrackings.push(
-            this.trim(xmlParser.textContent(nodeArray[i]))
-          );
+          vastVideoClick.clickTrackings.push(this.trim(xmlParser.textContent(nodeArray[i])));
         } else if (nodeArray[i].nodeName == VASTElement.CUSTOM_CLICK) {
-          vastVideoClick.customClicks.push(
-            this.trim(xmlParser.textContent(nodeArray[i]))
-          );
+          vastVideoClick.customClicks.push(this.trim(xmlParser.textContent(nodeArray[i])));
         }
       }
 
@@ -445,37 +349,22 @@ define([
         var vastMediaFile = new VASTMediaFile();
         vastMediaFile.id = mediaFiles[i].getAttribute(VASTElement.ID);
         vastMediaFile.bitrate = mediaFiles[i].getAttribute(VASTElement.BITRATE);
-        vastMediaFile.minbitrate = mediaFiles[i].getAttribute(
-          VASTElement.MIN_BITRATE
-        );
-        vastMediaFile.maxbitrate = mediaFiles[i].getAttribute(
-          VASTElement.MAX_BITRATE
-        );
+        vastMediaFile.minbitrate = mediaFiles[i].getAttribute(VASTElement.MIN_BITRATE);
+        vastMediaFile.maxbitrate = mediaFiles[i].getAttribute(VASTElement.MAX_BITRATE);
         vastMediaFile.codec = mediaFiles[i].getAttribute(VASTElement.CODEC);
         vastMediaFile.height = mediaFiles[i].getAttribute(VASTElement.HEIGHT);
         vastMediaFile.width = mediaFiles[i].getAttribute(VASTElement.WIDTH);
-        vastMediaFile.delivery = mediaFiles[i].getAttribute(
-          VASTElement.DELIVERY
-        );
+        vastMediaFile.delivery = mediaFiles[i].getAttribute(VASTElement.DELIVERY);
         vastMediaFile.type = mediaFiles[i].getAttribute(VASTElement.TYPE);
-        vastMediaFile.scalable =
-          mediaFiles[i].getAttribute(VASTElement.SCALABLE) == "true"
-            ? true
-            : false;
-        vastMediaFile.maintainAspectRatio =
-          mediaFiles[i].getAttribute(VASTElement.MAINTAIN_ASPECT_RATIO) ==
-          "true"
-            ? true
-            : false;
-        vastMediaFile.apiFramework = mediaFiles[i].getAttribute(
-          VASTElement.API_FRAMEWORK
-        );
+        vastMediaFile.scalable = mediaFiles[i].getAttribute(VASTElement.SCALABLE) == 'true' ? true : false;
+        vastMediaFile.maintainAspectRatio = mediaFiles[i].getAttribute(VASTElement.MAINTAIN_ASPECT_RATIO) == 'true' ? true : false;
+        vastMediaFile.apiFramework = mediaFiles[i].getAttribute(VASTElement.API_FRAMEWORK);
         vastMediaFile.url = this.trim(xmlParser.textContent(mediaFiles[i]));
         vastMediaFiles.push(vastMediaFile);
       }
 
       return vastMediaFiles;
-    },
+    }
   });
 
   return daastparser;

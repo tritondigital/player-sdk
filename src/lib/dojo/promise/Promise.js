@@ -1,11 +1,11 @@
-define(["../_base/lang"], function (lang) {
-  "use strict";
+define(['../_base/lang'], function (lang) {
+  'use strict';
 
   // module:
   //		dojo/promise/Promise
 
   function throwAbstract() {
-    throw new TypeError("abstract");
+    throw new TypeError('abstract');
   }
 
   return lang.extend(
@@ -127,8 +127,8 @@ define(["../_base/lang"], function (lang) {
         // returns: string
         //		Returns `[object Promise]`.
 
-        return "[object Promise]";
-      },
+        return '[object Promise]';
+      }
     }
   );
 });

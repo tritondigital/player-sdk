@@ -1,55 +1,40 @@
 define([
-  "module",
-  "./watch",
-  "./util",
-  "../_base/array",
-  "../_base/lang",
-  "../on",
-  "../dom",
-  "../dom-construct",
-  "../has",
-  "../_base/window" /*=====,
+  'module',
+  './watch',
+  './util',
+  '../_base/array',
+  '../_base/lang',
+  '../on',
+  '../dom',
+  '../dom-construct',
+  '../has',
+  '../_base/window' /*=====,
 	'../request',
-	'../_base/declare' =====*/,
-], function (
-  module,
-  watch,
-  util,
-  array,
-  lang,
-  on,
-  dom,
-  domConstruct,
-  has,
-  win /*=====, request, declare =====*/
-) {
-  has.add("script-readystatechange", function (global, document) {
-    var script = document.createElement("script");
-    return (
-      typeof script["onreadystatechange"] !== "undefined" &&
-      (typeof global["opera"] === "undefined" ||
-        global["opera"].toString() !== "[object Opera]")
-    );
+	'../_base/declare' =====*/
+], function (module, watch, util, array, lang, on, dom, domConstruct, has, win /*=====, request, declare =====*/) {
+  has.add('script-readystatechange', function (global, document) {
+    var script = document.createElement('script');
+    return typeof script['onreadystatechange'] !== 'undefined' && (typeof global['opera'] === 'undefined' || global['opera'].toString() !== '[object Opera]');
   });
 
-  var mid = module.id.replace(/[\/\.\-]/g, "_"),
+  var mid = module.id.replace(/[\/\.\-]/g, '_'),
     counter = 0,
-    loadEvent = has("script-readystatechange") ? "readystatechange" : "load",
+    loadEvent = has('script-readystatechange') ? 'readystatechange' : 'load',
     readyRegExp = /complete|loaded/,
-    callbacks = (this[mid + "_callbacks"] = {}),
+    callbacks = (this[mid + '_callbacks'] = {}),
     deadScripts = [];
 
   function attach(id, url, frameDoc) {
     var doc = frameDoc || win.doc,
-      element = doc.createElement("script");
+      element = doc.createElement('script');
 
-    element.type = "text/javascript";
+    element.type = 'text/javascript';
     element.src = url;
     element.id = id;
     element.async = true;
-    element.charset = "utf-8";
+    element.charset = 'utf-8';
 
-    return doc.getElementsByTagName("head")[0].appendChild(element);
+    return doc.getElementsByTagName('head')[0].appendChild(element);
   }
 
   function remove(id, frameDoc, cleanup) {
@@ -111,7 +96,7 @@ define([
   function isReadyCheckString(response) {
     var checkString = response.options.checkString;
 
-    return checkString && eval("typeof(" + checkString + ') !== "undefined"');
+    return checkString && eval('typeof(' + checkString + ') !== "undefined"');
   }
   function handleResponse(response, error) {
     if (this.canDelete) {
@@ -129,34 +114,17 @@ define([
     url = response.url;
     options = response.options;
 
-    var dfd = util.deferred(
-      response,
-      canceler,
-      isValid,
-      options.jsonp
-        ? null
-        : options.checkString
-        ? isReadyCheckString
-        : isReadyScript,
-      handleResponse
-    );
+    var dfd = util.deferred(response, canceler, isValid, options.jsonp ? null : options.checkString ? isReadyCheckString : isReadyScript, handleResponse);
 
     lang.mixin(dfd, {
       id: mid + counter++,
-      canDelete: false,
+      canDelete: false
     });
 
     if (options.jsonp) {
-      var queryParameter = new RegExp("[?&]" + options.jsonp + "=");
+      var queryParameter = new RegExp('[?&]' + options.jsonp + '=');
       if (!queryParameter.test(url)) {
-        url +=
-          (~url.indexOf("?") ? "&" : "?") +
-          options.jsonp +
-          "=" +
-          (options.frameDoc ? "parent." : "") +
-          mid +
-          "_callbacks." +
-          dfd.id;
+        url += (~url.indexOf('?') ? '&' : '?') + options.jsonp + '=' + (options.frameDoc ? 'parent.' : '') + mid + '_callbacks.' + dfd.id;
       }
 
       dfd.canDelete = true;
@@ -167,7 +135,7 @@ define([
     }
 
     if (util.notify) {
-      util.notify.emit("send", response, dfd.promise.cancel);
+      util.notify.emit('send', response, dfd.promise.cancel);
     }
 
     if (!options.canAttach || options.canAttach(dfd)) {
@@ -175,7 +143,7 @@ define([
 
       if (!options.jsonp && !options.checkString) {
         var handle = on(node, loadEvent, function (evt) {
-          if (evt.type === "load" || readyRegExp.test(node.readyState)) {
+          if (evt.type === 'load' || readyRegExp.test(node.readyState)) {
             handle.remove();
             dfd.scriptLoaded = evt;
           }
@@ -235,7 +203,7 @@ define([
   // TODO: Remove in 2.0
   script._attach = attach;
   script._remove = remove;
-  script._callbacksProperty = mid + "_callbacks";
+  script._callbacksProperty = mid + '_callbacks';
 
   return script;
 });

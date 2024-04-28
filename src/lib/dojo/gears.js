@@ -1,4 +1,4 @@
-define(["./_base/lang", "./sniff"], function (lang, has) {
+define(['./_base/lang', './sniff'], function (lang, has) {
   // module:
   //		dojo/gears
 
@@ -6,7 +6,7 @@ define(["./_base/lang", "./sniff"], function (lang, has) {
     // summary:
     //		TODOC
   };
-  lang.setObject("dojo.gears", gears);
+  lang.setObject('dojo.gears', gears);
 
   gears._gearsObject = function () {
     // summary:
@@ -14,29 +14,29 @@ define(["./_base/lang", "./sniff"], function (lang, has) {
     //		expose in the browser runtime environment, if present
     var factory;
 
-    var gearsObj = lang.getObject("google.gears");
+    var gearsObj = lang.getObject('google.gears');
     if (gearsObj) {
       return gearsObj;
     } // already defined elsewhere
 
-    if (typeof GearsFactory != "undefined") {
+    if (typeof GearsFactory != 'undefined') {
       // Firefox
       factory = new GearsFactory();
     } else {
-      if (has("ie")) {
+      if (has('ie')) {
         // IE
         try {
-          factory = new ActiveXObject("Gears.Factory");
+          factory = new ActiveXObject('Gears.Factory');
         } catch (e) {
           // ok to squelch; there's no gears factory.  move on.
         }
-      } else if (navigator.mimeTypes["application/x-googlegears"]) {
+      } else if (navigator.mimeTypes['application/x-googlegears']) {
         // Safari?
-        factory = document.createElement("object");
-        factory.setAttribute("type", "application/x-googlegears");
-        factory.setAttribute("width", 0);
-        factory.setAttribute("height", 0);
-        factory.style.display = "none";
+        factory = document.createElement('object');
+        factory.setAttribute('type', 'application/x-googlegears');
+        factory.setAttribute('width', 0);
+        factory.setAttribute('height', 0);
+        factory.style.display = 'none';
         document.documentElement.appendChild(factory);
       }
     }
@@ -49,8 +49,8 @@ define(["./_base/lang", "./sniff"], function (lang, has) {
     // define the global objects now; don't overwrite them though if they
     // were somehow set internally by the Gears plugin, which is on their
     // dev roadmap for the future
-    lang.setObject("google.gears.factory", factory);
-    return lang.getObject("google.gears");
+    lang.setObject('google.gears.factory', factory);
+    return lang.getObject('google.gears');
   };
 
   // see if we have Google Gears installed, and if

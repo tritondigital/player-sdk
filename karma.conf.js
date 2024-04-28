@@ -1,22 +1,22 @@
-var webpackCfg = require("./config/webpack.config.js");
+var webpackCfg = require('./config/webpack.config.js');
 // Karma configuration
 // Generated on Wed Jun 08 2016 09:26:53 GMT-0400 (EDT)
 
-var debug = process.argv.indexOf("--debug") > -1;
-const puppeteer = require("puppeteer");
+var debug = process.argv.indexOf('--debug') > -1;
+const puppeteer = require('puppeteer');
 process.env.CHROME_BIN = puppeteer.executablePath();
 
 module.exports = function (config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: "",
+    basePath: '',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ["mocha", "sinon"],
+    frameworks: ['mocha', 'sinon'],
 
     // list of files / patterns to load in the browser
-    files: ["node_modules/babel-polyfill/dist/polyfill.js", "test/**/*Test.js"],
+    files: ['node_modules/babel-polyfill/dist/polyfill.js', 'test/**/*Test.js'],
 
     // list of files to exclude
     exclude: [],
@@ -24,35 +24,35 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      "test/**/*Test.js": ["webpack"],
+      'test/**/*Test.js': ['webpack']
     },
 
     webpack: webpackCfg,
     webpackServer: {
-      noInfo: true,
+      noInfo: true
     },
     coverageReporter: {
-      dir: "target/coverage/",
+      dir: 'target/coverage/',
       reporters: [
         {
-          type: "html",
+          type: 'html'
         },
         {
-          type: "text",
-        },
+          type: 'text'
+        }
       ],
       watermarks: {
         statements: [50, 75],
         functions: [50, 75],
         branches: [50, 75],
-        lines: [50, 75],
-      },
+        lines: [50, 75]
+      }
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ["mocha", "coverage"],
+    reporters: ['mocha', 'coverage'],
 
     // web server port
     port: 9876,
@@ -69,23 +69,17 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: [debug ? "Chrome" : "HeadlessChrome"],
+    browsers: [debug ? 'Chrome' : 'HeadlessChrome'],
     customLaunchers: {
       HeadlessChrome: {
-        base: "Chrome",
-        flags: [
-          "--headless",
-          "--disable-gpu",
-          "--remote-debugging-port=9999",
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-        ],
-      },
+        base: 'Chrome',
+        flags: ['--headless', '--disable-gpu', '--remote-debugging-port=9999', '--no-sandbox', '--disable-setuid-sandbox']
+      }
     },
 
     browserConsoleLogOptions: {
       terminal: true,
-      level: "",
+      level: ''
     },
 
     // Continuous Integration mode
@@ -98,8 +92,8 @@ module.exports = function (config) {
 
     client: {
       mocha: {
-        timeout: debug ? "3600000" : "2000",
-      },
-    },
+        timeout: debug ? '3600000' : '2000'
+      }
+    }
   });
 };

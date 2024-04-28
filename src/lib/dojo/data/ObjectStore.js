@@ -1,19 +1,19 @@
-define([
-  "../_base/lang",
-  "../Evented",
-  "../_base/declare",
-  "../_base/Deferred",
-  "../_base/array",
-  "../_base/connect",
-  "../regexp",
-], function (lang, Evented, declare, Deferred, array, connect, regexp) {
+define(['../_base/lang', '../Evented', '../_base/declare', '../_base/Deferred', '../_base/array', '../_base/connect', '../regexp'], function (
+  lang,
+  Evented,
+  declare,
+  Deferred,
+  array,
+  connect,
+  regexp
+) {
   // module:
   //		dojo/data/ObjectStore
 
   function convertRegex(character) {
-    return character == "*" ? ".*" : character == "?" ? "." : character;
+    return character == '*' ? '.*' : character == '?' ? '.' : character;
   }
-  return declare("dojo.data.ObjectStore", [Evented], {
+  return declare('dojo.data.ObjectStore', [Evented], {
     // summary:
     //		A Dojo Data implementation that wraps Dojo object stores for backwards
     //		compatibility.
@@ -34,13 +34,9 @@ define([
       }
       lang.mixin(this, options);
     },
-    labelProperty: "label",
+    labelProperty: 'label',
 
-    getValue: function (
-      /*Object*/ item,
-      /*String*/ property,
-      /*value?*/ defaultValue
-    ) {
+    getValue: function (/*Object*/ item, /*String*/ property, /*value?*/ defaultValue) {
       // summary:
       //		Gets the value of an item's 'property'
       // item:
@@ -50,11 +46,7 @@ define([
       // defaultValue:
       //		the default value
 
-      return typeof item.get === "function"
-        ? item.get(property)
-        : property in item
-        ? item[property]
-        : defaultValue;
+      return typeof item.get === 'function' ? item.get(property) : property in item ? item[property] : defaultValue;
     },
     getValues: function (item, property) {
       // summary:
@@ -77,10 +69,7 @@ define([
 
       var res = [];
       for (var i in item) {
-        if (
-          item.hasOwnProperty(i) &&
-          !(i.charAt(0) == "_" && i.charAt(1) == "_")
-        ) {
+        if (item.hasOwnProperty(i) && !(i.charAt(0) == '_' && i.charAt(1) == '_')) {
           res.push(i);
         }
       }
@@ -117,7 +106,7 @@ define([
 
       // we have no way of determining if it belongs, we just have object returned from
       // service queries
-      return typeof item == "object" && item && !(item instanceof Date);
+      return typeof item == 'object' && item && !(item instanceof Date);
     },
 
     isItemLoaded: function (item) {
@@ -126,7 +115,7 @@ define([
       // item: Object
       //		The item to check
 
-      return item && typeof item.load !== "function";
+      return item && typeof item.load !== 'function';
     },
 
     loadItem: function (args) {
@@ -147,7 +136,7 @@ define([
       //	|	});
 
       var item;
-      if (typeof args.item.load === "function") {
+      if (typeof args.item.load === 'function') {
         Deferred.when(args.item.load(), function (result) {
           item = result; // in synchronous mode this can allow loadItem to return the value
           var func = result instanceof Error ? args.onError : args.onItem;
@@ -175,21 +164,14 @@ define([
       var self = this;
       var scope = args.scope || self;
       var query = args.query;
-      if (typeof query == "object") {
+      if (typeof query == 'object') {
         // can be null, but that is ignore by for-in
         query = lang.delegate(query); // don't modify the original
         for (var i in query) {
           // find any strings and convert them to regular expressions for wildcard support
           var required = query[i];
-          if (typeof required == "string") {
-            query[i] = RegExp(
-              "^" +
-                regexp
-                  .escapeString(required, "*?\\")
-                  .replace(/\\.|\*|\?/g, convertRegex) +
-                "$",
-              args.ignoreCase ? "mi" : "m"
-            );
+          if (typeof required == 'string') {
+            query[i] = RegExp('^' + regexp.escapeString(required, '*?\\').replace(/\\.|\*|\?/g, convertRegex) + '$', args.ignoreCase ? 'mi' : 'm');
             query[i].toString = (function (original) {
               return function () {
                 return original;
@@ -240,11 +222,7 @@ define([
           // if we were previously observing, cancel the last time to avoid multiple notifications. Just the best we can do for the impedance mismatch between APIs
           this.observing.cancel();
         }
-        this.observing = results.observe(function (
-          object,
-          removedFrom,
-          insertedInto
-        ) {
+        this.observing = results.observe(function (object, removedFrom, insertedInto) {
           if (array.indexOf(self._dirtyObjects, object) == -1) {
             if (removedFrom == -1) {
               self.onNew(object);
@@ -258,8 +236,7 @@ define([
               }
             }
           }
-        },
-        true);
+        }, true);
       }
       this.onFetch(results);
       args.store = this;
@@ -270,10 +247,10 @@ define([
       //		return the store feature set
 
       return {
-        "dojo.data.api.Read": !!this.objectStore.get,
-        "dojo.data.api.Identity": true,
-        "dojo.data.api.Write": !!this.objectStore.put,
-        "dojo.data.api.Notification": true,
+        'dojo.data.api.Read': !!this.objectStore.get,
+        'dojo.data.api.Identity': true,
+        'dojo.data.api.Write': !!this.objectStore.put,
+        'dojo.data.api.Notification': true
       };
     },
 
@@ -298,9 +275,7 @@ define([
       // summary:
       //		returns the identity of the given item
       //		See dojo/data/api/Read.getIdentity()
-      return this.objectStore.getIdentity
-        ? this.objectStore.getIdentity(item)
-        : item[this.objectStore.idProperty || "id"];
+      return this.objectStore.getIdentity ? this.objectStore.getIdentity(item) : item[this.objectStore.idProperty || 'id'];
     },
 
     getIdentityAttributes: function (item) {
@@ -379,9 +354,7 @@ define([
       //		See dojo/data/api/Write.setValues()
 
       if (!lang.isArray(values)) {
-        throw new Error(
-          "setValues expects to be passed an Array object as its value"
-        );
+        throw new Error('setValues expects to be passed an Array object as its value');
       }
       this.setValue(item, attribute, values);
     },
@@ -433,7 +406,7 @@ define([
       this._dirtyObjects.push({
         object: !_deleting && object,
         old: old,
-        save: !this._saveNotNeeded,
+        save: !this._saveNotNeeded
       });
     },
 
@@ -464,7 +437,7 @@ define([
       var dirtyObjects = this._dirtyObjects;
       var left = dirtyObjects.length; // this is how many changes are remaining to be received from the server
       try {
-        connect.connect(kwArgs, "onError", function () {
+        connect.connect(kwArgs, 'onError', function () {
           if (kwArgs.revertOnError !== false) {
             var postCommitDirtyObjects = dirtyObjects;
             dirtyObjects = savingObjects;
@@ -484,7 +457,7 @@ define([
           delete object.__isDirty;
           if (object) {
             result = this.objectStore.put(object, { overwrite: !!old });
-          } else if (typeof old != "undefined") {
+          } else if (typeof old != 'undefined') {
             result = this.objectStore.remove(this.getIdentity(old));
           }
           savingObjects.push(dirty);
@@ -577,6 +550,6 @@ define([
     onFetch: function (results) {
       // summary:
       // 		Called when a fetch occurs
-    },
+    }
   });
 });

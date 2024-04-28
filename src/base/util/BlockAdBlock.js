@@ -4,11 +4,11 @@
  * Released under the MIT license
  * https://github.com/sitexw/BlockAdBlock
  */
-var OsPlatform = require("platform");
+var OsPlatform = require('platform');
 
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var debug = true;
-  var debugName = "BlockAdBlock";
+  var debugName = 'BlockAdBlock';
 
   var FabUtils = function () {
     var self = this;
@@ -16,69 +16,54 @@ define(["dojo/_base/declare"], function (declare) {
 
     this.errors = {
       throwError: function (name, method, type) {
-        throw (
-          'Argument "' +
-          name +
-          '" of method "' +
-          method +
-          '" is not an "' +
-          type +
-          '"'
-        );
+        throw 'Argument "' + name + '" of method "' + method + '" is not an "' + type + '"';
       },
       isObject: function (value, name, method) {
-        if (
-          typeof value !== "object" ||
-          Array.isArray(value) === true ||
-          value === null
-        ) {
-          this.throwError(name, method, "object");
+        if (typeof value !== 'object' || Array.isArray(value) === true || value === null) {
+          this.throwError(name, method, 'object');
         }
       },
       isArray: function (value, name, method) {
         if (Array.isArray(value) === false) {
-          this.throwError(name, method, "array");
+          this.throwError(name, method, 'array');
         }
       },
       isFunction: function (value, name, method) {
-        if (typeof value !== "function") {
-          this.throwError(name, method, "function");
+        if (typeof value !== 'function') {
+          this.throwError(name, method, 'function');
         }
       },
       isString: function (value, name, method) {
-        if (typeof value !== "string") {
-          this.throwError(name, method, "string");
+        if (typeof value !== 'string') {
+          this.throwError(name, method, 'string');
         }
       },
       isBoolean: function (value, name, method) {
-        if (typeof value !== "boolean") {
-          this.throwError(name, method, "boolean");
+        if (typeof value !== 'boolean') {
+          this.throwError(name, method, 'boolean');
         }
-      },
+      }
     };
 
     this.options = {
       set: function (optionsList) {
-        self.errors.isObject(optionsList, "optionsList", "options.set");
+        self.errors.isObject(optionsList, 'optionsList', 'options.set');
 
         for (var key in optionsList) {
           options[key] = optionsList[key];
-          self.debug.log(
-            "options.set",
-            'Set "' + key + '" to "' + optionsList[key] + '"'
-          );
+          self.debug.log('options.set', 'Set "' + key + '" to "' + optionsList[key] + '"');
         }
         return self;
       },
       get: function (key) {
         return options[key];
-      },
+      }
     };
 
     this.debug = {
       set: function (isEnable) {
         debug = isEnable;
-        self.debug.log("debug.set", 'Set debug to "' + debug + '"');
+        self.debug.log('debug.set', 'Set debug to "' + debug + '"');
         return self;
       },
       isEnable: function () {
@@ -86,20 +71,20 @@ define(["dojo/_base/declare"], function (declare) {
       },
       log: function (method, message) {
         if (debug === true) {
-          self.errors.isString(method, "method", "debug.log");
-          self.errors.isString(message, "message", "debug.log");
+          self.errors.isString(method, 'method', 'debug.log');
+          self.errors.isString(message, 'message', 'debug.log');
 
-          console.log("[" + debugName + "][" + method + "] " + message);
+          console.log('[' + debugName + '][' + method + '] ' + message);
         }
-      },
+      }
     };
 
     this.versionToInt = function (version) {
-      var versionInt = "";
+      var versionInt = '';
       for (var i = 0; i < 3; i++) {
         var block = version[i] || 0;
-        if (("" + block).length === 1) {
-          block = "0" + block;
+        if (('' + block).length === 1) {
+          block = '0' + block;
         }
         versionInt += block;
       }
@@ -144,11 +129,11 @@ define(["dojo/_base/declare"], function (declare) {
   var Fab = function () {
     FabUtils.apply(this);
     this.options.set({
-      timeout: 200,
+      timeout: 200
     });
 
     var self = this;
-    var version = [4, 0, 0, "beta", 3];
+    var version = [4, 0, 0, 'beta', 3];
     var events = {};
     var pluginsClass = {};
 
@@ -161,57 +146,42 @@ define(["dojo/_base/declare"], function (declare) {
     };
 
     this.addEvent = function (name, callback) {
-      this.errors.isString(name, "name", "addEvent");
-      this.errors.isFunction(callback, "callback", "addEvent");
+      this.errors.isString(name, 'name', 'addEvent');
+      this.errors.isFunction(callback, 'callback', 'addEvent');
 
       if (events[name] === undefined) {
         events[name] = [];
       }
       events[name].push(callback);
-      this.debug.log("set", 'Event "' + name + '" added');
+      this.debug.log('set', 'Event "' + name + '" added');
       return this;
     };
     this.on = function (detected, callback) {
-      this.errors.isBoolean(detected, "detected", "on");
-      this.errors.isFunction(callback, "callback", "on");
+      this.errors.isBoolean(detected, 'detected', 'on');
+      this.errors.isFunction(callback, 'callback', 'on');
 
-      return this.addEvent(
-        detected === true ? "detected" : "undetected",
-        callback
-      );
+      return this.addEvent(detected === true ? 'detected' : 'undetected', callback);
     };
     this.onDetected = function (callback) {
-      this.errors.isFunction(callback, "callback", "onDetected");
+      this.errors.isFunction(callback, 'callback', 'onDetected');
 
-      return this.addEvent("detected", callback);
+      return this.addEvent('detected', callback);
     };
     this.onNotDetected = function (callback) {
-      this.errors.isFunction(callback, "callback", "onNotDetected");
+      this.errors.isFunction(callback, 'callback', 'onNotDetected');
 
-      return this.addEvent("undetected", callback);
+      return this.addEvent('undetected', callback);
     };
     var dispatchEvent = function (name) {
       var eventsList = events[name];
       if (self.debug.isEnable() === true) {
         var eventsNumber = eventsList !== undefined ? eventsList.length : 0;
-        self.debug.log(
-          "dispatchEvent",
-          'Starts dispatch of events "' + name + '" (0/' + eventsNumber + ")"
-        );
+        self.debug.log('dispatchEvent', 'Starts dispatch of events "' + name + '" (0/' + eventsNumber + ')');
       }
       if (eventsList !== undefined) {
         eventsList.forEach(function (theEvent, i) {
           if (self.debug.isEnable() === true) {
-            self.debug.log(
-              "dispatchEvent",
-              'Dispatch event "' +
-                name +
-                '" (' +
-                (parseInt(i) + 1) +
-                "/" +
-                eventsNumber +
-                ")"
-            );
+            self.debug.log('dispatchEvent', 'Dispatch event "' + name + '" (' + (parseInt(i) + 1) + '/' + eventsNumber + ')');
           }
           theEvent();
         });
@@ -230,9 +200,9 @@ define(["dojo/_base/declare"], function (declare) {
       if (optionsList === undefined) {
         optionsList = {};
       }
-      this.errors.isArray(pluginsList, "pluginsList", "check");
-      this.errors.isObject(optionsList, "optionsList", "check");
-      this.debug.log("check", "Starting check");
+      this.errors.isArray(pluginsList, 'pluginsList', 'check');
+      this.errors.isObject(optionsList, 'optionsList', 'check');
+      this.debug.log('check', 'Starting check');
 
       var plugins = {};
       var pluginsLength = pluginsList.length;
@@ -240,53 +210,27 @@ define(["dojo/_base/declare"], function (declare) {
 
       var end = function (pluginName, detected, force) {
         pluginsEndLength++;
-        self.debug.log(
-          "check",
-          (detected === true ? "Positive" : "Negative") +
-            '" check of plugin "' +
-            pluginName +
-            '"'
-        );
-        if (
-          force === true ||
-          detected === true ||
-          pluginsEndLength === pluginsLength
-        ) {
+        self.debug.log('check', (detected === true ? 'Positive' : 'Negative') + '" check of plugin "' + pluginName + '"');
+        if (force === true || detected === true || pluginsEndLength === pluginsLength) {
           clearTimeout(timeout);
           for (var name in plugins) {
             plugins[name].instance.stop();
           }
-          dispatchEvent(detected === true ? "detected" : "undetected");
+          dispatchEvent(detected === true ? 'detected' : 'undetected');
         }
       };
-      this.debug.log(
-        "check",
-        "Starting loading plugins (0/" +
-          pluginsLength +
-          ") (" +
-          pluginsList.join() +
-          ")"
-      );
+      this.debug.log('check', 'Starting loading plugins (0/' + pluginsLength + ') (' + pluginsList.join() + ')');
       if (pluginsLength === 0) {
-        end("#NoPlugin", false, true);
+        end('#NoPlugin', false, true);
         return this;
       }
 
       pluginsList.forEach(function (name, i) {
-        self.debug.log(
-          "check",
-          'Load plugin "' +
-            name +
-            '" (' +
-            (parseInt(i) + 1) +
-            "/" +
-            pluginsLength +
-            ")"
-        );
+        self.debug.log('check', 'Load plugin "' + name + '" (' + (parseInt(i) + 1) + '/' + pluginsLength + ')');
         var plugin = (plugins[name] = {
           name: name,
           instance: new pluginsClass[name](),
-          detected: null,
+          detected: null
         });
         if (optionsList[name] !== undefined) {
           plugin.instance.options.set(optionsList[name]);
@@ -308,64 +252,34 @@ define(["dojo/_base/declare"], function (declare) {
         plugins[name].instance.start();
       }
       var timeout = setTimeout(function () {
-        end("#Timeout", false, true);
-      }, this.options.get("timeout"));
+        end('#Timeout', false, true);
+      }, this.options.get('timeout'));
       return this;
     };
 
     this.registerPlugin = function (pluginClass) {
-      this.errors.isFunction(pluginClass, "pluginClass", "registerPlugin");
-      this.errors.isString(
-        pluginClass.pluginName,
-        "pluginClass.pluginName",
-        "registerPlugin"
-      );
-      this.errors.isArray(
-        pluginClass.versionMin,
-        "pluginClass.versionMin",
-        "registerPlugin"
-      );
+      this.errors.isFunction(pluginClass, 'pluginClass', 'registerPlugin');
+      this.errors.isString(pluginClass.pluginName, 'pluginClass.pluginName', 'registerPlugin');
+      this.errors.isArray(pluginClass.versionMin, 'pluginClass.versionMin', 'registerPlugin');
       if (pluginClass.versionMin.length !== 3) {
-        this.errors.throwError(
-          "pluginClass.versionMin",
-          "registerPlugin",
-          "array with 3 values"
-        );
+        this.errors.throwError('pluginClass.versionMin', 'registerPlugin', 'array with 3 values');
       }
 
       if (pluginsClass[pluginClass.pluginName] === undefined) {
-        if (
-          this.versionToInt(version) >=
-          this.versionToInt(pluginClass.versionMin)
-        ) {
+        if (this.versionToInt(version) >= this.versionToInt(pluginClass.versionMin)) {
           pluginsClass[pluginClass.pluginName] = pluginClass;
-          this.debug.log(
-            "registerPlugin",
-            'Plugin "' + pluginClass.pluginName + '" registered'
-          );
+          this.debug.log('registerPlugin', 'Plugin "' + pluginClass.pluginName + '" registered');
           return true;
         } else {
-          throw (
-            'The plugin "' +
-            pluginClass.pluginName +
-            '" (' +
-            pluginClass.versionMin.join(".") +
-            ") is too recent for this version of " +
-            debugName +
-            " (" +
-            version.join(".") +
-            ")"
-          );
+          throw 'The plugin "' + pluginClass.pluginName + '" (' + pluginClass.versionMin.join('.') + ') is too recent for this version of ' + debugName + ' (' + version.join('.') + ')';
         }
       } else {
-        throw (
-          'The plugin "' + pluginClass.pluginName + '" is already registered'
-        );
+        throw 'The plugin "' + pluginClass.pluginName + '" is already registered';
       }
       return false;
     };
 
-    if (OsPlatform.os.family === "iOS") {
+    if (OsPlatform.os.family === 'iOS') {
       this.registerPlugin(FabPluginHttp);
     } else {
       this.registerPlugin(FabPluginHtml);
@@ -380,30 +294,28 @@ define(["dojo/_base/declare"], function (declare) {
     this.options.set({
       loopTime: 50,
       baitElement: null,
-      baitClass:
-        "pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links adBanner",
-      baitStyle:
-        "width:1px!important;height:1px!important;position:absolute!important;left:-10000px!important;top:-1000px!important;",
-      baitParent: null,
+      baitClass: 'pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links adBanner',
+      baitStyle: 'width:1px!important;height:1px!important;position:absolute!important;left:-10000px!important;top:-1000px!important;',
+      baitParent: null
     });
 
     var data = {};
 
     this.start = function () {
       var self = this;
-      if (this.options.get("baitElement") === null) {
+      if (this.options.get('baitElement') === null) {
         data.bait = this.createBait({
-          class: this.options.get("baitClass"),
-          style: this.options.get("baitStyle"),
+          class: this.options.get('baitClass'),
+          style: this.options.get('baitStyle')
         });
-        var baitParent = this.options.get("baitParent");
+        var baitParent = this.options.get('baitParent');
         if (baitParent === null) {
           window.document.body.appendChild(data.bait);
         } else {
           baitParent.appendChild(data.bait);
         }
       } else {
-        data.bait = this.options.get("baitElement");
+        data.bait = this.options.get('baitElement');
       }
       var check = function () {
         if (self.checkBait(data.bait, true) === true) {
@@ -411,13 +323,13 @@ define(["dojo/_base/declare"], function (declare) {
         }
       };
       data.loopTimeout = setTimeout(check, 1);
-      data.loopInterval = setInterval(check, this.options.get("loopTime"));
+      data.loopInterval = setInterval(check, this.options.get('loopTime'));
       return this;
     };
     this.stop = function () {
       clearInterval(data.loopTimeout);
       clearInterval(data.loopInterval);
-      var baitParent = this.options.get("baitParent");
+      var baitParent = this.options.get('baitParent');
       if (baitParent === null) {
         window.document.body.removeChild(data.bait);
       } else {
@@ -427,9 +339,9 @@ define(["dojo/_base/declare"], function (declare) {
     };
 
     this.createBait = function (options) {
-      var bait = window.document.createElement("div");
-      bait.setAttribute("class", options.class);
-      bait.setAttribute("style", options.style);
+      var bait = window.document.createElement('div');
+      bait.setAttribute('class', options.class);
+      bait.setAttribute('style', options.style);
       bait.offsetParent;
       bait.offsetHeight;
       bait.offsetLeft;
@@ -442,8 +354,7 @@ define(["dojo/_base/declare"], function (declare) {
     this.checkBait = function (bait, checkBody) {
       var detected = false;
       if (
-        (checkBody === true &&
-          window.document.body.getAttribute("abp") !== null) ||
+        (checkBody === true && window.document.body.getAttribute('abp') !== null) ||
         bait.offsetParent === null ||
         bait.offsetHeight == 0 ||
         bait.offsetLeft == 0 ||
@@ -455,26 +366,22 @@ define(["dojo/_base/declare"], function (declare) {
         detected = true;
       } else {
         var baitComputedStyle = window.getComputedStyle(bait);
-        if (
-          baitComputedStyle.getPropertyValue("display") == "none" ||
-          baitComputedStyle.getPropertyValue("visibility") == "hidden"
-        ) {
+        if (baitComputedStyle.getPropertyValue('display') == 'none' || baitComputedStyle.getPropertyValue('visibility') == 'hidden') {
           detected = true;
         }
       }
       return detected;
     };
   };
-  FabPluginHtml.pluginName = "html";
+  FabPluginHtml.pluginName = 'html';
   FabPluginHtml.version = [1, 0, 0];
   FabPluginHtml.versionMin = [4, 0, 0];
 
   var FabPluginHttp = function () {
     Fab.getPluginClass().apply(this, arguments);
     this.options.set({
-      baitMode: "ajax",
-      baitUrl:
-        "https://sdk.listenlive.co/ad/banner/_adsense_/_adserver/_adview_.ad.json?adzone=top&adsize=300x250&advid={RANDOM}",
+      baitMode: 'ajax',
+      baitUrl: 'https://sdk.listenlive.co/ad/banner/_adsense_/_adserver/_adview_.ad.json?adzone=top&adsize=300x250&advid={RANDOM}'
     });
 
     var data = {};
@@ -482,14 +389,12 @@ define(["dojo/_base/declare"], function (declare) {
     this.start = function () {
       var self = this;
       data.end = false;
-      var baitUrl = this.options
-        .get("baitUrl")
-        .replace(/\{RANDOM\}/g, function () {
-          return parseInt(Math.random() * 100000000);
-        });
+      var baitUrl = this.options.get('baitUrl').replace(/\{RANDOM\}/g, function () {
+        return parseInt(Math.random() * 100000000);
+      });
       this._urlCheck(
         baitUrl,
-        this.options.get("baitMode"),
+        this.options.get('baitMode'),
         function () {
           if (data.end !== false) {
             return;
@@ -525,7 +430,7 @@ define(["dojo/_base/declare"], function (declare) {
           cbUndetected();
         }
       };
-      if (mode === "ajax") {
+      if (mode === 'ajax') {
         var readyStates = [false, false, false, false];
         var status = null;
         var respond = function (responseForce) {
@@ -536,7 +441,7 @@ define(["dojo/_base/declare"], function (declare) {
               end(true);
               return;
             }
-            console.log("readyStates", readyStates);
+            console.log('readyStates', readyStates);
             for (var i = 0; i < 4; i++) {
               if (readyStates[i] === false && status != 404) {
                 end(true);
@@ -558,15 +463,15 @@ define(["dojo/_base/declare"], function (declare) {
           }
         };
         try {
-          xmlHttp.open("GET", url, true);
+          xmlHttp.open('GET', url, true);
           xmlHttp.send();
         } catch (e) {
-          if (e.result == "2153644038") {
+          if (e.result == '2153644038') {
             respond(true);
           }
         }
-      } else if (mode === "import") {
-        var element = document.createElement("script");
+      } else if (mode === 'import') {
+        var element = document.createElement('script');
         element.src = url;
         element.onerror = function () {
           end(true);
@@ -582,14 +487,14 @@ define(["dojo/_base/declare"], function (declare) {
       }
     };
   };
-  FabPluginHttp.pluginName = "http";
+  FabPluginHttp.pluginName = 'http';
   FabPluginHtml.version = [1, 0, 0];
   FabPluginHttp.versionMin = [4, 0, 0];
 
   var blockadblock = declare([], {
     constructor: function () {
       this.fab = new Fab();
-    },
+    }
   });
 
   return blockadblock;

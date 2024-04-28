@@ -1,7 +1,4 @@
-define(["../_base/declare", "./Moveable" /*=====, "./Mover" =====*/], function (
-  declare,
-  Moveable /*=====, Mover =====*/
-) {
+define(['../_base/declare', './Moveable' /*=====, "./Mover" =====*/], function (declare, Moveable /*=====, Mover =====*/) {
   // module:
   //		dojo/dnd/TimedMoveable
 
@@ -17,7 +14,7 @@ define(["../_base/declare", "./Moveable" /*=====, "./Mover" =====*/], function (
   // precalculate long expressions
   var oldOnMove = Moveable.prototype.onMove;
 
-  return declare("dojo.dnd.TimedMoveable", Moveable, {
+  return declare('dojo.dnd.TimedMoveable', Moveable, {
     // summary:
     //		A specialized version of Moveable to support an FPS throttling.
     //		This class puts an upper restriction on FPS, which may reduce
@@ -39,11 +36,7 @@ define(["../_base/declare", "./Moveable" /*=====, "./Mover" =====*/], function (
       if (!params) {
         params = {};
       }
-      if (
-        params.timeout &&
-        typeof params.timeout == "number" &&
-        params.timeout >= 0
-      ) {
+      if (params.timeout && typeof params.timeout == 'number' && params.timeout >= 0) {
         this.timeout = params.timeout;
       }
     },
@@ -68,6 +61,6 @@ define(["../_base/declare", "./Moveable" /*=====, "./Mover" =====*/], function (
           oldOnMove.call(_t, mover, mover._leftTop);
         }, this.timeout);
       }
-    },
+    }
   });
 });

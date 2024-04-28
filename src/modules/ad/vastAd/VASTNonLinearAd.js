@@ -1,10 +1,10 @@
 /**
  * VAST Non Linear Ad
  */
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var vastNonLinearAd = declare([], {
     constructor: function () {
-      console.log("vastNonLinearAd::constructor");
+      console.log('vastNonLinearAd::constructor');
 
       this.id = null;
       this.width = 0;
@@ -21,7 +21,7 @@ define(["dojo/_base/declare"], function (declare) {
       this.maintainAspectRatio = false;
       this.apiFramework = null;
       this.minSuggestedDuration = null; //Suggested duration to display non-linear ad, typically for animation to complete. Expressed in standard time format hh:mm:ss
-    },
+    }
   });
 
   return vastNonLinearAd;

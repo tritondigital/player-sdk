@@ -1,10 +1,10 @@
-define("dos", ["tres"], function (tres) {
+define('dos', ['tres'], function (tres) {
   return {
-    name: "dos",
+    name: 'dos',
     doSomething: function () {
       return {
-        tresName: tres.name,
+        tresName: tres.name
       };
-    },
+    }
   };
 });

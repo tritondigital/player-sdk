@@ -1,8 +1,8 @@
-define("two", ["one", "three", "one"], function (one, three, one2) {
+define('two', ['one', 'three', 'one'], function (one, three, one2) {
   return {
-    name: "two",
+    name: 'two',
     oneName: one.name,
     oneName2: one2.name,
-    threeName: three.name,
+    threeName: three.name
   };
 });

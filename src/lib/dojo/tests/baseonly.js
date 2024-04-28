@@ -1,1 +1,1 @@
-define(["./_base"], 1);
+define(['./_base'], 1);

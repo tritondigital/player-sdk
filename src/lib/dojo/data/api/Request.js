@@ -1,8 +1,8 @@
-define(["../../_base/declare"], function (declare) {
+define(['../../_base/declare'], function (declare) {
   // module:
   //		dojo/data/api/Request
 
-  return declare("dojo.data.api.Request", null, {
+  return declare('dojo.data.api.Request', null, {
     // summary:
     //		This class defines out the semantics of what a 'Request' object looks like
     //		when returned from a fetch() method.  In general, a request object is
@@ -25,7 +25,7 @@ define(["../../_base/declare"], function (declare) {
       //		This function is a hook point for stores to provide as a way for
       //		a fetch to be halted mid-processing.  For more details on the fetch() api,
       //		please see dojo/data/api/Read.fetch().
-      throw new Error("Unimplemented API: dojo.data.api.Request.abort");
-    },
+      throw new Error('Unimplemented API: dojo.data.api.Request.abort');
+    }
   });
 });

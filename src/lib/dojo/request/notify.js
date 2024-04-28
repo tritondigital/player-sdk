@@ -1,8 +1,4 @@
-define(["../Evented", "../_base/lang", "./util"], function (
-  Evented,
-  lang,
-  util
-) {
+define(['../Evented', '../_base/lang', './util'], function (Evented, lang, util) {
   // module:
   //		dojo/request/notify
   // summary:
@@ -26,31 +22,31 @@ define(["../Evented", "../_base/lang", "./util"], function (
   var hub = lang.mixin(new Evented(), {
     onsend: function (data) {
       if (!pubCount) {
-        this.emit("start");
+        this.emit('start');
       }
       pubCount++;
     },
     _onload: function (data) {
-      this.emit("done", data);
+      this.emit('done', data);
     },
     _onerror: function (data) {
-      this.emit("done", data);
+      this.emit('done', data);
     },
     _ondone: function (data) {
       if (--pubCount <= 0) {
         pubCount = 0;
-        this.emit("stop");
+        this.emit('stop');
       }
     },
     emit: function (type, event) {
       var result = Evented.prototype.emit.apply(this, arguments);
 
       // After all event handlers have run, run _on* handler
-      if (this["_on" + type]) {
-        this["_on" + type].apply(this, slice.call(arguments, 1));
+      if (this['_on' + type]) {
+        this['_on' + type].apply(this, slice.call(arguments, 1));
       }
       return result;
-    },
+    }
   });
 
   function notify(type, listener) {

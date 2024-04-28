@@ -5,27 +5,25 @@
 // summary:
 //		 SpiderMonkey host environment
 
-if (dojo.config["baseUrl"]) {
-  dojo.baseUrl = dojo.config["baseUrl"];
+if (dojo.config['baseUrl']) {
+  dojo.baseUrl = dojo.config['baseUrl'];
 } else {
-  dojo.baseUrl = "./";
+  dojo.baseUrl = './';
 }
 
-dojo._name = "spidermonkey";
+dojo._name = 'spidermonkey';
 
 dojo.isSpidermonkey = true;
 dojo.exit = function (exitcode) {
   quit(exitcode);
 };
 
-if (typeof print == "function") {
+if (typeof print == 'function') {
   console.debug = print;
 }
 
-if (typeof line2pc == "undefined") {
-  throw new Error(
-    "attempt to use SpiderMonkey host environment when no 'line2pc' global"
-  );
+if (typeof line2pc == 'undefined') {
+  throw new Error("attempt to use SpiderMonkey host environment when no 'line2pc' global");
 }
 
 dojo._spidermonkeyCurrentFile = function (depth) {
@@ -38,9 +36,9 @@ dojo._spidermonkeyCurrentFile = function (depth) {
   //	the stack, but that does require that you know how deep your stack is when you are
   //	calling.
   //
-  var s = "";
+  var s = '';
   try {
-    throw Error("whatever");
+    throw Error('whatever');
   } catch (e) {
     s = e.stack;
   }
@@ -49,10 +47,7 @@ dojo._spidermonkeyCurrentFile = function (depth) {
   if (!matches) {
     throw Error("could not parse stack string: '" + s + "'");
   }
-  var fname =
-    typeof depth != "undefined" && depth
-      ? matches[depth + 1]
-      : matches[matches.length - 1];
+  var fname = typeof depth != 'undefined' && depth ? matches[depth + 1] : matches[matches.length - 1];
   if (!fname) {
     throw Error("could not find file name in stack string '" + s + "'");
   }
@@ -76,8 +71,8 @@ dojo._loadUri = function (uri) {
 //Register any module paths set up in djConfig. Need to do this
 //in the hostenvs since hostenv_browser can read djConfig from a
 //script tag's attribute.
-if (dojo.config["modulePaths"]) {
-  for (var param in dojo.config["modulePaths"]) {
-    dojo.registerModulePath(param, dojo.config["modulePaths"][param]);
+if (dojo.config['modulePaths']) {
+  for (var param in dojo.config['modulePaths']) {
+    dojo.registerModulePath(param, dojo.config['modulePaths'][param]);
   }
 }

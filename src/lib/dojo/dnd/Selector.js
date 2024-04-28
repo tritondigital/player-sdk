@@ -1,30 +1,17 @@
 define([
-  "../_base/array",
-  "../_base/declare",
-  "../_base/kernel",
-  "../_base/lang",
-  "../dom",
-  "../dom-construct",
-  "../mouse",
-  "../_base/NodeList",
-  "../on",
-  "../touch",
-  "./common",
-  "./Container",
-], function (
-  array,
-  declare,
-  kernel,
-  lang,
-  dom,
-  domConstruct,
-  mouse,
-  NodeList,
-  on,
-  touch,
-  dnd,
-  Container
-) {
+  '../_base/array',
+  '../_base/declare',
+  '../_base/kernel',
+  '../_base/lang',
+  '../dom',
+  '../dom-construct',
+  '../mouse',
+  '../_base/NodeList',
+  '../on',
+  '../touch',
+  './common',
+  './Container'
+], function (array, declare, kernel, lang, dom, domConstruct, mouse, NodeList, on, touch, dnd, Container) {
   // module:
   //		dojo/dnd/Selector
 
@@ -47,7 +34,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
 });
 =====*/
 
-  var Selector = declare("dojo.dnd.Selector", Container, {
+  var Selector = declare('dojo.dnd.Selector', Container, {
     // summary:
     //		a Selector object, which knows how to select its children
 
@@ -76,10 +63,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
       this.anchor = null;
       this.simpleSelection = false;
       // set up events
-      this.events.push(
-        on(this.node, touch.press, lang.hitch(this, "onMouseDown")),
-        on(this.node, touch.release, lang.hitch(this, "onMouseUp"))
-      );
+      this.events.push(on(this.node, touch.press, lang.hitch(this, 'onMouseDown')), on(this.node, touch.release, lang.hitch(this, 'onMouseUp')));
     },
 
     // object attributes (for markup)
@@ -108,7 +92,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
       // summary:
       //		selects all items
       this.forInItems(function (data, id) {
-        this._addItemClass(dom.byId(id), "Selected");
+        this._addItemClass(dom.byId(id), 'Selected');
         this.selection[id] = 1;
       }, this);
       return this._removeAnchor(); // self
@@ -194,16 +178,16 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
         if (addSelected) {
           if (!this.anchor) {
             this.anchor = t.node;
-            this._removeItemClass(t.node, "Selected");
-            this._addItemClass(this.anchor, "Anchor");
+            this._removeItemClass(t.node, 'Selected');
+            this._addItemClass(this.anchor, 'Anchor');
           } else if (this.anchor != t.node) {
-            this._removeItemClass(t.node, "Anchor");
-            this._addItemClass(t.node, "Selected");
+            this._removeItemClass(t.node, 'Anchor');
+            this._addItemClass(t.node, 'Selected');
           }
           this.selection[t.node.id] = 1;
         } else {
-          this._removeItemClass(t.node, "Selected");
-          this._removeItemClass(t.node, "Anchor");
+          this._removeItemClass(t.node, 'Selected');
+          this._removeItemClass(t.node, 'Anchor');
         }
         return t;
       };
@@ -230,12 +214,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
       if (!this.current) {
         return;
       }
-      if (
-        !this.singular &&
-        !dnd.getCopyKeyState(e) &&
-        !e.shiftKey &&
-        this.current.id in this.selection
-      ) {
+      if (!this.singular && !dnd.getCopyKeyState(e) && !e.shiftKey && this.current.id in this.selection) {
         this.simpleSelection = true;
         if (mouse.isLeft(e)) {
           // Accept the left button and stop the event.   Stopping the event prevents text selection while
@@ -255,7 +234,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
         if (c.length) {
           if (!this.anchor) {
             this.anchor = c[0];
-            this._addItemClass(this.anchor, "Anchor");
+            this._addItemClass(this.anchor, 'Anchor');
           }
           this.selection[this.anchor.id] = 1;
           if (this.anchor != this.current) {
@@ -272,10 +251,10 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
               if (node == this.anchor || node == this.current) {
                 break;
               }
-              this._addItemClass(node, "Selected");
+              this._addItemClass(node, 'Selected');
               this.selection[node.id] = 1;
             }
-            this._addItemClass(this.current, "Selected");
+            this._addItemClass(this.current, 'Selected');
             this.selection[this.current.id] = 1;
           }
         }
@@ -288,7 +267,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
           } else {
             this.selectNone();
             this.anchor = this.current;
-            this._addItemClass(this.anchor, "Anchor");
+            this._addItemClass(this.anchor, 'Anchor');
             this.selection[this.current.id] = 1;
           }
         } else {
@@ -298,15 +277,15 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
               this._removeAnchor();
             } else {
               if (this.current.id in this.selection) {
-                this._removeItemClass(this.current, "Selected");
+                this._removeItemClass(this.current, 'Selected');
                 delete this.selection[this.current.id];
               } else {
                 if (this.anchor) {
-                  this._removeItemClass(this.anchor, "Anchor");
-                  this._addItemClass(this.anchor, "Selected");
+                  this._removeItemClass(this.anchor, 'Anchor');
+                  this._addItemClass(this.anchor, 'Selected');
                 }
                 this.anchor = this.current;
-                this._addItemClass(this.current, "Anchor");
+                this._addItemClass(this.current, 'Anchor');
                 this.selection[this.current.id] = 1;
               }
             }
@@ -314,7 +293,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
             if (!(this.current.id in this.selection)) {
               this.selectNone();
               this.anchor = this.current;
-              this._addItemClass(this.current, "Anchor");
+              this._addItemClass(this.current, 'Anchor');
               this.selection[this.current.id] = 1;
             }
           }
@@ -335,7 +314,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
       this.selectNone();
       if (this.current) {
         this.anchor = this.current;
-        this._addItemClass(this.anchor, "Anchor");
+        this._addItemClass(this.anchor, 'Anchor');
         this.selection[this.current.id] = 1;
       }
     },
@@ -351,11 +330,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
     onOverEvent: function () {
       // summary:
       //		this function is called once, when mouse is over our container
-      this.onmousemoveEvent = on(
-        this.node,
-        touch.move,
-        lang.hitch(this, "onMouseMove")
-      );
+      this.onmousemoveEvent = on(this.node, touch.move, lang.hitch(this, 'onMouseMove'));
     },
     onOutEvent: function () {
       // summary:
@@ -375,7 +350,7 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
         }
         var node = dom.byId(i);
         if (node) {
-          this._removeItemClass(node, "Selected");
+          this._removeItemClass(node, 'Selected');
         }
       }
       this.selection = {};
@@ -383,11 +358,11 @@ var __SelectorArgs = declare([Container.__ContainerArgs], {
     },
     _removeAnchor: function () {
       if (this.anchor) {
-        this._removeItemClass(this.anchor, "Anchor");
+        this._removeItemClass(this.anchor, 'Anchor');
         this.anchor = null;
       }
       return this; // self
-    },
+    }
   });
 
   return Selector;

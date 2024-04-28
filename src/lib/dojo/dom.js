@@ -1,12 +1,12 @@
-define(["./sniff", "./_base/window"], function (has, win) {
+define(['./sniff', './_base/window'], function (has, win) {
   // module:
   //		dojo/dom
 
   // FIXME: need to add unit tests for all the semi-public methods
 
-  if (has("ie") <= 7) {
+  if (has('ie') <= 7) {
     try {
-      document.execCommand("BackgroundImageCache", false, true);
+      document.execCommand('BackgroundImageCache', false, true);
     } catch (e) {
       // sane browsers don't have cache "issues"
     }
@@ -22,9 +22,9 @@ define(["./sniff", "./_base/window"], function (has, win) {
     //		This module defines the core dojo DOM API.
   };
 
-  if (has("ie")) {
+  if (has('ie')) {
     dom.byId = function (id, doc) {
-      if (typeof id != "string") {
+      if (typeof id != 'string') {
         return id;
       }
       var _d = doc || win.doc,
@@ -41,12 +41,7 @@ define(["./sniff", "./_base/window"], function (has, win) {
         // if more than 1, choose first with the correct id
         var i = 0;
         while ((te = eles[i++])) {
-          if (
-            (te.attributes &&
-              te.attributes.id &&
-              te.attributes.id.value == id) ||
-            te.id == id
-          ) {
+          if ((te.attributes && te.attributes.id && te.attributes.id.value == id) || te.id == id) {
             return te;
           }
         }
@@ -56,10 +51,7 @@ define(["./sniff", "./_base/window"], function (has, win) {
     dom.byId = function (id, doc) {
       // inline'd type check.
       // be sure to return null per documentation, to match IE branch.
-      return (
-        (typeof id == "string" ? (doc || win.doc).getElementById(id) : id) ||
-        null
-      ); // DOMNode
+      return (typeof id == 'string' ? (doc || win.doc).getElementById(id) : id) || null; // DOMNode
     };
   }
   /*=====
@@ -94,10 +86,7 @@ define(["./sniff", "./_base/window"], function (has, win) {
 	 };
 	 =====*/
 
-  dom.isDescendant = function (
-    /*DOMNode|String*/ node,
-    /*DOMNode|String*/ ancestor
-  ) {
+  dom.isDescendant = function (/*DOMNode|String*/ node, /*DOMNode|String*/ ancestor) {
     // summary:
     //		Returns true if node is a descendant of ancestor
     // node: DOMNode|String
@@ -128,25 +117,25 @@ define(["./sniff", "./_base/window"], function (has, win) {
 
   // Add feature test for user-select CSS property
   // (currently known to work in all but IE < 10 and Opera)
-  has.add("css-user-select", function (global, doc, element) {
+  has.add('css-user-select', function (global, doc, element) {
     // Avoid exception when dom.js is loaded in non-browser environments
     if (!element) {
       return false;
     }
 
     var style = element.style;
-    var prefixes = ["Khtml", "O", "ms", "Moz", "Webkit"],
+    var prefixes = ['Khtml', 'O', 'ms', 'Moz', 'Webkit'],
       i = prefixes.length,
-      name = "userSelect",
+      name = 'userSelect',
       prefix;
 
     // Iterate prefixes from most to least likely
     do {
-      if (typeof style[name] !== "undefined") {
+      if (typeof style[name] !== 'undefined') {
         // Supported; return property name
         return name;
       }
-    } while (i-- && (name = prefixes[i] + "UserSelect"));
+    } while (i-- && (name = prefixes[i] + 'UserSelect'));
 
     // Not supported if we didn't return before now
     return false;
@@ -170,29 +159,29 @@ define(["./sniff", "./_base/window"], function (has, win) {
 	};
 	=====*/
 
-  var cssUserSelect = has("css-user-select");
+  var cssUserSelect = has('css-user-select');
   dom.setSelectable = cssUserSelect
     ? function (node, selectable) {
         // css-user-select returns a (possibly vendor-prefixed) CSS property name
-        dom.byId(node).style[cssUserSelect] = selectable ? "" : "none";
+        dom.byId(node).style[cssUserSelect] = selectable ? '' : 'none';
       }
     : function (node, selectable) {
         node = dom.byId(node);
 
         // (IE < 10 / Opera) Fall back to setting/removing the
         // unselectable attribute on the element and all its children
-        var nodes = node.getElementsByTagName("*"),
+        var nodes = node.getElementsByTagName('*'),
           i = nodes.length;
 
         if (selectable) {
-          node.removeAttribute("unselectable");
+          node.removeAttribute('unselectable');
           while (i--) {
-            nodes[i].removeAttribute("unselectable");
+            nodes[i].removeAttribute('unselectable');
           }
         } else {
-          node.setAttribute("unselectable", "on");
+          node.setAttribute('unselectable', 'on');
           while (i--) {
-            nodes[i].setAttribute("unselectable", "on");
+            nodes[i].setAttribute('unselectable', 'on');
           }
         }
       };

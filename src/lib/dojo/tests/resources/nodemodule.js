@@ -4,4 +4,4 @@
 
 var nodemodule = (module.exports = exports);
 
-nodemodule.test = "value";
+nodemodule.test = 'value';

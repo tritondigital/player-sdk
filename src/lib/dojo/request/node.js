@@ -1,39 +1,26 @@
 define([
-  "require",
-  "./util",
-  "./handlers",
-  "../errors/RequestTimeoutError",
-  "../node!http",
-  "../node!https",
-  "../node!url",
-  "../node!stream" /*=====,
+  'require',
+  './util',
+  './handlers',
+  '../errors/RequestTimeoutError',
+  '../node!http',
+  '../node!https',
+  '../node!url',
+  '../node!stream' /*=====,
 	'../request',
-	'../_base/declare' =====*/,
-], function (
-  require,
-  util,
-  handlers,
-  RequestTimeoutError,
-  http,
-  https,
-  URL,
-  stream /*=====, request, declare =====*/
-) {
+	'../_base/declare' =====*/
+], function (require, util, handlers, RequestTimeoutError, http, https, URL, stream /*=====, request, declare =====*/) {
   var Stream = stream.Stream,
     undefined;
 
   var defaultOptions = {
-    method: "GET",
+    method: 'GET',
     query: null,
     data: undefined,
-    headers: {},
+    headers: {}
   };
   function node(url, options) {
-    var response = util.parseArgs(
-      url,
-      util.deepCreate(defaultOptions, options),
-      options && options.data instanceof Stream
-    );
+    var response = util.parseArgs(url, util.deepCreate(defaultOptions, options), options && options.data instanceof Stream);
     url = response.url;
     options = response.options;
 
@@ -56,37 +43,35 @@ define([
       cert: options.cert,
       ca: options.ca,
       ciphers: options.ciphers,
-      rejectUnauthorized: options.rejectUnauthorized === false ? false : true,
+      rejectUnauthorized: options.rejectUnauthorized === false ? false : true
     });
     if (url.path) {
       reqOptions.path = url.path;
     }
     if (options.user || options.password) {
-      reqOptions.auth = (options.user || "") + ":" + (options.password || "");
+      reqOptions.auth = (options.user || '') + ':' + (options.password || '');
     }
-    var req = (response.clientRequest = (
-      url.protocol === "https:" ? https : http
-    ).request(reqOptions));
+    var req = (response.clientRequest = (url.protocol === 'https:' ? https : http).request(reqOptions));
 
     if (options.socketOptions) {
-      if ("timeout" in options.socketOptions) {
+      if ('timeout' in options.socketOptions) {
         req.setTimeout(options.socketOptions.timeout);
       }
-      if ("noDelay" in options.socketOptions) {
+      if ('noDelay' in options.socketOptions) {
         req.setNoDelay(options.socketOptions.noDelay);
       }
-      if ("keepAlive" in options.socketOptions) {
+      if ('keepAlive' in options.socketOptions) {
         var initialDelay = options.socketOptions.keepAlive;
         req.setKeepAlive(initialDelay >= 0, initialDelay || 0);
       }
     }
 
-    req.on("socket", function () {
+    req.on('socket', function () {
       response.hasSocket = true;
       def.progress(response);
     });
 
-    req.on("response", function (clientResponse) {
+    req.on('response', function (clientResponse) {
       response.clientResponse = clientResponse;
       response.status = clientResponse.statusCode;
       response.getHeader = function (headerName) {
@@ -94,16 +79,16 @@ define([
       };
 
       var body = [];
-      clientResponse.on("data", function (chunk) {
+      clientResponse.on('data', function (chunk) {
         body.push(chunk);
 
         // TODO: progress updates via the deferred
       });
-      clientResponse.on("end", function () {
+      clientResponse.on('end', function () {
         if (timeout) {
           clearTimeout(timeout);
         }
-        response.text = body.join("");
+        response.text = body.join('');
         try {
           handlers(response);
           def.resolve(response);
@@ -113,10 +98,10 @@ define([
       });
     });
 
-    req.on("error", def.reject);
+    req.on('error', def.reject);
 
     if (options.data) {
-      if (typeof options.data === "string") {
+      if (typeof options.data === 'string') {
         req.end(options.data);
       } else {
         options.data.pipe(req);

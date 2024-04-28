@@ -1,17 +1,17 @@
-define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
+define(['doh/main', '../json', '../has'], function (doh, JSON, has) {
   var mustThrow = function (json) {
     try {
       JSON.parse(json, true);
     } catch (e) {
       return;
     }
-    throw new Error("Invalid JSON " + json + " should have been rejected");
+    throw new Error('Invalid JSON ' + json + ' should have been rejected');
   };
 
-  doh.register("tests.json", [
+  doh.register('tests.json', [
     // all tests below are taken from #4.2 of the CSS3 Color Module
     function simpleString(t) {
-      t.is("bar", JSON.parse('{"foo":"bar"}').foo);
+      t.is('bar', JSON.parse('{"foo":"bar"}').foo);
     },
     function simpleTrue(t) {
       t.is(true, JSON.parse('{"foo":true}').foo);
@@ -26,10 +26,10 @@ define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
       t.is(3.3, JSON.parse('{"foo":3.3}', true).foo);
     },
     function strictString(t) {
-      t.is("bar", JSON.parse('{"foo":"bar"}', true).foo);
+      t.is('bar', JSON.parse('{"foo":"bar"}', true).foo);
     },
     function strictEmptyString(t) {
-      t.is("", JSON.parse('{"foo":""}', true).foo);
+      t.is('', JSON.parse('{"foo":""}', true).foo);
     },
     function strictStringEsc(t) {
       t.is('b\n\t"ar()', JSON.parse('{"foo":"b\\n\\t\\"ar()"}', true).foo);
@@ -72,25 +72,25 @@ define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
     },
     //function badKey2(t){ mustThrow('{2:"bar"}')},
     function badUnbalanced(t) {
-      mustThrow("[");
+      mustThrow('[');
     },
     function badUnbalanced2(t) {
-      mustThrow("}");
+      mustThrow('}');
     },
     function badType(t) {
       mustThrow('["foo":"bar"]');
     },
     function badUnbalanced2(t) {
-      mustThrow("}");
+      mustThrow('}');
     },
     function serializeString(t) {
-      t.is('{"foo":"bar"}', JSON.stringify({ foo: "bar" }));
+      t.is('{"foo":"bar"}', JSON.stringify({ foo: 'bar' }));
     },
     function serializeNull(t) {
       t.is('{"foo":null}', JSON.stringify({ foo: null }));
     },
     function serializeFunction(t) {
-      t.is("{}", JSON.stringify({ foo: function () {} }));
+      t.is('{}', JSON.stringify({ foo: function () {} }));
     },
     function serializeNaN(t) {
       t.is('{"foo":null}', JSON.stringify({ foo: NaN }));
@@ -100,17 +100,13 @@ define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
     },
     // there is differences in how many decimals of accuracies in seconds in how Dates are serialized between browsers
     function serializeDate(t) {
-      t.t(
-        /1970-01-01T00:00:00.*Z/.test(
-          JSON.parse(JSON.stringify({ foo: new Date(1) })).foo
-        )
-      );
+      t.t(/1970-01-01T00:00:00.*Z/.test(JSON.parse(JSON.stringify({ foo: new Date(1) })).foo));
     },
     function serializeInherited(t) {
       function FooBar() {
-        this.foo = "foo";
+        this.foo = 'foo';
       }
-      FooBar.prototype.bar = "bar";
+      FooBar.prototype.bar = 'bar';
       t.is('{"foo":"foo"}', JSON.stringify(new FooBar()));
     },
     /*Apparently Firefox doesn't pass the key to the toJSON method*/
@@ -120,26 +116,26 @@ define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
         JSON.stringify({
           foo: {
             toJSON: function (key) {
-              return { name: "value" };
-            },
-          },
+              return { name: 'value' };
+            }
+          }
         })
       );
-    },
+    }
   ]);
 
-  if (!has("host-rhino")) {
-    doh.register("tests.json.circular", [
+  if (!has('host-rhino')) {
+    doh.register('tests.json.circular', [
       function serializeCircular(t) {
         try {
           var a = {};
           a.a = a;
-          console.log("circular: " + JSON.stringify(a));
+          console.log('circular: ' + JSON.stringify(a));
         } catch (e) {
           return;
         }
-        throw new Error("stringify must throw for circular references");
-      },
+        throw new Error('stringify must throw for circular references');
+      }
     ]);
   }
 
@@ -149,24 +145,20 @@ define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
     prop3: [],
     prop4: 3.4325222223332266,
     prop5: 10003,
-    prop6:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean semper",
-    prop7:
-      "sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin porta rutrum",
-    prop8:
-      "lacus. Etiam consequat scelerisque quam. Nulla facilisi. Maecenas luctus",
-    prop9:
-      "venenatis nulla. In sit amet dui non mi semper iaculis. Sed molestie",
+    prop6: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean semper',
+    prop7: 'sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin porta rutrum',
+    prop8: 'lacus. Etiam consequat scelerisque quam. Nulla facilisi. Maecenas luctus',
+    prop9: 'venenatis nulla. In sit amet dui non mi semper iaculis. Sed molestie',
     prop10:
-      "tortor at ipsum. Morbi dictum rutrum magna. Sed vitae risus." +
-      "Aliquam vitae enim. Duis scelerisque metus auctor est venenatis imperdiet." +
-      "Fusce dignissim porta augue. Nulla vestibulum. Integer lorem nunc," +
-      "ullamcorper a, commodo ac, malesuada sed, dolor. Aenean id mi in massa" +
-      "bibendum suscipit. Integer eros. Nullam suscipit mauris. In pellentesque." +
-      "Mauris ipsum est, pharetra semper, pharetra in, viverra quis, tellus. Etiam" +
-      "purus. Quisque egestas, tortor ac cursus lacinia, felis leo adipiscing" +
-      "nisi, et rhoncus elit dolor eget eros. Fusce ut quam. Suspendisse eleifend" +
-      "leo vitae ligula. Nulla facilisi.",
+      'tortor at ipsum. Morbi dictum rutrum magna. Sed vitae risus.' +
+      'Aliquam vitae enim. Duis scelerisque metus auctor est venenatis imperdiet.' +
+      'Fusce dignissim porta augue. Nulla vestibulum. Integer lorem nunc,' +
+      'ullamcorper a, commodo ac, malesuada sed, dolor. Aenean id mi in massa' +
+      'bibendum suscipit. Integer eros. Nullam suscipit mauris. In pellentesque.' +
+      'Mauris ipsum est, pharetra semper, pharetra in, viverra quis, tellus. Etiam' +
+      'purus. Quisque egestas, tortor ac cursus lacinia, felis leo adipiscing' +
+      'nisi, et rhoncus elit dolor eget eros. Fusce ut quam. Suspendisse eleifend' +
+      'leo vitae ligula. Nulla facilisi.'
   };
   var smallJson = JSON.stringify(smallDataSet);
 
@@ -179,17 +171,11 @@ define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
       prop3: false,
       prop4: 3.4325222223332266 - i,
       prop5: 10003 + i,
-      prop6:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean semper",
-      prop7:
-        "sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin porta rutrum",
-      prop8:
-        "lacus. Etiam consequat scelerisque quam. Nulla facilisi. Maecenas luctus",
-      prop9:
-        "venenatis nulla. In sit amet dui non mi semper iaculis. Sed molestie",
-      prop10:
-        "tortor at ipsum. Morbi dictum rutrum magna. Sed vitae risus." +
-        "Aliquam vitae enim.",
+      prop6: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean semper',
+      prop7: 'sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin porta rutrum',
+      prop8: 'lacus. Etiam consequat scelerisque quam. Nulla facilisi. Maecenas luctus',
+      prop9: 'venenatis nulla. In sit amet dui non mi semper iaculis. Sed molestie',
+      prop10: 'tortor at ipsum. Morbi dictum rutrum magna. Sed vitae risus.' + 'Aliquam vitae enim.'
     });
   }
   var mediumJson = JSON.stringify(mediumDataSet);
@@ -202,30 +188,24 @@ define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
       prop3: false,
       prop4: 3.4325222223332266 - i,
       prop5: [
-        "Mauris ipsum est, pharetra semper, pharetra in, viverra quis, tellus. Etiam" +
-          "purus. Quisque egestas, tortor ac cursus lacinia, felis leo adipiscing",
-        "nisi, et rhoncus elit dolor eget eros. Fusce ut quam. Suspendisse eleifend" +
-          "leo vitae ligula. Nulla facilisi.",
+        'Mauris ipsum est, pharetra semper, pharetra in, viverra quis, tellus. Etiam' + 'purus. Quisque egestas, tortor ac cursus lacinia, felis leo adipiscing',
+        'nisi, et rhoncus elit dolor eget eros. Fusce ut quam. Suspendisse eleifend' + 'leo vitae ligula. Nulla facilisi.'
       ],
-      prop6:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean semper",
-      prop7:
-        "sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin porta rutrum",
-      prop8:
-        "lacus. Etiam consequat scelerisque quam. Nulla facilisi. Maecenas luctus",
-      prop9:
-        "venenatis nulla. In sit amet dui non mi semper iaculis. Sed molestie",
+      prop6: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean semper',
+      prop7: 'sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin porta rutrum',
+      prop8: 'lacus. Etiam consequat scelerisque quam. Nulla facilisi. Maecenas luctus',
+      prop9: 'venenatis nulla. In sit amet dui non mi semper iaculis. Sed molestie',
       prop10:
-        "tortor at ipsum. Morbi dictum rutrum magna. Sed vitae risus." +
-        "Aliquam vitae enim. Duis scelerisque metus auctor est venenatis imperdiet." +
-        "Fusce dignissim porta augue. Nulla vestibulum. Integer lorem nunc," +
-        "ullamcorper a, commodo ac, malesuada sed, dolor. Aenean id mi in massa" +
-        "bibendum suscipit. Integer eros. Nullam suscipit mauris. In pellentesque.",
+        'tortor at ipsum. Morbi dictum rutrum magna. Sed vitae risus.' +
+        'Aliquam vitae enim. Duis scelerisque metus auctor est venenatis imperdiet.' +
+        'Fusce dignissim porta augue. Nulla vestibulum. Integer lorem nunc,' +
+        'ullamcorper a, commodo ac, malesuada sed, dolor. Aenean id mi in massa' +
+        'bibendum suscipit. Integer eros. Nullam suscipit mauris. In pellentesque.'
     });
   }
   var largeJson = JSON.stringify(largeDataSet);
 
-  doh.register("tests.json.performance", [
+  doh.register('tests.json.performance', [
     // all tests below are taken from #4.2 of the CSS3 Color Module
     function small() {
       var i = 10000;
@@ -262,6 +242,6 @@ define(["doh/main", "../json", "../has"], function (doh, JSON, has) {
       while (i-- > 0) {
         var result = JSON.parse(largeJson, true);
       }
-    },
+    }
   ]);
 });

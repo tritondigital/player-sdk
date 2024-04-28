@@ -20,27 +20,21 @@
  * targetspot-ad-started<br>
  * targetspot-ad-finished
  */
-define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "sdk/modules/base/CoreModule",
-  "dojo/dom",
-  "dojo/dom-construct",
-], function (declare, lang, coreModule, dom, domConstruct) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/base/CoreModule', 'dojo/dom', 'dojo/dom-construct'], function (declare, lang, coreModule, dom, domConstruct) {
   /**
    * @namespace tdapi/modules/TargetSpot
    */
   var targetspot = declare([coreModule], {
     constructor: function (config, target) {
-      console.log("targetSpot::constructor");
+      console.log('targetSpot::constructor');
 
       this.inherited(arguments);
     },
 
     start: function () {
-      console.log("targetSpot::start");
+      console.log('targetSpot::start');
 
-      this.emit("module-ready", { id: "TargetSpot", module: this });
+      this.emit('module-ready', { id: 'TargetSpot', module: this });
     },
 
     /**
@@ -55,36 +49,20 @@ define([
      * <li>wait = Buffers the preroll ad, but waits for the tsPlayPreroll event to call for playback</li></ul>
      */
     embed: function (containerId, stationId, volume, prl) {
-      console.log(
-        "targetSpot::embed - containerId=" +
-          containerId +
-          ", stationId=" +
-          stationId +
-          ", volume=" +
-          volume +
-          ", prl=" +
-          prl
-      );
+      console.log('targetSpot::embed - containerId=' + containerId + ', stationId=' + stationId + ', volume=' + volume + ', prl=' + prl);
 
-      var tsWrapper = domConstruct.create(
-        "div",
-        { id: "tsWrapper" },
-        dom.byId(containerId, document)
-      );
+      var tsWrapper = domConstruct.create('div', { id: 'tsWrapper' }, dom.byId(containerId, document));
 
       //Listen for API callbacks
       window.ts_ready = lang.hitch(this, this._tsReady);
 
       //Embed the TargetSpot Player (try-catch in case the JavaScript file (ts_embed_functions_as3.php) was ad-blocked or not present in the page)
       try {
-        window.ts_swf_embed(
-          tsWrapper.id,
-          this._getComponentSettings(stationId, volume, prl)
-        );
+        window.ts_swf_embed(tsWrapper.id, this._getComponentSettings(stationId, volume, prl));
       } catch (e) {
-        this.emit("module-error", {
-          id: "TargetSpot",
-          error: "Error in targetSpot::embed: " + e.message,
+        this.emit('module-error', {
+          id: 'TargetSpot',
+          error: 'Error in targetSpot::embed: ' + e.message
         });
       }
     },
@@ -111,10 +89,10 @@ define([
         w: 300,
         h: 250,
         prl: prl,
-        pageDomain: "player.tritondigital.com",
+        pageDomain: 'player.tritondigital.com',
         htmlBanner: 0,
         s: stationId,
-        v: volume,
+        v: volume
       };
     },
 
@@ -123,24 +101,24 @@ define([
      * @param {number} duration
      */
     playAd: function (duration) {
-      console.log("targetSpot::playAd - duration=" + duration);
+      console.log('targetSpot::playAd - duration=' + duration);
 
-      window.ts_streamEvent({ eventType: "playAd", eventDuration: duration });
+      window.ts_streamEvent({ eventType: 'playAd', eventDuration: duration });
     },
 
     /**
      * Play TargetSpot preroll (prl must have been set to 'wait' to be able to play a preroll).
      */
     playPreroll: function () {
-      console.log("targetSpot::playPreroll");
+      console.log('targetSpot::playPreroll');
 
-      window.ts_streamEvent({ eventType: "tsPlayPreroll" });
+      window.ts_streamEvent({ eventType: 'tsPlayPreroll' });
     },
 
     interruptAd: function () {
-      console.log("targetSpot::interruptAd");
+      console.log('targetSpot::interruptAd');
 
-      window.ts_streamEvent({ eventType: "interruptAd" });
+      window.ts_streamEvent({ eventType: 'interruptAd' });
     },
 
     /**
@@ -148,7 +126,7 @@ define([
      * @param {string} stationId
      */
     setStationId: function (stationId) {
-      console.log("targetSpot::setStationId - stationId=" + stationId);
+      console.log('targetSpot::setStationId - stationId=' + stationId);
 
       window.ts_setStation({ stationId: stationId });
     },
@@ -158,18 +136,13 @@ define([
      * @param volume (0-100)
      */
     setVolume: function (volume) {
-      console.log("targetSpot::setStationId - volume=" + volume);
+      console.log('targetSpot::setStationId - volume=' + volume);
 
       window.ts_setVolume({ volume: volume });
     },
 
     ts_setTargeting: function (eventType, eventData) {
-      console.log(
-        "targetSpot::ts_setTargeting - eventType=" +
-          eventType +
-          ", eventData=" +
-          eventData
-      );
+      console.log('targetSpot::ts_setTargeting - eventType=' + eventType + ', eventData=' + eventData);
 
       window.ts_setTargeting({ eventType: eventType, eventData: eventData });
     },
@@ -180,7 +153,7 @@ define([
      * @private
      */
     _tsReady: function () {
-      console.log("targetSpot::_tsReady - TargetSpot API is ready");
+      console.log('targetSpot::_tsReady - TargetSpot API is ready');
 
       window.ts_mutePlayer = lang.hitch(this, this._ts_mutePlayer);
       window.ts_unmutePlayer = lang.hitch(this, this._ts_unmutePlayer);
@@ -189,7 +162,7 @@ define([
       window.ts_adStarted = lang.hitch(this, this._ts_adStarted);
       window.ts_adFinished = lang.hitch(this, this._ts_adFinished);
 
-      this.emit("targetspot-ready");
+      this.emit('targetspot-ready');
     },
 
     /**
@@ -198,11 +171,9 @@ define([
      * @private
      */
     _ts_mutePlayer: function (duration) {
-      console.log(
-        "targetSpot::_ts_mutePlayer - TargetSpot mute player callback fired"
-      );
+      console.log('targetSpot::_ts_mutePlayer - TargetSpot mute player callback fired');
 
-      this.emit("targetspot-mute");
+      this.emit('targetspot-mute');
     },
 
     /**
@@ -210,11 +181,9 @@ define([
      * @private
      */
     _ts_unmutePlayer: function () {
-      console.log(
-        "targetSpot::_ts_unmutePlayer - TargetSpot un-mute player callback fired"
-      );
+      console.log('targetSpot::_ts_unmutePlayer - TargetSpot un-mute player callback fired');
 
-      this.emit("targetspot-unmute");
+      this.emit('targetspot-unmute');
     },
 
     /**
@@ -224,9 +193,9 @@ define([
      * @private
      */
     _ts_noAds: function () {
-      console.log("targetSpot::_ts_noAds - TargetSpot no ads callback fired");
+      console.log('targetSpot::_ts_noAds - TargetSpot no ads callback fired');
 
-      this.emit("targetspot-no-ads");
+      this.emit('targetspot-no-ads');
     },
 
     /**
@@ -234,11 +203,9 @@ define([
      * @private
      */
     _ts_noPreRoll: function () {
-      console.log(
-        "targetSpot::_ts_noPreRoll - TargetSpot no preroll callback fired"
-      );
+      console.log('targetSpot::_ts_noPreRoll - TargetSpot no preroll callback fired');
 
-      this.emit("targetspot-no-preroll");
+      this.emit('targetspot-no-preroll');
     },
 
     /**
@@ -247,11 +214,9 @@ define([
      * @private
      */
     _ts_adStarted: function (adObj) {
-      console.log(
-        "targetSpot::_ts_adStarted - TargetSpot ad started callback fired"
-      );
+      console.log('targetSpot::_ts_adStarted - TargetSpot ad started callback fired');
 
-      this.emit("targetspot-ad-started");
+      this.emit('targetspot-ad-started');
     },
 
     /**
@@ -260,12 +225,10 @@ define([
      * @private
      */
     _ts_adFinished: function (adObj) {
-      console.log(
-        "targetSpot::_ts_adFinished - TargetSpot ad finished callback fired"
-      );
+      console.log('targetSpot::_ts_adFinished - TargetSpot ad finished callback fired');
 
-      this.emit("targetspot-ad-finished");
-    },
+      this.emit('targetspot-ad-finished');
+    }
   });
 
   return targetspot;

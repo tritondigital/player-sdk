@@ -1,21 +1,21 @@
-define([
-  "./_base/array",
-  "./dom",
-  "./dom-geometry",
-  "./_base/kernel",
-  "./_base/lang",
-  "./_base/window",
-  "doh/_browserRunner",
-  "doh/robot",
-  "./window",
-], function (array, dom, geom, kernel, lang, win, doh, robot, winUtils) {
-  kernel.experimental("dojo.robot");
+define(['./_base/array', './dom', './dom-geometry', './_base/kernel', './_base/lang', './_base/window', 'doh/_browserRunner', 'doh/robot', './window'], function (
+  array,
+  dom,
+  geom,
+  kernel,
+  lang,
+  win,
+  doh,
+  robot,
+  winUtils
+) {
+  kernel.experimental('dojo.robot');
 
   // users who use doh+dojo get the added convenience of robot.mouseMoveAt(),
   // instead of computing the absolute coordinates of their elements themselves
   lang.mixin(robot, {
     _resolveNode: function (/*String||DOMNode||Function*/ n) {
-      if (typeof n == "function") {
+      if (typeof n == 'function') {
         // if the user passed a function returning a node, evaluate it
         n = n();
       }
@@ -51,7 +51,7 @@ define([
             x: oldp.x + p2.x + b.l,
             y: oldp.y + p2.y + b.t,
             w: p.w,
-            h: p.h,
+            h: p.h
           };
         }
         // get the parent iframe so it can be scrolled too
@@ -84,7 +84,7 @@ define([
             x: max(p.x + p2.x, p2.x) + b.l, // clip left edge of node wrt the iframe
             y: max(p.y + p2.y, p2.y) + b.t, // top edge
             r: min(p.x + p2.x + p.w, p2.r) + b.l, // right edge (to compute width)
-            b: min(p.y + p2.y + p.h, p2.b) + b.t,
+            b: min(p.y + p2.y + p.h, p2.b) + b.t
           }; // bottom edge (to compute height)
           // save a few bytes by computing width and height from r and b
           p.w = p.r - p.x;
@@ -101,15 +101,10 @@ define([
       var cW = winUtils.get(n.ownerDocument);
       var arr = [cW];
       var f = cW.frameElement;
-      return cW == win.global || !f
-        ? arr
-        : arr.concat(robot._getWindowChain(f));
+      return cW == win.global || !f ? arr : arr.concat(robot._getWindowChain(f));
     },
 
-    scrollIntoView: function (
-      /*String||DOMNode||Function*/ node,
-      /*Number, optional*/ delay
-    ) {
+    scrollIntoView: function (/*String||DOMNode||Function*/ node, /*Number, optional*/ delay) {
       // summary:
       //		Scroll the passed node into view, if it is not.
       // node:
@@ -125,13 +120,7 @@ define([
       }, delay);
     },
 
-    mouseMoveAt: function (
-      /*String||DOMNode||Function*/ node,
-      /*Integer, optional*/ delay,
-      /*Integer, optional*/ duration,
-      /*Number, optional*/ offsetX,
-      /*Number, optional*/ offsetY
-    ) {
+    mouseMoveAt: function (/*String||DOMNode||Function*/ node, /*Integer, optional*/ delay, /*Integer, optional*/ duration, /*Number, optional*/ offsetX, /*Number, optional*/ offsetY) {
       // summary:
       //		Moves the mouse over the specified node at the specified relative x,y offset.
       // description:
@@ -175,7 +164,7 @@ define([
       // Schedule a bunch of actions to move the mouse from the current position to point.
       // These actions won't run until after the above callback.
       this.mouseMoveTo(point, 0, duration, false);
-    },
+    }
   });
 
   return robot;

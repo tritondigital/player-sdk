@@ -1,9 +1,9 @@
-define("two", ["require", "one"], function (require, one) {
+define('two', ['require', 'one'], function (require, one) {
   return {
-    size: "small",
-    color: "redtwo",
+    size: 'small',
+    color: 'redtwo',
     doSomething: function () {
-      return require("one").doSomething();
-    },
+      return require('one').doSomething();
+    }
   };
 });
