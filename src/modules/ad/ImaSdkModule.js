@@ -84,9 +84,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/ad/base/AdModule',
       } else {
         console.log('skipAd - current Ad is not skippable');
 
-        this.emit(this.AD_MODULE_SKIPPABLE_STATE, {
-          state: this._adsManager.getAdSkippableState()
-        });
+        this.emit(this.AD_MODULE_SKIPPABLE_STATE, { state: this._adsManager.getAdSkippableState() });
       }
     },
 
@@ -277,9 +275,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/ad/base/AdModule',
       console.log('ImaSdkModule::_onAllAdsCompleted');
 
       this._destroy();
-      this.emit(this.AD_MODULE_PLAYBACK_COMPLETE, {
-        type: AdServerType.VAST_AD
-      });
+      this.emit(this.AD_MODULE_PLAYBACK_COMPLETE, { type: AdServerType.VAST_AD });
     },
 
     /**
@@ -325,12 +321,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/ad/base/AdModule',
       console.log('ImaSdkModule::_onAdError');
       console.log(adErrorEvent);
 
-      this.emit(this.AD_MODULE_PLAYBACK_ERROR, {
-        error: {
-          message: adErrorEvent.getError().getMessage(),
-          code: adErrorEvent.getError().getErrorCode()
-        }
-      });
+      this.emit(this.AD_MODULE_PLAYBACK_ERROR, { error: { message: adErrorEvent.getError().getMessage(), code: adErrorEvent.getError().getErrorCode() } });
 
       this._destroy();
     },
@@ -404,38 +395,23 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/ad/base/AdModule',
 
       switch (adEvent.type) {
         case google.ima.AdEvent.Type.STARTED:
-          this.emit(this.AD_MODULE_QUARTILE, {
-            adQuartile: this.adQuartile.getQuartileByIndex(0),
-            error: false
-          });
+          this.emit(this.AD_MODULE_QUARTILE, { adQuartile: this.adQuartile.getQuartileByIndex(0), error: false });
           break;
 
         case google.ima.AdEvent.Type.FIRST_QUARTILE:
-          this.emit(this.AD_MODULE_QUARTILE, {
-            adQuartile: this.adQuartile.getQuartileByIndex(1),
-            error: false
-          });
+          this.emit(this.AD_MODULE_QUARTILE, { adQuartile: this.adQuartile.getQuartileByIndex(1), error: false });
           break;
 
         case google.ima.AdEvent.Type.MIDPOINT:
-          this.emit(this.AD_MODULE_QUARTILE, {
-            adQuartile: this.adQuartile.getQuartileByIndex(2),
-            error: false
-          });
+          this.emit(this.AD_MODULE_QUARTILE, { adQuartile: this.adQuartile.getQuartileByIndex(2), error: false });
           break;
 
         case google.ima.AdEvent.Type.THIRD_QUARTILE:
-          this.emit(this.AD_MODULE_QUARTILE, {
-            adQuartile: this.adQuartile.getQuartileByIndex(3),
-            error: false
-          });
+          this.emit(this.AD_MODULE_QUARTILE, { adQuartile: this.adQuartile.getQuartileByIndex(3), error: false });
           break;
 
         case google.ima.AdEvent.Type.COMPLETED:
-          this.emit(this.AD_MODULE_QUARTILE, {
-            adQuartile: this.adQuartile.getQuartileByIndex(4),
-            error: false
-          });
+          this.emit(this.AD_MODULE_QUARTILE, { adQuartile: this.adQuartile.getQuartileByIndex(4), error: false });
           break;
 
         default:

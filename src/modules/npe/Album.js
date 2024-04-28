@@ -113,13 +113,7 @@ define([
      */
     getCoverArtOriginal: function () {
       var cover = this.albumData != null ? this.albumData.cover : this.data.cover;
-      if (cover != null || cover != undefined)
-        return {
-          url: cover.originalSourceUrl,
-          width: cover.width,
-          height: cover.height,
-          id: cover.id
-        };
+      if (cover != null || cover != undefined) return { url: cover.originalSourceUrl, width: cover.width, height: cover.height, id: cover.id };
       else return null;
     },
 

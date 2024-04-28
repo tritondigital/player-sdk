@@ -225,10 +225,7 @@ define([
       this
     );
 
-    this._pseudoAnimation = new baseFx.Animation({
-      curve: [0, 1],
-      duration: this.duration
-    });
+    this._pseudoAnimation = new baseFx.Animation({ curve: [0, 1], duration: this.duration });
     var self = this;
     arrayUtil.forEach(['beforeBegin', 'onBegin', 'onPlay', 'onAnimate', 'onPause', 'onStop', 'onEnd'], function (evt) {
       self._connects.push(

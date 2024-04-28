@@ -67,6 +67,7 @@ define([
       this.analyticsLoadTimeInterval = setInterval(function () {
         self.analyticsLoadTime += 10;
       }, 10);
+
       for (var i = 0; i < this.config.coreModules.length; i++) {
         this.loadModule(this.config.coreModules[i].id, this._getModuleConfigById(this.config.coreModules[i].id));
       }
@@ -148,6 +149,7 @@ define([
 
       this._removeCurrentModuleFromQueue(e.data.id);
       var self = this;
+
       //analytics vars
       var dimensions, metrics, tech, adBlock, sbm, hls, audioAdaptive, idSync;
 
@@ -202,6 +204,7 @@ define([
             function (err) {
               //Error
               self.emit('player-ready');
+
               if (!this.hasLoadModuleError) {
                 sendAnalyticsInit(GAEventRequest.LABEL_SUCCESS);
               } else {
@@ -213,6 +216,7 @@ define([
           console.log('%cmoduleManager::_onModuleComplete - all modules have been loaded : PLAYER-READY', 'background:#990000;color:#fff');
 
           this.emit('player-ready');
+
           if (mediaPlayerModule && !this.hasLoadModuleError) {
             sendAnalyticsInit(GAEventRequest.LABEL_SUCCESS);
           } else {
@@ -221,9 +225,7 @@ define([
         }
 
         if (this.config.adBlockerDetected) {
-          this.emit('ad-blocker-detected', {
-            message: 'Ad Blocker is activated'
-          });
+          this.emit('ad-blocker-detected', { message: 'Ad Blocker is activated' });
         }
       }
     },

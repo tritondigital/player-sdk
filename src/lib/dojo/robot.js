@@ -47,12 +47,7 @@ define(['./_base/array', './dom', './dom-geometry', './_base/kernel', './_base/l
         if (!oldp) {
           p = p2;
         } else {
-          p = {
-            x: oldp.x + p2.x + b.l,
-            y: oldp.y + p2.y + b.t,
-            w: p.w,
-            h: p.h
-          };
+          p = { x: oldp.x + p2.x + b.l, y: oldp.y + p2.y + b.t, w: p.w, h: p.h };
         }
         // get the parent iframe so it can be scrolled too
         n = w.frameElement;

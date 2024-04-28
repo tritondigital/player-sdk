@@ -122,6 +122,7 @@ define([
       this.inherited(arguments);
       this.html5Live.playProgram(programID, offset);
     },
+
     setVolume: function (volumePercent) {
       this.inherited(arguments);
 
@@ -200,6 +201,11 @@ define([
       this.inherited(arguments);
 
       this.html5OnDemand.seek(seekOffset);
+    },
+
+    changeHtml5PlayBackRate: function (rate) {
+      this.inherited(arguments);
+      this.html5OnDemand.changePlayBackRate(rate);
     },
 
     /*************************
@@ -292,7 +298,7 @@ define([
     _onPlaybackStatus: function (e) {
       console.log(e);
 
-      if (this.playbackStatus == e.code) return; //avoid emitting the same event twice
+      if (this.playbackStatus == e.code) return; //AVOID TO EMIT THE SAME EVENT TWICE ;)
 
       this.playbackStatus = e.code;
       this.emit('stream-status', e);
@@ -357,6 +363,7 @@ define([
 
       this.emit('stream-fail');
     },
+
     _onTimeshiftInfo: function (e) {
       this.emit('timeshift-info', e);
     },

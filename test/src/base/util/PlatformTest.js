@@ -15,6 +15,12 @@ var Platform = PlatformInjector({
 });
 
 describe('Platform', function () {
+  it('should return the right platform if platformId is valid', function () {
+    var platform = new Platform('preprod01');
+
+    expect(platform.endpoint.liveStream).to.be('playerservices.preprod01.streamtheworld.net/api/livestream');
+  });
+
   it('should return the prod platform if platformId is invalid', function () {
     var platform = new Platform('bad01');
 

@@ -230,6 +230,11 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/Evented', 'dojo/_base/array', 'do
       this.mediaNode.load();
     },
 
+    changePlayBackRate: function (rate) {
+      if (this.mediaNode == undefined) return;
+      this.mediaNode.playbackRate = rate;
+    },
+
     _emptyMediaNode: function () {
       // domAttr.set( this.audioSource, 'src', '' );
       // domAttr.set( this.mediaNode, 'src', '' );

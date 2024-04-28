@@ -1,4 +1,15 @@
 # Release notes:
+#2.9.67 (Apr 15 2024)
+- Use URL to play timeshift.
+- Fix Timeshift display values in playground.
+- Support podcast playback speed change.
+
+#2.9.66 (Oct 27 2023)
+- Add cuepoint type to debug info
+
+#2.9.65 (Jul 13 2023)
+- Audio stops when a call is received.
+
 #2.9.64 (June 8 2023)
 - Migrate Google UA to GA4 on Web-SDK.
 

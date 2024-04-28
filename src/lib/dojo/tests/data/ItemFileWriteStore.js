@@ -36,30 +36,12 @@ define([
               { id: 7, name: 'Item 7' },
               { id: 8, name: 'Item 8' },
               { id: 9, name: 'Item 9' },
-              {
-                id: 10,
-                name: 'Item 10',
-                friends: [{ _reference: 1 }, { _reference: 3 }, { _reference: 5 }]
-              },
-              {
-                id: 11,
-                name: 'Item 11',
-                friends: [{ _reference: 10 }],
-                siblings: [{ _reference: 10 }]
-              },
-              {
-                id: 12,
-                name: 'Item 12',
-                friends: [{ _reference: 3 }, { _reference: 7 }],
-                enemies: [{ _reference: 10 }]
-              },
+              { id: 10, name: 'Item 10', friends: [{ _reference: 1 }, { _reference: 3 }, { _reference: 5 }] },
+              { id: 11, name: 'Item 11', friends: [{ _reference: 10 }], siblings: [{ _reference: 10 }] },
+              { id: 12, name: 'Item 12', friends: [{ _reference: 3 }, { _reference: 7 }], enemies: [{ _reference: 10 }] },
               { id: 13, name: 'Item 13', friends: [{ _reference: 10 }] },
               { id: 14, name: 'Item 14', friends: [{ _reference: 11 }] },
-              {
-                id: 15,
-                name: 'item 15',
-                friends: [{ id: 16, name: 'Item 16' }]
-              }
+              { id: 15, name: 'item 15', friends: [{ id: 16, name: 'Item 16' }] }
             ]
           }
         };
@@ -130,11 +112,7 @@ define([
       var onError = function (error, request) {
         deferred.errback(error);
       };
-      store.fetch({
-        query: { name: 'Egypt' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Egypt' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_setValues() {
@@ -162,11 +140,7 @@ define([
       function onError(error, request) {
         deferred.errback(error);
       }
-      store.fetch({
-        query: { name: 'Egypt' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Egypt' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_unsetAttribute() {
@@ -192,11 +166,7 @@ define([
       function onError(error, request) {
         deferred.errback(error);
       }
-      store.fetch({
-        query: { name: 'Egypt' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Egypt' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_newItem() {
@@ -216,11 +186,7 @@ define([
         doh.assertTrue(store.isItem(newItem));
         onNewInvoked = true;
       };
-      var canada = store.newItem({
-        name: 'Canada',
-        abbr: 'ca',
-        capital: 'Ottawa'
-      });
+      var canada = store.newItem({ name: 'Canada', abbr: 'ca', capital: 'Ottawa' });
       doh.assertTrue(onNewInvoked);
 
       doh.assertTrue(store.isDirty(canada));
@@ -235,11 +201,7 @@ define([
       function onError(error, request) {
         deferred.errback(error);
       }
-      store.fetch({
-        query: { name: 'Canada' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Canada' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_newItem_withParent() {
@@ -290,25 +252,12 @@ define([
             deferred.callback(true);
           }
           //Do a deep search now, should find the new item of the city with name attribute Cairo.
-          store.fetch({
-            query: { name: 'Cairo' },
-            onComplete: onCompleteNewItemDeep,
-            onError: onError,
-            queryOptions: { deep: true }
-          });
+          store.fetch({ query: { name: 'Cairo' }, onComplete: onCompleteNewItemDeep, onError: onError, queryOptions: { deep: true } });
         }
         //Do a shallow search first, should find nothing.
-        store.fetch({
-          query: { name: 'Cairo' },
-          onComplete: onCompleteNewItemShallow,
-          onError: onError
-        });
+        store.fetch({ query: { name: 'Cairo' }, onComplete: onCompleteNewItemShallow, onError: onError });
       };
-      store.fetch({
-        query: { name: 'Egypt' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Egypt' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
 
@@ -373,11 +322,7 @@ define([
       function onError(error, request) {
         deferred.errback(error);
       }
-      store.fetch({
-        query: { name: 'Egypt' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Egypt' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
 
@@ -407,17 +352,9 @@ define([
           doh.assertEqual(0, itemsToo.length);
           deferred.callback(true);
         };
-        store.fetch({
-          query: { name: 'Egypt' },
-          onComplete: onCompleteToo,
-          onError: onError
-        });
+        store.fetch({ query: { name: 'Egypt' }, onComplete: onCompleteToo, onError: onError });
       };
-      store.fetch({
-        query: { name: 'Egypt' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Egypt' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_isDirty() {
@@ -440,11 +377,7 @@ define([
       function onError(error, request) {
         deferred.errback(error);
       }
-      store.fetch({
-        query: { name: 'Egypt' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Egypt' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_revert() {
@@ -479,17 +412,9 @@ define([
           doh.assertTrue(store.containsValue(itemToo, 'name', 'Egypt'));
           deferred.callback(true);
         };
-        store.fetch({
-          query: { name: 'Egypt' },
-          onComplete: onCompleteToo,
-          onError: onError
-        });
+        store.fetch({ query: { name: 'Egypt' }, onComplete: onCompleteToo, onError: onError });
       };
-      store.fetch({
-        query: { name: 'Egypt' },
-        onComplete: onComplete,
-        onError: onError
-      });
+      store.fetch({ query: { name: 'Egypt' }, onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_save() {
@@ -510,11 +435,7 @@ define([
         }
         store.save({ onComplete: onComplete, onError: onError });
       }
-      store.fetchItemByIdentity({
-        identity: 'eg',
-        onItem: onItem,
-        onError: onError
-      });
+      store.fetchItemByIdentity({ identity: 'eg', onItem: onItem, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_saveVerifyState() {
@@ -538,11 +459,7 @@ define([
         }
         store.save({ onComplete: onComplete, onError: onError });
       }
-      store.fetchItemByIdentity({
-        identity: 'eg',
-        onItem: onItem,
-        onError: onError
-      });
+      store.fetchItemByIdentity({ identity: 'eg', onItem: onItem, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_saveEverything() {
@@ -571,11 +488,7 @@ define([
           doh.assertEqual(store.getLabelAttributes(egypt)[0], cloneStore.getLabelAttributes(egyptClone)[0]);
           doh.assertEqual(store.getValue(egypt, 'name'), cloneStore.getValue(egyptClone, 'name'));
         };
-        cloneStore.fetchItemByIdentity({
-          identity: 'eg',
-          onItem: onItemClone,
-          onError: onError
-        });
+        cloneStore.fetchItemByIdentity({ identity: 'eg', onItem: onItemClone, onError: onError });
         saveCompleteCallback();
       };
       var onItem = function (item) {
@@ -586,11 +499,7 @@ define([
         store.setValue(egypt, 'capital', 'New Cairo');
         store.save({ onComplete: onComplete, onError: onError });
       };
-      store.fetchItemByIdentity({
-        identity: 'eg',
-        onItem: onItem,
-        onError: onError
-      });
+      store.fetchItemByIdentity({ identity: 'eg', onItem: onItem, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_saveEverything_HierarchyOff() {
@@ -610,20 +519,12 @@ define([
       store._saveEverything = function (saveCompleteCallback, saveFailedCallback, newFileContentString) {
         var struct = dojo.fromJson(newFileContentString);
         doh.assertEqual(struct.items.length, 3);
-        var cloneStore = new dojo.data.ItemFileWriteStore({
-          data: struct,
-          hierarchical: false
-        });
+        var cloneStore = new dojo.data.ItemFileWriteStore({ data: struct, hierarchical: false });
         var onItemClone = function (items, request) {
           var africaClone = items[0];
           doh.assertEqual(store.getValue(africa, 'name'), cloneStore.getValue(africaClone, 'name'));
         };
-        cloneStore.fetch({
-          query: { name: 'Africa' },
-          onComplete: onItemClone,
-          onError: onError,
-          queryOptions: { deep: true }
-        });
+        cloneStore.fetch({ query: { name: 'Africa' }, onComplete: onItemClone, onError: onError, queryOptions: { deep: true } });
         saveCompleteCallback();
       };
       var onComplete = function (items, request) {
@@ -634,12 +535,7 @@ define([
         store.setValue(africa, 'size', 'HUGE!');
         store.save({ onComplete: onComplete, onError: onError });
       };
-      store.fetch({
-        query: { name: 'Africa' },
-        onComplete: onComplete,
-        onError: onError,
-        queryOptions: { deep: true }
-      });
+      store.fetch({ query: { name: 'Africa' }, onComplete: onComplete, onError: onError, queryOptions: { deep: true } });
       return deferred; //Object
     },
     function testWriteAPI_saveEverything_withDateType() {
@@ -665,11 +561,7 @@ define([
           deferred.errback(error);
           saveFailedCallback();
         }
-        newStore.fetchItemByIdentity({
-          identity: 'eg',
-          onItem: gotItem,
-          onError: failed
-        });
+        newStore.fetchItemByIdentity({ identity: 'eg', onItem: gotItem, onError: failed });
       };
 
       var onError = function (error) {
@@ -682,11 +574,7 @@ define([
         store.setValue(item, 'independence', new Date(1993, 4, 24));
         store.save({ onComplete: onComplete, onError: onError });
       };
-      store.fetchItemByIdentity({
-        identity: 'eg',
-        onItem: onItem,
-        onError: onError
-      });
+      store.fetchItemByIdentity({ identity: 'eg', onItem: onItem, onError: onError });
       return deferred; //Object
     },
     function testWriteAPI_saveEverything_withCustomColorTypeSimple() {
@@ -701,11 +589,7 @@ define([
       var dataset = {
         identifier: 'name',
         items: [
-          {
-            name: 'Kermit',
-            species: 'frog',
-            color: { _type: 'Color', _value: 'green' }
-          },
+          { name: 'Kermit', species: 'frog', color: { _type: 'Color', _value: 'green' } },
           { name: 'Beaker', hairColor: { _type: 'Color', _value: 'red' } }
         ]
       };
@@ -721,10 +605,7 @@ define([
       store._saveEverything = function (saveCompleteCallback, saveFailedCallback, newFileContentString) {
         //Now load the new data into a datastore and validate that it stored the Color right.
         var dataset = dojo.fromJson(newFileContentString);
-        var newStore = new dojo.data.ItemFileWriteStore({
-          data: dataset,
-          typeMap: customTypeMap
-        });
+        var newStore = new dojo.data.ItemFileWriteStore({ data: dataset, typeMap: customTypeMap });
 
         var deferred = new doh.Deferred();
         function gotItem(item) {
@@ -737,11 +618,7 @@ define([
           deferred.errback(error);
           saveFailedCallback();
         }
-        newStore.fetchItemByIdentity({
-          identity: 'Animal',
-          onItem: gotItem,
-          onError: failed
-        });
+        newStore.fetchItemByIdentity({ identity: 'Animal', onItem: gotItem, onError: failed });
       };
 
       //Add a new item with a color type, then save it.
@@ -752,10 +629,7 @@ define([
         deferred.callback(true);
       };
 
-      var animal = store.newItem({
-        name: 'Animal',
-        hairColor: new dojo.Color('yellow')
-      });
+      var animal = store.newItem({ name: 'Animal', hairColor: new dojo.Color('yellow') });
       store.save({ onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
@@ -771,11 +645,7 @@ define([
       var dataset = {
         identifier: 'name',
         items: [
-          {
-            name: 'Kermit',
-            species: 'frog',
-            color: { _type: 'Color', _value: 'green' }
-          },
+          { name: 'Kermit', species: 'frog', color: { _type: 'Color', _value: 'green' } },
           { name: 'Beaker', hairColor: { _type: 'Color', _value: 'red' } }
         ]
       };
@@ -800,10 +670,7 @@ define([
       store._saveEverything = function (saveCompleteCallback, saveFailedCallback, newFileContentString) {
         //Now load the new data into a datastore and validate that it stored the Color right.
         var dataset = dojo.fromJson(newFileContentString);
-        var newStore = new dojo.data.ItemFileWriteStore({
-          data: dataset,
-          typeMap: customTypeMap
-        });
+        var newStore = new dojo.data.ItemFileWriteStore({ data: dataset, typeMap: customTypeMap });
 
         var gotItem = function (item) {
           var hairColor = newStore.getValue(item, 'hairColor');
@@ -815,11 +682,7 @@ define([
           deferred.errback(error);
           saveFailedCallback();
         };
-        newStore.fetchItemByIdentity({
-          identity: 'Animal',
-          onItem: gotItem,
-          onError: failed
-        });
+        newStore.fetchItemByIdentity({ identity: 'Animal', onItem: gotItem, onError: failed });
       };
 
       //Add a new item with a color type, then save it.
@@ -830,10 +693,7 @@ define([
         deferred.callback(true);
       };
 
-      var animal = store.newItem({
-        name: 'Animal',
-        hairColor: new dojo.Color('yellow')
-      });
+      var animal = store.newItem({ name: 'Animal', hairColor: new dojo.Color('yellow') });
       store.save({ onComplete: onComplete, onError: onError });
       return deferred; //Object
     },
@@ -881,11 +741,7 @@ define([
 
       var intialFetch = function (items, request) {
         var initialCount = items.length;
-        var canada = store.newItem({
-          name: 'Canada',
-          abbr: 'ca',
-          capital: 'Ottawa'
-        });
+        var canada = store.newItem({ name: 'Canada', abbr: 'ca', capital: 'Ottawa' });
         store.setValue(canada, 'someattribute', 'modified a new item!');
         var afterNewFetch = function (items, request) {
           var afterNewCount = items.length;
@@ -921,11 +777,7 @@ define([
 
       var intialFetch = function (items, request) {
         var initialCount = items.length;
-        var canada = store.newItem({
-          name: 'Canada',
-          abbr: 'ca',
-          capital: 'Ottawa'
-        });
+        var canada = store.newItem({ name: 'Canada', abbr: 'ca', capital: 'Ottawa' });
         store.setValue(canada, 'someattribute', 'modified a new item!');
 
         // check that after new and modify, the total items count goes up by one.
@@ -1003,11 +855,7 @@ define([
         connectHandle = dojo.connect(store, 'onSet', setValueHandler);
         store.setValue(egypt, 'capital', 'New Cairo');
       }
-      store.fetchItemByIdentity({
-        identity: 'eg',
-        onItem: onItem,
-        onError: onError
-      });
+      store.fetchItemByIdentity({ identity: 'eg', onItem: onItem, onError: onError });
     },
     function testNotificationAPI_onNew() {
       // summary:
@@ -1025,11 +873,7 @@ define([
         dojo.disconnect(connectHandle);
       }
       connectHandle = dojo.connect(store, 'onNew', newItemHandler);
-      var canada = store.newItem({
-        name: 'Canada',
-        abbr: 'ca',
-        capital: 'Ottawa'
-      });
+      var canada = store.newItem({ name: 'Canada', abbr: 'ca', capital: 'Ottawa' });
     },
     function testNotificationAPI_onDelete() {
       // summary:
@@ -1054,11 +898,7 @@ define([
         connectHandle = dojo.connect(store, 'onDelete', deleteItemHandler);
         store.deleteItem(egypt);
       }
-      store.fetchItemByIdentity({
-        identity: 'eg',
-        onItem: onItem,
-        onError: onError
-      });
+      store.fetchItemByIdentity({ identity: 'eg', onItem: onItem, onError: onError });
     },
     function testReadAPI_functionConformanceToo() {
       // summary:
@@ -1365,11 +1205,7 @@ define([
           deferred.errback(error);
         }
       }
-      store.fetchItemByIdentity({
-        identity: 10,
-        onError: onError,
-        onItem: onItem
-      });
+      store.fetchItemByIdentity({ identity: 10, onError: onError, onItem: onItem });
       return deferred;
     },
     function testReferenceIntegrity_deleteReferencedItemThenRevert() {
@@ -1409,11 +1245,7 @@ define([
           deferred.callback(true);
         }
       }
-      store.fetchItemByIdentity({
-        identity: 10,
-        onError: onError,
-        onItem: onItem
-      });
+      store.fetchItemByIdentity({ identity: 10, onError: onError, onItem: onItem });
       return deferred;
     },
     function testReferenceIntegrity_deleteMultipleItemsWithReferencesAndRevert() {
@@ -1451,28 +1283,14 @@ define([
             function onComplete(items, request) {
               deferred.callback(true);
             }
-            store.fetch({
-              query: { name: '*' },
-              start: 0,
-              count: 20,
-              onComplete: onComplete,
-              onError: onError
-            });
+            store.fetch({ query: { name: '*' }, start: 0, count: 20, onComplete: onComplete, onError: onError });
           } catch (e) {
             deferred.errback(e);
           }
         }
-        store.fetchItemByIdentity({
-          identity: 'Nairobi',
-          onError: onError,
-          onItem: onItem2
-        });
+        store.fetchItemByIdentity({ identity: 'Nairobi', onError: onError, onItem: onItem2 });
       }
-      store.fetchItemByIdentity({
-        identity: 'Egypt',
-        onError: onError,
-        onItem: onItem
-      });
+      store.fetchItemByIdentity({ identity: 'Egypt', onError: onError, onItem: onItem });
       return deferred;
     },
     function testReferenceIntegrity_removeReferenceFromAttribute() {
@@ -1508,22 +1326,14 @@ define([
             doh.assertTrue(!refMap['11']);
             deferred.callback(true);
           }
-          store.fetchItemByIdentity({
-            identity: 10,
-            onError: onError,
-            onItem: onItem2
-          });
+          store.fetchItemByIdentity({ identity: 10, onError: onError, onItem: onItem2 });
         } catch (e) {
           console.debug(e);
           deferred.errback(e);
           doh.assertTrue(false);
         }
       }
-      store.fetchItemByIdentity({
-        identity: 11,
-        onError: onError,
-        onItem: onItem
-      });
+      store.fetchItemByIdentity({ identity: 11, onError: onError, onItem: onItem });
       return deferred;
     },
     function testReferenceIntegrity_deleteReferencedItemNonParent() {
@@ -1579,11 +1389,7 @@ define([
           deferred.errback(error);
         }
       }
-      store.fetchItemByIdentity({
-        identity: 16,
-        onError: onError,
-        onItem: onItem
-      });
+      store.fetchItemByIdentity({ identity: 16, onError: onError, onItem: onItem });
       return deferred;
     },
     function testReferenceIntegrity_addReferenceToAttribute() {
@@ -1665,11 +1471,7 @@ define([
           deferred.callback(true);
         }
       }
-      store.fetchItemByIdentity({
-        identity: 10,
-        onError: onError,
-        onItem: onItem
-      });
+      store.fetchItemByIdentity({ identity: 10, onError: onError, onItem: onItem });
       return deferred;
     },
     function testReferenceIntegrity_newItemWithReferenceToExistingItem() {
@@ -1693,11 +1495,7 @@ define([
           console.log('State of reference map to item 10 before newItem: ' + dojo.toJson(item[store._reverseRefMap]));
 
           //Create a new item and set its parent to item 10's uncle attribute.
-          var newItem = store.newItem({
-            id: 17,
-            name: 'Item 17',
-            friends: [item]
-          });
+          var newItem = store.newItem({ id: 17, name: 'Item 17', friends: [item] });
 
           //DO NOT EVER ACCESS THESE VARIABLES LIKE THIS!
           //THIS IS FOR TESTING INTERNAL STATE!
@@ -1718,11 +1516,7 @@ define([
           deferred.callback(true);
         }
       }
-      store.fetchItemByIdentity({
-        identity: 10,
-        onError: onError,
-        onItem: onItem
-      });
+      store.fetchItemByIdentity({ identity: 10, onError: onError, onItem: onItem });
       return deferred;
     },
     function testReferenceIntegrity_disableReferenceIntegrity() {
@@ -1749,11 +1543,7 @@ define([
           deferred.errback(new Error('Disabling of reference integrity failed.'));
         }
       }
-      store.fetchItemByIdentity({
-        identity: 10,
-        onError: onError,
-        onItem: onItem
-      });
+      store.fetchItemByIdentity({ identity: 10, onError: onError, onItem: onItem });
       return deferred;
     },
     function testReadAPI_close_dirty_failure() {
@@ -1789,11 +1579,7 @@ define([
         var onError = function (errData) {
           d.errback(errData);
         };
-        store.fetchItemByIdentity({
-          identity: 'ec',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'ec', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     }

@@ -39,15 +39,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/base/CoreModule', 
       xhrProv.request(
         this.platform.endpoint.playerWebAdmin,
         requestArgs.query,
-        {
-          handleAs: 'xml',
-          preventCache: true,
-          query: requestArgs.query,
-          headers: {
-            'X-Requested-With': null,
-            'Content-Type': 'text/plain; charset=utf-8'
-          }
-        },
+        { handleAs: 'xml', preventCache: true, query: requestArgs.query, headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' } },
         function (query, data) {
           successCallback(mount, JSON.parse(data));
         },

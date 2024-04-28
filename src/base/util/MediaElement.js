@@ -54,6 +54,7 @@ var fsm = StateMachine.create({
 });
 
 var isProgramPlaying = false;
+
 function _onLoadedData() {
   if (fsm.is(STATE.STOPPED) || fsm.is(STATE.PAUSED)) return;
 
@@ -103,6 +104,7 @@ function _onCanPlay() {
         .catch(function (e) {
           context.handleHTMLPlayError(e);
         });
+
       if (this.url.indexOf('CLOUD/HLS/program') > -1 && this.timeshiftOffset != null && this.timeshiftOffset >= 0 && !this.hls) {
         this.seekStream(this.timeshiftOffset);
         this.timeshiftOffset = null;
@@ -247,10 +249,15 @@ function _onTimeUpdate() {
       });
     }
   }
+
   if (this.timeshiftEnabled && !this.hls) {
     if (timeupdateCounter == 0) {
       timeupdateCounter++;
       let startSeconds = parseInt(new Date().getTime() / 1000) - parseInt(this.audioNode.getStartDate().getTime() / 1000) - this.audioNode.currentTime;
+      console.log('Currnt date:' + new Date().getTime());
+      console.log('Program Date:' + this.audioNode.getStartDate().getTime());
+      console.log('Current Time:' + this.audioNode.currentTime);
+      console.log('startSeconds:' + startSeconds);
       let c = parseInt(new Date().getTime()) - startSeconds * 1000;
 
       this.emit('timeshift-info', {
@@ -332,8 +339,13 @@ module.exports = _.assign(new EventEmitter(), {
     this.audioNode = getAudioNode.call(this);
     this.url = url || this.url;
     if (stwLSID) {
-      this.url = this.url + '&lsid=' + stwLSID;
+      if (this.url.includes('?')) {
+      	this.url = this.url + '&lsid=' + stwLSID;
+      } else {
+        this.url = this.url + '?lsid=' + stwLSID;
+    	}
     }
+
     this.isLive = isLive || this.isLive;
     this.useHlsLibrary = useHlsLibrary || this.useHlsLibrary;
     this.timeshiftOffset = timeshiftOffset == undefined ? -1 : timeshiftOffset;
@@ -343,6 +355,7 @@ module.exports = _.assign(new EventEmitter(), {
         maxBufferLength: 30,
         autoStartLoad: false
       };
+
       this.hls = new Hls(config);
 
       this.hls.config.xhrSetup = function (xhr, url) {

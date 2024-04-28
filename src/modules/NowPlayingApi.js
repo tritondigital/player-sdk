@@ -69,11 +69,7 @@ define([
       var xhrProv = new XhrProvider();
       xhrProv.request(
         this.platform.endpoint.nowPlayingHistory,
-        {
-          mount: data.mount,
-          mode: data.mode || 'songHistory',
-          deferred: deferred
-        },
+        { mount: data.mount, mode: data.mode || 'songHistory', deferred: deferred },
         requestArgs,
         lang.hitch(this, this._onLoadComplete),
         lang.hitch(this, this._onLoadError)
@@ -85,15 +81,9 @@ define([
     _onLoadError: function (requestData, error) {
       console.error('nowPlayingApi::_onLoadError - mount=' + requestData.mount + ' - error=' + error);
 
-      this.emit('nowplaying-api-error', {
-        mount: requestData.mount,
-        error: requestData.error
-      });
+      this.emit('nowplaying-api-error', { mount: requestData.mount, error: requestData.error });
 
-      return requestData.deferred.reject({
-        mount: requestData.mount,
-        error: requestData.error
-      });
+      return requestData.deferred.reject({ mount: requestData.mount, error: requestData.error });
     },
 
     _onLoadComplete: function (requestData, data) {
@@ -174,10 +164,7 @@ define([
       return {
         handleAs: 'xml',
         preventCache: true,
-        headers: {
-          'X-Requested-With': null,
-          'Content-Type': 'text/plain; charset=utf-8'
-        },
+        headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' },
         query: {
           mountName: mount,
           numberToFetch: mode == 'nowPlaying' ? 1 : numberToFetch,

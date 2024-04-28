@@ -9,12 +9,7 @@ define(['doh', 'dojo/store/DataStore', 'dojo/data/ItemFileReadStore', 'dojo/data
         { id: 2, name: 'two', even: true, prime: true },
         { id: 3, name: 'three', prime: true },
         { id: 4, name: 'four', even: true, prime: false },
-        {
-          id: 5,
-          name: 'five',
-          prime: true,
-          children: [{ _reference: 1 }, { _reference: 2 }, { _reference: 3 }]
-        }
+        { id: 5, name: 'five', prime: true, children: [{ _reference: 1 }, { _reference: 2 }, { _reference: 3 }] }
       ],
       identifier: 'id'
     }

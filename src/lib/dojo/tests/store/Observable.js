@@ -37,18 +37,10 @@ define(['doh', 'dojo/_base/array', 'dojo/_base/declare', 'dojo/_base/lang', 'doj
       var changes = [],
         secondChanges = [];
       var observer = results.observe(function (object, previousIndex, newIndex) {
-        changes.push({
-          previousIndex: previousIndex,
-          newIndex: newIndex,
-          object: object
-        });
+        changes.push({ previousIndex: previousIndex, newIndex: newIndex, object: object });
       });
       var secondObserver = results.observe(function (object, previousIndex, newIndex) {
-        secondChanges.push({
-          previousIndex: previousIndex,
-          newIndex: newIndex,
-          object: object
-        });
+        secondChanges.push({ previousIndex: previousIndex, newIndex: newIndex, object: object });
       });
       var expectedChanges = [],
         expectedSecondChanges = [];

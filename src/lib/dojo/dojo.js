@@ -863,25 +863,9 @@
     makeModuleInfo = function (pid, mid, pack, url) {
       if (has('dojo-sync-loader')) {
         var xd = req.isXdUrl(url);
-        return {
-          pid: pid,
-          mid: mid,
-          pack: pack,
-          url: url,
-          executed: 0,
-          def: 0,
-          isXd: xd,
-          isAmd: !!(xd || (packs[pid] && packs[pid].isAmd))
-        };
+        return { pid: pid, mid: mid, pack: pack, url: url, executed: 0, def: 0, isXd: xd, isAmd: !!(xd || (packs[pid] && packs[pid].isAmd)) };
       } else {
-        return {
-          pid: pid,
-          mid: mid,
-          pack: pack,
-          url: url,
-          executed: 0,
-          def: 0
-        };
+        return { pid: pid, mid: mid, pack: pack, url: url, executed: 0, def: 0 };
       }
     },
     getModuleInfo_ = function (mid, referenceModule, packs, modules, baseUrl, mapProgs, pathsMapProg, aliases, alwaysCreate) {
@@ -1009,12 +993,7 @@
           prid = match[2];
           mid = plugin.mid + '!' + ++dynamicPluginUidGenerator + '!waitingForPlugin';
         }
-        result = {
-          plugin: plugin,
-          mid: mid,
-          req: createRequire(referenceModule),
-          prid: prid
-        };
+        result = { plugin: plugin, mid: mid, req: createRequire(referenceModule), prid: prid };
       } else {
         result = getModuleInfo(mid, referenceModule);
       }
@@ -1083,11 +1062,7 @@
         // manufacture and insert the real module in modules
         var prid = resolvePluginResourceId(plugin, pseudoPluginResource.prid, pseudoPluginResource.req.module),
           mid = plugin.dynamic ? pseudoPluginResource.mid.replace(/waitingForPlugin$/, prid) : plugin.mid + '!' + prid,
-          pluginResource = mix(mix({}, pseudoPluginResource), {
-            mid: mid,
-            prid: prid,
-            injected: 0
-          });
+          pluginResource = mix(mix({}, pseudoPluginResource), { mid: mid, prid: prid, injected: 0 });
         if (!modules[mid]) {
           // create a new (the real) plugin resource and inject it normally now that the plugin is on board
           injectPlugin((modules[mid] = pluginResource));
@@ -1850,11 +1825,7 @@
     var plugins = req.combo.plugins,
       pluginName;
     for (pluginName in plugins) {
-      mix(mix(getModule(pluginName), plugins[pluginName]), {
-        isCombo: 1,
-        executed: 'executed',
-        load: 1
-      });
+      mix(mix(getModule(pluginName), plugins[pluginName]), { isCombo: 1, executed: 'executed', load: 1 });
     }
   }
 

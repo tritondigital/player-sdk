@@ -26,17 +26,7 @@ define(['./_base/lang', './sniff', './_base/window', './dom', './dom-geometry', 
       scrollable = domConstruct.create(
         'div',
         {
-          style: {
-            overflow: 'scroll',
-            overflowX: 'visible',
-            direction: 'rtl',
-            visibility: 'hidden',
-            position: 'absolute',
-            left: '0',
-            top: '0',
-            width: '64px',
-            height: '64px'
-          }
+          style: { overflow: 'scroll', overflowX: 'visible', direction: 'rtl', visibility: 'hidden', position: 'absolute', left: '0', top: '0', width: '64px', height: '64px' }
         },
         body,
         'last'
@@ -61,12 +51,7 @@ define(['./_base/lang', './sniff', './_base/window', './dom', './dom-geometry', 
       outer = domConstruct.create(
         'span',
         {
-          style: {
-            visibility: 'hidden',
-            position: 'fixed',
-            left: '1px',
-            top: '1px'
-          }
+          style: { visibility: 'hidden', position: 'fixed', left: '1px', top: '1px' }
         },
         body,
         'last'

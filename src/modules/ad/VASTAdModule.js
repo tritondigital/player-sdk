@@ -140,9 +140,7 @@ define([
       this.vastParser = null;
 
       if (data == undefined || data.nodeName == undefined) {
-        this.emit(this.AD_MODULE_VAST_EMPTY, {
-          adServerType: AdServerType.VAST_AD
-        });
+        this.emit(this.AD_MODULE_VAST_EMPTY, { adServerType: AdServerType.VAST_AD });
         return;
       }
 
@@ -158,11 +156,7 @@ define([
 
           this._cacheWrapperData(this._vastWrapperAd);
 
-          this.loadVast({
-            url: this.vastDocument.vastAd.wrapperAd.vastAdTagURL,
-            skipMediaAdPlayback: this._skipMediaAdPlayback,
-            sequence: this._defaultSequence
-          });
+          this.loadVast({ url: this.vastDocument.vastAd.wrapperAd.vastAdTagURL, skipMediaAdPlayback: this._skipMediaAdPlayback, sequence: this._defaultSequence });
         } else {
           this._loadTimes = 0;
           if (this._vastWrapperAd != null) {
@@ -183,9 +177,7 @@ define([
 
           if (this.vastDocument.vastAd.inlineAd.getCompanionAds(this._defaultSequence) != undefined && this.vastDocument.vastAd.inlineAd.getCompanionAds(this._defaultSequence).length > 0) {
             adEmpty = false;
-            this.emit(this.AD_MODULE_COMPANIONS, {
-              companions: this.vastDocument.vastAd.inlineAd.getCompanionAds(this._defaultSequence)
-            });
+            this.emit(this.AD_MODULE_COMPANIONS, { companions: this.vastDocument.vastAd.inlineAd.getCompanionAds(this._defaultSequence) });
           }
 
           if (this._skipMediaAdPlayback == true) return;
@@ -198,16 +190,9 @@ define([
             var clickThrough = videoClick != null ? videoClick.clickThrough : null;
             var clickTrackings = videoClick != null ? videoClick.clickTrackings : null;
 
-            this.emit(this.AD_MODULE_MEDIA_READY, {
-              adServerType: AdServerType.VAST_AD,
-              mediaFiles: mediaFiles,
-              clickThrough: clickThrough,
-              clickTrackings: clickTrackings
-            });
+            this.emit(this.AD_MODULE_MEDIA_READY, { adServerType: AdServerType.VAST_AD, mediaFiles: mediaFiles, clickThrough: clickThrough, clickTrackings: clickTrackings });
           } else if (adEmpty) {
-            this.emit(this.AD_MODULE_MEDIA_EMPTY, {
-              adServerType: AdServerType.VAST_AD
-            });
+            this.emit(this.AD_MODULE_MEDIA_EMPTY, { adServerType: AdServerType.VAST_AD });
           }
         }
       } else {
@@ -219,10 +204,9 @@ define([
             this.xhrProv.request(errorURL, null, requestArgs, null, null);
           }
         }
+
         this._loadTimes = 0;
-        this.emit(this.AD_MODULE_VAST_EMPTY, {
-          adServerType: AdServerType.VAST_AD
-        });
+        this.emit(this.AD_MODULE_VAST_EMPTY, { adServerType: AdServerType.VAST_AD });
       }
     },
 
@@ -242,12 +226,7 @@ define([
     },
 
     _cacheWrapperData: function () {
-      if (this._wrapperCachedData == null)
-        this._wrapperCachedData = {
-          wrapperImpressions: [],
-          wrapperTrackingEvents: [],
-          wrapperVideoClickTracking: []
-        };
+      if (this._wrapperCachedData == null) this._wrapperCachedData = { wrapperImpressions: [], wrapperTrackingEvents: [], wrapperVideoClickTracking: [] };
 
       var wrapperTrackingEvents = this._vastWrapperAd.getLinearTrackingEvents(this._defaultSequence);
       if (wrapperTrackingEvents != null && wrapperTrackingEvents.length > 0)
@@ -315,10 +294,7 @@ define([
         handleAs: 'xml',
         preventCache: false,
         withCredentials: true,
-        headers: {
-          'X-Requested-With': null,
-          'Content-Type': 'text/plain; charset=utf-8'
-        }
+        headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' }
       };
     }
   });

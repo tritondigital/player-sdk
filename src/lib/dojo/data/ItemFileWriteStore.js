@@ -244,10 +244,7 @@ define(['../_base/lang', '../_base/declare', '../_base/array', '../_base/json', 
                   if (!item['backupRefs_' + this._reverseRefMap]) {
                     item['backupRefs_' + this._reverseRefMap] = [];
                   }
-                  item['backupRefs_' + this._reverseRefMap].push({
-                    id: this.getIdentity(value),
-                    attr: attribute
-                  });
+                  item['backupRefs_' + this._reverseRefMap].push({ id: this.getIdentity(value), attr: attribute });
                   this._removeReferenceFromMap(value, item, attribute);
                 }
               },

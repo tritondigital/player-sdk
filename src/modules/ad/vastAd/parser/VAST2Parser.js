@@ -82,6 +82,7 @@ define([
 
       return errorURL;
     },
+
     _parseAdTag: function (xml) {
       var xmlLength = xml.length;
       for (var i = 0; i < xmlLength; i++) {

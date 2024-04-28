@@ -24,17 +24,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'doj
       domConstruct.empty(container);
       domConstruct.create(
         'iframe',
-        {
-          src: adSpotUrl,
-          width: width,
-          height: height,
-          scrolling: 'no',
-          frameborder: 0,
-          marginheight: 0,
-          marginwidth: 0,
-          allowtransparency: true,
-          style: { margin: 0, padding: 0 }
-        },
+        { src: adSpotUrl, width: width, height: height, scrolling: 'no', frameborder: 0, marginheight: 0, marginwidth: 0, allowtransparency: true, style: { margin: 0, padding: 0 } },
         container
       );
     },
@@ -61,10 +51,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'doj
       if (adSpotType == 'application/x-shockwave-flash' || extFile == 'swf') {
         if (!swfobject.getFlashPlayerVersion().major > 0) {
           console.error('companions::loadCompanionStatic - SWF file embed error: Flash is not available. containerId=' + containerId + ', adSpotUrl=' + adSpotUrl);
-          this.emit('companion-load-error', {
-            containerId: containerId,
-            adSpotUrl: adSpotUrl
-          });
+          this.emit('companion-load-error', { containerId: containerId, adSpotUrl: adSpotUrl });
           return;
         }
 
@@ -209,12 +196,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'doj
         this
       );
 
-      if (itemIndex == -1)
-        this.listeners.push({
-          eventName: eventName,
-          callback: callback,
-          listener: on(this, eventName, lang.hitch(this, callback))
-        });
+      if (itemIndex == -1) this.listeners.push({ eventName: eventName, callback: callback, listener: on(this, eventName, lang.hitch(this, callback)) });
     },
 
     /**
@@ -233,7 +215,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'doj
       );
 
       if (itemIndex > -1) {
-        this.listeners[itemIndex].listener.remove();
+        this.listeners[itemIndex].listener.remove(); //FIXME: is it necessary to call remove() on the listener ? the listener is spliced from the listeners array anyway...
         this.listeners.splice(itemIndex, 1);
       }
     }

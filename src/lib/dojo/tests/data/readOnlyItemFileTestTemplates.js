@@ -122,26 +122,11 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
             items: [
               { abbr: 'ec', name: 'Ecuador', capital: 'Quito', real: true },
               { abbr: 'eg', name: 'Egypt', capital: 'Cairo', real: true },
-              {
-                abbr: 'sv',
-                name: 'El Salvador',
-                capital: 'San Salvador',
-                real: true
-              },
-              {
-                abbr: 'gq',
-                name: 'Equatorial Guinea',
-                capital: 'Malabo',
-                real: true
-              },
+              { abbr: 'sv', name: 'El Salvador', capital: 'San Salvador', real: true },
+              { abbr: 'gq', name: 'Equatorial Guinea', capital: 'Malabo', real: true },
               { abbr: 'er', name: 'Eritrea', capital: 'Asmara', real: true },
               { abbr: 'ee', name: 'Estonia', capital: 'Tallinn', real: true },
-              {
-                abbr: 'et',
-                name: 'Ethiopia',
-                capital: 'Addis Ababa',
-                real: true
-              },
+              { abbr: 'et', name: 'Ethiopia', capital: 'Addis Ababa', real: true },
               { abbr: 'ut', name: 'Utopia', capital: 'Paradise', real: false }
             ]
           }
@@ -159,18 +144,8 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
               { abbr: 'eg', name: 'Egypt', capital: 'Cairo' },
               { abbr: 'sv', name: 'El Salvador', capital: 'San Salvador' },
               { abbr: 'gq', name: 'Equatorial Guinea', capital: 'Malabo' },
-              {
-                abbr: 'er',
-                name: 'Eritrea',
-                capital: 'Asmara',
-                independence: { _type: 'Date', _value: '1993-05-24T00:00:00Z' }
-              }, // May 24, 1993,
-              {
-                abbr: 'ee',
-                name: 'Estonia',
-                capital: 'Tallinn',
-                independence: { _type: 'Date', _value: '1991-08-20T00:00:00Z' }
-              }, // August 20, 1991
+              { abbr: 'er', name: 'Eritrea', capital: 'Asmara', independence: { _type: 'Date', _value: '1993-05-24T00:00:00Z' } }, // May 24, 1993,
+              { abbr: 'ee', name: 'Estonia', capital: 'Tallinn', independence: { _type: 'Date', _value: '1991-08-20T00:00:00Z' } }, // August 20, 1991
               { abbr: 'et', name: 'Ethiopia', capital: 'Addis Ababa' }
             ]
           }
@@ -203,11 +178,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
                       { name: 'Alberta', population: '1 million' }
                     ]
                   },
-                  {
-                    name: 'United States of America',
-                    capital: 'Washington DC',
-                    states: [{ name: 'Missouri' }, { name: 'Arkansas' }]
-                  }
+                  { name: 'United States of America', capital: 'Washington DC', states: [{ name: 'Missouri' }, { name: 'Arkansas' }] }
                 ]
               }
             ]
@@ -248,103 +219,34 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
             identifier: 'name',
             label: 'name',
             items: [
-              {
-                name: 'Africa',
-                type: 'continent',
-                children: [{ _reference: 'Egypt' }, { _reference: 'Kenya' }, { _reference: 'Sudan' }]
-              },
+              { name: 'Africa', type: 'continent', children: [{ _reference: 'Egypt' }, { _reference: 'Kenya' }, { _reference: 'Sudan' }] },
               { name: 'Egypt', type: 'country' },
-              {
-                name: 'Kenya',
-                type: 'country',
-                children: [{ _reference: 'Nairobi' }, { _reference: 'Mombasa' }]
-              },
+              { name: 'Kenya', type: 'country', children: [{ _reference: 'Nairobi' }, { _reference: 'Mombasa' }] },
               { name: 'Nairobi', type: 'city' },
               { name: 'Mombasa', type: 'city' },
-              {
-                name: 'Sudan',
-                type: 'country',
-                children: { _reference: 'Khartoum' }
-              },
+              { name: 'Sudan', type: 'country', children: { _reference: 'Khartoum' } },
               { name: 'Khartoum', type: 'city' },
-              {
-                name: 'Asia',
-                type: 'continent',
-                children: [{ _reference: 'China' }, { _reference: 'India' }, { _reference: 'Russia' }, { _reference: 'Mongolia' }]
-              },
+              { name: 'Asia', type: 'continent', children: [{ _reference: 'China' }, { _reference: 'India' }, { _reference: 'Russia' }, { _reference: 'Mongolia' }] },
               { name: 'China', type: 'country' },
               { name: 'India', type: 'country' },
               { name: 'Russia', type: 'country' },
               { name: 'Mongolia', type: 'country' },
-              {
-                name: 'Australia',
-                type: 'continent',
-                population: '21 million',
-                children: { _reference: 'Commonwealth of Australia' }
-              },
-              {
-                name: 'Commonwealth of Australia',
-                type: 'country',
-                population: '21 million'
-              },
-              {
-                name: 'Europe',
-                type: 'continent',
-                children: [{ _reference: 'Germany' }, { _reference: 'France' }, { _reference: 'Spain' }, { _reference: 'Italy' }]
-              },
+              { name: 'Australia', type: 'continent', population: '21 million', children: { _reference: 'Commonwealth of Australia' } },
+              { name: 'Commonwealth of Australia', type: 'country', population: '21 million' },
+              { name: 'Europe', type: 'continent', children: [{ _reference: 'Germany' }, { _reference: 'France' }, { _reference: 'Spain' }, { _reference: 'Italy' }] },
               { name: 'Germany', type: 'country' },
               { name: 'France', type: 'country' },
               { name: 'Spain', type: 'country' },
               { name: 'Italy', type: 'country' },
-              {
-                name: 'North America',
-                type: 'continent',
-                children: [{ _reference: 'Mexico' }, { _reference: 'Canada' }, { _reference: 'United States of America' }]
-              },
-              {
-                name: 'Mexico',
-                type: 'country',
-                population: '108 million',
-                area: '1,972,550 sq km',
-                children: [{ _reference: 'Mexico City' }, { _reference: 'Guadalajara' }]
-              },
-              {
-                name: 'Mexico City',
-                type: 'city',
-                population: '19 million',
-                timezone: '-6 UTC'
-              },
-              {
-                name: 'Guadalajara',
-                type: 'city',
-                population: '4 million',
-                timezone: '-6 UTC'
-              },
-              {
-                name: 'Canada',
-                type: 'country',
-                population: '33 million',
-                area: '9,984,670 sq km',
-                children: [{ _reference: 'Ottawa' }, { _reference: 'Toronto' }]
-              },
-              {
-                name: 'Ottawa',
-                type: 'city',
-                population: '0.9 million',
-                timezone: '-5 UTC'
-              },
-              {
-                name: 'Toronto',
-                type: 'city',
-                population: '2.5 million',
-                timezone: '-5 UTC'
-              },
+              { name: 'North America', type: 'continent', children: [{ _reference: 'Mexico' }, { _reference: 'Canada' }, { _reference: 'United States of America' }] },
+              { name: 'Mexico', type: 'country', population: '108 million', area: '1,972,550 sq km', children: [{ _reference: 'Mexico City' }, { _reference: 'Guadalajara' }] },
+              { name: 'Mexico City', type: 'city', population: '19 million', timezone: '-6 UTC' },
+              { name: 'Guadalajara', type: 'city', population: '4 million', timezone: '-6 UTC' },
+              { name: 'Canada', type: 'country', population: '33 million', area: '9,984,670 sq km', children: [{ _reference: 'Ottawa' }, { _reference: 'Toronto' }] },
+              { name: 'Ottawa', type: 'city', population: '0.9 million', timezone: '-5 UTC' },
+              { name: 'Toronto', type: 'city', population: '2.5 million', timezone: '-5 UTC' },
               { name: 'United States of America', type: 'country' },
-              {
-                name: 'South America',
-                type: 'continent',
-                children: [{ _reference: 'Brazil' }, { _reference: 'Argentina' }]
-              },
+              { name: 'South America', type: 'continent', children: [{ _reference: 'Brazil' }, { _reference: 'Argentina' }] },
               { name: 'Brazil', type: 'country', population: '186 million' },
               { name: 'Argentina', type: 'country', population: '40 million' }
             ]
@@ -378,11 +280,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -408,11 +306,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -434,11 +328,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv_not',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv_not', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -464,11 +354,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -484,9 +370,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         //		paper.
 
         if (dojo.isBrowser) {
-          var store = new datastore({
-            url: require.toUrl('./countries_commentFiltered.json')
-          });
+          var store = new datastore({ url: require.toUrl('./countries_commentFiltered.json') });
 
           var d = new doh.Deferred();
           function onItem(item) {
@@ -499,11 +383,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
             t.assertTrue(false);
             d.errback(errData);
           }
-          store.fetchItemByIdentity({
-            identity: 'sv',
-            onItem: onItem,
-            onError: onError
-          });
+          store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
           return d; // Deferred
         }
       }
@@ -530,11 +410,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'ec',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'ec', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -560,11 +436,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'ut',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'ut', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -588,11 +460,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: '2',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: '2', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -602,10 +470,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         // summary:
         //		Simple test of bug where store would raise an error
         //		if the item identifier was the same as an Object property name.
-        var data = {
-          identifier: 'id',
-          items: [{ id: 'toString', value: 'aha' }]
-        };
+        var data = { identifier: 'id', items: [{ id: 'toString', value: 'aha' }] };
         var store = new datastore({ data: data });
         var d = new doh.Deferred();
         function onitem(item) {
@@ -616,11 +481,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'toString',
-          onItem: onitem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'toString', onItem: onitem, onError: onError });
         return d; // Deferred
       }
     },
@@ -630,10 +491,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         // summary:
         //		Simple test of bug where store would raise an error
         //		if the item identifier was the same as an Object property name.
-        var data = {
-          identifier: 'id',
-          items: [{ id: 'hasOwnProperty', value: 'yep' }]
-        };
+        var data = { identifier: 'id', items: [{ id: 'hasOwnProperty', value: 'yep' }] };
         var store = new datastore({ data: data });
         var d = new doh.Deferred();
         function onitem(item) {
@@ -644,11 +502,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'hasOwnProperty',
-          onItem: onitem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'hasOwnProperty', onItem: onitem, onError: onError });
         return d; // Deferred
       }
     },
@@ -668,11 +522,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'toString',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'toString', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -692,11 +542,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'hasOwnProperty',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'hasOwnProperty', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -719,11 +565,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -746,11 +588,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { abbr: 'sv' },
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetch({ query: { abbr: 'sv' }, onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -867,12 +705,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         //Get everything...
-        store.fetch({
-          onComplete: completedAll,
-          onError: error,
-          start: 0,
-          count: Infinity
-        });
+        store.fetch({ onComplete: completedAll, onError: error, start: 0, count: Infinity });
         return d;
       }
     },
@@ -920,11 +753,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { abbr: 'ec' },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { abbr: 'ec' }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -947,11 +776,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           d.errback(errData);
         }
         //Find all items starting with A, only toplevel (root) items.
-        store.fetch({
-          query: { name: 'A*' },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { name: 'A*' }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -985,18 +810,10 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           d.errback(errData);
         }
         //Find all items starting with A, only toplevel (root) items.
-        store.fetch({
-          query: { name: 'A*' },
-          onComplete: onCompleteOne,
-          onError: onError
-        });
+        store.fetch({ query: { name: 'A*' }, onComplete: onCompleteOne, onError: onError });
 
         //Find all items starting with A, only toplevel (root) items.
-        store.fetch({
-          query: { name: 'N*' },
-          onComplete: onCompleteTwo,
-          onError: onError
-        });
+        store.fetch({ query: { name: 'N*' }, onComplete: onCompleteTwo, onError: onError });
 
         return d;
       }
@@ -1037,17 +854,9 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         //Find all items starting with A, only toplevel (root) items.
-        store.fetch({
-          query: { name: 'El*' },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { name: 'El*' }, onComplete: onComplete, onError: onError });
 
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d;
       }
     },
@@ -1070,12 +879,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           d.errback(errData);
         }
         //Find all items starting with A, including child (nested) items.
-        store.fetch({
-          query: { name: 'A*' },
-          onComplete: onComplete,
-          onError: onError,
-          queryOptions: { deep: true }
-        });
+        store.fetch({ query: { name: 'A*' }, onComplete: onComplete, onError: onError, queryOptions: { deep: true } });
         return d;
       }
     },
@@ -1129,12 +933,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           d.errback(errData);
         }
         //Find all items starting with A, including child (nested) items.
-        store.fetch({
-          query: { name: 'A*' },
-          onComplete: onComplete,
-          onError: onError,
-          queryOptions: { deep: true }
-        });
+        store.fetch({ query: { name: 'A*' }, onComplete: onComplete, onError: onError, queryOptions: { deep: true } });
         return d;
       }
     },
@@ -1188,12 +987,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           d.errback(errData);
         }
         //Find all items starting with A, including child (nested) items.
-        store.fetch({
-          query: { name: 'A*' },
-          onComplete: onComplete,
-          onError: onError,
-          queryOptions: { deep: true }
-        });
+        store.fetch({ query: { name: 'A*' }, onComplete: onComplete, onError: onError, queryOptions: { deep: true } });
         return d;
       }
     },
@@ -1208,9 +1002,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         //		data with this store can bypass the JavaSceipt hijack noted in Fortify's
         //		paper.
         if (dojo.isBrowser) {
-          var store = new datastore({
-            url: require.toUrl('./countries_commentFiltered.json')
-          });
+          var store = new datastore({ url: require.toUrl('./countries_commentFiltered.json') });
 
           var d = new doh.Deferred();
           function onComplete(items, request) {
@@ -1221,11 +1013,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
             t.assertTrue(false);
             d.errback(errData);
           }
-          store.fetch({
-            query: { abbr: 'ec' },
-            onComplete: onComplete,
-            onError: onError
-          });
+          store.fetch({ query: { abbr: 'ec' }, onComplete: onComplete, onError: onError });
           return d;
         }
       }
@@ -1249,11 +1037,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { name: 'E*' },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { name: 'E*' }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -1287,12 +1071,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         //Get everything...
-        store.fetch({
-          onBegin: onBegin,
-          onItem: onItem,
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ onBegin: onBegin, onItem: onItem, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -1386,11 +1165,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { count: '1*' },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { count: '1*' }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -1412,11 +1187,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { count: new RegExp('^1.*$', 'gi') },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { count: new RegExp('^1.*$', 'gi') }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -1438,11 +1209,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { count: /^1.*$/gi },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { count: /^1.*$/gi }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -1465,11 +1232,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { value: 'true' },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { value: 'true' }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -1494,11 +1257,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { abbr: 'ec' },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { abbr: 'ec' }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -1523,11 +1282,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          query: { abbr: 'ec' },
-          onComplete: onComplete,
-          onError: onError
-        });
+        store.fetch({ query: { abbr: 'ec' }, onComplete: onComplete, onError: onError });
         return d;
       }
     },
@@ -1551,11 +1306,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -1581,11 +1332,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -1609,11 +1356,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -1647,21 +1390,13 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
             t.assertTrue(!store2.isItem(item1));
             d.callback(true);
           }
-          store2.fetchItemByIdentity({
-            identity: 'sv',
-            onItem: onItem2,
-            onError: onError
-          });
+          store2.fetchItemByIdentity({ identity: 'sv', onItem: onItem2, onError: onError });
         }
         function onError(errData) {
           t.assertTrue(false);
           d.errback(errData);
         }
-        store1.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem1,
-          onError: onError
-        });
+        store1.fetchItemByIdentity({ identity: 'sv', onItem: onItem1, onError: onError });
         return d; // Deferred
       }
     },
@@ -1699,11 +1434,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -1737,11 +1468,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -1770,11 +1497,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'sv',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'sv', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -1823,11 +1546,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(error);
         }
-        store.fetch({
-          query: { abbr: 'e*' },
-          onComplete: completed,
-          onError: error
-        });
+        store.fetch({ query: { abbr: 'e*' }, onComplete: completed, onError: error });
         return d;
       }
     },
@@ -1878,11 +1597,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(error);
         }
-        store.fetch({
-          query: { value: '*$*' },
-          onComplete: completed,
-          onError: error
-        });
+        store.fetch({ query: { value: '*$*' }, onComplete: completed, onError: error });
         return d;
       }
     },
@@ -1933,11 +1648,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(error);
         }
-        store.fetch({
-          query: { value: 'bar*foo' },
-          onComplete: completed,
-          onError: error
-        });
+        store.fetch({ query: { value: 'bar*foo' }, onComplete: completed, onError: error });
         return d;
       }
     },
@@ -1983,12 +1694,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(error);
         }
-        store.fetch({
-          query: { value: 'bar\\*foo' },
-          queryOptions: { ignoreCase: false },
-          onComplete: completed,
-          onError: error
-        });
+        store.fetch({ query: { value: 'bar\\*foo' }, queryOptions: { ignoreCase: false }, onComplete: completed, onError: error });
         return d;
       }
     },
@@ -2034,12 +1740,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(error);
         }
-        store.fetch({
-          query: { value: 'bar\\*foo' },
-          queryOptions: { ignoreCase: true },
-          onComplete: completed,
-          onError: error
-        });
+        store.fetch({ query: { value: 'bar\\*foo' }, queryOptions: { ignoreCase: true }, onComplete: completed, onError: error });
         return d;
       }
     },
@@ -2095,11 +1796,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'uniqueId' }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2154,11 +1851,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'uniqueId', descending: true }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2216,12 +1909,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'uniqueId', descending: true }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes,
-          count: 5
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes, count: 5 });
         return d;
       }
     },
@@ -2279,11 +1967,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'value' }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2342,11 +2026,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'value', descending: true }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2403,11 +2083,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'value' }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2465,11 +2141,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'value', descending: true }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2527,11 +2199,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'value' }, { attribute: 'uniqueId', descending: true }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2606,11 +2274,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2667,11 +2331,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         }
 
         var sortAttributes = [{ attribute: 'value' }];
-        store.fetch({
-          onComplete: completed,
-          onError: error,
-          sort: sortAttributes
-        });
+        store.fetch({ onComplete: completed, onError: error, sort: sortAttributes });
         return d;
       }
     },
@@ -2723,9 +2383,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         //		Added because of tracker: #2546
 
         if (dojo.isBrowser) {
-          var store = new datastore({
-            url: require.toUrl('./countries_idcollision.json')
-          });
+          var store = new datastore({ url: require.toUrl('./countries_idcollision.json') });
           var d = new doh.Deferred();
           function onComplete(items, request) {
             //This is bad if this fires, this case should fail and not call onComplete.
@@ -2763,11 +2421,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           t.assertTrue(false);
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'er',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'er', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -2779,11 +2433,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         var dataset = {
           identifier: 'name',
           items: [
-            {
-              name: 'Kermit',
-              species: 'frog',
-              color: { _type: 'Color', _value: 'green' }
-            },
+            { name: 'Kermit', species: 'frog', color: { _type: 'Color', _value: 'green' } },
             { name: 'Beaker', hairColor: { _type: 'Color', _value: 'red' } }
           ]
         };
@@ -2803,11 +2453,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         function onError(errData) {
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'Beaker',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'Beaker', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -2819,11 +2465,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         var dataset = {
           identifier: 'name',
           items: [
-            {
-              name: 'Kermit',
-              species: 'frog',
-              color: { _type: 'Color', _value: 'green' }
-            },
+            { name: 'Kermit', species: 'frog', color: { _type: 'Color', _value: 'green' } },
             { name: 'Beaker', hairColor: { _type: 'Color', _value: 'red' } }
           ]
         };
@@ -2850,11 +2492,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         function onError(errData) {
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'Beaker',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'Beaker', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -2866,16 +2504,8 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         var dataset = {
           identifier: 'name',
           items: [
-            {
-              name: 'Bob',
-              species: 'human',
-              age: { _type: 'tests.data.Wrapper', _value: 0 }
-            },
-            {
-              name: 'Nancy',
-              species: 'human',
-              age: { _type: 'tests.data.Wrapper', _value: 32 }
-            }
+            { name: 'Bob', species: 'human', age: { _type: 'tests.data.Wrapper', _value: 0 } },
+            { name: 'Nancy', species: 'human', age: { _type: 'tests.data.Wrapper', _value: 32 } }
           ]
         };
         var store = new datastore({
@@ -2901,11 +2531,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         function onError(errData) {
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'Bob',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'Bob', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -2917,14 +2543,8 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         var dataset = {
           identifier: 'name',
           items: [
-            {
-              name: 'Bob',
-              isHuman: { _type: 'tests.data.Wrapper', _value: false }
-            },
-            {
-              name: 'Nancy',
-              isHuman: { _type: 'tests.data.Wrapper', _value: true }
-            }
+            { name: 'Bob', isHuman: { _type: 'tests.data.Wrapper', _value: false } },
+            { name: 'Nancy', isHuman: { _type: 'tests.data.Wrapper', _value: true } }
           ]
         };
         var store = new datastore({
@@ -2950,11 +2570,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         function onError(errData) {
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'Bob',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'Bob', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -2966,14 +2582,8 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         var dataset = {
           identifier: 'name',
           items: [
-            {
-              name: 'Bob',
-              lastName: { _type: 'tests.data.Wrapper', _value: '' }
-            },
-            {
-              name: 'Nancy',
-              lastName: { _type: 'tests.data.Wrapper', _value: 'Doe' }
-            }
+            { name: 'Bob', lastName: { _type: 'tests.data.Wrapper', _value: '' } },
+            { name: 'Nancy', lastName: { _type: 'tests.data.Wrapper', _value: 'Doe' } }
           ]
         };
         var store = new datastore({
@@ -2999,11 +2609,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         function onError(errData) {
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'Bob',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'Bob', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -3015,14 +2621,8 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         var dataset = {
           identifier: 'name',
           items: [
-            {
-              name: 'Bob',
-              lastName: { _type: 'tests.data.Wrapper', _value: null }
-            },
-            {
-              name: 'Nancy',
-              lastName: { _type: 'tests.data.Wrapper', _value: 'Doe' }
-            }
+            { name: 'Bob', lastName: { _type: 'tests.data.Wrapper', _value: null } },
+            { name: 'Nancy', lastName: { _type: 'tests.data.Wrapper', _value: 'Doe' } }
           ]
         };
         var store = new datastore({
@@ -3048,11 +2648,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         function onError(errData) {
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'Bob',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'Bob', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -3064,14 +2660,8 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         var dataset = {
           identifier: 'name',
           items: [
-            {
-              name: 'Bob',
-              lastName: { _type: 'tests.data.Wrapper', _value: undefined }
-            },
-            {
-              name: 'Nancy',
-              lastName: { _type: 'tests.data.Wrapper', _value: 'Doe' }
-            }
+            { name: 'Bob', lastName: { _type: 'tests.data.Wrapper', _value: undefined } },
+            { name: 'Nancy', lastName: { _type: 'tests.data.Wrapper', _value: 'Doe' } }
           ]
         };
         var store = new datastore({
@@ -3097,11 +2687,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
         function onError(errData) {
           d.errback(errData);
         }
-        store.fetchItemByIdentity({
-          identity: 'Bob',
-          onItem: onItem,
-          onError: onError
-        });
+        store.fetchItemByIdentity({ identity: 'Bob', onItem: onItem, onError: onError });
         return d; // Deferred
       }
     },
@@ -3168,11 +2754,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           function onError(errData) {
             d.errback(errData);
           }
-          store.fetchItemByIdentity({
-            identity: 'ec',
-            onItem: onItem,
-            onError: onError
-          });
+          store.fetchItemByIdentity({ identity: 'ec', onItem: onItem, onError: onError });
           return d; // Deferred
         }
       }
@@ -3218,11 +2800,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
                   d.callback(true);
                 }
               }
-              store.fetchItemByIdentity({
-                identity: 'ec',
-                onItem: onItem2,
-                onError: onError
-              });
+              store.fetchItemByIdentity({ identity: 'ec', onItem: onItem2, onError: onError });
             } catch (e) {
               error = e;
             }
@@ -3233,11 +2811,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           function onError(errData) {
             d.errback(errData);
           }
-          store.fetchItemByIdentity({
-            identity: 'ec',
-            onItem: onItem,
-            onError: onError
-          });
+          store.fetchItemByIdentity({ identity: 'ec', onItem: onItem, onError: onError });
           return d; // Deferred
         }
       }
@@ -3285,11 +2859,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
                   d.callback(true);
                 }
               }
-              store.fetch({
-                query: { abbr: 'ec' },
-                onComplete: onComplete,
-                onError: onError
-              });
+              store.fetch({ query: { abbr: 'ec' }, onComplete: onComplete, onError: onError });
             } catch (e) {
               error = e;
             }
@@ -3300,11 +2870,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           function onError(errData) {
             d.errback(errData);
           }
-          store.fetchItemByIdentity({
-            identity: 'ec',
-            onItem: onItem,
-            onError: onError
-          });
+          store.fetchItemByIdentity({ identity: 'ec', onItem: onItem, onError: onError });
           return d; // Deferred
         }
       }
@@ -3350,11 +2916,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
                   d.callback(true);
                 }
               }
-              store.fetchItemByIdentity({
-                identity: 'ec',
-                onItem: onItem2,
-                onError: onError
-              });
+              store.fetchItemByIdentity({ identity: 'ec', onItem: onItem2, onError: onError });
             } catch (e) {
               error = e;
             }
@@ -3365,11 +2927,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           function onError(errData) {
             d.errback(errData);
           }
-          store.fetchItemByIdentity({
-            identity: 'ec',
-            onItem: onItem,
-            onError: onError
-          });
+          store.fetchItemByIdentity({ identity: 'ec', onItem: onItem, onError: onError });
           return d; // Deferred
         }
       }
@@ -3409,11 +2967,7 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
           function onError(errData) {
             d.errback(errData);
           }
-          store.fetchItemByIdentity({
-            identity: 'ec',
-            onItem: onItem,
-            onError: onError
-          });
+          store.fetchItemByIdentity({ identity: 'ec', onItem: onItem, onError: onError });
           return d; // Deferred
         }
       }
@@ -3479,21 +3033,13 @@ define(['dojo/main', 'doh/main', 'require', 'dojo/data/api/Read', 'dojo/data/api
               d.errback(e);
             }
           };
-          store.fetch({
-            query: { value: 'bar*foo' },
-            onComplete: secondComplete,
-            onError: error
-          });
+          store.fetch({ query: { value: 'bar*foo' }, onComplete: secondComplete, onError: error });
         };
         function error(error, request) {
           t.assertTrue(false);
           d.errback(error);
         }
-        store.fetch({
-          query: { value: 'bar*foo' },
-          onComplete: firstComplete,
-          onError: error
-        });
+        store.fetch({ query: { value: 'bar*foo' }, onComplete: firstComplete, onError: error });
         return d;
       }
     },

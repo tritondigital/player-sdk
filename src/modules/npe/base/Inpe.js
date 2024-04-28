@@ -73,10 +73,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/on', 
       return {
         handleAs: 'json',
         preventCache: false,
-        headers: {
-          'X-Requested-With': null,
-          'Content-Type': 'text/plain; charset=utf-8'
-        }
+        headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' }
       };
     },
 
@@ -97,12 +94,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/on', 
         this
       );
 
-      if (itemIndex == -1)
-        this.listeners.push({
-          eventName: eventName,
-          callback: callback,
-          listener: on(this, eventName, lang.hitch(this, callback))
-        });
+      if (itemIndex == -1) this.listeners.push({ eventName: eventName, callback: callback, listener: on(this, eventName, lang.hitch(this, callback)) });
     },
 
     /**

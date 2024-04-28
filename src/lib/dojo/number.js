@@ -103,15 +103,7 @@ number.__FormatOptions = declare(null, {
     if (options.fractional === false) {
       options.places = 0;
     }
-    return pattern.replace(
-      numberPatternRE,
-      number._formatAbsolute(value, numberPattern[0], {
-        decimal: decimal,
-        group: group,
-        places: options.places,
-        round: options.round
-      })
-    );
+    return pattern.replace(numberPatternRE, number._formatAbsolute(value, numberPattern[0], { decimal: decimal, group: group, places: options.places, round: options.round }));
   };
 
   number.round = function (/*Number*/ value, /*Number?*/ places, /*Number?*/ increment) {
@@ -394,12 +386,7 @@ number.__RegexpOptions = declare(null, {
     //TODO: substitute localized sign/percent/permille/etc.?
 
     // normalize whitespace and return
-    return {
-      regexp: re.replace(/[\xa0 ]/g, '[\\s\\xa0]'),
-      group: group,
-      decimal: decimal,
-      factor: factor
-    }; // Object
+    return { regexp: re.replace(/[\xa0 ]/g, '[\\s\\xa0]'), group: group, decimal: decimal, factor: factor }; // Object
   };
 
   /*=====

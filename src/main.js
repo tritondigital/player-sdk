@@ -55,22 +55,6 @@ var i18n = require('sdk/base/util/I18n');
 
 var MediaElement = require('sdk/base/util/MediaElement');
 
-// unlock html audio
-var touchmove = false;
-var InitMediaElement = function () {
-  if (!touchmove) {
-    document.removeEventListener('touchend', InitMediaElement, false);
-    document.removeEventListener('touchmove', isTouchWithMove, false);
-    MediaElement.init();
-  }
-  touchmove = false;
-};
-var isTouchWithMove = function () {
-  touchmove = true;
-};
-document.addEventListener('touchend', InitMediaElement, false);
-document.addEventListener('touchmove', isTouchWithMove, false);
-
 window.TDSdk = declare([], {
   NAME: 'TDSdk',
 
@@ -88,6 +72,7 @@ window.TDSdk = declare([], {
     this.target = new Evented();
     this.abBlockProcessFinish = false;
     this.MediaElement = MediaElement;
+
     this._initGoogleAnalytics();
 
     on(this.target, 'module-ready', lang.hitch(this, this._onModuleReady));
@@ -216,6 +201,7 @@ window.TDSdk = declare([], {
     } else {
       GAEventRequest.setActive(false);
     }
+
     //overide locale
     if (typeof playerConfig.locale === 'string') {
       i18n.setLocalization(playerConfig.locale);

@@ -112,11 +112,7 @@ define(['./kernel', '../on', '../topic', '../aspect', './event', '../mouse', './
             }
           }
           // simulate a keypress event
-          var faux = _synthesizeEvent(evt, {
-            type: 'keypress',
-            faux: true,
-            charCode: c
-          });
+          var faux = _synthesizeEvent(evt, { type: 'keypress', faux: true, charCode: c });
           listener.call(evt.currentTarget, faux);
           if (has('ie')) {
             _trySetKeyCode(evt, faux.keyCode);

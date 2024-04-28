@@ -105,13 +105,7 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/Evented', 'dojo/_base/lang', 'sdk
     },
 
     _getNowPlaying: function (mount) {
-      this.nowPlayingApi.load({
-        mount: mount,
-        hd: false,
-        numberToFetch: 1,
-        eventType: 'track',
-        mode: 'nowPlaying'
-      });
+      this.nowPlayingApi.load({ mount: mount, hd: false, numberToFetch: 1, eventType: 'track', mode: 'nowPlaying' });
     },
 
     _onCuePoint: function (e) {
@@ -149,10 +143,7 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/Evented', 'dojo/_base/lang', 'sdk
 
       this._cuePoint.push({ artist: artistname, title: songtitle });
 
-      this._trackCuePointCallback({
-        mount: this.currentMount,
-        cuePoint: this.currentCuePoint
-      });
+      this._trackCuePointCallback({ mount: this.currentMount, cuePoint: this.currentCuePoint });
     },
 
     _onEmptyCuePoint: function () {
@@ -169,11 +160,7 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/Evented', 'dojo/_base/lang', 'sdk
 
       var isAlreadySent = this._adBreakChecker(adTimestamp);
 
-      if (isAlreadySent == false)
-        this._adBreakCuePointCallback({
-          mount: this.currentMount,
-          cuePoint: this.currentCuePoint
-        });
+      if (isAlreadySent == false) this._adBreakCuePointCallback({ mount: this.currentMount, cuePoint: this.currentCuePoint });
     },
 
     _adBreakChecker: function (adTimestamp) {

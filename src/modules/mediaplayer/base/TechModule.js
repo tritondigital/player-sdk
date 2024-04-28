@@ -37,7 +37,6 @@ define([
       this.station = null;
 
       this.__resetBackOff();
-
       this.config = config;
       if (config && config.playerId) {
         this.playerNode = dom.byId(config.playerId, document);
@@ -55,6 +54,7 @@ define([
       this.audioAdaptive = config.audioAdaptive != undefined ? config.audioAdaptive : false;
 
       this.__initSbmConfig(config);
+
       //analytics
       this._playConnectionTime = 0;
       this._playConnectionTimeIntervall = null;
@@ -86,6 +86,7 @@ define([
       if (params.file != undefined && params.file != '') {
         this.isLiveStream = false;
         this.__extractOmnyParameters(params);
+
         this.__playMedia(params);
         return;
       }
@@ -98,6 +99,10 @@ define([
       } else {
         console.error('techModule::play - connectionIterator is not defined');
       }
+    },
+
+    changePlayBackRate: function (rate) {
+      this.changeHtml5PlayBackRate(rate);
     },
 
     setConnectionIterator: function (connectionIterator) {
@@ -117,10 +122,12 @@ define([
     },
 
     _onMediaPlaybackStarted: function (e) {
+      //send analytics media success
       GAEventRequest.requestGA(GAEventRequest.CATEGORY_ON_DEMAND, GAEventRequest.ACTION_PLAY, GAEventRequest.LABEL_SUCCESS);
     },
 
     _onMediaPlaybackError: function () {
+      //send analytics media error
       GAEventRequest.requestGA(GAEventRequest.CATEGORY_ON_DEMAND, GAEventRequest.ACTION_PLAY, GAEventRequest.LABEL_ERROR);
     },
 
@@ -134,6 +141,7 @@ define([
 
         this.connectionTimeOutTimer = setInterval(lang.hitch(this, this.__onTimeOutAlert), this._currentLiveApiParams.connectionTimeOut * 60000);
       }
+
       //send analytics connection success load time
       var gaDimensions = {};
       if (this.connection) {
@@ -178,6 +186,7 @@ define([
 
     __reconnect: function () {
       this.isReconnect = true;
+
       if (!this.connectionIterator) {
         console.error('techModule::__reconnect - connectionIterator is not defined');
         return;
@@ -196,6 +205,7 @@ define([
 
           GAEventRequest.requestGA(GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_UNAVAILABLE, gaDimensions);
         }
+
         this.backOffTimer = setTimeout(lang.hitch(this, this.__onBackOffTimeOut), delay);
       } else {
         console.log('techModule::__reconnect');
@@ -282,6 +292,7 @@ define([
 
         GAEventRequest.requestGA(GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_GEOBLOCKING, gaDimensions);
       }
+
       var params = this._currentLiveApiParams.trackingParameters || {};
 
       if (this.lowActivated && this.connection.isAudioAdaptive) params.utags = 'low-bw';
@@ -297,6 +308,7 @@ define([
       }
 
       this.emit('stream-select');
+
       //analytics start timer
       this._playConnectionTime = 0;
       if (!this._playConnectionTimeIntervall) {
@@ -401,6 +413,7 @@ define([
 
     pause: function () {
       console.log('techModule::pause');
+
       this.isLiveStream == true ? this.pauseStream() : this.pauseMedia();
       GAEventRequest.requestGA(GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_PAUSE, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions());
     },
@@ -414,11 +427,13 @@ define([
       } else {
         this.stopMedia();
       }
+
       GAEventRequest.requestGA(GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_STOP, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions());
     },
 
     resume: function () {
       console.log('techModule::resume');
+
       this.isLiveStream == true ? this.resumeStream() : this.resumeMedia();
       GAEventRequest.requestGA(GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_RESUME, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions());
     },
@@ -453,12 +468,14 @@ define([
 
     mute: function () {
       console.log('techModule::mute');
+
       this.isLiveStream == true ? this.muteStream() : this.muteMedia();
       GAEventRequest.requestGA(GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_MUTE, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions());
     },
 
     unMute: function () {
       console.log('techModule::unMute');
+
       this.isLiveStream == true ? this.unMuteStream() : this.unMuteMedia();
       GAEventRequest.requestGA(GAEventRequest.CATEGORY_DEFAULT, GAEventRequest.ACTION_UNMUTE, GAEventRequest.LABEL_SUCCESS, this.getDefaultGADimensions());
     },
@@ -500,6 +517,52 @@ define([
       this.emit('timeout-reach');
     },
 
+    _callWhiteOps: function (params, mount) {
+      try {
+        //st = session tag
+        params.st = this._createUUID();
+        di = window.location.hostname;
+        ui = '1234';
+        ti = params.st;
+        md = '3'; //Audio
+        de = '2';
+        sr = 'tritondigital.com';
+        pp = 123456;
+        c1 = mount;
+        c2 = params.tdsdk;
+
+        this.xhrProv.request(
+          'https://s.update.tritondigital.com/2/163927/analytics.gif?dt=1639271602866005506000&di=' +
+            di +
+            '&pp=' +
+            pp +
+            '&sr=' +
+            sr +
+            '&ti=' +
+            ti +
+            '&cb=' +
+            new Date().getTime() +
+            '&c1=' +
+            c1 +
+            '&c2=' +
+            c2 +
+            '&md=' +
+            md,
+          null,
+          {
+            method: 'GET',
+            handleAs: 'text',
+            headers: {
+              'X-Requested-With': null,
+              'Content-Type': 'text/plain; charset=utf-8'
+            }
+          }
+        );
+      } catch (e) {
+        log.error('Could not log IVT');
+      }
+    },
+
     _createUUID: function () {
       // http://www.ietf.org/rfc/rfc4122.txt
       var s = [];
@@ -531,6 +594,7 @@ define([
         params.omnyClipId = urlParts[7];
       }
     },
+
     getDefaultGADimensions: function () {
       var gaDimensions = {};
       if (this.mount != null) {

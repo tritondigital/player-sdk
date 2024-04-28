@@ -59,6 +59,7 @@
             text-align: center;
             line-height: 1.6em;
         }
+
         /* Works on Firefox */
 * {  
   scrollbar-color: #899ebe #3b5fa1;
@@ -466,12 +467,25 @@
                         </div>
                     </header>
                     <div id="hls-rewind-containter" class="mx-4 collapse show">
-                        <div class="mb-3" style="display:inline-block">
+                        <div class="mb-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="streamingType" id="streamingType1"
+                                    value="station" ng-click="updateStreamingType('station')" checked>
+                                <label class="form-check-label" for="streamingType1">Station ID</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="streamingType" id="streamingType2"
+                                    value="url" ng-click="updateStreamingType('url')">
+                                <label class="form-check-label" for="streamingType2">URL</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="mb-3 {{streamingType == 'station' ? '' : 'd-none'}}" style="display:inline-block">
                             <label for="hlsRewindStation" class="form-label">Timeshift Station</label>
                             <input type="text" class="form-control" id="hlsRewindStation" placeholder="Enter a Station"
                                 value="TRITONRADIOMUSIC">
                         </div>        
-                        <div class="mb-3" style="display:inline-block">
+                            <div class="mb-3 {{streamingType == 'station' ? '' : 'd-none'}}" style="display:inline-block">
                             <label for="seekFromLive" class="form-label">Seek From Live ( in seconds )</label>  
                             <div class="input-group">
                             <input type="text" class="input-xs" id="seekFromLive" placeholder="Seconds to Seek From Live"
@@ -482,8 +496,12 @@
                             </button>
                            </div> 
                         </div> 
-                        
-                        <div id="maximumRewindTime" ng-if="maximumRewindTime > 0" class="mb-3">
+                            <div class="mb-3 {{streamingType == 'url' ? '' : 'd-none'}}">
+                                <label for="streamUrlUser" class="form-label">Stream URL</label>
+                                <input type="text" class="form-control" id="streamUrlUser"
+                                    placeholder="Enter a media url (audio/video)">
+                            </div>
+                            <div id="maximumRewindTime" ng-if="maximumRewindTime > 0" class="mb-3 {{streamingType == 'station' ? '' : 'd-none'}}">
                             <b>The Cloud Stream Maximum Rewind Time:</b> {{maximumRewindTime}}
                         </div>
                         <div id="timeshiftPrograms" ng-if="timeshiftPrograms.length > 0" class="card">                            
@@ -495,6 +513,7 @@
                                     {{value.title}} -- {{value.startTime }}
                                 </button>
                                 <br/>             
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -728,7 +747,8 @@
                                     placeholder="Enter an Audio File URL"
                                     value="https://traffic.omny.fm/d/clips/9ddc536a-8e34-4bf9-9897-aae8017127ca/c1672dfe-3f96-46f6-b1cb-aaee014a2de3/6b3dbc87-ed2a-4f73-97fc-ab4a00460202/audio.mp3" />
                             </div>
-                            <p>
+                            <div class="row g-2">
+                                <div class="col-auto">
                                 <button class="btn btn-primary" type="button" onclick="playFileClicked()">Play
                                     File</button>
                                 <button class="btn btn-primary" type="button" onclick="pauseFileClicked()">Pause
@@ -741,7 +761,17 @@
                                     sec</button>
                                 <button class="btn btn-primary" type="button" onclick="jumpFileClicked()">Jump 15
                                     sec</button>
-                            </p>
+                                </div>
+                                <div class="col-auto">
+                                    <select class="form-select btn-primary" id="changePlayBackRate" onchange="changePlayBackRate(this.value)">
+                                        <option value= 0>Playback speed: 0x</option>
+                                        <option value= 0.5>Playback speed: 0.5x</option>
+                                        <option selected value= 1>Playback speed: 1x</option>
+                                        <option value= 1.5>Playback speed: 1.5x</option>
+                                        <option value= 2>Playback speed: 2x</option> 
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1206,6 +1236,7 @@
             $scope.updateTimeshiftPrograms = function (value){                
                 $scope.timeshiftPrograms = value;
             }
+
             $scope.updateMenuItem = function (value) {
                 $scope.menuItem = value;
             }

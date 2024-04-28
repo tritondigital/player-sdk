@@ -260,6 +260,7 @@ define([
           this.__initAudioElement();
 
           // //enable hls lib only for ie11 > 8
+
           if (Hls.isSupported() && OsPlatform.os.family !== 'iOS' && (this._liveApiParams.isHLS || this._liveApiParams.isHLSTS)) {
             MediaElement.playAudio(this._liveApiParams.url, true, true, this._liveApiParams.timeshiftOffset, this._liveApiParams.timeshiftEnabled);
           } else {
@@ -270,7 +271,7 @@ define([
     },
 
     pause: function () {
-      if (isCloudStreaming) {
+      if (isCloudStreaming || this.cfg.streamWhileMuted) {
         this.isPaused = true;
         this.stopLTInterval();
         MediaElement.pause();

@@ -279,6 +279,7 @@ define(['exports', './_base/kernel', './sniff', './_base/window', './dom', './do
     // NOTE: Since Shadow DOM might be used, this method can get fired from the wrong context.
     // In this case, Use the document from the window to prevent a null reference exception:
     var doc = win.doc || window.document;
+
     if (refNode) {
       refNode = dom.byId(refNode);
       doc = refNode.ownerDocument;

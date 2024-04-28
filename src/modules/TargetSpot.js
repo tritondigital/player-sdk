@@ -60,10 +60,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/base/CoreModule', 
       try {
         window.ts_swf_embed(tsWrapper.id, this._getComponentSettings(stationId, volume, prl));
       } catch (e) {
-        this.emit('module-error', {
-          id: 'TargetSpot',
-          error: 'Error in targetSpot::embed: ' + e.message
-        });
+        this.emit('module-error', { id: 'TargetSpot', error: 'Error in targetSpot::embed: ' + e.message });
       }
     },
 
@@ -85,15 +82,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/base/CoreModule', 
      *  @ignore
      */
     _getComponentSettings: function (stationId, volume, prl) {
-      return {
-        w: 300,
-        h: 250,
-        prl: prl,
-        pageDomain: 'player.tritondigital.com',
-        htmlBanner: 0,
-        s: stationId,
-        v: volume
-      };
+      return { w: 300, h: 250, prl: prl, pageDomain: 'player.tritondigital.com', htmlBanner: 0, s: stationId, v: volume };
     },
 
     /**

@@ -403,11 +403,7 @@ define(['../_base/lang', '../Evented', '../_base/declare', '../_base/Deferred', 
           old[i] = object[i];
         }
       }
-      this._dirtyObjects.push({
-        object: !_deleting && object,
-        old: old,
-        save: !this._saveNotNeeded
-      });
+      this._dirtyObjects.push({ object: !_deleting && object, old: old, save: !this._saveNotNeeded });
     },
 
     save: function (kwArgs) {

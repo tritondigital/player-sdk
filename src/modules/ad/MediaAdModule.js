@@ -26,10 +26,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/ad/base/AdModule',
       this.inherited(arguments);
 
       if (adConfig.mediaUrl != undefined) this.playAdUrl(adConfig);
-      else
-        this.emit(this.AD_MODULE_MEDIA_EMPTY, {
-          adServerType: AdServerType.MEDIA_AD
-        });
+      else this.emit(this.AD_MODULE_MEDIA_EMPTY, { adServerType: AdServerType.MEDIA_AD });
     },
 
     playAdUrl: function (adConfig) {
@@ -39,16 +36,9 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/ad/base/AdModule',
       if (isWebUrl == true) {
         var clickThrough = adConfig.linkUrl != undefined ? adConfig.linkUrl : null;
 
-        this.emit(this.AD_MODULE_MEDIA_READY, {
-          adServerType: AdServerType.MEDIA_AD,
-          mediaFiles: [{ url: adConfig.mediaUrl }],
-          clickThrough: clickThrough,
-          clickTrackings: null
-        });
+        this.emit(this.AD_MODULE_MEDIA_READY, { adServerType: AdServerType.MEDIA_AD, mediaFiles: [{ url: adConfig.mediaUrl }], clickThrough: clickThrough, clickTrackings: null });
       } else {
-        this.emit(this.AD_MODULE_MEDIA_EMPTY, {
-          adServerType: AdServerType.MEDIA_AD
-        });
+        this.emit(this.AD_MODULE_MEDIA_EMPTY, { adServerType: AdServerType.MEDIA_AD });
       }
     }
   });

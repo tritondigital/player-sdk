@@ -56,14 +56,8 @@ define([
      */
     play: function (config) {
       this._adServerType = null;
-
       this.initConsumptionAnalytics(config);
-      this.html5Player.play({
-        url: config.mediaUrl,
-        type: config.mediaFormat,
-        mediaNode: this.audioNode,
-        isLive: false
-      });
+      this.html5Player.play({ url: config.mediaUrl, type: config.mediaFormat, mediaNode: this.audioNode, isLive: false });
     },
 
     /**
@@ -85,12 +79,7 @@ define([
       this._clickTrackings = config.clickTrackings;
       this._adServerType = config.adServerType;
 
-      this.html5Player.play({
-        url: config.mediaUrl,
-        type: config.mediaFormat,
-        mediaNode: this.videoNode,
-        isLive: false
-      });
+      this.html5Player.play({ url: config.mediaUrl, type: config.mediaFormat, mediaNode: this.videoNode, isLive: false });
     },
 
     /**
@@ -171,6 +160,11 @@ define([
       if (this.html5Player == null) return;
 
       this.html5Player.unMute();
+    },
+
+    changePlayBackRate: function (rate) {
+      if (this.html5Player == null) return;
+      this.html5Player.changePlayBackRate(rate);
     },
 
     /**
@@ -294,12 +288,7 @@ define([
         if (msg) {
           statusMsg = statusMessages[msg.status] ? statusMessages[msg.status] : msg.status;
           codeMsg = statusMessages[msg.code] ? statusMessages[msg.code] : msg.code;
-          this._playbackStatusCallback({
-            type: statusMsg,
-            code: codeMsg,
-            html5Node: e.mediaNode,
-            adServerType: e.adServerType
-          });
+          this._playbackStatusCallback({ type: statusMsg, code: codeMsg, html5Node: e.mediaNode, adServerType: e.adServerType });
         }
       }
     },
@@ -366,10 +355,7 @@ define([
       //HACK DUE TO ANDROID click & touchstart event fired
       if (e.type == 'touchstart') this.onVideoNodeClickHandler.remove();
 
-      this._clickTrackingElementClickedCallback({
-        clickThrough: this._clickThrough,
-        clickTrackings: this._clickTrackings
-      });
+      this._clickTrackingElementClickedCallback({ clickThrough: this._clickThrough, clickTrackings: this._clickTrackings });
     },
 
     initConsumptionAnalytics: function (config) {
@@ -399,10 +385,7 @@ define([
       suspend: { status: 'buffering', code: 'MEDIA_BUFFERING' },
       waiting: { status: 'buffering', code: 'MEDIA_BUFFERING' },
       timeupdate: { status: 'timeupdate', code: 'MEDIA_TIME_UPDATE' },
-      playbackNotAllowed: {
-        status: 'playbackNotAllowed',
-        code: 'PLAY_NOT_ALLOWED'
-      }
+      playbackNotAllowed: { status: 'playbackNotAllowed', code: 'PLAY_NOT_ALLOWED' }
     }
   });
 

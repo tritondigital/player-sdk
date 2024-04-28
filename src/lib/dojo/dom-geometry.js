@@ -228,12 +228,7 @@ define(['./sniff', './_base/window', './dom', './dom-style'], function (has, win
         t -= pcs.borderTopStyle != none ? px(node, pcs.borderTopWidth) : 0;
       }
     }
-    return {
-      l: l,
-      t: t,
-      w: node.offsetWidth + me.w,
-      h: node.offsetHeight + me.h
-    };
+    return { l: l, t: t, w: node.offsetWidth + me.w, h: node.offsetHeight + me.h };
   };
 
   geom.getContentBox = function getContentBox(node, computedStyle) {
@@ -452,10 +447,7 @@ define(['./sniff', './_base/window', './dom', './dom-style'], function (has, win
     var node = win.doc.parentWindow || win.doc.defaultView; // use UI window, not dojo.global window.   TODO: use dojo/window::get() except for circular dependency problem
     return 'pageXOffset' in node
       ? { x: node.pageXOffset, y: node.pageYOffset }
-      : (node = has('quirks') ? win.body(doc) : doc.documentElement) && {
-          x: geom.fixIeBiDiScrollLeft(node.scrollLeft || 0, doc),
-          y: node.scrollTop || 0
-        };
+      : (node = has('quirks') ? win.body(doc) : doc.documentElement) && { x: geom.fixIeBiDiScrollLeft(node.scrollLeft || 0, doc), y: node.scrollTop || 0 };
   };
 
   if (has('ie')) {
@@ -555,12 +547,7 @@ define(['./sniff', './_base/window', './dom', './dom-style'], function (has, win
     node = dom.byId(node);
     var db = win.body(node.ownerDocument),
       ret = node.getBoundingClientRect();
-    ret = {
-      x: ret.left,
-      y: ret.top,
-      w: ret.right - ret.left,
-      h: ret.bottom - ret.top
-    };
+    ret = { x: ret.left, y: ret.top, w: ret.right - ret.left, h: ret.bottom - ret.top };
 
     if (has('ie') < 9) {
       // On IE<9 there's a 2px offset that we need to adjust for, see dojo.getIeDocumentElementOffset()

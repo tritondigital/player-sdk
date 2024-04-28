@@ -854,13 +854,7 @@ define(['./kernel', '../has', './lang'], function (dojo, has, lang) {
     bases[0] = ctor = chains && chains.constructor === 'manual' ? simpleConstructor(bases) : bases.length == 1 ? singleConstructor(props.constructor, t) : chainedConstructor(bases, t);
 
     // add meta information to the constructor
-    ctor._meta = {
-      bases: bases,
-      hidden: props,
-      chains: chains,
-      parents: parents,
-      ctor: props.constructor
-    };
+    ctor._meta = { bases: bases, hidden: props, chains: chains, parents: parents, ctor: props.constructor };
     ctor.superclass = superclass && superclass.prototype;
     ctor.extend = extend;
     ctor.createSubclass = createSubclass;

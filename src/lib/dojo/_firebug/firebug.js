@@ -405,10 +405,7 @@ define(['../_base/kernel', 'require', '../_base/html', '../sniff', '../_base/arr
       };
     } else if (dc.documentElement && dc.documentElement.clientWidth) {
       getViewport = function () {
-        return {
-          w: dc.documentElement.clientWidth,
-          h: dc.documentElement.clientHeight
-        };
+        return { w: dc.documentElement.clientWidth, h: dc.documentElement.clientHeight };
       };
     } else if (dc.body) {
       getViewport = function () {
@@ -712,12 +709,7 @@ define(['../_base/kernel', 'require', '../_base/html', '../sniff', '../_base/arr
     var parts = [];
 
     var reg = /((^%|[^\\]%)(\d+)?(\.)([a-zA-Z]))|((^%|[^\\]%)([a-zA-Z]))/;
-    var appenderMap = {
-      s: appendText,
-      d: appendInteger,
-      i: appendInteger,
-      f: appendFloat
-    };
+    var appenderMap = { s: appendText, d: appendInteger, i: appendInteger, f: appendFloat };
 
     for (var m = reg.exec(format); m; m = reg.exec(format)) {
       var type = m[8] ? m[8] : m[5];

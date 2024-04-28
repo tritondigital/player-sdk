@@ -67,10 +67,7 @@ define(['doh/main', '../_base/array', '../number', '../i18n'], function (doh, ar
     for (var i = 0; i < maxFractionDigits; i++) {
       pattern += '#';
     }
-    var result = number.format(num, {
-      locale: tests.number.locale,
-      pattern: pattern
-    });
+    var result = number.format(num, { locale: tests.number.locale, pattern: pattern });
     t.is(expected, result);
   };
 
@@ -311,34 +308,10 @@ define(['doh/main', '../_base/array', '../number', '../i18n'], function (doh, ar
       name: 'format', // old tests
       runTest: function (t) {
         t.is('0123', number.format(123, { pattern: '0000' }));
-        t.is(
-          '-12,34,567.890',
-          number.format(-1234567.89, {
-            pattern: '#,##,##0.000##',
-            locale: 'en-us'
-          })
-        );
-        t.is(
-          '-12,34,567.89012',
-          number.format(-1234567.890123, {
-            pattern: '#,##,##0.000##',
-            locale: 'en-us'
-          })
-        );
-        t.is(
-          '(1,234,567.89012)',
-          number.format(-1234567.890123, {
-            pattern: '#,##0.000##;(#,##0.000##)',
-            locale: 'en-us'
-          })
-        );
-        t.is(
-          '(1,234,567.89012)',
-          number.format(-1234567.890123, {
-            pattern: '#,##0.000##;(#)',
-            locale: 'en-us'
-          })
-        );
+        t.is('-12,34,567.890', number.format(-1234567.89, { pattern: '#,##,##0.000##', locale: 'en-us' }));
+        t.is('-12,34,567.89012', number.format(-1234567.890123, { pattern: '#,##,##0.000##', locale: 'en-us' }));
+        t.is('(1,234,567.89012)', number.format(-1234567.890123, { pattern: '#,##0.000##;(#,##0.000##)', locale: 'en-us' }));
+        t.is('(1,234,567.89012)', number.format(-1234567.890123, { pattern: '#,##0.000##;(#)', locale: 'en-us' }));
         t.is('50.1%', number.format(0.501, { pattern: '#0.#%', locale: 'en-us' }));
         t.is('98', number.format(1998, { pattern: '00' }));
         t.is('01998', number.format(1998, { pattern: '00000' }));
@@ -356,14 +329,7 @@ define(['doh/main', '../_base/array', '../number', '../i18n'], function (doh, ar
         t.is('-1\xa0000,10', number.format(-1000.1, { places: 2, locale: 'fr-fr' }));
         t.is('-1.234,56', number.format(-1234.56, { places: 2, locale: 'de-de' }));
         t.is('-1,000.10', number.format(-1000.1, { places: 2, locale: 'en-us' }));
-        t.is(
-          '123.46%',
-          number.format(1.23456, {
-            places: 2,
-            locale: 'en-us',
-            type: 'percent'
-          })
-        );
+        t.is('123.46%', number.format(1.23456, { places: 2, locale: 'en-us', type: 'percent' }));
         t.is('123.4', number.format(123.4, { places: '1,3', locale: 'en-us' }));
         t.is('123.45', number.format(123.45, { places: '1,3', locale: 'en-us' }));
         t.is('123.456', number.format(123.456, { places: '1,3', locale: 'en-us' }));
@@ -411,23 +377,8 @@ define(['doh/main', '../_base/array', '../number', '../i18n'], function (doh, ar
         //	t.t(number.parse("9.1093826E-31"));
         t.is(1.23, number.parse('123%', { locale: 'en-us', type: 'percent' }));
         t.is(1.23, number.parse('123%', { places: 0, locale: 'en-us', type: 'percent' }));
-        t.t(
-          isNaN(
-            number.parse('123.46%', {
-              places: 0,
-              locale: 'en-us',
-              type: 'percent'
-            })
-          )
-        );
-        t.is(
-          1.2346,
-          number.parse('123.46%', {
-            places: 2,
-            locale: 'en-us',
-            type: 'percent'
-          })
-        );
+        t.t(isNaN(number.parse('123.46%', { places: 0, locale: 'en-us', type: 'percent' })));
+        t.is(1.2346, number.parse('123.46%', { places: 2, locale: 'en-us', type: 'percent' }));
         t.is(0.501, number.parse('50.1%', { pattern: '#0.#%', locale: 'en-us' }));
 
         t.is(123.4, number.parse('123.4', { pattern: '#0.#', locale: 'en-us' }));

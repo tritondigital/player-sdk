@@ -17,5 +17,6 @@ define([], function () {
   //TODO: add a constructor:
   /*var cuePoint = new TrackCuePoint(e.data.cuePoint);
      cuePoint.cueTitle();*/
+
   return trackCuePoint;
 });

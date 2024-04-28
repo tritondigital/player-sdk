@@ -2734,10 +2734,7 @@
                         sb.addEventListener('updateend', this.e.onSourceBufferUpdateEnd);
                       } catch (error) {
                         _logger2.default.e(this.TAG, error.message);
-                        this._emitter.emit(_mseEvents2.default.ERROR, {
-                          code: error.code,
-                          msg: error.message
-                        });
+                        this._emitter.emit(_mseEvents2.default.ERROR, { code: error.code, msg: error.message });
                         return;
                       }
                     } else {
@@ -2818,10 +2815,7 @@
                     for (var i = 0; i < sb.buffered.length; i++) {
                       var start = sb.buffered.start(i);
                       var end = sb.buffered.end(i);
-                      this._pendingRemoveRanges[type].push({
-                        start: start,
-                        end: end
-                      });
+                      this._pendingRemoveRanges[type].push({ start: start, end: end });
                     }
 
                     // if sb is not updating, let's remove ranges now!
@@ -2920,17 +2914,11 @@
                           if (currentTime - start >= this._config.autoCleanupMaxBackwardDuration) {
                             doRemove = true;
                             var removeEnd = currentTime - this._config.autoCleanupMinBackwardDuration;
-                            this._pendingRemoveRanges[type].push({
-                              start: start,
-                              end: removeEnd
-                            });
+                            this._pendingRemoveRanges[type].push({ start: start, end: removeEnd });
                           }
                         } else if (end < currentTime) {
                           doRemove = true;
-                          this._pendingRemoveRanges[type].push({
-                            start: start,
-                            end: end
-                          });
+                          this._pendingRemoveRanges[type].push({ start: start, end: end });
                         }
                       }
 
@@ -3039,10 +3027,7 @@
                           this._isBufferFull = true;
                         } else {
                           _logger2.default.e(this.TAG, error.message);
-                          this._emitter.emit(_mseEvents2.default.ERROR, {
-                            code: error.code,
-                            msg: error.message
-                          });
+                          this._emitter.emit(_mseEvents2.default.ERROR, { code: error.code, msg: error.message });
                         }
                       }
                     }
@@ -3131,14 +3116,7 @@
 
           exports.default = MSEController;
         },
-        {
-          '../utils/browser.js': 39,
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          './media-segment-info.js': 8,
-          './mse-events.js': 10,
-          events: 2
-        }
+        { '../utils/browser.js': 39, '../utils/exception.js': 40, '../utils/logger.js': 41, './media-segment-info.js': 8, './mse-events.js': 10, events: 2 }
       ],
       10: [
         function (_dereq_, module, exports) {
@@ -3269,18 +3247,12 @@
                   this._worker = work(_transmuxingWorker2.default);
                   this._workerDestroying = false;
                   this._worker.addEventListener('message', this._onWorkerMessage.bind(this));
-                  this._worker.postMessage({
-                    cmd: 'init',
-                    param: [mediaDataSource, config]
-                  });
+                  this._worker.postMessage({ cmd: 'init', param: [mediaDataSource, config] });
                   this.e = {
                     onLoggingConfigChanged: this._onLoggingConfigChanged.bind(this)
                   };
                   _loggingControl2.default.registerListener(this.e.onLoggingConfigChanged);
-                  this._worker.postMessage({
-                    cmd: 'logging_config',
-                    param: _loggingControl2.default.getConfig()
-                  });
+                  this._worker.postMessage({ cmd: 'logging_config', param: _loggingControl2.default.getConfig() });
                 } catch (error) {
                   _logger2.default.e(this.TAG, 'Error while initialize transmuxing worker, fallback to inline transmuxing');
                   this._worker = null;
@@ -3368,10 +3340,7 @@
                 key: 'seek',
                 value: function seek(milliseconds) {
                   if (this._worker) {
-                    this._worker.postMessage({
-                      cmd: 'seek',
-                      param: milliseconds
-                    });
+                    this._worker.postMessage({ cmd: 'seek', param: milliseconds });
                   } else {
                     this._controller.seek(milliseconds);
                   }
@@ -3522,10 +3491,7 @@
                 key: '_onLoggingConfigChanged',
                 value: function _onLoggingConfigChanged(config) {
                   if (this._worker) {
-                    this._worker.postMessage({
-                      cmd: 'logging_config',
-                      param: config
-                    });
+                    this._worker.postMessage({ cmd: 'logging_config', param: config });
                   }
                 }
               },
@@ -4459,13 +4425,7 @@
 
           exports.default = TransmuxingWorker;
         },
-        {
-          '../utils/logger.js': 41,
-          '../utils/logging-control.js': 42,
-          '../utils/polyfill.js': 43,
-          './transmuxing-controller.js': 12,
-          './transmuxing-events.js': 13
-        }
+        { '../utils/logger.js': 41, '../utils/logging-control.js': 42, '../utils/polyfill.js': 43, './transmuxing-controller.js': 12, './transmuxing-events.js': 13 }
       ],
       15: [
         function (_dereq_, module, exports) {
@@ -4781,11 +4741,7 @@
 
           exports.default = AMF;
         },
-        {
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          '../utils/utf8-conv.js': 44
-        }
+        { '../utils/exception.js': 40, '../utils/logger.js': 41, '../utils/utf8-conv.js': 44 }
       ],
       16: [
         function (_dereq_, module, exports) {
@@ -5148,20 +5104,8 @@
               this._mpegAudioL2BitRateTable = [0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, -1];
               this._mpegAudioL3BitRateTable = [0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1];
 
-              this._videoTrack = {
-                type: 'video',
-                id: 1,
-                sequenceNumber: 0,
-                samples: [],
-                length: 0
-              };
-              this._audioTrack = {
-                type: 'audio',
-                id: 2,
-                sequenceNumber: 0,
-                samples: [],
-                length: 0
-              };
+              this._videoTrack = { type: 'video', id: 1, sequenceNumber: 0, samples: [], length: 0 };
+              this._audioTrack = { type: 'audio', id: 2, sequenceNumber: 0, samples: [], length: 0 };
 
               this._littleEndian = (function () {
                 var buf = new ArrayBuffer(2);
@@ -5572,12 +5516,7 @@
                       } else if (aacData.packetType === 1) {
                         // AAC raw frame data
                         var dts = this._timestampBase + tagTimestamp;
-                        var aacSample = {
-                          unit: aacData.data,
-                          length: aacData.data.byteLength,
-                          dts: dts,
-                          pts: dts
-                        };
+                        var aacSample = { unit: aacData.data, length: aacData.data.byteLength, dts: dts, pts: dts };
                         track.samples.push(aacSample);
                         track.length += aacData.data.length;
                       } else {
@@ -5627,12 +5566,7 @@
                         return;
                       }
                       var _dts = this._timestampBase + tagTimestamp;
-                      var mp3Sample = {
-                        unit: data,
-                        length: data.byteLength,
-                        dts: _dts,
-                        pts: _dts
-                      };
+                      var mp3Sample = { unit: data, length: data.byteLength, dts: _dts, pts: _dts };
                       track.samples.push(mp3Sample);
                       track.length += data.length;
                     }
@@ -6290,14 +6224,7 @@
 
           exports.default = FLVDemuxer;
         },
-        {
-          '../core/media-info.js': 7,
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          './amf-parser.js': 15,
-          './demux-errors.js': 16,
-          './sps-parser.js': 19
-        }
+        { '../core/media-info.js': 7, '../utils/exception.js': 40, '../utils/logger.js': 41, './amf-parser.js': 15, './demux-errors.js': 16, './sps-parser.js': 19 }
       ],
       19: [
         function (_dereq_, module, exports) {
@@ -6901,14 +6828,7 @@
             if (typeof superClass !== 'function' && superClass !== null) {
               throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
             }
-            subClass.prototype = Object.create(superClass && superClass.prototype, {
-              constructor: {
-                value: subClass,
-                enumerable: false,
-                writable: true,
-                configurable: true
-              }
-            });
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });
             if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : (subClass.__proto__ = superClass);
           }
           /*
@@ -7082,10 +7002,7 @@
                     .catch(function (e) {
                       _this2._status = _loader.LoaderStatus.kError;
                       if (_this2._onError) {
-                        _this2._onError(_loader.LoaderErrors.EXCEPTION, {
-                          code: -1,
-                          msg: e.message
-                        });
+                        _this2._onError(_loader.LoaderErrors.EXCEPTION, { code: -1, msg: e.message });
                       } else {
                         throw e;
                       }
@@ -7113,10 +7030,7 @@
                           // Report Early-EOF
                           _this3._status = _loader.LoaderStatus.kError;
                           var type = _loader.LoaderErrors.EARLY_EOF;
-                          var info = {
-                            code: -1,
-                            msg: 'Fetch stream meet Early-EOF'
-                          };
+                          var info = { code: -1, msg: 'Fetch stream meet Early-EOF' };
                           if (_this3._onError) {
                             _this3._onError(type, info);
                           } else {
@@ -7167,10 +7081,7 @@
                         (_this3._contentLength === null || (_this3._contentLength !== null && _this3._receivedLength < _this3._contentLength))
                       ) {
                         type = _loader.LoaderErrors.EARLY_EOF;
-                        info = {
-                          code: e.code,
-                          msg: 'Fetch stream meet Early-EOF'
-                        };
+                        info = { code: e.code, msg: 'Fetch stream meet Early-EOF' };
                       } else {
                         type = _loader.LoaderErrors.EXCEPTION;
                         info = { code: e.code, msg: e.message };
@@ -7191,12 +7102,7 @@
 
           exports.default = FetchStreamLoader;
         },
-        {
-          '../utils/browser.js': 39,
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          './loader.js': 24
-        }
+        { '../utils/browser.js': 39, '../utils/exception.js': 40, '../utils/logger.js': 41, './loader.js': 24 }
       ],
       23: [
         function (_dereq_, module, exports) {
@@ -8640,14 +8546,7 @@
             if (typeof superClass !== 'function' && superClass !== null) {
               throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
             }
-            subClass.prototype = Object.create(superClass && superClass.prototype, {
-              constructor: {
-                value: subClass,
-                enumerable: false,
-                writable: true,
-                configurable: true
-              }
-            });
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });
             if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : (subClass.__proto__ = superClass);
           }
           /*
@@ -8785,10 +8684,7 @@
                     reader.readAsArrayBuffer(e.data);
                   } else {
                     this._status = _loader.LoaderStatus.kError;
-                    var info = {
-                      code: -1,
-                      msg: 'Unsupported WebSocket message type: ' + e.data.constructor.name
-                    };
+                    var info = { code: -1, msg: 'Unsupported WebSocket message type: ' + e.data.constructor.name };
 
                     if (this._onError) {
                       this._onError(_loader.LoaderErrors.EXCEPTION, info);
@@ -8834,11 +8730,7 @@
 
           exports.default = WebSocketLoader;
         },
-        {
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          './loader.js': 24
-        }
+        { '../utils/exception.js': 40, '../utils/logger.js': 41, './loader.js': 24 }
       ],
       29: [
         function (_dereq_, module, exports) {
@@ -8924,14 +8816,7 @@
             if (typeof superClass !== 'function' && superClass !== null) {
               throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
             }
-            subClass.prototype = Object.create(superClass && superClass.prototype, {
-              constructor: {
-                value: subClass,
-                enumerable: false,
-                writable: true,
-                configurable: true
-              }
-            });
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });
             if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : (subClass.__proto__ = superClass);
           }
           /*
@@ -9151,10 +9036,7 @@
 
                   if (this._contentLength && e.loaded < this._contentLength) {
                     type = _loader.LoaderErrors.EARLY_EOF;
-                    info = {
-                      code: -1,
-                      msg: 'Moz-Chunked stream meet Early-Eof'
-                    };
+                    info = { code: -1, msg: 'Moz-Chunked stream meet Early-Eof' };
                   } else {
                     type = _loader.LoaderErrors.EXCEPTION;
                     info = { code: -1, msg: e.constructor.name + ' ' + e.type };
@@ -9174,11 +9056,7 @@
 
           exports.default = MozChunkedLoader;
         },
-        {
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          './loader.js': 24
-        }
+        { '../utils/exception.js': 40, '../utils/logger.js': 41, './loader.js': 24 }
       ],
       30: [
         function (_dereq_, module, exports) {
@@ -9264,14 +9142,7 @@
             if (typeof superClass !== 'function' && superClass !== null) {
               throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
             }
-            subClass.prototype = Object.create(superClass && superClass.prototype, {
-              constructor: {
-                value: subClass,
-                enumerable: false,
-                writable: true,
-                configurable: true
-              }
-            });
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });
             if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : (subClass.__proto__ = superClass);
           }
           /*
@@ -9530,10 +9401,7 @@
                 value: function _xhrOnError(e) {
                   this._status = _loader.LoaderStatus.kError;
                   var type = _loader.LoaderErrors.EXCEPTION;
-                  var info = {
-                    code: -1,
-                    msg: e.constructor.name + ' ' + e.type
-                  };
+                  var info = { code: -1, msg: e.constructor.name + ' ' + e.type };
 
                   if (this._onError) {
                     this._onError(type, info);
@@ -9623,11 +9491,7 @@
 
           exports.default = MSStreamLoader;
         },
-        {
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          './loader.js': 24
-        }
+        { '../utils/exception.js': 40, '../utils/logger.js': 41, './loader.js': 24 }
       ],
       31: [
         function (_dereq_, module, exports) {
@@ -9717,14 +9581,7 @@
             if (typeof superClass !== 'function' && superClass !== null) {
               throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
             }
-            subClass.prototype = Object.create(superClass && superClass.prototype, {
-              constructor: {
-                value: subClass,
-                enumerable: false,
-                writable: true,
-                configurable: true
-              }
-            });
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });
             if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : (subClass.__proto__ = superClass);
           }
           /*
@@ -10127,12 +9984,7 @@
 
           exports.default = RangeLoader;
         },
-        {
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          './loader.js': 24,
-          './speed-sampler.js': 27
-        }
+        { '../utils/exception.js': 40, '../utils/logger.js': 41, './loader.js': 24, './speed-sampler.js': 27 }
       ],
       32: [
         function (_dereq_, module, exports) {
@@ -11247,12 +11099,7 @@
 
           exports.default = NativePlayer;
         },
-        {
-          '../config.js': 5,
-          '../utils/exception.js': 40,
-          './player-events.js': 35,
-          events: 2
-        }
+        { '../config.js': 5, '../utils/exception.js': 40, './player-events.js': 35, events: 2 }
       ],
       34: [
         function (_dereq_, module, exports) {
@@ -12952,11 +12799,7 @@
                         var dts = videoSegment.beginDts;
                         var silentFrameDuration = firstSampleDts - videoSegment.beginDts;
                         _logger2.default.v(this.TAG, 'InsertPrefixSilentAudio: dts: ' + dts + ', duration: ' + silentFrameDuration);
-                        samples.unshift({
-                          unit: silentUnit,
-                          dts: dts,
-                          pts: dts
-                        });
+                        samples.unshift({ unit: silentUnit, dts: dts, pts: dts });
                         mdatBytes += silentUnit.byteLength;
                       } // silentUnit == null: Cannot generate, skip
                     } else {
@@ -13400,14 +13243,7 @@
 
           exports.default = MP4Remuxer;
         },
-        {
-          '../core/media-segment-info.js': 8,
-          '../utils/browser.js': 39,
-          '../utils/exception.js': 40,
-          '../utils/logger.js': 41,
-          './aac-silent.js': 36,
-          './mp4-generator.js': 37
-        }
+        { '../core/media-segment-info.js': 8, '../utils/browser.js': 39, '../utils/exception.js': 40, '../utils/logger.js': 41, './aac-silent.js': 36, './mp4-generator.js': 37 }
       ],
       39: [
         function (_dereq_, module, exports) {
@@ -13585,14 +13421,7 @@
             if (typeof superClass !== 'function' && superClass !== null) {
               throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
             }
-            subClass.prototype = Object.create(superClass && superClass.prototype, {
-              constructor: {
-                value: subClass,
-                enumerable: false,
-                writable: true,
-                configurable: true
-              }
-            });
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });
             if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : (subClass.__proto__ = superClass);
           }
 

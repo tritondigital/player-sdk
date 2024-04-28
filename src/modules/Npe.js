@@ -99,14 +99,7 @@ define(['dojo/_base/declare', 'dojo/_base/Deferred', 'dojo/_base/lang', 'sdk/bas
       var xhrProv = new XhrProvider();
       xhrProv.request(
         npUrl,
-        {
-          npeId: npeId,
-          npUrl: npUrl,
-          isDynamicCall: isDynamicCall,
-          artist: artist,
-          title: title,
-          deferred: deferred
-        },
+        { npeId: npeId, npUrl: npUrl, isDynamicCall: isDynamicCall, artist: artist, title: title, deferred: deferred },
         this._getRequestArgs(),
         lang.hitch(this, this._onLoadComplete),
         lang.hitch(this, this._onLoadError)
@@ -121,13 +114,9 @@ define(['dojo/_base/declare', 'dojo/_base/Deferred', 'dojo/_base/lang', 'sdk/bas
       if (requestData.isDynamicCall == false) {
         this._fetchData(true, requestData.npeId, null, requestData.artist, requestData.title, requestData.deferred); //Fallback to dynamic url
       } else {
-        this.emit('npe-song-error', {
-          npeId: this._urlToNPEId(requestData.npUrl)
-        });
+        this.emit('npe-song-error', { npeId: this._urlToNPEId(requestData.npUrl) });
 
-        return requestData.deferred.reject({
-          npeId: this._urlToNPEId(requestData.npUrl)
-        });
+        return requestData.deferred.reject({ npeId: this._urlToNPEId(requestData.npUrl) });
       }
     },
 
@@ -152,10 +141,7 @@ define(['dojo/_base/declare', 'dojo/_base/Deferred', 'dojo/_base/lang', 'sdk/bas
       return {
         handleAs: 'json',
         preventCache: false,
-        headers: {
-          'X-Requested-With': null,
-          'Content-Type': 'text/plain; charset=utf-8'
-        }
+        headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' }
       };
     },
 

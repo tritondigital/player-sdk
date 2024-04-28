@@ -74,11 +74,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/dom',
         if (primaryElementUrl && primaryElementUrl.length > 1 && this.getSyncedElementBySize(300, 250) != null) {
           console.log('syncBanners::_onAdBreakCuePoint - Ad Break - Loading the primary HTML synced element - url=' + primaryElementUrl);
 
-          this.emit('ad-break-synced-element', {
-            type: this.LEGACY,
-            id: this.getSyncedElementBySize(300, 250).id,
-            url: primaryElementUrl
-          });
+          this.emit('ad-break-synced-element', { type: this.LEGACY, id: this.getSyncedElementBySize(300, 250).id, url: primaryElementUrl });
 
           this._loadElementIframe(this.getSyncedElementBySize(300, 250).id, primaryElementUrl, 300, 250);
         }
@@ -86,11 +82,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/dom',
         if (secondaryElementUrl && secondaryElementUrl.length > 1 && this.getSyncedElementBySize(728, 90) != null) {
           console.log('syncBanners::_onAdBreakCuePoint - Ad Break - Loading the secondary HTML synced element - url=' + secondaryElementUrl);
 
-          this.emit('ad-break-synced-element', {
-            type: this.LEGACY,
-            id: this.getSyncedElementBySize(728, 90).id,
-            url: secondaryElementUrl
-          });
+          this.emit('ad-break-synced-element', { type: this.LEGACY, id: this.getSyncedElementBySize(728, 90).id, url: secondaryElementUrl });
 
           this._loadElementIframe(this.getSyncedElementBySize(728, 90).id, secondaryElementUrl, 728, 90);
         }
@@ -129,17 +121,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/dom',
       domConstruct.empty(container);
       domConstruct.create(
         'iframe',
-        {
-          src: adSpotUrl,
-          width: width,
-          height: height,
-          scrolling: 'no',
-          frameborder: 0,
-          marginheight: 0,
-          marginwidth: 0,
-          allowtransparency: true,
-          style: { margin: 0, padding: 0 }
-        },
+        { src: adSpotUrl, width: width, height: height, scrolling: 'no', frameborder: 0, marginheight: 0, marginwidth: 0, allowtransparency: true, style: { margin: 0, padding: 0 } },
         container
       );
     },
@@ -162,11 +144,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/dom',
           function (item, index) {
             var syncAdElement = this.getSyncedElementBySize(item.width, item.height);
             if (syncAdElement != null && dom.byId(syncAdElement.id, document) != null) {
-              this.emit('ad-break-synced-element', {
-                type: this.VAST,
-                id: syncAdElement.id,
-                data: vastCompanions[index]
-              });
+              this.emit('ad-break-synced-element', { type: this.VAST, id: syncAdElement.id, data: vastCompanions[index] });
 
               this.companions.loadVASTCompanionAd(syncAdElement.id, vastCompanions[index]);
             }

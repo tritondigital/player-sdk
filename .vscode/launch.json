@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "attach",
+      "name": "Attach to Karma",
+      "address": "localhost",
+      "port": 9876,
+      "timeout": 60000,
+      "sourceMaps": true,
+      "webRoot": "${workspaceFolder}",
+      "pathMapping": {
+        "/_karma_webpack_": "${workspaceFolder}"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run test file",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal",
+      "program": "${workspaceFolder}/node_modules/.bin/karma",
+      "args": ["start", "--include", "${relativeFile}"],
+      "outFiles": ["${workspaceFolder}/**/*.js"]
+    }
+  ]
+}
+  

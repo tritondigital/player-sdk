@@ -33,11 +33,7 @@ define(['dojo/_base/declare', 'dojo/on'], function (declare, on) {
 
       console.log('coreModule::emit -->->-> eventName=' + eventName);
 
-      on.emit(this.target, eventName, {
-        data: data,
-        bubbles: true,
-        cancelable: true
-      });
+      on.emit(this.target, eventName, { data: data, bubbles: true, cancelable: true });
     }
   });
 

@@ -92,9 +92,11 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/Deferred', 'sdk/mod
 
       def.then(
         function () {
+          //Success !
           window._See.bindEvent('RegApiReady', successCallback);
         },
         function (err) {
+          //Error
           errorCallback();
         },
         function (update) {

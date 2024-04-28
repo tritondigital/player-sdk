@@ -185,25 +185,15 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/_base/lang', 'sdk/modules/mediapl
 
       if (this.sidebandMetadataConnector && this.sidebandMetadataConnector.getCurrentCuePoint() && this._timer >= this.sidebandMetadataConnector.getCurrentCuePoint().timestamp) {
         if (this.sidebandMetadataConnector.getCurrentCuePoint().type === 'track') {
-          this._trackCuePointCallback({
-            cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint()
-          });
+          this._trackCuePointCallback({ cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint() });
         } else if (this.sidebandMetadataConnector.getCurrentCuePoint().type === 'ad') {
-          this._adBreakCuePointCallback({
-            cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint()
-          });
+          this._adBreakCuePointCallback({ cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint() });
         } else if (this.sidebandMetadataConnector.getCurrentCuePoint().type === 'hls') {
-          this._hlsCuePointCallback({
-            cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint()
-          });
+          this._hlsCuePointCallback({ cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint() });
         } else if (this.sidebandMetadataConnector.getCurrentCuePoint().type === 'speech') {
-          this._speechCuePointCallback({
-            cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint()
-          });
+          this._speechCuePointCallback({ cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint() });
         } else if (this.sidebandMetadataConnector.getCurrentCuePoint().type === 'custom') {
-          this._customCuePointCallback({
-            cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint()
-          });
+          this._customCuePointCallback({ cuePoint: this.sidebandMetadataConnector.getCurrentCuePoint() });
         }
 
         this.sidebandMetadataConnector.shiftCuePointQueue();

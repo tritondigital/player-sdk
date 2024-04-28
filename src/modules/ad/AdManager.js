@@ -95,6 +95,7 @@ define([
       var self = this;
 
       this.adServerType = adServerType;
+
       // Audionode initialization on preroll only
       if (config.adBreak !== true) {
         MediaElement.init();
@@ -102,14 +103,11 @@ define([
 
       if (this.config.adBlockerDetected) {
         if (config.adBreak != true) {
-          this.target.emit(this.AD_BLOCKER_DETECTED, {
-            data: {
-              message: 'playAd function has been disabled because Ad Blocker is activated'
-            }
-          });
+          this.target.emit(this.AD_BLOCKER_DETECTED, { data: { message: 'playAd function has been disabled because Ad Blocker is activated' } });
         }
         return;
       }
+
       //start analytics timer
       self._adPrerollTime = 0;
       this._adPrerollTimeIntervall = setInterval(function () {
@@ -129,9 +127,7 @@ define([
       }
 
       if (config.url == null && config.mediaUrl == undefined && config.rawXML == undefined && config.sid == undefined) {
-        this.target.emit(this.AD_PLAYBACK_ERROR, {
-          data: { type: null, error: true }
-        });
+        this.target.emit(this.AD_PLAYBACK_ERROR, { data: { type: null, error: true } });
         return;
       }
 
@@ -167,9 +163,7 @@ define([
           break;
 
         default:
-          this.target.emit(this.AD_PLAYBACK_COMPLETE, {
-            data: { type: null, error: false }
-          });
+          this.target.emit(this.AD_PLAYBACK_COMPLETE, { data: { type: null, error: false } });
           break;
       }
     },
@@ -258,6 +252,7 @@ define([
      */
     _onAdPlaybackStart: function (e) {
       console.log('adManager::_onAdPlaybackStart');
+
       //send analytics preroll success
       //stop timer
       var gaDimensions = {};
@@ -278,6 +273,7 @@ define([
      */
     _onAdPlaybackError: function (e) {
       console.log('adManager::_onAdPlaybackStart');
+
       //send analytics preroll success
       //stop timer
       var gaDimensions = {};
@@ -327,9 +323,7 @@ define([
 
       this._removeListeners();
 
-      this.currentAdModule.emit(this.AD_PLAYBACK_COMPLETE, {
-        type: e.data.type
-      });
+      this.currentAdModule.emit(this.AD_PLAYBACK_COMPLETE, { type: e.data.type });
     },
 
     /**
@@ -367,9 +361,7 @@ define([
       console.log('adManager::_onAdModuleCountdown');
       console.log(e);
 
-      this.currentAdModule.emit(this.AD_COUNTDOWN, {
-        countDown: e.data.countDown
-      });
+      this.currentAdModule.emit(this.AD_COUNTDOWN, { countDown: e.data.countDown });
     },
 
     /**
@@ -394,14 +386,7 @@ define([
         var clickTrackingsLength = clickTrackings.length;
 
         for (var i = 0; i < clickTrackingsLength; i++) {
-          this.xhrProv.request(clickTrackings[i], null, {
-            method: 'GET',
-            handleAs: 'text',
-            headers: {
-              'X-Requested-With': null,
-              'Content-Type': 'text/plain; charset=utf-8'
-            }
-          });
+          this.xhrProv.request(clickTrackings[i], null, { method: 'GET', handleAs: 'text', headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' } });
         }
       }
     },
@@ -423,14 +408,7 @@ define([
             var urls = trackingEvents[i].urls;
             var urlsLength = urls.length;
             for (var j = 0; j < urlsLength; j++) {
-              this.xhrProv.request(urls[j], null, {
-                method: 'GET',
-                handleAs: 'text',
-                headers: {
-                  'X-Requested-With': null,
-                  'Content-Type': 'text/plain; charset=utf-8'
-                }
-              });
+              this.xhrProv.request(urls[j], null, { method: 'GET', handleAs: 'text', headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' } });
             }
           }
         }
@@ -458,9 +436,7 @@ define([
           clickTrackings: data.clickTrackings
         });
       } else {
-        this.target.emit(this.AD_PLAYBACK_ERROR, {
-          data: { type: data.adServerType, error: false }
-        });
+        this.target.emit(this.AD_PLAYBACK_ERROR, { data: { type: data.adServerType, error: false } });
       }
     },
 
@@ -476,10 +452,7 @@ define([
 
       this._removeListeners();
 
-      this.currentAdModule.emit(this.AD_PLAYBACK_COMPLETE, {
-        type: data.adServerType,
-        error: false
-      });
+      this.currentAdModule.emit(this.AD_PLAYBACK_COMPLETE, { type: data.adServerType, error: false });
     },
 
     /**
@@ -494,10 +467,7 @@ define([
 
       this._removeListeners();
 
-      this.currentAdModule.emit(this.AD_PLAYBACK_ERROR, {
-        type: data.adServerType,
-        error: false
-      });
+      this.currentAdModule.emit(this.AD_PLAYBACK_ERROR, { type: data.adServerType, error: false });
     },
 
     /**
@@ -571,14 +541,7 @@ define([
           if (impressionsLength == 0) return;
 
           for (var i = 0; i < impressionsLength; i++) {
-            this.xhrProv.request(impressions[i], null, {
-              method: 'GET',
-              handleAs: 'text',
-              headers: {
-                'X-Requested-With': null,
-                'Content-Type': 'text/plain; charset=utf-8'
-              }
-            });
+            this.xhrProv.request(impressions[i], null, { method: 'GET', handleAs: 'text', headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' } });
           }
         }
       }

@@ -64,10 +64,7 @@ define(['../_base/kernel', '../_base/lang', '../_base/declare', '../_base/array'
           }
         };
       }
-      this._features = {
-        'dojo.data.api.Read': true,
-        'dojo.data.api.Identity': true
-      };
+      this._features = { 'dojo.data.api.Read': true, 'dojo.data.api.Identity': true };
       this._itemsByIdentity = null;
       this._storeRefPropName = '_S'; // Default name for the store reference to attach to every item.
       this._itemNumPropName = '_0'; // Default Item Id for isItem to attach to every item.
@@ -357,11 +354,7 @@ define(['../_base/kernel', '../_base/lang', '../_base/declare', '../_base/array'
           //a load is in progress, we have to defer the fetching to be
           //invoked in the callback.
           if (this._loadInProgress) {
-            this._queuedFetches.push({
-              args: keywordArgs,
-              filter: lang.hitch(self, 'filter'),
-              findCallback: lang.hitch(self, findCallback)
-            });
+            this._queuedFetches.push({ args: keywordArgs, filter: lang.hitch(self, 'filter'), findCallback: lang.hitch(self, findCallback) });
           } else {
             this._loadInProgress = true;
             var getArgs = {

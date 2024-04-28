@@ -108,11 +108,7 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/_base/lang', 'sdk/base/ad/AdQuart
       if (e.code == 'MEDIA_STARTED') {
         //This is fired when a stream is resumed as well that's why we check the currentTime.
         if (this.html5Node.currentTime <= 0.5) {
-          this.emit(this.AD_MODULE_PLAYBACK_START, {
-            id: this.playerNode,
-            type: e.adServerType,
-            error: false
-          });
+          this.emit(this.AD_MODULE_PLAYBACK_START, { id: this.playerNode, type: e.adServerType, error: false });
         }
       } else if (e.code == 'MEDIA_TIME_UPDATE') {
         var currentTime = Math.round(this.html5Node.currentTime);
@@ -120,18 +116,12 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/_base/lang', 'sdk/base/ad/AdQuart
 
         this._checkVideoPlaybackQuartile(this._getTimePercent(currentTime, duration));
 
-        this.emit(this.AD_MODULE_COUNTDOWN, {
-          countDown: duration - currentTime
-        });
+        this.emit(this.AD_MODULE_COUNTDOWN, { countDown: duration - currentTime });
       } else if (e.code == 'MEDIA_ENDED' || e.code == 'MEDIA_ERROR') {
         this.html5OnDemand.stop();
 
         if (!this._destroyAdToggle) {
-          this.emit(this.AD_MODULE_PLAYBACK_COMPLETE, {
-            id: this.playerNode,
-            type: e.adServerType,
-            error: false
-          });
+          this.emit(this.AD_MODULE_PLAYBACK_COMPLETE, { id: this.playerNode, type: e.adServerType, error: false });
         } else {
           this.emit(this.AD_MODULE_PLAYBACK_DESTROY);
         }
@@ -184,11 +174,7 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/_base/lang', 'sdk/base/ad/AdQuart
 
       this._adsTrackingProgress[playbackQuartile] = true;
 
-      this.emit(this.AD_MODULE_QUARTILE, {
-        id: this.playerNode,
-        adQuartile: this.adQuartile.getQuartileByIndex(playbackQuartile),
-        error: false
-      });
+      this.emit(this.AD_MODULE_QUARTILE, { id: this.playerNode, adQuartile: this.adQuartile.getQuartileByIndex(playbackQuartile), error: false });
     },
 
     /**

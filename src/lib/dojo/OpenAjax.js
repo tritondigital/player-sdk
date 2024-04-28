@@ -61,14 +61,7 @@ if (!window['OpenAjax']) {
         scope = window;
       }
       var handle = name + '.' + this._subIndex;
-      var sub = {
-        scope: scope,
-        cb: callback,
-        fcb: filter,
-        data: subscriberData,
-        sid: this._subIndex++,
-        hdl: handle
-      };
+      var sub = { scope: scope, cb: callback, fcb: filter, data: subscriberData, sid: this._subIndex++, hdl: handle };
       var path = name.split('.');
       this._subscribe(this._subscriptions, path, 0, sub);
       return handle;

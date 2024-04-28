@@ -141,20 +141,7 @@ define(['exports', './_base/kernel', './sniff', './_base/lang', './dom', './dom-
     if (propName == 'innerHTML') {
       // special case: assigning HTML
       // the hash lists elements with read-only innerHTML on IE
-      if (
-        has('ie') &&
-        node.tagName.toLowerCase() in
-          {
-            col: 1,
-            colgroup: 1,
-            table: 1,
-            tbody: 1,
-            tfoot: 1,
-            thead: 1,
-            tr: 1,
-            title: 1
-          }
-      ) {
+      if (has('ie') && node.tagName.toLowerCase() in { col: 1, colgroup: 1, table: 1, tbody: 1, tfoot: 1, thead: 1, tr: 1, title: 1 }) {
         ctr.empty(node);
         node.appendChild(ctr.toDom(value, node.ownerDocument));
       } else {

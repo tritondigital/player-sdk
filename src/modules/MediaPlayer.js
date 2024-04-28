@@ -179,6 +179,7 @@ define([
         resume: lang.hitch(this, this._resume),
         seekFromLive: lang.hitch(this, this._seekFromLive),
         seek: lang.hitch(this, this._seek),
+        changePlayBackRate: lang.hitch(this, this._changePlayBackRate),
         seekLive: lang.hitch(this, this.seekLive),
         restartConnectionTimeOut: lang.hitch(this, this.restartConnectionTimeOut),
         setVolume: lang.hitch(this, this.setVolume),
@@ -569,6 +570,7 @@ define([
       this.tech.prepare(); //Prepare tech (Html5 require media tag to initialized before xhr call)
       //init media element
       this._initMediaElement();
+
       if (params.timeShift || params.forceTimeShift) {
         var transports = this.liveStreamConfig.TIMESHIFT_TRANSPORT;
         params.timeshiftEnabled = false; //This is the live play of the timeshift enabled station, so play HLS so that we can get the cookie header.
@@ -671,6 +673,10 @@ define([
             error: error
           });
         });
+    },
+
+    _changePlayBackRate: function (rate) {
+      this.tech.changePlayBackRate(rate);
     },
 
     /**
@@ -836,10 +842,7 @@ define([
       }
 
       if (data.programs.properties) {
-        programs = {
-          maximum_rewind_time_sec: data.maximum_rewind_time_sec,
-          programs: [data.programs]
-        };
+        programs = { maximum_rewind_time_sec: data.maximum_rewind_time_sec, programs: [data.programs] };
         this.emit('timeshift-info', programs);
       }
     },
@@ -854,11 +857,7 @@ define([
         this._liveApiParams.timeShift = true;
         this._liveApiParams.timeshiftEnabled = true;
       } else {
-        this._liveApiParams = {
-          station: station,
-          timeShift: true,
-          timeshiftEnabled: true
-        };
+        this._liveApiParams = { station: station, timeShift: true, timeshiftEnabled: true };
       }
 
       this._stop();
@@ -984,6 +983,7 @@ define([
         if (playerElement) {
           domConstruct.destroy(playerElement);
         }
+
         MediaElement.destroyAudioElement();
         MediaElement.resetAudioNode();
       }, 500);
@@ -1123,7 +1123,20 @@ define([
       );
       domAttr.set(scriptTag, 'type', 'text/javascript');
 
+      switch (this.config.platformId) {
+        case 'dev01':
+          domAttr.set(scriptTag, 'src', '//playerservices.dev01.stw:8082/api/idsync.js?' + queryParam);
+          break;
+        case 'preprod01':
+          domAttr.set(scriptTag, 'src', '//playerservices.preprod01.streamtheworld.net/api/idsync.js?' + queryParam);
+          break;
+        case 'preprodsecured01':
+          domAttr.set(scriptTag, 'src', 'https://playerservices.preprod01.streamtheworld.net/api/idsync.js?' + queryParam);
+          break;
+        default:
       domAttr.set(scriptTag, 'src', '//playerservices.live.streamtheworld.com/api/idsync.js?' + queryParam);
+          break;
+      }
 
       document.getElementsByTagName('body')[0].appendChild(scriptTag);
     },
