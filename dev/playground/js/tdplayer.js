@@ -22,6 +22,19 @@ let selectedRect = null;
 let totalTimeshiftDuration = null;
 let timeshiftSliderStartValue = 0;
 var maximumRewindTime = 10800;
+var rewindedTime = 0;
+let adjustTime;
+let setTime = 0;
+let hours;
+let minutes;
+let seconds;
+
+const program = {
+  startTime: 0,  
+  isProgram: false,
+  programInfo: "" 
+};
+
 
 if (getUrlVars()["platformid"]) {
   platformid = getUrlVars()["platformid"];
@@ -29,7 +42,8 @@ if (getUrlVars()["platformid"]) {
 
   if (platformid === "local") {
     platformIdLink = "local";
-    platformid = "prod";
+     platformid = "prod";
+    //  platformid = "preprod";
   }
 
   if (platformid === "versioning") {
@@ -51,12 +65,10 @@ if (getUrlVars()["platformid"]) {
 
 var tech = getUrlVars()["tech"] || "flash";
 var sbm = getUrlVars()["sbm"] == "false" ? false : true;
-var aSyncCuePointFallback =
-  getUrlVars()["aSyncCuePointFallback"] == "false" ? false : true;
+var aSyncCuePointFallback = getUrlVars()["aSyncCuePointFallback"] == "false" ? false : true;
 var hls = getUrlVars()["hls"] == "false" ? false : true;
-var forceTimeShift = getUrlVars()["forceTimeShift"] == "true" ? true : false;
-var streamWhileMuted =
-  getUrlVars()["streamWhileMuted"] == "true" ? true : false;
+var forceTimeShift =  getUrlVars()["forceTimeShift"] == "true" ? true : false;
+var streamWhileMuted =  getUrlVars()["streamWhileMuted"] == "true" ? true : false;
 var audioAdaptive = getUrlVars()["audioAdaptive"] == "true" ? true : false;
 var streamAutoStart = false;
 
@@ -120,6 +132,18 @@ function initPlayer() {
 
   /* TD player configuration object used to create player instance */
   var tdSdkConfig = {
+    // #STRV-807: Using Analytics.js with universal tracking ID:
+    analytics: {
+      active: GAActive,
+      debug: GADebug,
+      appInstallerId: "tdtestapp",
+      // If tracking id is null, default to Triton analytics (not used in Triton analytics):
+      trackingId: null,
+      trackingEvents: ["play", "stop", "pause", "resume"],
+      sampleRate: 5,
+
+      platformId: platformid + "01",
+    },
     //locale: 'es',
     coreModules: [
       {
@@ -215,12 +239,12 @@ function initPlayer() {
   player = new TDSdk(tdSdkConfig);
 }
 
-function toggleStreamWhileMuted(checked) {
+function toggleStreamWhileMuted(checked){
   this.streamWhileMuted = checked;
   window.location.href = getWindowLocation();
 }
 
-function toggleForceTimeShift(checked) {
+function toggleForceTimeShift(checked){
   this.forceTimeShift = checked;
   window.location.href = getWindowLocation();
 }
@@ -276,6 +300,7 @@ function playFileClicked() {
   player.play({
     file: $("#fileUrl").val(),
     enableOmnyAnalytics: true,
+    forceTimeShift: forceTimeShift,
   });
   podcastPlaying = true;
 }
@@ -295,6 +320,9 @@ function stopFileClicked() {
   if (podcastPlaying) {
     player.stop();
     podcastPlaying = false;
+    if ($("#changePlayBackRate").val() !== "1") {
+      $("#changePlayBackRate").val("1").change();
+    }
   }
 }
 
@@ -307,6 +335,16 @@ function backFileClicked() {
 function jumpFileClicked() {
   if (podcastPlaying) {
     player.seek(currentTime + 15);
+  }
+}
+
+function changePlayBackRate(rate) {
+  if (podcastPlaying) {
+    player.changePlayBackRate(rate)
+  }else{
+    if ($("#changePlayBackRate").val() !== "1") {
+      $("#changePlayBackRate").val("1").change();
+    }
   }
 }
 
@@ -463,6 +501,7 @@ function configurePlatformIdButtons() {
       tcfFramework;
   });
 }
+//End platformid configuration - Triton Digital QA usage only.
 
 function configureGDPRButtons() {
   if (allowPersonalisedAds) {
@@ -633,17 +672,80 @@ function configureGDPRButtons() {
   });
 }
 
+function updateSliderLabel(ui){
+  let rewindedTime 
+  let nowTime = new Date().getTime()
+  let maxRewind = (maximumRewindTime * 1000)
+  if (program.isProgram) {
+    maxRewind = 0;
+    nowTime = program.startTime
+  }
+  if(ui === "forward"){
+    rewindedTime = ((setTime -  nowTime) + maxRewind + 10000)
+  }else if (ui === "rewind") {
+    rewindedTime = ((setTime -  nowTime) + maxRewind - 10000)
+  }else if(ui === "program"){
+    rewindedTime = (setTime -  nowTime) + 1000  
+  }else{
+    rewindedTime = (ui.value -  nowTime) + maxRewind
+  }
+  if(rewindedTime < 0){
+    hours = minutes = seconds ="00"   
+  }else{
+    if(rewindedTime > maxRewind && ui != "program") {
+      rewindedTime = maxRewind
+    }
+    let sliderLable = new Date(rewindedTime);
+    hours = sliderLable.getUTCHours().toString().padStart(2, '0');
+    minutes = sliderLable.getUTCMinutes().toString().padStart(2, '0');
+    seconds = sliderLable.getUTCSeconds().toString().padStart(2, '0');
+  }
+  let value = hours + ':' + minutes + ':' + seconds;
+  $("#sliderMinLabel").text('-' + value)
+}
+
+function updateTime() {
+  if (setTime <= 0) {
+    this.timeshiftSliderStartValue += 1000
+    let label = new Date().toLocaleString('en-US', {   
+      hour: 'numeric', // numeric, 2-digit
+      minute: 'numeric', // numeric, 2-digit
+      second: 'numeric', // numeric, 2-digit
+      hour12: true
+    });
+    console.log("updatetime")
+    updateTimeshiftSlider({"text": label});
+  } else {
+    setTime = setTime + 1000
+    let label = toLocaleDate(setTime, true)
+    if (program.isProgram){
+      updateSliderLabel("program")
+    }
+    updateTimeshiftSlider({"text": label});
+  }
+}
+
+function toLocaleDate(timeStamp, format){
+  let label = new Date(timeStamp).toLocaleString('en-US', {   
+    hour: 'numeric', // numeric, 2-digit
+    minute: 'numeric', // numeric, 2-digit
+    second: 'numeric', // numeric, 2-digit
+    hour12: format
+  });
+  return label;
+}
+
 function initTimeshiftSlider() {
   //Timeshoft slider
   timeshiftSliderStartValue = 0;
-  var handle = $("#custom-handle");
+  var handle = $("#custom-handle");  
   $("#timeshiftSlider").slider({
     range: "max",
-    min: new Date().getTime() - 180000000,
+    min: new Date().getTime() - maximumRewindTime * 1000,
     max: new Date().getTime(),
     value: new Date().getTime(),
-    start: function (event, ui) {
-      //Fires when sliding starts
+    start: function (event, ui) {  
+      //Fires when sliding starts      
       timeshiftSliderStartValue = ui.value;
     },
     create: function () {
@@ -651,37 +753,56 @@ function initTimeshiftSlider() {
     },
     slide: function (event, ui) {
       if (ui.value == 0) {
-        handle.text("Live");
+        handle.text("Live");        
         seekLive();
       } else {
-        let label = new Date(ui.value).toLocaleString("en-US", {
-          hour: "numeric", // numeric, 2-digit
-          minute: "numeric", // numeric, 2-digit
-          second: "numeric", // numeric, 2-digit
-          hour12: true,
-        });
+        setTime = ui.value;
+        clearInterval(adjustTime);
+        adjustTime = setInterval(updateTime, 1000);
+        if (program.isProgram === true) {
+          $("#timeshiftSlider").slider({
+            min: program.startTime,
+            max: new Date().getTime(),
+          })
+          updateSliderLabel("program")
+        }else{
+          $("#timeshiftSlider").slider({
+            min: new Date().getTime() - maximumRewindTime * 1000,
+            max: new Date().getTime(),
+          });
+          updateSliderLabel(ui)
+        }
+        let label = toLocaleDate(setTime, true)
         handle.text(label);
       }
     },
-  });
+  },   
+  
+);
 
-  $("#timeshiftSlider").on("slidestop", function (event, ui) {
-    if (timeshiftSliderStartValue || timeshiftSliderStartValue === 0) {
+  $( "#timeshiftSlider" ).on( "slidestop", function( event, ui ) {
+    if (
+      timeshiftSliderStartValue ||
+      timeshiftSliderStartValue === 0 
+    ) {
       $("#hlsLiveButton").removeClass("active");
-      var seekval = (-1 * (timeshiftSliderStartValue - ui.value)) / 1000;
-      if (seekval != 0 && ui.value != 0) {
+      var seekval = (-1 * (timeshiftSliderStartValue - ui.value)) / 1000 ;
+      if(seekval != 0 && ui.value != 0){
         player.seek(seekval);
         timeshiftSliderStartValue = ui.value;
-      }
+      }        
     }
-  });
+  } );
 }
+
 function initControlsUi() {
+  
   $("#clearDebug").click(function () {
     clearDebugInfo();
   });
 
   $("#flvDownloadLink").click(function () {
+    //https://playerservices.streamtheworld.com/api/livestream-redirect/TRITONRADIOMUSIC.flv
     let flvMountName = $("#flvMount").val();
     let flvUrlMountName = $("#flvUrl").val();
     flvUrlMountName = flvUrlMountName
@@ -775,6 +896,17 @@ function initControlsUi() {
     getArtistData();
   });
 
+  // $("#flowAds").click(function () {
+  //   flowAds = true;
+  //   attachAdListeners();
+  //   player.playAd("vastAd", {
+  //     url: "http://runspot4.tritondigital.com/RunSpotV4.svc/GetVASTAd?&StationID=undefined&MediaFormat=21&RecordImpressionOnCall=false&AdMinimumDuration=0&AdMaximumDuration=900&AdLevelPlacement=1&AdCategory=1",
+  //   });
+  // });
+
+  // Init Volume Slider UI
+  // this.flvVolumeSlider();
+
   //Buttons specific to User Registration / MediaPlayer / Selective Bitrate
   $("#loginButton").click(function () {
     player.UserRegistration.emit("user-logged-in");
@@ -802,6 +934,35 @@ function initControlsUi() {
   });
 }
 
+function playTimeshiftStream(station, mount) {
+  // As per documentation, station takes priority, but if it isn't specified, use the mount:
+  if (!station && !mount) {
+    alert("Please enter a Station");
+    return;
+  }
+
+  debug("playTimeshiftStream - station=" + station);
+
+  $("#stationUser").val("");
+
+  if (adPlaying) player.skipAd();
+
+  if (livePlaying) player.stop();
+
+  player.play({
+    station: station,
+    mount: mount,    
+    forceTimeShift: forceTimeShift,
+    timeShift: false,
+    trackingParameters: {
+      "dist": 'triton-dist-param',
+      "dist-timeshift": 'timeshift-dist-param',
+    }
+    });
+
+  $("#volumeSlider").val(0.5);
+}
+
 function playLiveAudioStream(station, mount) {
   // As per documentation, station takes priority, but if it isn't specified, use the mount:
   if (!station && !mount) {
@@ -819,17 +980,16 @@ function playLiveAudioStream(station, mount) {
 
   player.play({
     station: station,
-    mount: mount,
+    mount: mount,    
     forceTimeShift: forceTimeShift,
-    timeShift: true,
+    timeShift: false,
     trackingParameters: {
-      dist: "player-dist-param",
-      "dist-timeshift": "player-timeshift-dist-param",
-    },
-  });
+      "dist": 'triton-dist-param',
+      "dist-timeshift": 'timeshift-dist-param',
+    }
+    });
 
-  $("#volumeSlider").val(this.currentVolume);
-  flvVolumeSlider(this.currentVolume);
+  $("#volumeSlider").val(0.5);
 }
 
 function clearFlvValues() {
@@ -883,6 +1043,7 @@ function playFLVStream() {
   player.play({
     file: $("#flvUrl").val(),
   });
+
   this.playerStarted = new Date().getTime();
 }
 
@@ -930,24 +1091,37 @@ function flvVolumeSlider(value) {
 }
 
 function playAudio(menuItem, streamingType) {
-  if (menuItem == "hlsRewind") {
-    playLiveAudioStream($("#hlsRewindStation").val(), null);
-    initTimeshiftSlider();
-    updateTimeshiftSlider({
-      value: new Date().getTime(),
-      text: "Live",
-      label: "-" + formatDate(maximumRewindTime),
-      max: new Date().getTime(),
-      min: new Date().getTime() - maximumRewindTime * 1000,
-    });
-    $("#hlsLiveButton").addClass("active");
-  } else if (menuItem === "liveStreaming" && streamingType === "url") {
-    playUrl();
-  } else if (menuItem === "liveStreaming" && streamingType === "station") {
-    playStreamByUserStation();
+  if (program.isProgram){
+    playProgram(program.programInfo)
+  }else{
+    if (menuItem == "hlsRewind" && streamingType === "station") {
+      clearInterval(adjustTime);
+      playTimeshiftStream($("#hlsRewindStation").val(), null);
+      initTimeshiftSlider();    
+      updateTimeshiftSlider({"value": new Date().getTime(),"text": "Live", "label":("-"), "max" : new Date().getTime(), "min" : new Date().getTime() - (maximumRewindTime * 1000)});          
+      $("#hlsLiveButton").addClass("active");
+    } else if (menuItem === "hlsRewind" && streamingType === "url") {
+      getCloudStreamInfo()
+      clearInterval(adjustTime);
+      playUrl(); 
+      initTimeshiftSlider();
+      updateTimeshiftSlider({"value": new Date().getTime(),"text": "Live", "label":("-"), "max" : new Date().getTime(), "min" : new Date().getTime() - (maximumRewindTime * 1000)});
+      $("#hlsLiveButton").addClass("active");
+    } else if (menuItem === "liveStreaming" && streamingType === "url") {
+      playUrl();
+    } else if (menuItem === "liveStreaming" && streamingType === "station") {
+      playStreamByUserStation();
+    }
   }
+  $("#volumeSlider").val(0.5);
 }
-
+function extractStationName(){
+  const url = $("#streamUrlUser").val();
+  const urlParts = url.split("/");
+  const lastPart = urlParts[urlParts.length - 1];
+  const stationName = lastPart.split("_")[0].slice(0, -3);
+  return stationName;
+}
 function playUrl() {
   let url = $("#streamUrlUser").val();
   if (url == "") {
@@ -961,11 +1135,14 @@ function playUrl() {
 
   player.MediaPlayer.tech.playStream({
     url: $("#streamUrlUser").val(),
+    forceTimeShift: true,
     aSyncCuePoint: {
       active: false,
     },
     isHLS: url.indexOf("m3u8") > -1 ? true : false,
   });
+
+  $("#volumeSlider").val(0.5);
 }
 
 function playStreamByUserStation() {
@@ -988,7 +1165,7 @@ function playStreamByUserStation() {
   player.play({
     station: $("#stationUser").val(),
     trackingParameters: params,
-    timeShift: true,
+    timeShift: false,
   });
 
   if (currentStation != $("#stationUser").val()) {
@@ -997,70 +1174,96 @@ function playStreamByUserStation() {
 }
 
 function stopStream() {
+  clearInterval(adjustTime);
+  setTime = 0;
   player.stop();
+  program.isProgramRunning = false;
 }
 
-function seekFromLive() {
+function seekFromLive() {  
   let seconds = parseInt($("#seekFromLive").val());
-  if (seconds < 0) {
+  if(seconds < 0){
     seconds = seconds * -1;
   }
-
-  updateTimeshiftSlider({
-    value: -seconds,
-    text: "-" + formatDate(Math.floor(seconds)),
-  });
-  player.seekFromLive(seconds);
+  
+  updateTimeshiftSlider({"value" : -seconds, "text" : "-" + formatDate(Math.floor(seconds))});
+  player.seekFromLive(seconds) 
 }
+
 function rewind(seconds) {
   $("#hlsLiveButton").removeClass("active");
   let val = $("#timeshiftSlider").slider("option", "value");
   this.timeshiftSliderStartValue = val;
-  let label = new Date(val - 10000).toLocaleString("en-US", {
-    hour: "numeric", // numeric, 2-digit
-    minute: "numeric", // numeric, 2-digit
-    second: "numeric", // numeric, 2-digit
-    hour12: true,
-  });
-  updateTimeshiftSlider({ value: val - 10000, text: label });
+  updateTimeshiftSlider({"value" : (val - 10000)});
+  updateSliderLabel("rewind");
   player.seek(-10);
+  clearInterval(adjustTime);
+  if(setTime === 0){
+    setTime = new Date().getTime() - 10000
+  }else{
+    setTime = setTime - 10000
+  }
+  if (setTime < (new Date().getTime() - maximumRewindTime * 1000)) {
+    console.log("setTime: " + setTime)
+    setTime = new Date().getTime() - maximumRewindTime * 1000
+  }
+  let label = toLocaleDate(setTime, true)
+  updateTimeshiftSlider({"text": label });
+  adjustTime = setInterval(updateTime, 1000);
 }
 
 function forward(seconds) {
   $("#hlsLiveButton").removeClass("active");
-  let val = $("#timeshiftSlider").slider("option", "value");
+  let val = $("#timeshiftSlider").slider("option", "value");  
   this.timeshiftSliderStartValue = val;
-  let label = new Date(val - 10000).toLocaleString("en-US", {
-    hour: "numeric", // numeric, 2-digit
-    minute: "numeric", // numeric, 2-digit
-    second: "numeric", // numeric, 2-digit
-    hour12: true,
-  });
-  updateTimeshiftSlider({ value: val + 10000, text: label });
-  player.seek(10);
+  updateTimeshiftSlider({"value" : (val + 10000)});
+  updateSliderLabel("forward");
+  player.seek(10);  
+  clearInterval(adjustTime);
+  if(setTime === 0){
+    setTime = new Date().getTime() + 10000
+  }else{
+    setTime = setTime + 10000
+  }
+  if(setTime > new Date().getTime()){
+    setTime = new Date().getTime()
+  }
+  let label = toLocaleDate(setTime, true)
+
+  updateTimeshiftSlider({"text": label });s
+  adjustTime = setInterval(updateTime, 1000);
 }
 
-function live() {
-  updateTimeshiftSlider({
-    value: new Date().getTime(),
-    text: "Live",
-    label: "-" + formatDate(maximumRewindTime),
-  });
+function live() {  
+  setTime = 0
+  program.isProgram = false
+  clearInterval(adjustTime)
+  updateTimeshiftSlider({"value": new Date().getTime(), "text": "Live", "label":("-")});
   player.seekLive();
   $("#hlsLiveButton").addClass("active");
 }
 
-function getCloudStreamInfo() {
-  player.getCloudStreamInfo($("#hlsRewindStation").val());
+function getCloudStreamInfo() {  
+  const selectedValue = $("input[name='streamingType']:checked").val();
+  if (selectedValue === "station") {
+    player.getCloudStreamInfo($("#hlsRewindStation").val());
+  } else if (selectedValue === "url") {
+    player.getCloudStreamInfo(extractStationName());
+  }
 }
 
 function pauseStream() {
+  clearInterval(adjustTime);
   player.pause();
 }
 
 function resumeStream() {
-  if (livePlaying) player.resume();
-  else player.play();
+  if (livePlaying) {
+    player.resume();
+    adjustTime = setInterval(updateTime, 1000);
+  }else{ 
+    player.play();
+  }
 }
 
 function seekLive() {
@@ -1087,7 +1290,7 @@ function skipAd() {
   player.skipAd();
 }
 
-function destroyAd() {
+function destroyAd() {  
   player.destroyAd();
 }
 
@@ -1107,26 +1310,27 @@ function getArtistData() {
   if (song && song.artist() != null) song.artist().fetchData();
 }
 
-function updateTimeshiftSlider(sliderObj) {
-  if (sliderObj.min || sliderObj.min === 0) {
+function updateTimeshiftSlider(sliderObj){
+  if (sliderObj.min || sliderObj.min === 0){
     $("#timeshiftSlider").slider("option", "min", sliderObj.min);
   }
-
-  if (sliderObj.max || sliderObj.max === 0) {
+   
+  if (sliderObj.max || sliderObj.max === 0){
     $("#timeshiftSlider").slider("option", "max", sliderObj.max);
   }
 
-  if (sliderObj.value || sliderObj.value === 0) {
+  if (sliderObj.value || sliderObj.value === 0 ){
     $("#timeshiftSlider").slider("option", "value", sliderObj.value);
   }
-
-  if (sliderObj.text) {
+  
+  if (sliderObj.text){
     $("#custom-handle").text(sliderObj.text);
   }
 
-  if (sliderObj.label !== undefined) {
+  if (sliderObj.label !== undefined){
     $("#sliderMinLabel").text(sliderObj.label);
   }
+    
 }
 function onPlayerReady() {
   initControlsUi();
@@ -1171,10 +1375,7 @@ function onPlayerReady() {
 
   player.addEventListener("flv-player-status", onFlvPlayerStatus);
   player.setVolume(1); //Set volume to 100%
-  player.addEventListener(
-    "timeshift-program-load-error",
-    onTimeshiftProgramLoadError
-  );
+  player.addEventListener("timeshift-program-load-error", onTimeshiftProgramLoadError);
 
   setStatus("Api Ready");
   setTech(player.MediaPlayer.tech.type);
@@ -1272,9 +1473,10 @@ function onVpaidAdCompanions(e) {
   //displayVastCompanionAds( e.companions );
 }
 
-function onTimeshiftProgramLoadError(e) {
+function onTimeshiftProgramLoadError(e){
   setStatus("Can't load timeshift program");
 }
+
 function onStreamStarted() {
   livePlaying = true;
 }
@@ -1401,6 +1603,7 @@ function buildInspectorTagTypeHtml(tagType) {
   }
 }
 
+
 function nextPoint() {
   let totalSquaresX = Math.floor(this.canvasWidth / this.blockWidth);
   let totalSquaresY = Math.floor(this.canvasHeight / this.blockHeight);
@@ -1425,13 +1628,14 @@ function scrollToBottom() {
   );
 }
 
-function onTrackCuePoint(e) {
-  debug("<b>New Track cuepoint received</b>");
+function onTrackCuePoint(e) {  
   if (tech == "flash") {
+    debug("<b>New cuepoint received of type:<span class='badge bg-success'>" + e.data.cuePoint.type + "</span></b>");
     debug(
       syntaxHighlight(JSON.stringify(e.data.cuePoint.parameters, undefined, 2))
     );
   } else {
+    debug("<b>New cuepoint received</b>");
     debug(
       "Title:" +
         e.data.cuePoint.cueTitle +
@@ -1439,6 +1643,7 @@ function onTrackCuePoint(e) {
         e.data.cuePoint.artistName
     );
   }
+
   console.log(e);
 
   if (currentTrackCuePoint && currentTrackCuePoint != e.data.cuePoint)
@@ -1452,7 +1657,6 @@ function onTrackCuePoint(e) {
     );
 
   currentTrackCuePoint = e.data.cuePoint;
-
   this.trackInfo = $("#trackInfo").html(
     "<b>Title: </b>" +
       currentTrackCuePoint.cueTitle +
@@ -1484,11 +1688,13 @@ function onAdBreak(e) {
   setStatus("Commercial break...");
   if (tech == "flash") {
     debug(syntaxHighlight(JSON.stringify(e.data.adBreakData, null, 2)));
+    // logCuePointInfo(e.data.adBreakData, true, null, null);
   }
   console.log(e);
 }
 
 function onAdEndBreak(e) {
+  debug("Ad Break End");
   setStatus(this.streamStatus);
   console.log(e);
 }
@@ -1578,6 +1784,7 @@ function onStatus(e) {
   }
 
   this.streamStatus = e.data.status;
+
   if (e.data.code == "STATION_NOT_FOUND" && tech == "flash") {
     $(".flv-player-button")
       .addClass("fa-play-circle")
@@ -1587,7 +1794,7 @@ function onStatus(e) {
     $(".flv-player-button-parent").removeAttr("disabled");
   }
 
-  setStatus(e.data.status);
+  setStatus(e.data.status);  
   this.scope.updatePlayerStatus(e.data.code);
 }
 
@@ -1708,104 +1915,72 @@ function onPwaDataLoaded(e) {
   $("#asyncData").html("<div>" + tableContent + "</div>");
 }
 
-function onTimeshiftInfo(e) {
-  let abc = angular.element($("#hls-rewind-containter"));
-  let abcScope = abc.scope();
+function onTimeshiftInfo(e) {  
+  let abc = angular.element($("#hls-rewind-containter"));  
+  let abcScope = abc.scope(); 
 
-  if (e.data.maximum_rewind_time_sec) {
-    maximumRewindTime = e.data.maximum_rewind_time_sec;
+  if(e.data.maximum_rewind_time_sec){
+    maximumRewindTime = e.data.maximum_rewind_time_sec;     
     abcScope.$apply(function () {
       abcScope.updateMaximumRewindTime(maximumRewindTime);
     });
   }
 
-  if (e.data.programs) {
-    let timeshiftPrograms = e.data.programs.map((item) => {
+  if(e.data.programs){   
+    let timeshiftPrograms = e.data.programs.map((item)=>{
       let programId = item.program_episode_id || item.properties.program_id;
-      let label = new Date(
-        parseInt(item.properties.program_time_start.trim())
-      ).toLocaleString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-        hour12: false,
-      });
+      program.startTime = new Date(parseInt(item.properties.program_time_start.trim())).getTime();
+      let label = toLocaleDate(program.startTime, false)
 
-      return {
-        name: item.name,
-        title: item.properties.program_title,
-        startTime: label,
-        programId: programId ? programId.trim() : "0",
-      };
+      return {"name": item.name, 
+        "title": item.properties.program_title, 
+        "startTime": label,
+        "programId": (programId) ? programId.trim() : "0"
+        }
     });
-
+    
     abcScope.$apply(function () {
       abcScope.updateTimeshiftPrograms(timeshiftPrograms);
-    });
+    });    
   }
-
-  if (e.data.programDuration) {
+  
+  if(e.data.programDuration){
     totalTimeshiftDuration = e.data.totalduration - 10;
-    let label = new Date(e.data.programStartTime).toLocaleString("en-US", {
-      hour: "numeric", // numeric, 2-digit
-      minute: "numeric", // numeric, 2-digit
-      second: "numeric", // numeric, 2-digit
-      hour12: true,
-    });
-    updateTimeshiftSlider({ value: e.data.programStartTime, text: label });
+    let label = toLocaleDate(e.data.programStartTime, true)
+    updateTimeshiftSlider({"value": e.data.programStartTime, "text": label });     
   }
 
-  if (e.data.totalduration) {
-    totalTimeshiftDuration = e.data.totalduration - 10;
-    let label = new Date(e.data.programStartTime).toLocaleString("en-US", {
-      hour: "numeric", // numeric, 2-digit
-      minute: "numeric", // numeric, 2-digit
-      second: "numeric", // numeric, 2-digit
-      hour12: true,
-    });
-    updateTimeshiftSlider({
-      min: e.data.programStartTime,
-      max: new Date().getTime(),
-      label: label,
-    });
+  if(e.data.totalduration){
+    maximumRewindTime = Math.round((e.data.totalduration/100))*100 ;
+    updateTimeshiftSlider({"min": (new Date().getTime() - (maximumRewindTime * 1000)) ,"max": new Date().getTime()}); 
   }
 
-  if (e.data.currentTime) {
-    let label = new Date(e.data.currentTime).toLocaleString("en-US", {
-      hour: "numeric", // numeric, 2-digit
-      minute: "numeric", // numeric, 2-digit
-      second: "numeric", // numeric, 2-digit
-      hour12: true,
-    });
-    updateTimeshiftSlider({
-      max: new Date().getTime(),
-      text: label,
-      value: e.data.currentTime,
-    });
-  }
+  if(e.data.currentTime){
+    let label = toLocaleDate(e.data.currentTime, true)
+    updateTimeshiftSlider({"max": new Date().getTime(), "text": label, "value": e.data.currentTime});     
+  }  
+  
 }
 
-function playProgram(timeshiftProgram) {
-  initTimeshiftSlider();
-  updateTimeshiftSlider({
-    value: new Date().getTime(),
-    text: "Live",
-    label: "-",
-    max: new Date().getTime(),
-    min: new Date().getTime() - maximumRewindTime * 1000,
-  });
-  player.playProgram(
-    timeshiftProgram.programId,
-    0,
-    $("#hlsRewindStation").val()
-  );
+function playProgram(timeshiftProgram){
+  program.programInfo = timeshiftProgram;
+  clearInterval(adjustTime);
+  initTimeshiftSlider();    
+  updateTimeshiftSlider({"value": 0,"text": " ", "label": "-", "max" : new Date().getTime(), "min" : program.startTime});
+  program.isProgram = true;
+  const selectedValue = $("input[name='streamingType']:checked").val();
+  if (selectedValue === "station") {
+    player.playProgram(timeshiftProgram.programId, 0, $("#hlsRewindStation").val());
+  } else if (selectedValue === "url") {
+    player.playProgram(timeshiftProgram.programId, 0, extractStationName());
+  }
 }
 
 function formatDate(seconds) {
   var date = new Date(null);
   date.setSeconds(seconds);
   var hhmmssFormat = date.toISOString().substr(11, 8);
-  return hhmmssFormat;
+  return hhmmssFormat;  
 }
 function playTAPAd() {
   detachAdListeners();
@@ -1940,7 +2115,7 @@ function attachAdListeners() {
   player.addEventListener("ad-playback-complete", onAdPlaybackComplete);
   player.addEventListener("ad-playback-destroy", onAdPlaybackDestroy);
   player.addEventListener("ad-countdown", onAdCountdown);
-  player.addEventListener("vpaid-ad-companions", onVpaidAdCompanions);
+  player.addEventListener("vpaid-ad-companions", onVpaidAdCompanions);  
 }
 
 function detachAdListeners() {
@@ -2122,6 +2297,7 @@ function debug(info, error) {
 function clearDebugInfo() {
   $("#debugInformation").html("");
 }
+
 function clearMetadataInfo() {
   $("#metadataInfo").html("");
 }
@@ -2298,7 +2474,7 @@ function getWindowLocation() {
     "&tcfFramework=" +
     tcfFramework +
     "&playerServicesRegion=" +
-    playerServicesRegion +
+    playerServicesRegion+
     "&streamWhileMuted=" +
     streamWhileMuted +
     "&forceTimeShift=" +
