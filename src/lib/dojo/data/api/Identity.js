@@ -1,8 +1,8 @@
-define(["../../_base/declare", "./Read"], function (declare, Read) {
+define(['../../_base/declare', './Read'], function (declare, Read) {
   // module:
   //		dojo/data/api/Identity
 
-  return declare("dojo.data.api.Identity", Read, {
+  return declare('dojo.data.api.Identity', Read, {
     // summary:
     //		This is an abstract API that data provider implementations conform to.
     //		This file defines methods signatures and intentionally leaves all the
@@ -12,8 +12,8 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // summary:
       //		See dojo/data/api/Read.getFeatures()
       return {
-        "dojo.data.api.Read": true,
-        "dojo.data.api.Identity": true,
+        'dojo.data.api.Read': true,
+        'dojo.data.api.Identity': true
       };
     },
 
@@ -30,7 +30,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // example:
       //	|	var itemId = store.getIdentity(kermit);
       //	|	assert(kermit === store.findByIdentity(store.getIdentity(kermit)));
-      throw new Error("Unimplemented API: dojo.data.api.Identity.getIdentity");
+      throw new Error('Unimplemented API: dojo.data.api.Identity.getIdentity');
     },
 
     getIdentityAttributes: function (/* dojo/data/api/Item */ item) {
@@ -50,9 +50,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       //	|	var itemId = store.getIdentity(kermit);
       //	|	var identifiers = store.getIdentityAttributes(itemId);
       //	|	assert(typeof identifiers === "array" || identifiers === null);
-      throw new Error(
-        "Unimplemented API: dojo.data.api.Identity.getIdentityAttributes"
-      );
+      throw new Error('Unimplemented API: dojo.data.api.Identity.getIdentityAttributes');
     },
 
     fetchItemByIdentity: function (/* object */ keywordArgs) {
@@ -101,10 +99,8 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       //		onItem.call(dojo.global, item, request)
 
       if (!this.isItemLoaded(keywordArgs.item)) {
-        throw new Error(
-          "Unimplemented API: dojo.data.api.Identity.fetchItemByIdentity"
-        );
+        throw new Error('Unimplemented API: dojo.data.api.Identity.fetchItemByIdentity');
       }
-    },
+    }
   });
 });

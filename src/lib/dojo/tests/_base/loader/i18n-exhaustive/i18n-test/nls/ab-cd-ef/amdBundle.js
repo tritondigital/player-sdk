@@ -1,4 +1,4 @@
 define({
-  amdBundle: "amdBundle-ab-cd-ef",
-  abCdEfValueOnly: "abCdEfValueOnly",
+  amdBundle: 'amdBundle-ab-cd-ef',
+  abCdEfValueOnly: 'abCdEfValueOnly'
 });

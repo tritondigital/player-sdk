@@ -14,11 +14,7 @@
             { "name": "Mombasa", "type": "city" }
           ]
         },
-        {
-          "name": "Sudan",
-          "type": "country",
-          "children": { "name": "Khartoum", "type": "city" }
-        }
+        { "name": "Sudan", "type": "country", "children": { "name": "Khartoum", "type": "city" } }
       ]
     },
     {
@@ -31,16 +27,7 @@
         { "name": "Mongolia", "type": "country" }
       ]
     },
-    {
-      "name": "Australia",
-      "type": "continent",
-      "population": "21 million",
-      "children": {
-        "name": "Commonwealth of Australia",
-        "type": "country",
-        "population": "21 million"
-      }
-    },
+    { "name": "Australia", "type": "continent", "population": "21 million", "children": { "name": "Commonwealth of Australia", "type": "country", "population": "21 million" } },
     {
       "name": "Europe",
       "type": "continent",
@@ -61,18 +48,8 @@
           "population": "108 million",
           "area": "1,972,550 sq km",
           "children": [
-            {
-              "name": "Mexico City",
-              "type": "city",
-              "population": "19 million",
-              "timezone": "-6 UTC"
-            },
-            {
-              "name": "Guadalajara",
-              "type": "city",
-              "population": "4 million",
-              "timezone": "-6 UTC"
-            }
+            { "name": "Mexico City", "type": "city", "population": "19 million", "timezone": "-6 UTC" },
+            { "name": "Guadalajara", "type": "city", "population": "4 million", "timezone": "-6 UTC" }
           ]
         },
         {
@@ -81,18 +58,8 @@
           "population": "33 million",
           "area": "9,984,670 sq km",
           "children": [
-            {
-              "name": "Ottawa",
-              "type": "city",
-              "population": "0.9 million",
-              "timezone": "-5 UTC"
-            },
-            {
-              "name": "Toronto",
-              "type": "city",
-              "population": "2.5 million",
-              "timezone": "-5 UTC"
-            }
+            { "name": "Ottawa", "type": "city", "population": "0.9 million", "timezone": "-5 UTC" },
+            { "name": "Toronto", "type": "city", "population": "2.5 million", "timezone": "-5 UTC" }
           ]
         },
         { "name": "United States of America", "type": "country" }

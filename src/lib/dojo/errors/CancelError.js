@@ -1,4 +1,4 @@
-define(["./create"], function (create) {
+define(['./create'], function (create) {
   // module:
   //		dojo/errors/CancelError
 
@@ -9,5 +9,5 @@ define(["./create"], function (create) {
 	};
 	=====*/
 
-  return create("CancelError", null, null, { dojoType: "cancel" });
+  return create('CancelError', null, null, { dojoType: 'cancel' });
 });

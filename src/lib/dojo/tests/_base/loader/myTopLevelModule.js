@@ -1,3 +1,3 @@
-dojo.provide("myTopLevelModule");
-dojo.require("myTopLevelModule.myModule");
-myTopLevelModule.name = "myTopLevelModule";
+dojo.provide('myTopLevelModule');
+dojo.require('myTopLevelModule.myModule');
+myTopLevelModule.name = 'myTopLevelModule';

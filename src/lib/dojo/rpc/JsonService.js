@@ -1,20 +1,13 @@
-define([
-  "../_base/declare",
-  "../_base/Deferred",
-  "../_base/json",
-  "../_base/lang",
-  "../_base/xhr",
-  "./RpcService",
-], function (declare, Deferred, json, lang, xhr, RpcService) {
+define(['../_base/declare', '../_base/Deferred', '../_base/json', '../_base/lang', '../_base/xhr', './RpcService'], function (declare, Deferred, json, lang, xhr, RpcService) {
   // module:
   //		dojo/rpc/JsonService
 
-  return declare("dojo.rpc.JsonService", RpcService, {
+  return declare('dojo.rpc.JsonService', RpcService, {
     // summary:
     //		TODOC
 
     bustCache: false,
-    contentType: "application/json-rpc",
+    contentType: 'application/json-rpc',
     lastSubmissionId: 0,
 
     callRemote: function (method, params) {
@@ -48,12 +41,9 @@ define([
         postData: this.createRequest(method, parameters),
         contentType: this.contentType,
         timeout: this.timeout,
-        handleAs: "json-comment-optional",
+        handleAs: 'json-comment-optional'
       });
-      def.addCallbacks(
-        this.resultCallback(deferredRequestHandler),
-        this.errorCallback(deferredRequestHandler)
-      );
+      def.addCallbacks(this.resultCallback(deferredRequestHandler), this.errorCallback(deferredRequestHandler));
     },
 
     createRequest: function (method, params) {
@@ -76,17 +66,17 @@ define([
       //		Object containing envelope of data we receive from the server
 
       if (lang.isObject(obj)) {
-        if ("result" in obj) {
+        if ('result' in obj) {
           return obj.result;
         }
-        if ("Result" in obj) {
+        if ('Result' in obj) {
           return obj.Result;
         }
-        if ("ResultSet" in obj) {
+        if ('ResultSet' in obj) {
           return obj.ResultSet;
         }
       }
       return obj;
-    },
+    }
   });
 });

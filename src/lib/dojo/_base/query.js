@@ -1,4 +1,4 @@
-define(["../query", "./NodeList"], function (query) {
+define(['../query', './NodeList'], function (query) {
   // module:
   //		dojo/_base/query
 

@@ -1,10 +1,4 @@
-define([
-  "../dom",
-  "../sniff",
-  "../_base/array",
-  "../_base/lang",
-  "../_base/window",
-], function (dom, has, array, lang, win) {
+define(['../dom', '../sniff', '../_base/array', '../_base/lang', '../_base/window'], function (dom, has, array, lang, win) {
   // module:
   //		dojo/selector/acme
 
@@ -55,13 +49,13 @@ define([
     return win.doc;
   };
   // NOTE(alex): the spec is idiotic. CSS queries should ALWAYS be case-sensitive, but nooooooo
-  var cssCaseBug = getDoc().compatMode == "BackCompat";
+  var cssCaseBug = getDoc().compatMode == 'BackCompat';
 
   ////////////////////////////////////////////////////////////////////////
   // Global utilities
   ////////////////////////////////////////////////////////////////////////
 
-  var specials = ">~+";
+  var specials = '>~+';
 
   // global thunk to determine whether we should treat the current query as
   // case sensitive or not. This switch is flipped by the query evaluator
@@ -103,11 +97,11 @@ define([
     if (specials.indexOf(query.slice(-1)) >= 0) {
       // if we end with a ">", "+", or "~", that means we're implicitly
       // searching all children, so make it explicit
-      query += " * ";
+      query += ' * ';
     } else {
       // if you have not provided a terminator, one will be provided for
       // you...
-      query += " ";
+      query += ' ';
     }
 
     var ts = function (/*Integer*/ s, /*Integer*/ e) {
@@ -130,8 +124,8 @@ define([
       inId = -1,
       inTag = -1,
       currentQuoteChar,
-      lc = "",
-      cc = "",
+      lc = '',
+      cc = '',
       pStart;
 
     // iteration vars
@@ -158,7 +152,7 @@ define([
       // to handle the next type of token (tag or operator).
       if (inTag >= 0) {
         var tv = inTag == x ? null : ts(inTag, x); // .toLowerCase();
-        currentPart[specials.indexOf(tv) < 0 ? "tag" : "oper"] = tv;
+        currentPart[specials.indexOf(tv) < 0 ? 'tag' : 'oper'] = tv;
         inTag = -1;
       }
     };
@@ -166,7 +160,7 @@ define([
     var endId = function () {
       // called when the tokenizer might be at the end of an ID portion of a match
       if (inId >= 0) {
-        currentPart.id = ts(inId, x).replace(/\\/g, "");
+        currentPart.id = ts(inId, x).replace(/\\/g, '');
         inId = -1;
       }
     };
@@ -176,7 +170,7 @@ define([
       // match. CSS allows for multiple classes, so we augment the
       // current item with another class in its list
       if (inClass >= 0) {
-        currentPart.classes.push(ts(inClass + 1, x).replace(/\\/g, ""));
+        currentPart.classes.push(ts(inClass + 1, x).replace(/\\/g, ''));
         inClass = -1;
       }
     };
@@ -197,10 +191,7 @@ define([
       // needs to do any iteration. Many simple selectors don't, and
       // we can avoid significant construction-time work by advising
       // the system to skip them
-      currentPart.loops =
-        currentPart.pseudos.length ||
-        currentPart.attrs.length ||
-        currentPart.classes.length;
+      currentPart.loops = currentPart.pseudos.length || currentPart.attrs.length || currentPart.classes.length;
 
       currentPart.oquery = currentPart.query = ts(pStart, x); // save the full expression as a string
 
@@ -210,9 +201,7 @@ define([
       // system has a global switch to figure out if the current
       // expression needs to be case sensitive or not and it will use
       // otag or tag accordingly
-      currentPart.otag = currentPart.tag = currentPart["oper"]
-        ? null
-        : currentPart.tag || "*";
+      currentPart.otag = currentPart.tag = currentPart['oper'] ? null : currentPart.tag || '*';
 
       if (currentPart.tag) {
         // if we're in a case-insensitive HTML doc, we likely want
@@ -228,8 +217,7 @@ define([
         // list and attach them to the next match. The evaluator is
         // responsible for sorting out how to handle them.
         currentPart.infixOper = queryParts.pop();
-        currentPart.query =
-          currentPart.infixOper.query + " " + currentPart.query;
+        currentPart.query = currentPart.infixOper.query + ' ' + currentPart.query;
         /*
 				console.debug(	"swapping out the infix",
 								currentPart.infixOper,
@@ -250,7 +238,7 @@ define([
 
       // someone is trying to escape something, so don't try to match any
       // fragments. We assume we're inside a literal.
-      if (lc == "\\") {
+      if (lc == '\\') {
         continue;
       }
       if (!currentPart) {
@@ -288,7 +276,7 @@ define([
           id: null, // the id component of a rule
           getTag: function () {
             return caseSensitive ? this.otag : this.tag;
-          },
+          }
         };
 
         // if we don't have a part, we assume we're going to start at
@@ -313,7 +301,7 @@ define([
 
       if (inBrackets >= 0) {
         // look for a the close first
-        if (cc == "]") {
+        if (cc == ']') {
           // if we're in a [...] clause and we end, do assignment
           if (!_cp.attr) {
             // no attribute match was previously begun, so we
@@ -337,17 +325,17 @@ define([
           // remove backslash escapes from an attribute match, since DOM
           // querying will get attribute values without backslashes
           if (_cp.matchFor) {
-            _cp.matchFor = _cp.matchFor.replace(/\\/g, "");
+            _cp.matchFor = _cp.matchFor.replace(/\\/g, '');
           }
 
           // end the attribute by adding it to the list of attributes.
           currentPart.attrs.push(_cp);
           _cp = null; // necessary?
           inBrackets = inMatchFor = -1;
-        } else if (cc == "=") {
+        } else if (cc == '=') {
           // if the last char was an operator prefix, make sure we
           // record it along with the "=" operator.
-          var addToCc = "|~^$*".indexOf(lc) >= 0 ? lc : "";
+          var addToCc = '|~^$*'.indexOf(lc) >= 0 ? lc : '';
           _cp.type = addToCc + cc;
           _cp.attr = ts(inBrackets + 1, x - addToCc.length);
           inMatchFor = x + 1;
@@ -357,25 +345,25 @@ define([
         // if we're in a parenthetical expression, we need to figure
         // out if it's attached to a pseudo-selector rule like
         // :nth-child(1)
-        if (cc == ")") {
+        if (cc == ')') {
           if (inPseudo >= 0) {
             _cp.value = ts(inParens + 1, x);
           }
           inPseudo = inParens = -1;
         }
-      } else if (cc == "#") {
+      } else if (cc == '#') {
         // start of an ID match
         endAll();
         inId = x + 1;
-      } else if (cc == ".") {
+      } else if (cc == '.') {
         // start of a class match
         endAll();
         inClass = x;
-      } else if (cc == ":") {
+      } else if (cc == ':') {
         // start of a pseudo-selector match
         endAll();
         inPseudo = x;
-      } else if (cc == "[") {
+      } else if (cc == '[') {
         // start of an attribute match.
         endAll();
         inBrackets = x;
@@ -385,20 +373,20 @@ define([
 					attr: null, type: null, matchFor: null
 					=====*/
         };
-      } else if (cc == "(") {
+      } else if (cc == '(') {
         // we really only care if we've entered a parenthetical
         // expression if we're already inside a pseudo-selector match
         if (inPseudo >= 0) {
           // provide a new structure for the pseudo match to fill-in
           _cp = {
             name: ts(inPseudo + 1, x),
-            value: null,
+            value: null
           };
           currentPart.pseudos.push(_cp);
         }
         inParens = x;
       } else if (
-        cc == " " &&
+        cc == ' ' &&
         // if it's a space char and the last char is too, consume the
         // current one without doing more work
         lc != cc
@@ -444,28 +432,25 @@ define([
   };
 
   // FIXME: need to coalesce _getAttr with defaultGetter
-  var blank = "";
+  var blank = '';
   var _getAttr = function (elem, attr) {
     if (!elem) {
       return blank;
     }
-    if (attr == "class") {
+    if (attr == 'class') {
       return elem.className || blank;
     }
-    if (attr == "for") {
+    if (attr == 'for') {
       return elem.htmlFor || blank;
     }
-    if (attr == "style") {
+    if (attr == 'style') {
       return elem.style.cssText || blank;
     }
-    return (
-      (caseSensitive ? elem.getAttribute(attr) : elem.getAttribute(attr, 2)) ||
-      blank
-    );
+    return (caseSensitive ? elem.getAttribute(attr) : elem.getAttribute(attr, 2)) || blank;
   };
 
   var attrs = {
-    "*=": function (attr, value) {
+    '*=': function (attr, value) {
       return function (elem) {
         // E[foo*="bar"]
         //		an E element whose "foo" attribute value contains
@@ -473,7 +458,7 @@ define([
         return _getAttr(elem, attr).indexOf(value) >= 0;
       };
     },
-    "^=": function (attr, value) {
+    '^=': function (attr, value) {
       // E[foo^="bar"]
       //		an E element whose "foo" attribute value begins exactly
       //		with the string "bar"
@@ -481,52 +466,52 @@ define([
         return _getAttr(elem, attr).indexOf(value) == 0;
       };
     },
-    "$=": function (attr, value) {
+    '$=': function (attr, value) {
       // E[foo$="bar"]
       //		an E element whose "foo" attribute value ends exactly
       //		with the string "bar"
       return function (elem) {
-        var ea = " " + _getAttr(elem, attr);
+        var ea = ' ' + _getAttr(elem, attr);
         var lastIndex = ea.lastIndexOf(value);
         return lastIndex > -1 && lastIndex == ea.length - value.length;
       };
     },
-    "~=": function (attr, value) {
+    '~=': function (attr, value) {
       // E[foo~="bar"]
       //		an E element whose "foo" attribute value is a list of
       //		space-separated values, one of which is exactly equal
       //		to "bar"
 
       // return "[contains(concat(' ',@"+attr+",' '), ' "+ value +" ')]";
-      var tval = " " + value + " ";
+      var tval = ' ' + value + ' ';
       return function (elem) {
-        var ea = " " + _getAttr(elem, attr) + " ";
+        var ea = ' ' + _getAttr(elem, attr) + ' ';
         return ea.indexOf(tval) >= 0;
       };
     },
-    "|=": function (attr, value) {
+    '|=': function (attr, value) {
       // E[hreflang|="en"]
       //		an E element whose "hreflang" attribute has a
       //		hyphen-separated list of values beginning (from the
       //		left) with "en"
-      var valueDash = value + "-";
+      var valueDash = value + '-';
       return function (elem) {
         var ea = _getAttr(elem, attr);
         return ea == value || ea.indexOf(valueDash) == 0;
       };
     },
-    "=": function (attr, value) {
+    '=': function (attr, value) {
       return function (elem) {
         return _getAttr(elem, attr) == value;
       };
-    },
+    }
   };
 
   // avoid testing for node type if we can. Defining this in the negative
   // here to avoid negation in the fast path.
-  var _noNES = typeof getDoc().firstChild.nextElementSibling == "undefined";
-  var _ns = !_noNES ? "nextElementSibling" : "nextSibling";
-  var _ps = !_noNES ? "previousElementSibling" : "previousSibling";
+  var _noNES = typeof getDoc().firstChild.nextElementSibling == 'undefined';
+  var _ns = !_noNES ? 'nextElementSibling' : 'nextSibling';
+  var _ps = !_noNES ? 'previousElementSibling' : 'previousSibling';
   var _simpleNodeTest = _noNES ? _isElement : yesman;
 
   var _lookLeft = function (node) {
@@ -554,12 +539,8 @@ define([
     root = root.nodeType != 7 ? root : root.nextSibling; // PROCESSING_INSTRUCTION_NODE
     var i = 0,
       tret = root.children || root.childNodes,
-      ci = node["_i"] || node.getAttribute("_i") || -1,
-      cl =
-        root["_l"] ||
-        (typeof root.getAttribute !== "undefined"
-          ? root.getAttribute("_l")
-          : -1);
+      ci = node['_i'] || node.getAttribute('_i') || -1,
+      cl = root['_l'] || (typeof root.getAttribute !== 'undefined' ? root.getAttribute('_l') : -1);
 
     if (!tret) {
       return -1;
@@ -575,22 +556,18 @@ define([
     }
 
     // else re-key things
-    if (has("ie") && typeof root.setAttribute !== "undefined") {
-      root.setAttribute("_l", l);
+    if (has('ie') && typeof root.setAttribute !== 'undefined') {
+      root.setAttribute('_l', l);
     } else {
-      root["_l"] = l;
+      root['_l'] = l;
     }
     ci = -1;
-    for (
-      var te = root["firstElementChild"] || root["firstChild"];
-      te;
-      te = te[_ns]
-    ) {
+    for (var te = root['firstElementChild'] || root['firstChild']; te; te = te[_ns]) {
       if (_simpleNodeTest(te)) {
-        if (has("ie")) {
-          te.setAttribute("_i", ++i);
+        if (has('ie')) {
+          te.setAttribute('_i', ++i);
         } else {
-          te["_i"] = ++i;
+          te['_i'] = ++i;
         }
         if (node === te) {
           // NOTE:
@@ -619,7 +596,7 @@ define([
   var pseudos = {
     checked: function (name, condition) {
       return function (elem) {
-        return !!("checked" in elem ? elem.checked : elem.selected);
+        return !!('checked' in elem ? elem.checked : elem.selected);
       };
     },
     disabled: function (name, condition) {
@@ -632,13 +609,13 @@ define([
         return !elem.disabled;
       };
     },
-    "first-child": function () {
+    'first-child': function () {
       return _lookLeft;
     },
-    "last-child": function () {
+    'last-child': function () {
       return _lookRight;
     },
-    "only-child": function (name, condition) {
+    'only-child': function (name, condition) {
       return function (node) {
         return _lookLeft(node) && _lookRight(node);
       };
@@ -672,7 +649,7 @@ define([
     not: function (name, condition) {
       var p = getQueryParts(condition)[0];
       var ignores = { el: 1 };
-      if (p.tag != "*") {
+      if (p.tag != '*') {
         ignores.tag = 1;
       }
       if (!p.classes.length) {
@@ -683,18 +660,18 @@ define([
         return !ntf(elem);
       };
     },
-    "nth-child": function (name, condition) {
+    'nth-child': function (name, condition) {
       var pi = parseInt;
       // avoid re-defining function objects if we can
-      if (condition == "odd") {
+      if (condition == 'odd') {
         return isOdd;
-      } else if (condition == "even") {
+      } else if (condition == 'even') {
         return isEven;
       }
       // FIXME: can we shorten this?
-      if (condition.indexOf("n") != -1) {
-        var tparts = condition.split("n", 2);
-        var pred = tparts[0] ? (tparts[0] == "-" ? -1 : pi(tparts[0])) : 1;
+      if (condition.indexOf('n') != -1) {
+        var tparts = condition.split('n', 2);
+        var pred = tparts[0] ? (tparts[0] == '-' ? -1 : pi(tparts[0])) : 1;
         var idx = tparts[1] ? pi(tparts[1]) : 0;
         var lb = 0,
           ub = -1;
@@ -729,20 +706,18 @@ define([
       return function (elem) {
         return getNodeIndex(elem) == ncount;
       };
-    },
+    }
   };
 
   var defaultGetter =
-    has("ie") < 9 || (has("ie") == 9 && has("quirks"))
+    has('ie') < 9 || (has('ie') == 9 && has('quirks'))
       ? function (cond) {
           var clc = cond.toLowerCase();
-          if (clc == "class") {
-            cond = "className";
+          if (clc == 'class') {
+            cond = 'className';
           }
           return function (elem) {
-            return caseSensitive
-              ? elem.getAttribute(cond)
-              : elem[cond] || elem[clc];
+            return caseSensitive ? elem.getAttribute(cond) : elem[cond] || elem[clc];
           };
         }
       : function (cond) {
@@ -766,23 +741,19 @@ define([
 
     var ff = null;
 
-    if (!("el" in ignores)) {
+    if (!('el' in ignores)) {
       ff = agree(ff, _isElement);
     }
 
-    if (!("tag" in ignores)) {
-      if (query.tag != "*") {
+    if (!('tag' in ignores)) {
+      if (query.tag != '*') {
         ff = agree(ff, function (elem) {
-          return (
-            elem &&
-            (caseSensitive ? elem.tagName : elem.tagName.toUpperCase()) ==
-              query.getTag()
-          );
+          return elem && (caseSensitive ? elem.tagName : elem.tagName.toUpperCase()) == query.getTag();
         });
       }
     }
 
-    if (!("classes" in ignores)) {
+    if (!('classes' in ignores)) {
       each(query.classes, function (cname, idx, arr) {
         // get the class name
         /*
@@ -793,7 +764,7 @@ define([
 				// I dislike the regex thing, even if memoized in a cache, but it's VERY short
 				var re = new RegExp("(?:^|\\s)" + cname + (isWildcard ? ".*" : "") + "(?:\\s|$)");
 				*/
-        var re = new RegExp("(?:^|\\s)" + cname + "(?:\\s|$)");
+        var re = new RegExp('(?:^|\\s)' + cname + '(?:\\s|$)');
         ff = agree(ff, function (elem) {
           return re.test(elem.className);
         });
@@ -801,7 +772,7 @@ define([
       });
     }
 
-    if (!("pseudos" in ignores)) {
+    if (!('pseudos' in ignores)) {
       each(query.pseudos, function (pseudo) {
         var pn = pseudo.name;
         if (pseudos[pn]) {
@@ -810,7 +781,7 @@ define([
       });
     }
 
-    if (!("attrs" in ignores)) {
+    if (!('attrs' in ignores)) {
       each(query.attrs, function (attr) {
         var matcher;
         var a = attr.attr;
@@ -826,7 +797,7 @@ define([
       });
     }
 
-    if (!("id" in ignores)) {
+    if (!('id' in ignores)) {
       if (query.id) {
         ff = agree(ff, function (elem) {
           return !!elem && elem.id == query.id;
@@ -835,7 +806,7 @@ define([
     }
 
     if (!ff) {
-      if (!("default" in ignores)) {
+      if (!('default' in ignores)) {
         ff = yesman;
       }
     }
@@ -884,11 +855,7 @@ define([
         x = 0,
         tret = root.children || root.childNodes;
       while ((te = tret[x++])) {
-        if (
-          _simpleNodeTest(te) &&
-          (!bag || _isUnique(te, bag)) &&
-          filterFunc(te, x)
-        ) {
+        if (_simpleNodeTest(te) && (!bag || _isUnique(te, bag)) && filterFunc(te, x)) {
           ret.push(te);
         }
       }
@@ -969,14 +936,14 @@ define([
     //				return filter(nextSiblings(root));
 
     var io = query.infixOper;
-    var oper = io ? io.oper : "";
+    var oper = io ? io.oper : '';
     // the default filter func which tests for all conditions in the query
     // part. This is potentially inefficient, so some optimized paths may
     // re-define it to test fewer things.
     var filterFunc = getSimpleFilterFunc(query, { el: 1 });
     var qt = query.tag;
-    var wildcardTag = "*" == qt;
-    var ecs = getDoc()["getElementsByClassName"];
+    var wildcardTag = '*' == qt;
+    var ecs = getDoc()['getElementsByClassName'];
 
     if (!oper) {
       // if there's no infix operator, then it's a descendant query. ID
@@ -986,10 +953,7 @@ define([
         // testing shows that the overhead of yesman() is acceptable
         // and can save us some bytes vs. re-defining the function
         // everywhere.
-        filterFunc =
-          !query.loops && wildcardTag
-            ? yesman
-            : getSimpleFilterFunc(query, { el: 1, id: 1 });
+        filterFunc = !query.loops && wildcardTag ? yesman : getSimpleFilterFunc(query, { el: 1, id: 1 });
 
         retFunc = function (root, arr) {
           var te = dom.byId(query.id, root.ownerDocument || root);
@@ -1017,7 +981,7 @@ define([
 
         // ignore class and ID filters since we will have handled both
         filterFunc = getSimpleFilterFunc(query, { el: 1, classes: 1, id: 1 });
-        var classesString = query.classes.join(" ");
+        var classesString = query.classes.join(' ');
         retFunc = function (root, arr, bag) {
           var ret = getArr(0, arr),
             te,
@@ -1074,11 +1038,11 @@ define([
         skipFilters.tag = 1;
       }
       filterFunc = getSimpleFilterFunc(query, skipFilters);
-      if ("+" == oper) {
+      if ('+' == oper) {
         retFunc = _nextSibling(filterFunc);
-      } else if ("~" == oper) {
+      } else if ('~' == oper) {
         retFunc = _nextSiblings(filterFunc);
-      } else if (">" == oper) {
+      } else if ('>' == oper) {
         retFunc = _childElements(filterFunc);
       }
     }
@@ -1191,23 +1155,21 @@ define([
   // IE QSA queries may incorrectly include comment nodes, so we throw the
   // zipping function into "remove" comments mode instead of the normal "skip
   // it" which every other QSA-clued browser enjoys
-  var noZip = has("ie") ? "commentStrip" : "nozip";
+  var noZip = has('ie') ? 'commentStrip' : 'nozip';
 
-  var qsa = "querySelectorAll";
+  var qsa = 'querySelectorAll';
   var qsaAvail = !!getDoc()[qsa];
 
   //Don't bother with n+3 type of matches, IE complains if we modify those.
   var infixSpaceRe = /\\[>~+]|n\+\d|([^ \\])?([>~+])([^ =])?/g;
   var infixSpaceFunc = function (match, pre, ch, post) {
-    return ch
-      ? (pre ? pre + " " : "") + ch + (post ? " " + post : "")
-      : /*n+3*/ match;
+    return ch ? (pre ? pre + ' ' : '') + ch + (post ? ' ' + post : '') : /*n+3*/ match;
   };
 
   //Don't apply the infixSpaceRe to attribute value selectors
   var attRe = /([^[]*)([^\]]*])?/g;
   var attFunc = function (match, nonAtt, att) {
-    return nonAtt.replace(infixSpaceRe, infixSpaceFunc) + (att || "");
+    return nonAtt.replace(infixSpaceRe, infixSpaceFunc) + (att || '');
   };
   var getQueryFunc = function (query, forceDOM) {
     //Normalize query. The CSS3 selectors spec allows for omitting spaces around
@@ -1237,11 +1199,11 @@ define([
     //		efficiently, we'd be in good shape to do a global cache.
 
     var qcz = query.charAt(0);
-    var nospace = -1 == query.indexOf(" ");
+    var nospace = -1 == query.indexOf(' ');
 
     // byId searches are wicked fast compared to QSA, even when filtering
     // is required
-    if (query.indexOf("#") >= 0 && nospace) {
+    if (query.indexOf('#') >= 0 && nospace) {
       forceDOM = true;
     }
 
@@ -1252,8 +1214,8 @@ define([
       //		http://www.w3.org/TR/css3-selectors/#w3cselgrammar
       specials.indexOf(qcz) == -1 &&
       // IE's QSA impl sucks on pseudos
-      (!has("ie") || query.indexOf(":") == -1) &&
-      !(cssCaseBug && query.indexOf(".") >= 0) &&
+      (!has('ie') || query.indexOf(':') == -1) &&
+      !(cssCaseBug && query.indexOf('.') >= 0) &&
       // FIXME:
       //		need to tighten up browser rules on ":contains" and "|=" to
       //		figure out which aren't good
@@ -1261,9 +1223,9 @@ define([
       //		elements, even though according to spec, selected options should
       //		match :checked. So go nonQSA for it:
       //		http://bugs.dojotoolkit.org/ticket/5179
-      query.indexOf(":contains") == -1 &&
-      query.indexOf(":checked") == -1 &&
-      query.indexOf("|=") == -1; // some browsers don't grok it
+      query.indexOf(':contains') == -1 &&
+      query.indexOf(':checked') == -1 &&
+      query.indexOf('|=') == -1; // some browsers don't grok it
 
     // TODO:
     //		if we've got a descendant query (e.g., "> .thinger" instead of
@@ -1273,10 +1235,7 @@ define([
     //		use the QSA branch
 
     if (useQSA) {
-      var tq =
-        specials.indexOf(query.charAt(query.length - 1)) >= 0
-          ? query + " *"
-          : query;
+      var tq = specials.indexOf(query.charAt(query.length - 1)) >= 0 ? query + ' *' : query;
       return (_queryFuncCacheQSA[query] = function (root) {
         try {
           // the QSA system contains an egregious spec bug which
@@ -1289,7 +1248,7 @@ define([
           //	right now. Not elegant, but it's cheaper than running
           //	the query parser when we might not need to
           if (!(9 == root.nodeType || nospace)) {
-            throw "";
+            throw '';
           }
           var r = root[qsa](tq);
           // skip expensive duplication checks and just wrap in a NodeList
@@ -1303,9 +1262,7 @@ define([
       });
     } else {
       // DOM branch
-      var parts = query.match(
-        /([^\s,](?:"(?:\\.|[^"])+"|'(?:\\.|[^'])+'|[^,])*)/g
-      );
+      var parts = query.match(/([^\s,](?:"(?:\\.|[^"])+"|'(?:\\.|[^'])+'|[^,])*)/g);
       return (_queryFuncCacheDOM[query] =
         parts.length < 2
           ? // if not a compound query (e.g., ".foo, .bar"), cache and return a dispatcher
@@ -1330,15 +1287,11 @@ define([
   // NOTE:
   //		this function is Moo inspired, but our own impl to deal correctly
   //		with XML in IE
-  var _nodeUID = has("ie")
+  var _nodeUID = has('ie')
     ? function (node) {
         if (caseSensitive) {
           // XML docs don't have uniqueID on their nodes
-          return (
-            node.getAttribute("_uid") ||
-            node.setAttribute("_uid", ++_zipIdx) ||
-            _zipIdx
-          );
+          return node.getAttribute('_uid') || node.setAttribute('_uid', ++_zipIdx) || _zipIdx;
         } else {
           return node.uniqueID;
         }
@@ -1365,7 +1318,7 @@ define([
 
   // attempt to efficiently determine if an item in a list is a dupe,
   // returning a list of "uniques", hopefully in document order
-  var _zipIdxName = "_zipIdx";
+  var _zipIdxName = '_zipIdx';
   var _zip = function (arr) {
     if (arr && arr.nozip) {
       return arr;
@@ -1385,15 +1338,15 @@ define([
     // we have to fork here for IE and XML docs because we can't set
     // expandos on their nodes (apparently). *sigh*
     var x, te;
-    if (has("ie") && caseSensitive) {
-      var szidx = _zipIdx + "";
+    if (has('ie') && caseSensitive) {
+      var szidx = _zipIdx + '';
       for (x = 0; x < arr.length; x++) {
         if ((te = arr[x]) && te.getAttribute(_zipIdxName) != szidx) {
           ret.push(te);
           te.setAttribute(_zipIdxName, szidx);
         }
       }
-    } else if (has("ie") && arr.commentStrip) {
+    } else if (has('ie') && arr.commentStrip) {
       try {
         for (x = 0; x < arr.length; x++) {
           if ((te = arr[x]) && _isElement(te)) {
@@ -1563,7 +1516,7 @@ define([
 
     // throw the big case sensitivity switch
     var od = root.ownerDocument || root; // root is either Document or a node inside the document
-    caseSensitive = od.createElement("div").tagName === "div";
+    caseSensitive = od.createElement('div').tagName === 'div';
 
     // NOTE:
     //		adding "true" as the 2nd argument to getQueryFunc is useful for
@@ -1578,11 +1531,7 @@ define([
     }
     return _zip(r); // dojo/NodeList
   };
-  query.filter = function (
-    /*Node[]*/ nodeList,
-    /*String*/ filter,
-    /*String|DOMNode?*/ root
-  ) {
+  query.filter = function (/*Node[]*/ nodeList, /*String*/ filter, /*String|DOMNode?*/ root) {
     // summary:
     //		function for filtering a NodeList based on a selector, optimized for simple selectors
     var tmpNodeList = [],

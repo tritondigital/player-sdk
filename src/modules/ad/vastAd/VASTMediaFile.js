@@ -1,13 +1,13 @@
 /**
  * VAST Media File
  */
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var vastMediaFile = declare([], {
-    DELIVERY_STREAMING: "streaming",
-    DELIVERY_PROGRESSIVE: "progressive",
+    DELIVERY_STREAMING: 'streaming',
+    DELIVERY_PROGRESSIVE: 'progressive',
 
     constructor: function () {
-      console.log("vastMediaFile::constructor");
+      console.log('vastMediaFile::constructor');
 
       this.url = null;
       this.id = null;
@@ -22,7 +22,7 @@ define(["dojo/_base/declare"], function (declare) {
       this.minBitrate = null;
       this.maxBitrate = null;
       this.codec = null;
-    },
+    }
   });
 
   return vastMediaFile;

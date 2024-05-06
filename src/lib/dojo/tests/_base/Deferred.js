@@ -1,4 +1,4 @@
-dojo.provide("dojo.tests._base.Deferred");
+dojo.provide('dojo.tests._base.Deferred');
 
 var delay = function (ms) {
   var d = new dojo.Deferred();
@@ -16,12 +16,12 @@ var delay = function (ms) {
   }
   return d.promise;
 };
-doh.register("tests._base.Deferred", [
+doh.register('tests._base.Deferred', [
   function callback(t) {
     var nd = new dojo.Deferred();
     var cnt = 0;
     nd.addCallback(function (res) {
-      doh.debug("debug from dojo.Deferred callback");
+      doh.debug('debug from dojo.Deferred callback');
       return res;
     });
     nd.addCallback(function (res) {
@@ -93,15 +93,15 @@ doh.register("tests._base.Deferred", [
 
   function callbackNested(t) {
     var nd = new dojo.Deferred();
-    var nestedReturn = "yellow";
+    var nestedReturn = 'yellow';
     nd.addCallback(function (res) {
       nd.addCallback(function (res2) {
         nestedReturn = res2;
       });
-      return "blue";
+      return 'blue';
     });
-    nd.callback("red");
-    t.assertEqual("blue", nestedReturn);
+    nd.callback('red');
+    t.assertEqual('blue', nestedReturn);
   },
   function simpleThen(t) {
     var td = new doh.Deferred();
@@ -176,7 +176,7 @@ doh.register("tests._base.Deferred", [
   },
   function errorResult(t) {
     var def = new dojo.Deferred();
-    var result = new Error("rejected");
+    var result = new Error('rejected');
     def.reject(result);
     t.is(def.fired, 1);
     t.is(def.results[1], result);
@@ -187,84 +187,84 @@ doh.register("tests._base.Deferred", [
       return def;
     });
     def.resolve(true);
-    t.is(dojo.global.results, undefined, "results is leaking into global");
-    t.is(dojo.global.fired, undefined, "fired is leaking into global");
+    t.is(dojo.global.results, undefined, 'results is leaking into global');
+    t.is(dojo.global.fired, undefined, 'fired is leaking into global');
   },
   function backAndForthProcess(t) {
     var def = new dojo.Deferred();
-    var retval = "fail";
+    var retval = 'fail';
 
     def
       .addErrback(function () {
-        return "ignore error and throw this good string";
+        return 'ignore error and throw this good string';
       })
       .addCallback(function () {
-        throw new Error("error1");
+        throw new Error('error1');
       })
       .addErrback(function () {
-        return "ignore second error and make it good again";
+        return 'ignore second error and make it good again';
       })
       .addCallback(function () {
-        retval = "succeed";
+        retval = 'succeed';
       });
 
-    def.errback("");
+    def.errback('');
 
-    t.assertEqual("succeed", retval);
+    t.assertEqual('succeed', retval);
   },
   function backAndForthProcessThen(t) {
     var def = new dojo.Deferred();
-    var retval = "fail";
+    var retval = 'fail';
 
     def
       .then(null, function () {
-        return "ignore error and throw this good string";
+        return 'ignore error and throw this good string';
       })
       .then(function () {
-        throw "error1";
+        throw 'error1';
       })
       .then(null, function () {
-        return "ignore second error and make it good again";
+        return 'ignore second error and make it good again';
       })
       .then(function () {
-        retval = "succeed";
+        retval = 'succeed';
       });
 
-    def.reject("");
+    def.reject('');
 
-    t.assertEqual("succeed", retval);
+    t.assertEqual('succeed', retval);
   },
   function returnErrorObject(t) {
     var def = new dojo.Deferred();
-    var retval = "fail";
+    var retval = 'fail';
 
     def
       .addCallback(function () {
-        return new Error("returning an error should work same as throwing");
+        return new Error('returning an error should work same as throwing');
       })
       .addErrback(function () {
-        retval = "succeed";
+        retval = 'succeed';
       });
 
     def.callback();
 
-    t.assertEqual("succeed", retval);
+    t.assertEqual('succeed', retval);
   },
   function returnErrorObjectThen(t) {
     var def = new dojo.Deferred();
-    var retval = "fail";
+    var retval = 'fail';
 
     def
       .then(function () {
-        return new Error("returning an error should NOT work same as throwing");
+        return new Error('returning an error should NOT work same as throwing');
       })
       .then(function () {
-        retval = "succeed";
+        retval = 'succeed';
       });
 
     def.resolve();
 
-    t.assertEqual("succeed", retval);
+    t.assertEqual('succeed', retval);
   },
   function errbackWithPromise(t) {
     var def = new dojo.Deferred();
@@ -278,15 +278,15 @@ doh.register("tests._base.Deferred", [
     );
     def.promise.then(
       function () {
-        retval = "fail";
+        retval = 'fail';
       },
       function () {
-        retval = "succeed";
+        retval = 'succeed';
       }
     );
     def.errback(new Error());
 
-    t.assertEqual("succeed", retval);
+    t.assertEqual('succeed', retval);
   },
   function testDojoPromiseProgressBasic(t) {
     var a = new dojo.Deferred();
@@ -297,15 +297,15 @@ doh.register("tests._base.Deferred", [
       b.then(
         function () {
           if (!called) {
-            console.log("Boo. ProgressBasic not called");
+            console.log('Boo. ProgressBasic not called');
           }
         },
         function () {
-          console.log("Unexpected");
+          console.log('Unexpected');
         },
         function () {
           called = true;
-          console.log("Yay. ProgressBasic called");
+          console.log('Yay. ProgressBasic called');
         }
       );
     });
@@ -326,15 +326,15 @@ doh.register("tests._base.Deferred", [
     }).then(
       function () {
         if (!called) {
-          console.log("Boo. ProgressChain not called");
+          console.log('Boo. ProgressChain not called');
         }
       },
       function () {
-        console.log("Unexpected");
+        console.log('Unexpected');
       },
       function () {
         called = true;
-        console.log("Yay. ProgressChain called");
+        console.log('Yay. ProgressChain called');
       }
     );
 
@@ -342,5 +342,5 @@ doh.register("tests._base.Deferred", [
     b.progress();
     b.resolve();
     t.t(called);
-  },
+  }
 ]);

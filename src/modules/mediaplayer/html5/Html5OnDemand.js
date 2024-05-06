@@ -4,42 +4,28 @@
  * @class Manage HTML5 on demand player
  *
  */
-var i18n = require("sdk/base/util/I18n");
+var i18n = require('sdk/base/util/I18n');
 
 define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "dojo/on",
-  "dojo/Evented",
-  "dojo/dom-construct",
-  "dojo/dom-attr",
-  "dojo/dom-style",
-  "dojo/has",
-  "sdk/modules/mediaplayer/html5/Html5Player",
-  "sdk/modules/mediaplayer/html5/ConsumptionAnalytics",
-], function (
-  declare,
-  lang,
-  on,
-  Evented,
-  domConstruct,
-  domAttr,
-  domStyle,
-  has,
-  Html5Player,
-  ConsumptionAnalytics
-) {
+  'dojo/_base/declare',
+  'dojo/_base/lang',
+  'dojo/on',
+  'dojo/Evented',
+  'dojo/dom-construct',
+  'dojo/dom-attr',
+  'dojo/dom-style',
+  'dojo/has',
+  'sdk/modules/mediaplayer/html5/Html5Player',
+  'sdk/modules/mediaplayer/html5/ConsumptionAnalytics'
+], function (declare, lang, on, Evented, domConstruct, domAttr, domStyle, has, Html5Player, ConsumptionAnalytics) {
   var html5OnDemand = declare([Evented], {
     constructor: function (node) {
-      console.log("html5OnDemand::constructor");
+      console.log('html5OnDemand::constructor');
 
       this.playerNode = node; //DOM Node
 
       this.html5Player = new Html5Player(); //Instance of HTML5 Playback Class
-      this.html5Player.on(
-        "html5-playback-status",
-        lang.hitch(this, this.__onHTML5PlayerStatus)
-      );
+      this.html5Player.on('html5-playback-status', lang.hitch(this, this.__onHTML5PlayerStatus));
 
       this.html5OnDemandNode = this.__createHTML5Elements(); //Create div
 
@@ -50,16 +36,8 @@ define([
       this._clickThrough = null; //URL
       this._clickTrackings = null; //Array
 
-      this.onVideoNodeClickHandler = on(
-        this.html5OnDemandNode,
-        "click",
-        lang.hitch(this, this.__onVideoNodeClick)
-      );
-      this.onVideoNodeTouchHandler = on(
-        this.html5OnDemandNode,
-        "touchstart",
-        lang.hitch(this, this.__onVideoNodeClick)
-      );
+      this.onVideoNodeClickHandler = on(this.html5OnDemandNode, 'click', lang.hitch(this, this.__onVideoNodeClick));
+      this.onVideoNodeTouchHandler = on(this.html5OnDemandNode, 'touchstart', lang.hitch(this, this.__onVideoNodeClick));
       this.consumptionAnalytics = null;
     },
 
@@ -78,14 +56,8 @@ define([
      */
     play: function (config) {
       this._adServerType = null;
-
       this.initConsumptionAnalytics(config);
-      this.html5Player.play({
-        url: config.mediaUrl,
-        type: config.mediaFormat,
-        mediaNode: this.audioNode,
-        isLive: false,
-      });
+      this.html5Player.play({ url: config.mediaUrl, type: config.mediaFormat, mediaNode: this.audioNode, isLive: false });
     },
 
     /**
@@ -107,12 +79,7 @@ define([
       this._clickTrackings = config.clickTrackings;
       this._adServerType = config.adServerType;
 
-      this.html5Player.play({
-        url: config.mediaUrl,
-        type: config.mediaFormat,
-        mediaNode: this.videoNode,
-        isLive: false,
-      });
+      this.html5Player.play({ url: config.mediaUrl, type: config.mediaFormat, mediaNode: this.videoNode, isLive: false });
     },
 
     /**
@@ -195,6 +162,11 @@ define([
       this.html5Player.unMute();
     },
 
+    changePlayBackRate: function (rate) {
+      if (this.html5Player == null) return;
+      this.html5Player.changePlayBackRate(rate);
+    },
+
     /**
      *
      * Create Media tag (<audio> and <video>) with <source> child node
@@ -202,11 +174,11 @@ define([
      */
     initMediaTag: function () {
       if (!this.audioNode) {
-        this.audioNode = this.__createMediaTag("audio");
+        this.audioNode = this.__createMediaTag('audio');
       }
 
       if (!this.videoNode) {
-        this.videoNode = this.__createMediaTag("video");
+        this.videoNode = this.__createMediaTag('video');
       }
     },
 
@@ -242,30 +214,30 @@ define([
      */
     clean: function () {
       if (this.audioNode != null) {
-        if (has("ie11")) {
+        if (has('ie11')) {
           domConstruct.destroy(this.audioNode);
           this.audioNode = null;
         } else {
-          if (domAttr.has(this.audioNode, "src")) {
-            domAttr.remove(this.audioNode, "src");
+          if (domAttr.has(this.audioNode, 'src')) {
+            domAttr.remove(this.audioNode, 'src');
           }
 
-          if (typeof this.audioNode.webkitExitFullScreen === "function") {
+          if (typeof this.audioNode.webkitExitFullScreen === 'function') {
             this.audioNode.webkitExitFullScreen();
           }
         }
       }
 
       if (this.videoNode != null) {
-        if (has("ie11")) {
+        if (has('ie11')) {
           domConstruct.destroy(this.videoNode);
           this.videoNode = null;
         } else {
-          if (domAttr.has(this.videoNode, "src")) {
-            domAttr.remove(this.videoNode, "src");
+          if (domAttr.has(this.videoNode, 'src')) {
+            domAttr.remove(this.videoNode, 'src');
           }
 
-          if (typeof window.document.exitFullscreen === "function") {
+          if (typeof window.document.exitFullscreen === 'function') {
             if (window.document.fullscreen) {
               window.document.exitFullscreen();
             }
@@ -290,7 +262,7 @@ define([
      * @private
      */
     __onHTML5PlayerStatus: function (e) {
-      console.log("html5OnDemand::_onHTML5PlayerStatus - type=" + e.type);
+      console.log('html5OnDemand::_onHTML5PlayerStatus - type=' + e.type);
 
       e.adServerType = this._adServerType;
 
@@ -309,35 +281,21 @@ define([
         var statusMessages = i18n.getLocalization();
         if (statusMessages == undefined) return;
 
-        if (!this._adServerType && e.type == "canPlayThrough") e.type = "play";
+        if (!this._adServerType && e.type == 'canPlayThrough') e.type = 'play';
 
         var msg = this.statusMap[e.type];
 
         if (msg) {
-          statusMsg = statusMessages[msg.status]
-            ? statusMessages[msg.status]
-            : msg.status;
-          codeMsg = statusMessages[msg.code]
-            ? statusMessages[msg.code]
-            : msg.code;
-          this._playbackStatusCallback({
-            type: statusMsg,
-            code: codeMsg,
-            html5Node: e.mediaNode,
-            adServerType: e.adServerType,
-          });
+          statusMsg = statusMessages[msg.status] ? statusMessages[msg.status] : msg.status;
+          codeMsg = statusMessages[msg.code] ? statusMessages[msg.code] : msg.code;
+          this._playbackStatusCallback({ type: statusMsg, code: codeMsg, html5Node: e.mediaNode, adServerType: e.adServerType });
         }
       }
     },
 
     __createHTML5Elements: function () {
       if (this.html5OnDemandNode == null) {
-        var onDemandNode = domConstruct.create(
-          "div",
-          { id: "tdplayer_ondemand" },
-          this.playerNode,
-          "first"
-        );
+        var onDemandNode = domConstruct.create('div', { id: 'tdplayer_ondemand' }, this.playerNode, 'first');
         return onDemandNode;
       }
     },
@@ -345,23 +303,13 @@ define([
     __createMediaTag: function (mediaTagType) {
       if (!mediaTagType) return;
 
-      var node = domConstruct.create(
-        mediaTagType,
-        { id: "tdplayer_od_" + mediaTagType + "node", type: mediaTagType },
-        this.html5OnDemandNode,
-        "first"
-      );
-      domAttr.set(node, "height", "0%");
-      domAttr.set(node, "width", "0%");
-      domAttr.set(node, "x-webkit-airplay", "allow"); //AirPlay support
-      var sourceNode = domConstruct.create(
-        "source",
-        { id: "tdplayer_od" + mediaTagType + "source" },
-        node,
-        "first"
-      );
-      domAttr.set(sourceNode, "src", "");
-      domAttr.set(node, "playsinline", "");
+      var node = domConstruct.create(mediaTagType, { id: 'tdplayer_od_' + mediaTagType + 'node', type: mediaTagType }, this.html5OnDemandNode, 'first');
+      domAttr.set(node, 'height', '0%');
+      domAttr.set(node, 'width', '0%');
+      domAttr.set(node, 'x-webkit-airplay', 'allow'); //AirPlay support
+      var sourceNode = domConstruct.create('source', { id: 'tdplayer_od' + mediaTagType + 'source' }, node, 'first');
+      domAttr.set(sourceNode, 'src', '');
+      domAttr.set(node, 'playsinline', '');
 
       //Required for windows phone. MPJPA-182 - Error: could not complete operation due to error 87b20c01.
       try {
@@ -383,48 +331,37 @@ define([
     __resetHTML5ElementsStyle: function (node) {
       if (!node) return;
 
-      domStyle.set(node, "width", "0px");
-      domStyle.set(node, "height", "0px");
-      domStyle.set(node, "display", "none");
+      domStyle.set(node, 'width', '0px');
+      domStyle.set(node, 'height', '0px');
+      domStyle.set(node, 'display', 'none');
     },
 
     /* TU NE MERITES PAS D'ETRE UNE PUBLIC FUNCTION  */
     initHTMLElementsStyle: function (node) {
       if (!node) return;
 
-      domStyle.set(node, "width", "100%");
-      domStyle.set(node, "height", "100%");
-      domStyle.set(node, "display", "block");
-      domStyle.set(this.html5OnDemandNode, "width", "100%");
-      domStyle.set(this.html5OnDemandNode, "height", "100%");
-      domStyle.set(this.html5OnDemandNode, "background-color", "#000000");
-      domStyle.set(this.html5OnDemandNode, "display", "block");
+      domStyle.set(node, 'width', '100%');
+      domStyle.set(node, 'height', '100%');
+      domStyle.set(node, 'display', 'block');
+      domStyle.set(this.html5OnDemandNode, 'width', '100%');
+      domStyle.set(this.html5OnDemandNode, 'height', '100%');
+      domStyle.set(this.html5OnDemandNode, 'background-color', '#000000');
+      domStyle.set(this.html5OnDemandNode, 'display', 'block');
     },
 
     __onVideoNodeClick: function (e) {
       if (this._clickThrough == null) return;
 
       //HACK DUE TO ANDROID click & touchstart event fired
-      if (e.type == "touchstart") this.onVideoNodeClickHandler.remove();
+      if (e.type == 'touchstart') this.onVideoNodeClickHandler.remove();
 
-      this._clickTrackingElementClickedCallback({
-        clickThrough: this._clickThrough,
-        clickTrackings: this._clickTrackings,
-      });
+      this._clickTrackingElementClickedCallback({ clickThrough: this._clickThrough, clickTrackings: this._clickTrackings });
     },
 
     initConsumptionAnalytics: function (config) {
-      if (
-        config.enableOmnyAnalytics &&
-        config.omnyOrganizationId != undefined &&
-        config.omnyClipId != undefined
-      ) {
+      if (config.enableOmnyAnalytics && config.omnyOrganizationId != undefined && config.omnyClipId != undefined) {
         this.consumptionAnalytics = new ConsumptionAnalytics(this.html5Player);
-        this.consumptionAnalytics.init(
-          config.omnyOrganizationId,
-          config.omnyClipId,
-          config.omnySessionId
-        );
+        this.consumptionAnalytics.init(config.omnyOrganizationId, config.omnyClipId, config.omnySessionId);
       }
     },
 
@@ -434,25 +371,22 @@ define([
      * @ignore
      */
     statusMap: {
-      canPlay: { status: "buffering", code: "MEDIA_BUFFERING" },
-      canPlayThrough: { status: "buffering", code: "MEDIA_BUFFERING" },
-      dataLoading: { status: "buffering", code: "MEDIA_BUFFERING" },
-      emptied: { status: "buffering", code: "MEDIA_BUFFERING" },
-      ended: { status: "ended", code: "MEDIA_ENDED" },
-      error: { status: "error", code: "MEDIA_ERROR" },
-      loadStart: { status: "buffering", code: "MEDIA_BUFFERING" },
-      pause: { status: "pause", code: "MEDIA_PAUSED" },
-      play: { status: "play", code: "MEDIA_STARTED" },
-      stalled: { status: "stop", code: "MEDIA_STOPPED" },
-      stop: { status: "stop", code: "MEDIA_STOPPED" },
-      suspend: { status: "buffering", code: "MEDIA_BUFFERING" },
-      waiting: { status: "buffering", code: "MEDIA_BUFFERING" },
-      timeupdate: { status: "timeupdate", code: "MEDIA_TIME_UPDATE" },
-      playbackNotAllowed: {
-        status: "playbackNotAllowed",
-        code: "PLAY_NOT_ALLOWED",
-      },
-    },
+      canPlay: { status: 'buffering', code: 'MEDIA_BUFFERING' },
+      canPlayThrough: { status: 'buffering', code: 'MEDIA_BUFFERING' },
+      dataLoading: { status: 'buffering', code: 'MEDIA_BUFFERING' },
+      emptied: { status: 'buffering', code: 'MEDIA_BUFFERING' },
+      ended: { status: 'ended', code: 'MEDIA_ENDED' },
+      error: { status: 'error', code: 'MEDIA_ERROR' },
+      loadStart: { status: 'buffering', code: 'MEDIA_BUFFERING' },
+      pause: { status: 'pause', code: 'MEDIA_PAUSED' },
+      play: { status: 'play', code: 'MEDIA_STARTED' },
+      stalled: { status: 'stop', code: 'MEDIA_STOPPED' },
+      stop: { status: 'stop', code: 'MEDIA_STOPPED' },
+      suspend: { status: 'buffering', code: 'MEDIA_BUFFERING' },
+      waiting: { status: 'buffering', code: 'MEDIA_BUFFERING' },
+      timeupdate: { status: 'timeupdate', code: 'MEDIA_TIME_UPDATE' },
+      playbackNotAllowed: { status: 'playbackNotAllowed', code: 'PLAY_NOT_ALLOWED' }
+    }
   });
 
   return html5OnDemand;

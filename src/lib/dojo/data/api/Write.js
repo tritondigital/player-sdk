@@ -1,8 +1,8 @@
-define(["../../_base/declare", "./Read"], function (declare, Read) {
+define(['../../_base/declare', './Read'], function (declare, Read) {
   // module:
   //		dojo/data/api/Write
 
-  return declare("dojo.data.api.Write", Read, {
+  return declare('dojo.data.api.Write', Read, {
     // summary:
     //		This is an abstract API that data provider implementations conform to.
     //		This file defines function signatures and intentionally leaves all the
@@ -12,8 +12,8 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // summary:
       //		See dojo/data/api/Read.getFeatures()
       return {
-        "dojo.data.api.Read": true,
-        "dojo.data.api.Write": true,
+        'dojo.data.api.Read': true,
+        'dojo.data.api.Write': true
       };
     },
 
@@ -47,7 +47,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // example:
       //	|	var kermit = store.newItem({name: "Kermit", color:[blue, green]});
 
-      throw new Error("Unimplemented API: dojo.data.api.Write.newItem");
+      throw new Error('Unimplemented API: dojo.data.api.Write.newItem');
     },
 
     deleteItem: function (/* dojo/data/api/Item */ item) {
@@ -60,14 +60,10 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       //		(if store.isItem(item) returns false).
       // example:
       //	|	var success = store.deleteItem(kermit);
-      throw new Error("Unimplemented API: dojo.data.api.Write.deleteItem");
+      throw new Error('Unimplemented API: dojo.data.api.Write.deleteItem');
     },
 
-    setValue: function (
-      /* dojo/data/api/Item */ item,
-      /* string */ attribute,
-      /* almost anything */ value
-    ) {
+    setValue: function (/* dojo/data/api/Item */ item, /* string */ attribute, /* almost anything */ value) {
       // summary:
       //		Sets the value of an attribute on an item.
       //		Replaces any previous value or values.
@@ -83,14 +79,10 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       //		Throws an exception if *value* is undefined.
       // example:
       //	|	var success = store.set(kermit, "color", "green");
-      throw new Error("Unimplemented API: dojo.data.api.Write.setValue");
+      throw new Error('Unimplemented API: dojo.data.api.Write.setValue');
     },
 
-    setValues: function (
-      /* dojo/data/api/Item */ item,
-      /* string */ attribute,
-      /* array */ values
-    ) {
+    setValues: function (/* dojo/data/api/Item */ item, /* string */ attribute, /* array */ values) {
       // summary:
       //		Adds each value in the *values* array as a value of the given
       //		attribute on the given item.
@@ -110,13 +102,10 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       //	|	var success = store.setValues(kermit, "color", ["green", "aqua"]);
       //	|	success = store.setValues(kermit, "color", []);
       //	|	if (success){assert(!store.hasAttribute(kermit, "color"));}
-      throw new Error("Unimplemented API: dojo.data.api.Write.setValues");
+      throw new Error('Unimplemented API: dojo.data.api.Write.setValues');
     },
 
-    unsetAttribute: function (
-      /* dojo/data/api/Item */ item,
-      /* string */ attribute
-    ) {
+    unsetAttribute: function (/* dojo/data/api/Item */ item, /* string */ attribute) {
       // summary:
       //		Deletes all the values of an attribute on an item.
       // item:
@@ -129,7 +118,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // example:
       //	|	var success = store.unsetAttribute(kermit, "color");
       //	|	if (success){assert(!store.hasAttribute(kermit, "color"));}
-      throw new Error("Unimplemented API: dojo.data.api.Write.clear");
+      throw new Error('Unimplemented API: dojo.data.api.Write.clear');
     },
 
     save: function (/* object */ keywordArgs) {
@@ -177,7 +166,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // example:
       //	|	store.save({onComplete: onSave});
       //	|	store.save({scope: fooObj, onComplete: onSave, onError: saveFailed});
-      throw new Error("Unimplemented API: dojo.data.api.Write.save");
+      throw new Error('Unimplemented API: dojo.data.api.Write.save');
     },
 
     revert: function () {
@@ -187,7 +176,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       //		Discards any unsaved changes.
       // example:
       //	|	var success = store.revert();
-      throw new Error("Unimplemented API: dojo.data.api.Write.revert");
+      throw new Error('Unimplemented API: dojo.data.api.Write.revert');
     },
 
     isDirty: function (/* item? */ item) {
@@ -204,7 +193,7 @@ define(["../../_base/declare", "./Read"], function (declare, Read) {
       // example:
       //	|	var trueOrFalse = store.isDirty(kermit); // true if kermit is dirty
       //	|	var trueOrFalse = store.isDirty();       // true if any item is dirty
-      throw new Error("Unimplemented API: dojo.data.api.Write.isDirty");
-    },
+      throw new Error('Unimplemented API: dojo.data.api.Write.isDirty');
+    }
   });
 });

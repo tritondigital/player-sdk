@@ -1,4 +1,4 @@
-define(["./_base/lang"], function (lang) {
+define(['./_base/lang'], function (lang) {
   // module:
   //		dojo/io-query
 
@@ -33,7 +33,7 @@ define(["./_base/lang"], function (lang) {
       for (var name in map) {
         var value = map[name];
         if (value != backstop[name]) {
-          var assign = enc(name) + "=";
+          var assign = enc(name) + '=';
           if (lang.isArray(value)) {
             for (var i = 0, l = value.length; i < l; ++i) {
               pairs.push(assign + enc(value[i]));
@@ -43,7 +43,7 @@ define(["./_base/lang"], function (lang) {
           }
         }
       }
-      return pairs.join("&"); // String
+      return pairs.join('&'); // String
     },
 
     queryToObject: function queryToObject(/*String*/ str) {
@@ -69,22 +69,22 @@ define(["./_base/lang"], function (lang) {
 
       // FIXME: should we grab the URL string if we're not passed one?
       var dec = decodeURIComponent,
-        qp = str.split("&"),
+        qp = str.split('&'),
         ret = {},
         name,
         val;
       for (var i = 0, l = qp.length, item; i < l; ++i) {
         item = qp[i];
         if (item.length) {
-          var s = item.indexOf("=");
+          var s = item.indexOf('=');
           if (s < 0) {
             name = dec(item);
-            val = "";
+            val = '';
           } else {
             name = dec(item.slice(0, s));
             val = dec(item.slice(s + 1));
           }
-          if (typeof ret[name] == "string") {
+          if (typeof ret[name] == 'string') {
             // inline'd type check
             ret[name] = [ret[name]];
           }
@@ -97,6 +97,6 @@ define(["./_base/lang"], function (lang) {
         }
       }
       return ret; // Object
-    },
+    }
   };
 });

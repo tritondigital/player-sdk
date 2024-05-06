@@ -1,16 +1,8 @@
-define([
-  "../_base/array",
-  "../_base/declare",
-  "../_base/Deferred",
-  "../_base/kernel",
-  "../_base/lang",
-  "../_base/url",
-  "../_base/xhr",
-], function (array, declare, Deferred, kernel, lang, _Url, xhr) {
+define(['../_base/array', '../_base/declare', '../_base/Deferred', '../_base/kernel', '../_base/lang', '../_base/url', '../_base/xhr'], function (array, declare, Deferred, kernel, lang, _Url, xhr) {
   // module:
   //		dojo/rpc/RpcService
 
-  return declare("dojo.rpc.RpcService", null, {
+  return declare('dojo.rpc.RpcService', null, {
     // summary:
     //		TODOC
 
@@ -34,22 +26,22 @@ define([
         //if the arg is a string, we assume it is a url to retrieve an smd definition from
         if (lang.isString(args) || args instanceof _Url) {
           if (args instanceof _Url) {
-            var url = args + "";
+            var url = args + '';
           } else {
             url = args;
           }
           var def = xhr.get({
             url: url,
-            handleAs: "json-comment-optional",
-            sync: true,
+            handleAs: 'json-comment-optional',
+            sync: true
           });
 
-          def.addCallback(this, "processSmd");
+          def.addCallback(this, 'processSmd');
           def.addErrback(function () {
-            throw new Error("Unable to load SMD from " + args);
+            throw new Error('Unable to load SMD from ' + args);
           });
         } else if (args.smdStr) {
-          this.processSmd(kernel.eval("(" + args.smdStr + ")"));
+          this.processSmd(kernel.eval('(' + args.smdStr + ')'));
         } else {
           // otherwise we assume it's an arguments object with the following
           // (optional) properties:
@@ -64,7 +56,7 @@ define([
 
           this.timeout = args.timeout || 0;
 
-          if ("strictArgChecks" in args) {
+          if ('strictArgChecks' in args) {
             this.strictArgChecks = args.strictArgChecks;
           }
 
@@ -74,7 +66,7 @@ define([
     },
 
     strictArgChecks: true,
-    serviceUrl: "",
+    serviceUrl: '',
 
     parseResults: function (obj) {
       // summary:
@@ -96,9 +88,7 @@ define([
       };
     },
 
-    resultCallback: function (
-      /* dojo/_base/Deferred */ deferredRequestHandler
-    ) {
+    resultCallback: function (/* dojo/_base/Deferred */ deferredRequestHandler) {
       // summary:
       //		create callback that calls the Deferred's callback method
       // deferredRequestHandler: Deferred
@@ -107,7 +97,7 @@ define([
       return lang.hitch(this, function (obj) {
         if (obj.error != null) {
           var err;
-          if (typeof obj.error == "object") {
+          if (typeof obj.error == 'object') {
             err = new Error(obj.error.message);
             err.code = obj.error.code;
             err.error = obj.error.error;
@@ -123,11 +113,7 @@ define([
       });
     },
 
-    generateMethod: function (
-      /*string*/ method,
-      /*array*/ parameters,
-      /*string*/ url
-    ) {
+    generateMethod: function (/*string*/ method, /*array*/ parameters, /*string*/ url) {
       // summary:
       //		generate the local bind methods for the remote object
       // method: string
@@ -141,20 +127,11 @@ define([
         var deferredRequestHandler = new Deferred();
 
         // if params weren't specified, then we can assume it's varargs
-        if (
-          this.strictArgChecks &&
-          parameters != null &&
-          arguments.length != parameters.length
-        ) {
+        if (this.strictArgChecks && parameters != null && arguments.length != parameters.length) {
           // put error stuff here, no enough params
-          throw new Error("Invalid number of parameters for remote method.");
+          throw new Error('Invalid number of parameters for remote method.');
         } else {
-          this.bind(
-            method,
-            lang._toArray(arguments),
-            deferredRequestHandler,
-            url
-          );
+          this.bind(method, lang._toArray(arguments), deferredRequestHandler, url);
         }
 
         return deferredRequestHandler;
@@ -173,13 +150,9 @@ define([
           object.methods,
           function (m) {
             if (m && m.name) {
-              this[m.name] = this.generateMethod(
-                m.name,
-                m.parameters,
-                m.url || m.serviceUrl || m.serviceURL
-              );
+              this[m.name] = this.generateMethod(m.name, m.parameters, m.url || m.serviceUrl || m.serviceURL);
               if (!lang.isFunction(this[m.name])) {
-                throw new Error("RpcService: Failed to create" + m.name + "()");
+                throw new Error('RpcService: Failed to create' + m.name + '()');
                 /*console.log("RpcService: Failed to create", m.name, "()");*/
               }
             }
@@ -191,6 +164,6 @@ define([
       this.serviceUrl = object.serviceUrl || object.serviceURL;
       this.required = object.required;
       this.smd = object;
-    },
+    }
   });
 });

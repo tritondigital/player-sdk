@@ -1,14 +1,4 @@
-define([
-  "./kernel",
-  "./config",
-  /*===== "./declare", =====*/ "./lang",
-  "../Evented",
-  "./Color",
-  "../aspect",
-  "../sniff",
-  "../dom",
-  "../dom-style",
-], function (
+define(['./kernel', './config', /*===== "./declare", =====*/ './lang', '../Evented', './Color', '../aspect', '../sniff', '../dom', '../dom-style'], function (
   dojo,
   config,
   /*===== declare, =====*/ lang,
@@ -170,7 +160,7 @@ define([
             // amuck, potentially pegging the CPU. I'm not a fan of this
             // squelch, but hopefully logging will make it clear what's
             // going on
-            console.error("exception in animation handler for:", evt);
+            console.error('exception in animation handler for:', evt);
             console.error(e);
           }
         }
@@ -201,10 +191,10 @@ define([
         return _t;
       }
 
-      _t._fire("beforeBegin", [_t.node]);
+      _t._fire('beforeBegin', [_t.node]);
 
       var de = delay || _t.delay,
-        _p = lang.hitch(_t, "_play", gotoStart);
+        _p = lang.hitch(_t, '_play', gotoStart);
 
       if (de > 0) {
         _t._delayTimer = setTimeout(_p, de);
@@ -231,10 +221,10 @@ define([
         if (!_t._startRepeatCount) {
           _t._startRepeatCount = _t.repeat;
         }
-        _t._fire("onBegin", [value]);
+        _t._fire('onBegin', [value]);
       }
 
-      _t._fire("onPlay", [value]);
+      _t._fire('onPlay', [value]);
 
       _t._cycle();
       return _t; // Animation
@@ -252,7 +242,7 @@ define([
         return _t; /*Animation*/
       }
       _t._paused = true;
-      _t._fire("onPause", [_t.curve.getValue(_t._getStep())]);
+      _t._fire('onPause', [_t.curve.getValue(_t._getStep())]);
       return _t; // Animation
     },
 
@@ -289,7 +279,7 @@ define([
       if (gotoEnd) {
         _t._percent = 1;
       }
-      _t._fire("onStop", [_t.curve.getValue(_t._getStep())]);
+      _t._fire('onStop', [_t.curve.getValue(_t._getStep())]);
       _t._active = _t._paused = false;
       return _t; // Animation
     },
@@ -299,9 +289,9 @@ define([
       //		Returns a string token representation of the status of
       //		the animation, one of: "paused", "playing", "stopped"
       if (this._active) {
-        return this._paused ? "paused" : "playing"; // String
+        return this._paused ? 'paused' : 'playing'; // String
       }
-      return "stopped"; // String
+      return 'stopped'; // String
     },
 
     _cycle: function () {
@@ -321,7 +311,7 @@ define([
           step = _t.easing(step);
         }
 
-        _t._fire("onAnimate", [_t.curve.getValue(step)]);
+        _t._fire('onAnimate', [_t.curve.getValue(step)]);
 
         if (_t._percent < 1) {
           _t._startTimer();
@@ -340,7 +330,7 @@ define([
             }
           }
           _t._percent = 0;
-          _t._fire("onEnd", [_t.node]);
+          _t._fire('onEnd', [_t.node]);
           !_t.repeat && _t._stopTimer();
         }
       }
@@ -352,29 +342,24 @@ define([
       //		Clear the play delay timer
       clearTimeout(this._delayTimer);
       delete this._delayTimer;
-    },
+    }
   });
 
   // the local timer, stubbed into all Animation instances
   var ctr = 0,
     timer = null,
     runner = {
-      run: function () {},
+      run: function () {}
     };
 
   lang.extend(Animation, {
     _startTimer: function () {
       if (!this._timer) {
-        this._timer = aspect.after(
-          runner,
-          "run",
-          lang.hitch(this, "_cycle"),
-          true
-        );
+        this._timer = aspect.after(runner, 'run', lang.hitch(this, '_cycle'), true);
         ctr++;
       }
       if (!timer) {
-        timer = setInterval(lang.hitch(runner, "run"), this.rate);
+        timer = setInterval(lang.hitch(runner, 'run'), this.rate);
       }
     },
 
@@ -389,18 +374,18 @@ define([
         timer = null;
         ctr = 0;
       }
-    },
+    }
   });
 
-  var _makeFadeable = has("ie")
+  var _makeFadeable = has('ie')
     ? function (node) {
         // only set the zoom if the "tickle" value would be the same as the
         // default
         var ns = node.style;
         // don't set the width to auto if it didn't already cascade that way.
         // We don't want to f anyones designs
-        if (!ns.width.length && style.get(node, "width") == "auto") {
-          ns.width = "auto";
+        if (!ns.width.length && style.get(node, 'width') == 'auto') {
+          ns.width = 'auto';
         }
       }
     : function () {};
@@ -415,20 +400,15 @@ define([
     var fArgs = _mixin({ properties: {} }, args),
       props = (fArgs.properties.opacity = {});
 
-    props.start = !("start" in fArgs)
+    props.start = !('start' in fArgs)
       ? function () {
-          return +style.get(fArgs.node, "opacity") || 0;
+          return +style.get(fArgs.node, 'opacity') || 0;
         }
       : fArgs.start;
     props.end = fArgs.end;
 
     var anim = basefx.animateProperty(fArgs);
-    aspect.after(
-      anim,
-      "beforeBegin",
-      lang.partial(_makeFadeable, fArgs.node),
-      true
-    );
+    aspect.after(anim, 'beforeBegin', lang.partial(_makeFadeable, fArgs.node), true);
 
     return anim; // Animation
   };
@@ -487,10 +467,7 @@ define([
       if (start instanceof Color) {
         ret[p] = Color.blendColors(start, prop.end, r, prop.tempColor).toCss();
       } else if (!lang.isArray(start)) {
-        ret[p] =
-          (prop.end - start) * r +
-          start +
-          (p != "opacity" ? prop.units || "px" : 0);
+        ret[p] = (prop.end - start) * r + start + (p != 'opacity' ? prop.units || 'px' : 0);
       }
     }
     return ret;
@@ -604,7 +581,7 @@ define([
     var anim = new Animation(args);
     aspect.after(
       anim,
-      "beforeBegin",
+      'beforeBegin',
       lang.hitch(anim, function () {
         var pm = {};
         for (var p in this.properties) {
@@ -612,8 +589,8 @@ define([
           // some values below. In particular if start/end are functions
           // we don't want to overwrite them or the functions won't be
           // called if the animation is reused.
-          if (p == "width" || p == "height") {
-            this.node.display = "block";
+          if (p == 'width' || p == 'height') {
+            this.node.display = 'block';
           }
           var prop = this.properties[p];
           if (lang.isFunction(prop)) {
@@ -627,7 +604,7 @@ define([
           if (lang.isFunction(prop.end)) {
             prop.end = prop.end(n);
           }
-          var isColor = p.toLowerCase().indexOf("color") >= 0;
+          var isColor = p.toLowerCase().indexOf('color') >= 0;
           function getStyle(node, p) {
             // domStyle.get(node, "height") can return "auto" or "" on IE; this is more reliable:
             var v = { height: node.offsetHeight, width: node.offsetWidth }[p];
@@ -635,11 +612,11 @@ define([
               return v;
             }
             v = style.get(node, p);
-            return p == "opacity" ? +v : isColor ? v : parseFloat(v);
+            return p == 'opacity' ? +v : isColor ? v : parseFloat(v);
           }
-          if (!("end" in prop)) {
+          if (!('end' in prop)) {
             prop.end = getStyle(n, p);
-          } else if (!("start" in prop)) {
+          } else if (!('start' in prop)) {
             prop.start = getStyle(n, p);
           }
 
@@ -647,25 +624,18 @@ define([
             prop.start = new Color(prop.start);
             prop.end = new Color(prop.end);
           } else {
-            prop.start = p == "opacity" ? +prop.start : parseFloat(prop.start);
+            prop.start = p == 'opacity' ? +prop.start : parseFloat(prop.start);
           }
         }
         this.curve = new PropLine(pm);
       }),
       true
     );
-    aspect.after(anim, "onAnimate", lang.hitch(style, "set", anim.node), true);
+    aspect.after(anim, 'onAnimate', lang.hitch(style, 'set', anim.node), true);
     return anim; // Animation
   };
 
-  basefx.anim = function (
-    /*DOMNode|String*/ node,
-    /*Object*/ properties,
-    /*Integer?*/ duration,
-    /*Function?*/ easing,
-    /*Function?*/ onEnd,
-    /*Integer?*/ delay
-  ) {
+  basefx.anim = function (/*DOMNode|String*/ node, /*Object*/ properties, /*Integer?*/ duration, /*Function?*/ easing, /*Function?*/ onEnd, /*Integer?*/ delay) {
     // summary:
     //		A simpler interface to `animateProperty()`, also returns
     //		an instance of `Animation` but begins the animation
@@ -710,12 +680,12 @@ define([
         duration: duration || Animation.prototype.duration,
         properties: properties,
         easing: easing,
-        onEnd: onEnd,
+        onEnd: onEnd
       })
       .play(delay || 0);
   };
 
-  if (has("extend-dojo")) {
+  if (has('extend-dojo')) {
     _mixin(dojo, basefx);
     // Alias to drop come 2.0:
     dojo._Animation = Animation;

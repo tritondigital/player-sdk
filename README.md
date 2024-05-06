@@ -22,10 +22,8 @@ First, clone the GitHub project to your local development environment
 
 In your terminal:
 
-```bash
 npm install
 npm run dist
-```
 
 The files `td-sdk.min.js` and `td-sdk.min.js.map` will be created in the `dist` folder.
 
@@ -70,4 +68,8 @@ We use an internal versioning system. All accepted contributions will be version
 ## License
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE.md](LICENSE.md) file for details
+
+Execute local unit tests by running `npm run test`.
+You can also debug in a chrome test runner by changing the test script in the package.json to `npm run test:debug`.
+Test updates in Playground.
 

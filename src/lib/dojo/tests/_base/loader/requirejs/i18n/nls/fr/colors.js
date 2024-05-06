@@ -1,4 +1,4 @@
 define({
-  red: "rouge",
-  blue: "bleu",
+  red: 'rouge',
+  blue: 'bleu'
 });

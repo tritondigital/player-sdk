@@ -1,3 +1,3 @@
-define("dimple", {
-  color: "dimple-blue",
+define('dimple', {
+  color: 'dimple-blue'
 });

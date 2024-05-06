@@ -1,4 +1,4 @@
-define(["./query", "./_base/lang", "./html"], function (query, lang, html) {
+define(['./query', './_base/lang', './html'], function (query, lang, html) {
   // module:
   //		dojo/NodeList-html
 
@@ -12,10 +12,7 @@ return function(){
   var NodeList = query.NodeList;
 
   lang.extend(NodeList, {
-    html: function (
-      /* String|DomNode|NodeList? */ content,
-      /* Object? */ params
-    ) {
+    html: function (/* String|DomNode|NodeList? */ content, /* Object? */ params) {
       // summary:
       //		see `dojo/html.set()`. Set the content of all elements of this NodeList
       //
@@ -47,7 +44,7 @@ return function(){
         dhs.tearDown();
       });
       return this; // dojo/NodeList
-    },
+    }
   });
 
   return NodeList;

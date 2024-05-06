@@ -1,5 +1,5 @@
-define("simple", function () {
+define('simple', function () {
   return {
-    color: "blue",
+    color: 'blue'
   };
 });

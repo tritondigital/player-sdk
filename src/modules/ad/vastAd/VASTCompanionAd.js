@@ -1,10 +1,10 @@
 /**
  * VAST Companion Ad
  */
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var vastCompanionAd = declare([], {
     constructor: function () {
-      console.log("vastCompanionAd::constructor");
+      console.log('vastCompanionAd::constructor');
 
       this.id = null;
       this.width = null;
@@ -19,7 +19,7 @@ define(["dojo/_base/declare"], function (declare) {
       this.altText = null;
       this.adParameters = null;
       this.creativeView = null;
-    },
+    }
   });
 
   return vastCompanionAd;

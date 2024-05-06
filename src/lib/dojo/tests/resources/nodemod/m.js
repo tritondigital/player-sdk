@@ -4,4 +4,4 @@
 
 var m = (module.exports = exports);
 
-m.test = "value";
+m.test = 'value';

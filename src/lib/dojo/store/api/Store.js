@@ -1,4 +1,4 @@
-define(["../../_base/declare"], function (declare) {
+define(['../../_base/declare'], function (declare) {
   // module:
   //		dojo/api/Store
 
@@ -17,7 +17,7 @@ define(["../../_base/declare"], function (declare) {
     // idProperty: String
     //		If the store has a single primary key, this indicates the property to use as the
     //		identity property. The values of this property should be unique.
-    idProperty: "id",
+    idProperty: 'id',
 
     // queryEngine: Function
     //		If the store can be queried locally (on the client side in JS), this defines
@@ -128,7 +128,7 @@ define(["../../_base/declare"], function (declare) {
       //		The object to return metadata for.
       // returns: Object
       //		An object containing metadata.
-    },
+    }
   });
 
   Store.PutDirectives = declare(null, {
@@ -259,7 +259,7 @@ define(["../../_base/declare"], function (declare) {
     //		property limiting the result set. This property indicates the total number of objects
     //		matching the query (as if "start" and "count" weren't present). This may be
     //		a promise if the query is asynchronous.
-    total: 0,
+    total: 0
   });
 
   Store.Transaction = declare(null, {
@@ -278,7 +278,7 @@ define(["../../_base/declare"], function (declare) {
       //		Aborts the transaction. This may throw an error if it fails. Of if the operation
       //		is asynchronous, it may return a promise that represents the eventual success
       //		or failure of the abort.
-    },
+    }
   });
   return Store;
 });

@@ -28,11 +28,7 @@
         "streamSuffix": "_SC"
       }
     },
-    "servers": [
-      "http://15653.live.streamtheworld.com:80",
-      "http://15653.live.streamtheworld.com:443",
-      "http://15653.live.streamtheworld.com:3690"
-    ],
+    "servers": ["http://15653.live.streamtheworld.com:80", "http://15653.live.streamtheworld.com:443", "http://15653.live.streamtheworld.com:3690"],
     "mediaFormat": {
       "container": "flv",
       "cuePoints": "stwcue",
@@ -104,11 +100,7 @@
         "streamSuffix": "_SC"
       }
     },
-    "servers": [
-      "http://15653.live.streamtheworld.com:80",
-      "http://15653.live.streamtheworld.com:443",
-      "http://15653.live.streamtheworld.com:3690"
-    ],
+    "servers": ["http://15653.live.streamtheworld.com:80", "http://15653.live.streamtheworld.com:443", "http://15653.live.streamtheworld.com:3690"],
     "mediaFormat": {
       "container": "flv",
       "cuePoints": "stwcue",

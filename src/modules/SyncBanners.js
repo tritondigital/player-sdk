@@ -1,13 +1,4 @@
-define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "dojo/_base/array",
-  "dojo/dom",
-  "dojo/on",
-  "dojo/dom-construct",
-  "sdk/modules/base/CoreModule",
-  "sdk/base/util/Companions",
-], function (
+define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/dom', 'dojo/on', 'dojo/dom-construct', 'sdk/modules/base/CoreModule', 'sdk/base/util/Companions'], function (
   declare,
   lang,
   array,
@@ -21,53 +12,33 @@ define([
    * @namespace tdapi/modules/SyncBanners
    */
   var module = declare([coreModule], {
-    LEGACY: "legacy",
-    VAST: "vast",
+    LEGACY: 'legacy',
+    VAST: 'vast',
 
     constructor: function (config, target) {
-      console.log("syncBanners::constructor");
+      console.log('syncBanners::constructor');
 
       this.inherited(arguments);
 
-      this._vastCompanionPriority = config.vastCompanionPriority || [
-        "static",
-        "iframe",
-        "html",
-      ];
+      this._vastCompanionPriority = config.vastCompanionPriority || ['static', 'iframe', 'html'];
 
       this.companions = new Companions();
     },
 
     start: function () {
-      console.log("syncBanners::start");
+      console.log('syncBanners::start');
 
       if (this.config.elements) {
         console.log(this.config.elements);
 
-        on(
-          this.target,
-          "vast-process-complete",
-          lang.hitch(this, this._onVastProcessComplete)
-        );
-        on(
-          this.target,
-          "vast-companions-ready",
-          lang.hitch(this, this._onVastCompanionsReady)
-        );
-        on(
-          this.target,
-          "ad-break-cue-point",
-          lang.hitch(this, this._onAdBreakCuePoint)
-        );
-        on(
-          this.target,
-          "ad-break-cue-point-complete",
-          lang.hitch(this, this._onAdBreakCuePointComplete)
-        );
-        on(this.target, "stream-stop", lang.hitch(this, this._onStreamStop));
+        on(this.target, 'vast-process-complete', lang.hitch(this, this._onVastProcessComplete));
+        on(this.target, 'vast-companions-ready', lang.hitch(this, this._onVastCompanionsReady));
+        on(this.target, 'ad-break-cue-point', lang.hitch(this, this._onAdBreakCuePoint));
+        on(this.target, 'ad-break-cue-point-complete', lang.hitch(this, this._onAdBreakCuePointComplete));
+        on(this.target, 'stream-stop', lang.hitch(this, this._onStreamStop));
       }
 
-      this.emit("module-ready", { id: "SyncBanners", module: this });
+      this.emit('module-ready', { id: 'SyncBanners', module: this });
     },
 
     getSyncedElementBySize: function (width, height) {
@@ -85,7 +56,7 @@ define([
     },
 
     _onAdBreakCuePoint: function (e) {
-      console.log("syncBanners::_onAdBreakCuePoint");
+      console.log('syncBanners::_onAdBreakCuePoint');
       console.log(e.data);
 
       var adBreakData = e.data.adBreakData;
@@ -94,72 +65,32 @@ define([
       if (adBreakData.isVastInStream) {
         this._cleanAdVastListeners();
 
-        this.vastProcessCompleteListener = on(
-          this.target,
-          "vast-process-complete",
-          lang.hitch(this, this._onVastProcessComplete)
-        );
-        this.vastErrorListener = on(
-          this.target,
-          "ad-playback-error",
-          lang.hitch(this, this._onVastAdPlaybackError)
-        );
-      } else if (adUrl && adUrl.length > 1 && adUrl.indexOf("|") != -1) {
-        var primaryElementUrl = adUrl.split("|")[1];
-        var secondaryElementUrl = adUrl.split("|")[0];
+        this.vastProcessCompleteListener = on(this.target, 'vast-process-complete', lang.hitch(this, this._onVastProcessComplete));
+        this.vastErrorListener = on(this.target, 'ad-playback-error', lang.hitch(this, this._onVastAdPlaybackError));
+      } else if (adUrl && adUrl.length > 1 && adUrl.indexOf('|') != -1) {
+        var primaryElementUrl = adUrl.split('|')[1];
+        var secondaryElementUrl = adUrl.split('|')[0];
 
-        if (
-          primaryElementUrl &&
-          primaryElementUrl.length > 1 &&
-          this.getSyncedElementBySize(300, 250) != null
-        ) {
-          console.log(
-            "syncBanners::_onAdBreakCuePoint - Ad Break - Loading the primary HTML synced element - url=" +
-              primaryElementUrl
-          );
+        if (primaryElementUrl && primaryElementUrl.length > 1 && this.getSyncedElementBySize(300, 250) != null) {
+          console.log('syncBanners::_onAdBreakCuePoint - Ad Break - Loading the primary HTML synced element - url=' + primaryElementUrl);
 
-          this.emit("ad-break-synced-element", {
-            type: this.LEGACY,
-            id: this.getSyncedElementBySize(300, 250).id,
-            url: primaryElementUrl,
-          });
+          this.emit('ad-break-synced-element', { type: this.LEGACY, id: this.getSyncedElementBySize(300, 250).id, url: primaryElementUrl });
 
-          this._loadElementIframe(
-            this.getSyncedElementBySize(300, 250).id,
-            primaryElementUrl,
-            300,
-            250
-          );
+          this._loadElementIframe(this.getSyncedElementBySize(300, 250).id, primaryElementUrl, 300, 250);
         }
 
-        if (
-          secondaryElementUrl &&
-          secondaryElementUrl.length > 1 &&
-          this.getSyncedElementBySize(728, 90) != null
-        ) {
-          console.log(
-            "syncBanners::_onAdBreakCuePoint - Ad Break - Loading the secondary HTML synced element - url=" +
-              secondaryElementUrl
-          );
+        if (secondaryElementUrl && secondaryElementUrl.length > 1 && this.getSyncedElementBySize(728, 90) != null) {
+          console.log('syncBanners::_onAdBreakCuePoint - Ad Break - Loading the secondary HTML synced element - url=' + secondaryElementUrl);
 
-          this.emit("ad-break-synced-element", {
-            type: this.LEGACY,
-            id: this.getSyncedElementBySize(728, 90).id,
-            url: secondaryElementUrl,
-          });
+          this.emit('ad-break-synced-element', { type: this.LEGACY, id: this.getSyncedElementBySize(728, 90).id, url: secondaryElementUrl });
 
-          this._loadElementIframe(
-            this.getSyncedElementBySize(728, 90).id,
-            secondaryElementUrl,
-            728,
-            90
-          );
+          this._loadElementIframe(this.getSyncedElementBySize(728, 90).id, secondaryElementUrl, 728, 90);
         }
       }
     },
 
     _onAdBreakCuePointComplete: function (e) {
-      console.log("syncBanners::_onAdBreakCuePointComplete");
+      console.log('syncBanners::_onAdBreakCuePointComplete');
 
       if (!this.config.keepElementsVisible) this._hideElements();
     },
@@ -169,13 +100,10 @@ define([
     },
 
     _hideElements: function () {
-      console.log("syncBanners::_hideElements");
+      console.log('syncBanners::_hideElements');
 
       var bigboxElement = this.getSyncedElementBySize(300, 250);
-      if (
-        bigboxElement != null &&
-        dom.byId(bigboxElement.id, document) != null
-      ) {
+      if (bigboxElement != null && dom.byId(bigboxElement.id, document) != null) {
         domConstruct.empty(dom.byId(bigboxElement.id, document));
       }
 
@@ -192,18 +120,8 @@ define([
 
       domConstruct.empty(container);
       domConstruct.create(
-        "iframe",
-        {
-          src: adSpotUrl,
-          width: width,
-          height: height,
-          scrolling: "no",
-          frameborder: 0,
-          marginheight: 0,
-          marginwidth: 0,
-          allowtransparency: true,
-          style: { margin: 0, padding: 0 },
-        },
+        'iframe',
+        { src: adSpotUrl, width: width, height: height, scrolling: 'no', frameborder: 0, marginheight: 0, marginwidth: 0, allowtransparency: true, style: { margin: 0, padding: 0 } },
         container
       );
     },
@@ -212,7 +130,7 @@ define([
      * _showVastCompanions
      */
     _showVastCompanions: function (e) {
-      console.log("syncBanners::_showVastCompanions");
+      console.log('syncBanners::_showVastCompanions');
 
       console.log(this.config);
 
@@ -224,24 +142,11 @@ define([
         array.forEach(
           vastCompanions,
           function (item, index) {
-            var syncAdElement = this.getSyncedElementBySize(
-              item.width,
-              item.height
-            );
-            if (
-              syncAdElement != null &&
-              dom.byId(syncAdElement.id, document) != null
-            ) {
-              this.emit("ad-break-synced-element", {
-                type: this.VAST,
-                id: syncAdElement.id,
-                data: vastCompanions[index],
-              });
+            var syncAdElement = this.getSyncedElementBySize(item.width, item.height);
+            if (syncAdElement != null && dom.byId(syncAdElement.id, document) != null) {
+              this.emit('ad-break-synced-element', { type: this.VAST, id: syncAdElement.id, data: vastCompanions[index] });
 
-              this.companions.loadVASTCompanionAd(
-                syncAdElement.id,
-                vastCompanions[index]
-              );
+              this.companions.loadVASTCompanionAd(syncAdElement.id, vastCompanions[index]);
             }
           },
           this
@@ -250,25 +155,24 @@ define([
     },
 
     _onVastProcessComplete: function (e) {
-      console.log("syncBanners::_onVastProcessComplete");
+      console.log('syncBanners::_onVastProcessComplete');
       this._showVastCompanions(e);
     },
 
     _onVastCompanionsReady: function (e) {
-      console.log("SyncBanners::_onVastCompanionsReady");
+      console.log('SyncBanners::_onVastCompanionsReady');
       this._showVastCompanions(e);
     },
 
     _onVastAdPlaybackError: function (e) {
-      console.error("syncBanners::_onVastAdPlaybackError");
+      console.error('syncBanners::_onVastAdPlaybackError');
       console.error(e);
 
       this._cleanAdVastListeners();
     },
 
     _cleanAdVastListeners: function () {
-      if (this.vastProcessCompleteListener)
-        this.vastProcessCompleteListener.remove();
+      if (this.vastProcessCompleteListener) this.vastProcessCompleteListener.remove();
 
       if (this.vastErrorListener) this.vastErrorListener.remove();
     },
@@ -286,10 +190,7 @@ define([
             companionAds,
             function (companionAd) {
               var companionAdSize = companionAd.width + companionAd.height;
-              if (
-                companionAd.resourceType.name == item &&
-                array.indexOf(size, companionAdSize) < 0
-              ) {
+              if (companionAd.resourceType.name == item && array.indexOf(size, companionAdSize) < 0) {
                 companions.push(companionAd);
                 size.push(companionAdSize);
               }
@@ -301,7 +202,7 @@ define([
       );
 
       return companions;
-    },
+    }
   });
 
   return module;

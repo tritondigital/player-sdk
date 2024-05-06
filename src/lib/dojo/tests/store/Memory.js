@@ -1,30 +1,30 @@
-define(["doh", "dojo/store/Memory"], function (doh, Memory) {
+define(['doh', 'dojo/store/Memory'], function (doh, Memory) {
   var store = new Memory({
     data: [
-      { id: 1, name: "one", prime: false, mappedTo: "E" },
-      { id: 2, name: "two", even: true, prime: true, mappedTo: "D" },
-      { id: 3, name: "three", prime: true, mappedTo: "C" },
-      { id: 4, name: "four", even: true, prime: false, mappedTo: null },
-      { id: 5, name: "five", prime: true, mappedTo: "A" },
-    ],
+      { id: 1, name: 'one', prime: false, mappedTo: 'E' },
+      { id: 2, name: 'two', even: true, prime: true, mappedTo: 'D' },
+      { id: 3, name: 'three', prime: true, mappedTo: 'C' },
+      { id: 4, name: 'four', even: true, prime: false, mappedTo: null },
+      { id: 5, name: 'five', prime: true, mappedTo: 'A' }
+    ]
   });
-  doh.register("dojo.tests.store.Memory", [
+  doh.register('dojo.tests.store.Memory', [
     function testGet(t) {
-      t.is(store.get(1).name, "one");
-      t.is(store.get(4).name, "four");
+      t.is(store.get(1).name, 'one');
+      t.is(store.get(4).name, 'four');
       t.t(store.get(5).prime);
     },
     function testQuery(t) {
       t.is(store.query({ prime: true }).length, 3);
-      t.is(store.query({ even: true })[1].name, "four");
+      t.is(store.query({ even: true })[1].name, 'four');
     },
     function testQueryWithString(t) {
-      t.is(store.query({ name: "two" }).length, 1);
-      t.is(store.query({ name: "two" })[0].name, "two");
+      t.is(store.query({ name: 'two' }).length, 1);
+      t.is(store.query({ name: 'two' })[0].name, 'two');
     },
     function testQueryWithRegExp(t) {
       t.is(store.query({ name: /^t/ }).length, 2);
-      t.is(store.query({ name: /^t/ })[1].name, "three");
+      t.is(store.query({ name: /^t/ })[1].name, 'three');
       t.is(store.query({ name: /^o/ }).length, 1);
       t.is(store.query({ name: /o/ }).length, 3);
     },
@@ -34,8 +34,8 @@ define(["doh", "dojo/store/Memory"], function (doh, Memory) {
           id: {
             test: function (id) {
               return id < 4;
-            },
-          },
+            }
+          }
         }).length,
         3
       );
@@ -44,40 +44,31 @@ define(["doh", "dojo/store/Memory"], function (doh, Memory) {
           even: {
             test: function (even, object) {
               return even && object.id > 2;
-            },
-          },
+            }
+          }
         }).length,
         1
       );
     },
     function testQueryWithSort(t) {
-      t.is(
-        store.query({ prime: true }, { sort: [{ attribute: "name" }] }).length,
-        3
-      );
-      t.is(
-        store.query({ even: true }, { sort: [{ attribute: "name" }] })[1].name,
-        "two"
-      );
+      t.is(store.query({ prime: true }, { sort: [{ attribute: 'name' }] }).length, 3);
+      t.is(store.query({ even: true }, { sort: [{ attribute: 'name' }] })[1].name, 'two');
       t.is(
         store.query(
           { even: true },
           {
             sort: function (a, b) {
               return a.name < b.name ? -1 : 1;
-            },
+            }
           }
         )[1].name,
-        "two"
+        'two'
       );
-      t.is(
-        store.query(null, { sort: [{ attribute: "mappedTo" }] })[4].name,
-        "four"
-      );
+      t.is(store.query(null, { sort: [{ attribute: 'mappedTo' }] })[4].name, 'four');
     },
     function testQueryWithPaging(t) {
       t.is(store.query({ prime: true }, { start: 1, count: 1 }).length, 1);
-      t.is(store.query({ even: true }, { start: 1, count: 1 })[0].name, "four");
+      t.is(store.query({ even: true }, { start: 1, count: 1 })[0].name, 'four');
     },
     function testPutUpdate(t) {
       var four = store.get(4);
@@ -89,7 +80,7 @@ define(["doh", "dojo/store/Memory"], function (doh, Memory) {
     function testPutNew(t) {
       store.put({
         id: 6,
-        perfect: true,
+        perfect: true
       });
       t.t(store.get(6).perfect);
     },
@@ -98,7 +89,7 @@ define(["doh", "dojo/store/Memory"], function (doh, Memory) {
       try {
         store.add({
           id: 6,
-          perfect: true,
+          perfect: true
         });
       } catch (e) {
         threw = true;
@@ -108,7 +99,7 @@ define(["doh", "dojo/store/Memory"], function (doh, Memory) {
     function testAddNew(t) {
       store.add({
         id: 7,
-        prime: true,
+        prime: true
       });
       t.t(store.get(7).prime);
     },
@@ -129,22 +120,22 @@ define(["doh", "dojo/store/Memory"], function (doh, Memory) {
       var anotherStore = new Memory({
         data: {
           items: [
-            { name: "one", prime: false },
-            { name: "two", even: true, prime: true },
-            { name: "three", prime: true },
+            { name: 'one', prime: false },
+            { name: 'two', even: true, prime: true },
+            { name: 'three', prime: true }
           ],
-          identifier: "name",
-        },
+          identifier: 'name'
+        }
       });
-      t.is(anotherStore.get("one").name, "one");
-      t.is(anotherStore.query({ name: "one" })[0].name, "one");
+      t.is(anotherStore.get('one').name, 'one');
+      t.is(anotherStore.query({ name: 'one' })[0].name, 'one');
     },
     function testAddNewIdAssignment(t) {
       var object = {
-        random: true,
+        random: true
       };
       store.add(object);
       t.t(!!object.id);
-    },
+    }
   ]);
 });

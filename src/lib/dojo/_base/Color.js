@@ -1,9 +1,4 @@
-define(["./kernel", "./lang", "./array", "./config"], function (
-  dojo,
-  lang,
-  ArrayUtil,
-  config
-) {
+define(['./kernel', './lang', './array', './config'], function (dojo, lang, ArrayUtil, config) {
   var Color = (dojo.Color = function (/*Array|String|Object*/ color) {
     // summary:
     //		Takes a named string, hex string, array of rgb or rgba values,
@@ -50,7 +45,7 @@ define(["./kernel", "./lang", "./array", "./config"], function (
     blue: [0, 0, 255],
     teal: [0, 128, 128],
     aqua: [0, 255, 255],
-    transparent: config.transparentColor || [0, 0, 0, 0],
+    transparent: config.transparentColor || [0, 0, 0, 0]
   };
 
   lang.extend(Color, {
@@ -116,14 +111,14 @@ define(["./kernel", "./lang", "./array", "./config"], function (
       // example:
       //	|	console.log(new Color([0,0,0]).toHex()); // #000000
       var arr = ArrayUtil.map(
-        ["r", "g", "b"],
+        ['r', 'g', 'b'],
         function (x) {
           var s = this[x].toString(16);
-          return s.length < 2 ? "0" + s : s;
+          return s.length < 2 ? '0' + s : s;
         },
         this
       );
-      return "#" + arr.join(""); // String
+      return '#' + arr.join(''); // String
     },
     toCss: function (/*Boolean?*/ includeAlpha) {
       // summary:
@@ -132,39 +127,31 @@ define(["./kernel", "./lang", "./array", "./config"], function (
       //	|	var c = new Color("#FFF").toCss();
       //	|	console.log(c); // rgb('255','255','255')
       var t = this,
-        rgb = t.r + ", " + t.g + ", " + t.b;
-      return (includeAlpha ? "rgba(" + rgb + ", " + t.a : "rgb(" + rgb) + ")"; // String
+        rgb = t.r + ', ' + t.g + ', ' + t.b;
+      return (includeAlpha ? 'rgba(' + rgb + ', ' + t.a : 'rgb(' + rgb) + ')'; // String
     },
     toString: function () {
       // summary:
       //		Returns a visual representation of the color
       return this.toCss(true); // String
-    },
+    }
   });
 
-  Color.blendColors = dojo.blendColors = function (
-    /*Color*/ start,
-    /*Color*/ end,
-    /*Number*/ weight,
-    /*Color?*/ obj
-  ) {
+  Color.blendColors = dojo.blendColors = function (/*Color*/ start, /*Color*/ end, /*Number*/ weight, /*Color?*/ obj) {
     // summary:
     //		Blend colors end and start with weight from 0 to 1, 0.5 being a 50/50 blend,
     //		can reuse a previously allocated Color object for the result
     var t = obj || new Color();
-    ArrayUtil.forEach(["r", "g", "b", "a"], function (x) {
+    ArrayUtil.forEach(['r', 'g', 'b', 'a'], function (x) {
       t[x] = start[x] + (end[x] - start[x]) * weight;
-      if (x != "a") {
+      if (x != 'a') {
         t[x] = Math.round(t[x]);
       }
     });
     return t.sanitize(); // Color
   };
 
-  Color.fromRgb = dojo.colorFromRgb = function (
-    /*String*/ color,
-    /*Color?*/ obj
-  ) {
+  Color.fromRgb = dojo.colorFromRgb = function (/*String*/ color, /*Color?*/ obj) {
     // summary:
     //		Returns a `Color` instance from a string of the form
     //		"rgb(...)" or "rgba(...)". Optionally accepts a `Color`
@@ -176,10 +163,7 @@ define(["./kernel", "./lang", "./array", "./config"], function (
     return m && Color.fromArray(m[1].split(/\s*,\s*/), obj); // Color
   };
 
-  Color.fromHex = dojo.colorFromHex = function (
-    /*String*/ color,
-    /*Color?*/ obj
-  ) {
+  Color.fromHex = dojo.colorFromHex = function (/*String*/ color, /*Color?*/ obj) {
     // summary:
     //		Converts a hex string with a '#' prefix to a color object.
     //		Supports 12-bit #rgb shorthand. Optionally accepts a
@@ -196,11 +180,11 @@ define(["./kernel", "./lang", "./array", "./config"], function (
     var t = obj || new Color(),
       bits = color.length == 4 ? 4 : 8,
       mask = (1 << bits) - 1;
-    color = Number("0x" + color.substr(1));
+    color = Number('0x' + color.substr(1));
     if (isNaN(color)) {
       return null; // Color
     }
-    ArrayUtil.forEach(["b", "g", "r"], function (x) {
+    ArrayUtil.forEach(['b', 'g', 'r'], function (x) {
       var c = color & mask;
       color >>= bits;
       t[x] = bits == 4 ? 17 * c : c;
@@ -209,10 +193,7 @@ define(["./kernel", "./lang", "./array", "./config"], function (
     return t; // Color
   };
 
-  Color.fromArray = dojo.colorFromArray = function (
-    /*Array*/ a,
-    /*Color?*/ obj
-  ) {
+  Color.fromArray = dojo.colorFromArray = function (/*Array*/ a, /*Color?*/ obj) {
     // summary:
     //		Builds a `Color` from a 3 or 4 element array, mapping each
     //		element in sequence to the rgb(a) values of the color.
@@ -228,10 +209,7 @@ define(["./kernel", "./lang", "./array", "./config"], function (
     return t.sanitize(); // Color
   };
 
-  Color.fromString = dojo.colorFromString = function (
-    /*String*/ str,
-    /*Color?*/ obj
-  ) {
+  Color.fromString = dojo.colorFromString = function (/*String*/ str, /*Color?*/ obj) {
     // summary:
     //		Parses `str` for a color value. Accepts hex, rgb, and rgba
     //		style color values.
@@ -243,11 +221,7 @@ define(["./kernel", "./lang", "./array", "./config"], function (
     // returns:
     //		A Color object. If obj is passed, it will be the return value.
     var a = Color.named[str];
-    return (
-      (a && Color.fromArray(a, obj)) ||
-      Color.fromRgb(str, obj) ||
-      Color.fromHex(str, obj)
-    ); // Color
+    return (a && Color.fromArray(a, obj)) || Color.fromRgb(str, obj) || Color.fromHex(str, obj); // Color
   };
 
   return Color;

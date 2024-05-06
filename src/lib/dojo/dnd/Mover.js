@@ -1,36 +1,22 @@
 define([
-  "../_base/array",
-  "../_base/declare",
-  "../_base/lang",
-  "../sniff",
-  "../_base/window",
-  "../dom",
-  "../dom-geometry",
-  "../dom-style",
-  "../Evented",
-  "../on",
-  "../touch",
-  "./common",
-  "./autoscroll",
-], function (
-  array,
-  declare,
-  lang,
-  has,
-  win,
-  dom,
-  domGeom,
-  domStyle,
-  Evented,
-  on,
-  touch,
-  dnd,
-  autoscroll
-) {
+  '../_base/array',
+  '../_base/declare',
+  '../_base/lang',
+  '../sniff',
+  '../_base/window',
+  '../dom',
+  '../dom-geometry',
+  '../dom-style',
+  '../Evented',
+  '../on',
+  '../touch',
+  './common',
+  './autoscroll'
+], function (array, declare, lang, has, win, dom, domGeom, domStyle, Evented, on, touch, dnd, autoscroll) {
   // module:
   //		dojo/dnd/Mover
 
-  return declare("dojo.dnd.Mover", [Evented], {
+  return declare('dojo.dnd.Mover', [Evented], {
     // summary:
     //		an object which makes a node follow the mouse, or touch-drag on touch devices.
     //		Used as a default mover, and as a base class for custom movers.
@@ -58,17 +44,17 @@ define([
       this.events = [
         // At the start of a drag, onFirstMove is called, and then the following
         // listener is disconnected.
-        on(d, touch.move, lang.hitch(this, "onFirstMove")),
+        on(d, touch.move, lang.hitch(this, 'onFirstMove')),
 
         // These are called continually during the drag
-        on(d, touch.move, lang.hitch(this, "onMouseMove")),
+        on(d, touch.move, lang.hitch(this, 'onMouseMove')),
 
         // And these are called at the end of the drag
-        on(d, touch.release, lang.hitch(this, "onMouseUp")),
+        on(d, touch.release, lang.hitch(this, 'onMouseUp')),
 
         // cancel text selection and text dragging
-        on(d, "dragstart", stopEvent),
-        on(d.body, "selectstart", stopEvent),
+        on(d, 'dragstart', stopEvent),
+        on(d.body, 'selectstart', stopEvent)
       ];
 
       // Tell autoscroll that a drag is starting
@@ -92,11 +78,7 @@ define([
       e.stopPropagation();
     },
     onMouseUp: function (e) {
-      if (
-        has("webkit") && has("mac") && this.mouseButton == 2
-          ? e.button == 0
-          : this.mouseButton == e.button
-      ) {
+      if (has('webkit') && has('mac') && this.mouseButton == 2 ? e.button == 0 : this.mouseButton == e.button) {
         // TODO Should condition be met for touch devices, too?
         this.destroy();
       }
@@ -113,14 +95,14 @@ define([
         t,
         h = this.host;
       switch (s.position) {
-        case "relative":
-        case "absolute":
+        case 'relative':
+        case 'absolute':
           // assume that left and top values are in pixels already
           l = Math.round(parseFloat(s.left)) || 0;
           t = Math.round(parseFloat(s.top)) || 0;
           break;
         default:
-          s.position = "absolute"; // enforcing the absolute mode
+          s.position = 'absolute'; // enforcing the absolute mode
           var m = domGeom.getMarginBox(this.node);
           // event.pageX/pageY (which we used to generate the initial
           // margin box) includes padding and margin set on the body.
@@ -160,6 +142,6 @@ define([
       }
       // destroy objects
       this.events = this.node = this.host = null;
-    },
+    }
   });
 });

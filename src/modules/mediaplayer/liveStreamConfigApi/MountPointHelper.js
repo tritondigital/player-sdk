@@ -1,4 +1,4 @@
-var _ = require("lodash");
+var _ = require('lodash');
 
 function MountPointHelper() {
   this.hasHLS = function (MountPoint) {
@@ -7,7 +7,7 @@ function MountPointHelper() {
     }
 
     return _.some(MountPoint.transports, function (transport) {
-      return transport.transport === "hls";
+      return transport.transport === 'hls';
     });
   };
 
@@ -16,7 +16,7 @@ function MountPointHelper() {
       MountPoint = this;
     }
     return _.some(MountPoint.transports, function (transport) {
-      return transport.transport === "hlsts";
+      return transport.transport === 'hlsts';
     });
   };
 

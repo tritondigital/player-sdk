@@ -6,18 +6,18 @@
  *
  */
 define([
-  "dojo/_base/declare",
-  "dojo/_base/array",
-  "dojo/_base/lang",
-  "sdk/base/util/XhrProvider",
-  "sdk/modules/npe/base/Inpe",
-  "sdk/modules/npe/Track",
-  "sdk/modules/npe/Picture",
-  "dojo/on",
+  'dojo/_base/declare',
+  'dojo/_base/array',
+  'dojo/_base/lang',
+  'sdk/base/util/XhrProvider',
+  'sdk/modules/npe/base/Inpe',
+  'sdk/modules/npe/Track',
+  'sdk/modules/npe/Picture',
+  'dojo/on'
 ], function (declare, array, lang, XhrProvider, Inpe, Track, Picture, on) {
   var album = declare([Inpe], {
     constructor: function (data, platformId) {
-      console.log("album::constructor");
+      console.log('album::constructor');
 
       this.albumData = null;
 
@@ -112,15 +112,8 @@ define([
      * @return {object} containing: {url, width, height, id}
      */
     getCoverArtOriginal: function () {
-      var cover =
-        this.albumData != null ? this.albumData.cover : this.data.cover;
-      if (cover != null || cover != undefined)
-        return {
-          url: cover.originalSourceUrl,
-          width: cover.width,
-          height: cover.height,
-          id: cover.id,
-        };
+      var cover = this.albumData != null ? this.albumData.cover : this.data.cover;
+      if (cover != null || cover != undefined) return { url: cover.originalSourceUrl, width: cover.width, height: cover.height, id: cover.id };
       else return null;
     },
 
@@ -134,15 +127,14 @@ define([
      */
     fetchCoverArtPicture: function () {
       if (this.coverArtPicture) {
-        this.notify("cover-complete", this.coverArtPicture);
+        this.notify('cover-complete', this.coverArtPicture);
         return;
       }
 
-      var pictureItem =
-        this.albumData != null ? this.albumData.cover : this.data.cover;
+      var pictureItem = this.albumData != null ? this.albumData.cover : this.data.cover;
 
       if (pictureItem == null) {
-        this.notify("cover-complete");
+        this.notify('cover-complete');
         return;
       }
 
@@ -150,28 +142,18 @@ define([
 
       this.coverArtPicture = new Picture(pictureItem, this.platformId);
 
-      if (this.coverArtPicture.successCallback)
-        this.coverArtPicture.successCallback.remove();
-      if (this.coverArtPicture.errorCallback)
-        this.coverArtPicture.errorCallback.remove();
+      if (this.coverArtPicture.successCallback) this.coverArtPicture.successCallback.remove();
+      if (this.coverArtPicture.errorCallback) this.coverArtPicture.errorCallback.remove();
 
-      this.coverArtPicture.successCallback = on(
-        this.coverArtPicture,
-        "picture-complete",
-        lang.hitch(this, this._onCoverArtPictureComplete)
-      );
-      this.coverArtPicture.errorCallback = on(
-        this.coverArtPicture,
-        "picture-error",
-        lang.hitch(this, this._onCoverArtPictureComplete)
-      );
+      this.coverArtPicture.successCallback = on(this.coverArtPicture, 'picture-complete', lang.hitch(this, this._onCoverArtPictureComplete));
+      this.coverArtPicture.errorCallback = on(this.coverArtPicture, 'picture-error', lang.hitch(this, this._onCoverArtPictureComplete));
 
       this.coverArtPicture.fetchData();
     },
 
     //picture-complete = load complete or error
     _onCoverArtPictureComplete: function (requestData, data) {
-      this.notify("cover-complete", this.coverArtPicture);
+      this.notify('cover-complete', this.coverArtPicture);
     },
 
     /**
@@ -215,33 +197,24 @@ define([
      *
      */
     fetchData: function (isDynamicCall) {
-      console.log("album::fetchData - id:" + this.id);
+      console.log('album::fetchData - id:' + this.id);
 
       isDynamicCall = isDynamicCall == undefined ? false : isDynamicCall;
 
       if (isDynamicCall) this.url = this.getDynamicAlbumUrl(this.id);
 
       if (this.url == null) {
-        console.error(
-          "album::fetchData - The album url is undefined for album title=" +
-            this.getTitle()
-        );
+        console.error('album::fetchData - The album url is undefined for album title=' + this.getTitle());
 
-        this.notify("album-error", { albumId: this.id });
+        this.notify('album-error', { albumId: this.id });
         return;
       }
 
       if (this.alreadyFetched == false) {
         var xhrProv = new XhrProvider();
-        xhrProv.request(
-          this.url,
-          { albumId: this.id, isDynamicCall: isDynamicCall },
-          this.getRequestArgs(),
-          lang.hitch(this, this._onLoadComplete),
-          lang.hitch(this, this._onLoadError)
-        );
+        xhrProv.request(this.url, { albumId: this.id, isDynamicCall: isDynamicCall }, this.getRequestArgs(), lang.hitch(this, this._onLoadComplete), lang.hitch(this, this._onLoadError));
       } else {
-        this.notify("album-complete", { albumId: this.id });
+        this.notify('album-complete', { albumId: this.id });
       }
     },
 
@@ -251,9 +224,9 @@ define([
      * @param trackIds {string or array} The list of tracks to retrieve data. Set a string for only one track, or an array for a list of tracks.
      */
     fetchTrackByIds: function (trackIds) {
-      console.log("album::fetchTrackByIds - trackIds=" + trackIds);
+      console.log('album::fetchTrackByIds - trackIds=' + trackIds);
 
-      if (typeof trackIds == "string") trackIds = [trackIds];
+      if (typeof trackIds == 'string') trackIds = [trackIds];
 
       this.tracksQueue = lang.clone(trackIds);
 
@@ -264,16 +237,8 @@ define([
         if (track.successCallback) track.successCallback.remove();
         if (track.errorCallback) track.errorCallback.remove();
 
-        track.successCallback = on(
-          track,
-          "track-complete",
-          lang.hitch(this, this._onTrackComplete)
-        );
-        track.errorCallback = on(
-          track,
-          "track-error",
-          lang.hitch(this, this._onTrackComplete)
-        );
+        track.successCallback = on(track, 'track-complete', lang.hitch(this, this._onTrackComplete));
+        track.errorCallback = on(track, 'track-error', lang.hitch(this, this._onTrackComplete));
 
         track.fetchData();
       }
@@ -289,7 +254,7 @@ define([
       if (requestData.isDynamicCall == false) {
         this.fetchData(true); //Fallback to dynamic url
       } else {
-        this.notify("album-error", { albumId: requestData.albumId });
+        this.notify('album-error', { albumId: requestData.albumId });
       }
     },
 
@@ -300,17 +265,17 @@ define([
 
       this.alreadyFetched = true;
 
-      this.notify("album-complete", { albumId: requestData.albumId });
+      this.notify('album-complete', { albumId: requestData.albumId });
     },
 
     //track completed = load complete or error
     _onTrackComplete: function (requestData, data) {
-      console.log("_onTrackComplete - trackId=" + requestData.trackId);
+      console.log('_onTrackComplete - trackId=' + requestData.trackId);
 
       this._removeTrackFromQueue(requestData.trackId);
 
       if (this.tracksQueue.length == 0) {
-        this.notify("track-complete", this.tracks);
+        this.notify('track-complete', this.tracks);
       }
     },
 
@@ -326,7 +291,7 @@ define([
       );
 
       if (spliceStartIndex > -1) this.tracksQueue.splice(spliceStartIndex, 1);
-    },
+    }
   });
 
   return album;

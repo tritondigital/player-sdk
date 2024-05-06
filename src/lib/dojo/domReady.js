@@ -1,8 +1,8 @@
-define(["./has"], function (has) {
+define(['./has'], function (has) {
   var global = this,
     doc = document,
     readyStates = { loaded: 1, complete: 1 },
-    fixReadyState = typeof doc.readyState != "string",
+    fixReadyState = typeof doc.readyState != 'string',
     ready = !!readyStates[doc.readyState],
     readyQ = [],
     recursiveGuard;
@@ -30,7 +30,7 @@ define(["./has"], function (has) {
 
   // For FF <= 3.5
   if (fixReadyState) {
-    doc.readyState = "loading";
+    doc.readyState = 'loading';
   }
 
   function processQ() {
@@ -45,7 +45,7 @@ define(["./has"], function (has) {
       try {
         readyQ.shift()(doc);
       } catch (err) {
-        console.log("Error on domReady callback: " + err);
+        console.log('Error on domReady callback: ' + err);
       }
     }
 
@@ -60,16 +60,13 @@ define(["./has"], function (has) {
     var tests = [],
       detectReady = function (evt) {
         evt = evt || global.event;
-        if (
-          ready ||
-          (evt.type == "readystatechange" && !readyStates[doc.readyState])
-        ) {
+        if (ready || (evt.type == 'readystatechange' && !readyStates[doc.readyState])) {
           return;
         }
 
         // For FF <= 3.5
         if (fixReadyState) {
-          doc.readyState = "complete";
+          doc.readyState = 'complete';
         }
 
         ready = 1;
@@ -82,16 +79,16 @@ define(["./has"], function (has) {
         });
       };
 
-    if (!has("dom-addeventlistener")) {
+    if (!has('dom-addeventlistener')) {
       on = function (node, event) {
-        event = "on" + event;
+        event = 'on' + event;
         node.attachEvent(event, detectReady);
         readyQ.push(function () {
           node.detachEvent(event, detectReady);
         });
       };
 
-      var div = doc.createElement("div");
+      var div = doc.createElement('div');
       try {
         if (div.doScroll && global.frameElement === null) {
           // the doScroll test is only useful if we're in the top-most frame
@@ -99,7 +96,7 @@ define(["./has"], function (has) {
             // Derived with permission from Diego Perini's IEContentLoaded
             // http://javascript.nwbox.com/IEContentLoaded/
             try {
-              div.doScroll("left");
+              div.doScroll('left');
               return 1;
             } catch (e) {}
           });
@@ -107,11 +104,11 @@ define(["./has"], function (has) {
       } catch (e) {}
     }
 
-    on(doc, "DOMContentLoaded");
-    on(global, "load");
+    on(doc, 'DOMContentLoaded');
+    on(global, 'load');
 
-    if ("onreadystatechange" in doc) {
-      on(doc, "readystatechange");
+    if ('onreadystatechange' in doc) {
+      on(doc, 'readystatechange');
     } else if (!fixReadyState) {
       // if the ready state property exists and there's
       // no readystatechange event, poll for the state
@@ -129,7 +126,7 @@ define(["./has"], function (has) {
         var i = tests.length;
         while (i--) {
           if (tests[i]()) {
-            detectReady("poller");
+            detectReady('poller');
             return;
           }
         }

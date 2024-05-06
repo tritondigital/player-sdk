@@ -1,4 +1,4 @@
-define(["../has", "require"], function (has, require) {
+define(['../has', 'require'], function (has, require) {
   // module:
   //		dojo/_base/config
 
@@ -162,7 +162,7 @@ return {
 =====*/
 
   var result = {};
-  if (has("dojo-config-api")) {
+  if (has('dojo-config-api')) {
     // must be the dojo loader; take a shallow copy of require.rawConfig
     var src = require.rawConfig,
       p;
@@ -172,23 +172,21 @@ return {
   } else {
     var adviseHas = function (featureSet, prefix, booting) {
       for (p in featureSet) {
-        p != "has" && has.add(prefix + p, featureSet[p], 0, booting);
+        p != 'has' && has.add(prefix + p, featureSet[p], 0, booting);
       }
     };
-    result = has("dojo-loader")
+    result = has('dojo-loader')
       ? // must be a built version of the dojo loader; all config stuffed in require.rawConfig
         require.rawConfig
       : // a foreign loader
         this.dojoConfig || this.djConfig || {};
-    adviseHas(result, "config", 1);
-    adviseHas(result.has, "", 1);
+    adviseHas(result, 'config', 1);
+    adviseHas(result.has, '', 1);
   }
 
   if (!result.locale) {
     // Default locale for browsers.
-    result.locale = (
-      navigator.language || navigator.userLanguage
-    ).toLowerCase();
+    result.locale = (navigator.language || navigator.userLanguage).toLowerCase();
   }
 
   return result;

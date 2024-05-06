@@ -1,36 +1,22 @@
 define([
-  "../_base/config",
-  "../_base/json",
-  "../_base/kernel",
-  /*===== "../_base/declare", =====*/ "../_base/lang",
-  "../_base/xhr",
-  "../sniff",
-  "../_base/window",
-  "../dom",
-  "../dom-construct",
-  "../query",
-  "require",
-  "../aspect",
-  "../request/iframe",
-], function (
-  config,
-  json,
-  kernel,
-  /*===== declare, =====*/ lang,
-  xhr,
-  has,
-  win,
-  dom,
-  domConstruct,
-  query,
-  require,
-  aspect,
-  _iframe
-) {
+  '../_base/config',
+  '../_base/json',
+  '../_base/kernel',
+  /*===== "../_base/declare", =====*/ '../_base/lang',
+  '../_base/xhr',
+  '../sniff',
+  '../_base/window',
+  '../dom',
+  '../dom-construct',
+  '../query',
+  'require',
+  '../aspect',
+  '../request/iframe'
+], function (config, json, kernel, /*===== declare, =====*/ lang, xhr, has, win, dom, domConstruct, query, require, aspect, _iframe) {
   // module:
   //		dojo/io/iframe
 
-  kernel.deprecated("dojo/io/iframe", "Use dojo/request/iframe.", "2.0");
+  kernel.deprecated('dojo/io/iframe', 'Use dojo/request/iframe.', '2.0');
 
   /*=====
 var __ioArgs = declare(kernel.__IoArgs, {
@@ -98,7 +84,7 @@ return kernel.io.iframe = {
 =====*/
 
   var mid = _iframe._iframeName;
-  mid = mid.substring(0, mid.lastIndexOf("_"));
+  mid = mid.substring(0, mid.lastIndexOf('_'));
 
   var iframe = lang.delegate(_iframe, {
     // summary:
@@ -137,13 +123,13 @@ return kernel.io.iframe = {
             var handleAs = ioArgs.handleAs;
 
             //Assign correct value based on handleAs value.
-            if (handleAs === "xml" || handleAs === "html") {
+            if (handleAs === 'xml' || handleAs === 'html') {
               value = rDfd.response.data;
             } else {
               value = rDfd.response.text;
-              if (handleAs === "json") {
+              if (handleAs === 'json') {
                 value = json.fromJson(value);
-              } else if (handleAs === "javascript") {
+              } else if (handleAs === 'javascript') {
                 value = kernel.eval(value);
               }
             }
@@ -162,37 +148,30 @@ return kernel.io.iframe = {
 
       var ioArgs = dfd.ioArgs;
 
-      var method = "GET",
+      var method = 'GET',
         form = dom.byId(args.form);
-      if (args.method && args.method.toUpperCase() === "POST" && form) {
-        method = "POST";
+      if (args.method && args.method.toUpperCase() === 'POST' && form) {
+        method = 'POST';
       }
 
       var options = {
         method: method,
-        handleAs:
-          args.handleAs === "json" || args.handleAs === "javascript"
-            ? "text"
-            : args.handleAs,
+        handleAs: args.handleAs === 'json' || args.handleAs === 'javascript' ? 'text' : args.handleAs,
         form: args.form,
         query: form ? null : args.content,
         data: form ? args.content : null,
         timeout: args.timeout,
-        ioArgs: ioArgs,
+        ioArgs: ioArgs
       };
 
       if (options.method) {
         options.method = options.method.toUpperCase();
       }
 
-      if (
-        config.ioPublish &&
-        kernel.publish &&
-        ioArgs.args.ioPublish !== false
-      ) {
+      if (config.ioPublish && kernel.publish && ioArgs.args.ioPublish !== false) {
         var start = aspect.after(
           _iframe,
-          "_notifyStart",
+          '_notifyStart',
           function (data) {
             if (data.options.ioArgs === ioArgs) {
               start.remove();
@@ -218,10 +197,10 @@ return kernel.io.iframe = {
       return dfd;
     },
 
-    _iframeOnload: win.global[mid + "_onload"],
+    _iframeOnload: win.global[mid + '_onload']
   });
 
-  lang.setObject("dojo.io.iframe", iframe);
+  lang.setObject('dojo.io.iframe', iframe);
 
   return iframe;
 });

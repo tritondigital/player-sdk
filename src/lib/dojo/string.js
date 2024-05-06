@@ -1,6 +1,6 @@
 define([
-  "./_base/kernel", // kernel.global
-  "./_base/lang",
+  './_base/kernel', // kernel.global
+  './_base/lang'
 ], function (kernel, lang) {
   // module:
   //		dojo/string
@@ -9,7 +9,7 @@ define([
     // summary:
     //		String utilities for Dojo
   };
-  lang.setObject("dojo.string", string);
+  lang.setObject('dojo.string', string);
 
   string.rep = function (/*String*/ str, /*Integer*/ num) {
     // summary:
@@ -20,7 +20,7 @@ define([
     //		number of times to replicate the string
 
     if (num <= 0 || !str) {
-      return "";
+      return '';
     }
 
     var buf = [];
@@ -33,15 +33,10 @@ define([
       }
       str += str;
     }
-    return buf.join(""); // String
+    return buf.join(''); // String
   };
 
-  string.pad = function (
-    /*String*/ text,
-    /*Integer*/ size,
-    /*String?*/ ch,
-    /*Boolean?*/ end
-  ) {
+  string.pad = function (/*String*/ text, /*Integer*/ size, /*String?*/ ch, /*Boolean?*/ end) {
     // summary:
     //		Pad a string to guarantee that it is at least `size` length by
     //		filling with the character `ch` at either the start or end of the
@@ -59,19 +54,14 @@ define([
     //	|	string.pad("Dojo", 10, "+", true);
 
     if (!ch) {
-      ch = "0";
+      ch = '0';
     }
     var out = String(text),
       pad = string.rep(ch, Math.ceil((size - out.length) / ch.length));
     return end ? out + pad : pad + out; // String
   };
 
-  string.substitute = function (
-    /*String*/ template,
-    /*Object|Array*/ map,
-    /*Function?*/ transform,
-    /*Object?*/ thisObject
-  ) {
+  string.substitute = function (/*String*/ template, /*Object|Array*/ map, /*Function?*/ transform, /*Object?*/ thisObject) {
     // summary:
     //		Performs parameterized substitutions on a string. Throws an
     //		exception if any parameter is unmatched.
@@ -132,24 +122,19 @@ define([
           return v;
         };
 
-    return template.replace(
-      /\$\{([^\s\:\}]+)(?:\:([^\s\:\}]+))?\}/g,
-      function (match, key, format) {
-        var value = lang.getObject(key, false, map);
-        if (format) {
-          value = lang
-            .getObject(format, false, thisObject)
-            .call(thisObject, value, key);
-        }
-        return transform(value, key).toString();
+    return template.replace(/\$\{([^\s\:\}]+)(?:\:([^\s\:\}]+))?\}/g, function (match, key, format) {
+      var value = lang.getObject(key, false, map);
+      if (format) {
+        value = lang.getObject(format, false, thisObject).call(thisObject, value, key);
       }
-    ); // String
+      return transform(value, key).toString();
+    }); // String
   };
 
   string.trim = String.prototype.trim
     ? lang.trim // aliasing to the native function
     : function (str) {
-        str = str.replace(/^\s+/, "");
+        str = str.replace(/^\s+/, '');
         for (var i = str.length - 1; i >= 0; i--) {
           if (/\S/.test(str.charAt(i))) {
             str = str.substring(0, i + 1);

@@ -1,4 +1,4 @@
-define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
+define(['./kernel', '../has', './lang'], function (dojo, has, lang) {
   // module:
   //		dojo/_base/array
 
@@ -7,7 +7,7 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
     u;
 
   function buildFn(fn) {
-    return (cache[fn] = new Function("item", "index", "array", fn)); // Function
+    return (cache[fn] = new Function('item', 'index', 'array', fn)); // Function
   }
   // magic snippet: if(typeof fn == "string") fn = cache[fn] || buildFn(fn);
 
@@ -19,8 +19,8 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
       var i = 0,
         l = (a && a.length) || 0,
         result;
-      if (l && typeof a == "string") a = a.split("");
-      if (typeof fn == "string") fn = cache[fn] || buildFn(fn);
+      if (l && typeof a == 'string') a = a.split('');
+      if (typeof fn == 'string') fn = cache[fn] || buildFn(fn);
       if (o) {
         for (; i < l; ++i) {
           result = !fn.call(o, a[i], i, a);
@@ -69,7 +69,7 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
           i = from >= l ? l + uOver : from;
         }
       }
-      if (l && typeof a == "string") a = a.split("");
+      if (l && typeof a == 'string') a = a.split('');
       for (; i != end; i += delta) {
         if (a[i] == x) {
           return i; // Number
@@ -248,9 +248,8 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
 
       var i = 0,
         l = (arr && arr.length) || 0;
-      if (l && typeof arr == "string") arr = arr.split("");
-      if (typeof callback == "string")
-        callback = cache[callback] || buildFn(callback);
+      if (l && typeof arr == 'string') arr = arr.split('');
+      if (typeof callback == 'string') callback = cache[callback] || buildFn(callback);
       if (thisObject) {
         for (; i < l; ++i) {
           callback.call(thisObject, arr[i], i, arr);
@@ -289,9 +288,8 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
       var i = 0,
         l = (arr && arr.length) || 0,
         out = new (Ctr || Array)(l);
-      if (l && typeof arr == "string") arr = arr.split("");
-      if (typeof callback == "string")
-        callback = cache[callback] || buildFn(callback);
+      if (l && typeof arr == 'string') arr = arr.split('');
+      if (typeof callback == 'string') callback = cache[callback] || buildFn(callback);
       if (thisObject) {
         for (; i < l; ++i) {
           out[i] = callback.call(thisObject, arr[i], i, arr);
@@ -333,9 +331,8 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
         l = (arr && arr.length) || 0,
         out = [],
         value;
-      if (l && typeof arr == "string") arr = arr.split("");
-      if (typeof callback == "string")
-        callback = cache[callback] || buildFn(callback);
+      if (l && typeof arr == 'string') arr = arr.split('');
+      if (typeof callback == 'string') callback = cache[callback] || buildFn(callback);
       if (thisObject) {
         for (; i < l; ++i) {
           value = arr[i];
@@ -356,10 +353,10 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
 
     clearCache: function () {
       cache = {};
-    },
+    }
   };
 
-  has("extend-dojo") && lang.mixin(dojo, array);
+  has('extend-dojo') && lang.mixin(dojo, array);
 
   return array;
 });

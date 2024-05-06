@@ -1,4 +1,4 @@
-define(["./Evented"], function (Evented) {
+define(['./Evented'], function (Evented) {
   // module:
   //		dojo/topic
 
@@ -32,6 +32,6 @@ define(["./Evented"], function (Evented) {
       // listener: Function
       //		A function to call when a message is published to the given topic
       return hub.on.apply(hub, arguments);
-    },
+    }
   };
 });

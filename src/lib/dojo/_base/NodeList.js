@@ -1,10 +1,4 @@
-define([
-  "./kernel",
-  "../query",
-  "./array",
-  "./html",
-  "../NodeList-dom",
-], function (dojo, query, array) {
+define(['./kernel', '../query', './array', './html', '../NodeList-dom'], function (dojo, query, array) {
   // module:
   //		dojo/_base/NodeList
 
@@ -74,30 +68,30 @@ define([
   NodeList.events = [
     // summary:
     //		list of all DOM events used in NodeList
-    "blur",
-    "focus",
-    "change",
-    "click",
-    "error",
-    "keydown",
-    "keypress",
-    "keyup",
-    "load",
-    "mousedown",
-    "mouseenter",
-    "mouseleave",
-    "mousemove",
-    "mouseout",
-    "mouseover",
-    "mouseup",
-    "submit",
+    'blur',
+    'focus',
+    'change',
+    'click',
+    'error',
+    'keydown',
+    'keypress',
+    'keyup',
+    'load',
+    'mousedown',
+    'mouseenter',
+    'mouseleave',
+    'mousemove',
+    'mouseout',
+    'mouseover',
+    'mouseup',
+    'submit'
   ];
 
   // FIXME: pseudo-doc the above automatically generated on-event functions
 
   // syntactic sugar for DOM events
   array.forEach(NodeList.events, function (evt) {
-    var _oe = "on" + evt;
+    var _oe = 'on' + evt;
     nlp[_oe] = function (a, b) {
       return this.connect(_oe, a, b);
     };

@@ -1,9 +1,4 @@
-define(["require", "../_base/array", "./default!platform", "./util"], function (
-  require,
-  array,
-  fallbackProvider,
-  util
-) {
+define(['require', '../_base/array', './default!platform', './util'], function (require, array, fallbackProvider, util) {
   var providers = [];
 
   function request(url, options) {
@@ -55,7 +50,7 @@ define(["require", "../_base/array", "./default!platform", "./util"], function (
 
   request.register = function (url, provider, first) {
     var matcher = createMatcher(url, provider);
-    providers[first ? "unshift" : "push"](matcher);
+    providers[first ? 'unshift' : 'push'](matcher);
 
     return {
       remove: function () {
@@ -63,7 +58,7 @@ define(["require", "../_base/array", "./default!platform", "./util"], function (
         if (~(idx = array.indexOf(providers, matcher))) {
           providers.splice(idx, 1);
         }
-      },
+      }
     };
   };
 

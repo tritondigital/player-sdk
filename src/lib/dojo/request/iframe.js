@@ -1,35 +1,22 @@
 define([
-  "module",
-  "require",
-  "./watch",
-  "./util",
-  "./handlers",
-  "../_base/lang",
-  "../io-query",
-  "../query",
-  "../has",
-  "../dom",
-  "../dom-construct",
-  "../_base/window",
-  "../NodeList-dom" /*=====,
+  'module',
+  'require',
+  './watch',
+  './util',
+  './handlers',
+  '../_base/lang',
+  '../io-query',
+  '../query',
+  '../has',
+  '../dom',
+  '../dom-construct',
+  '../_base/window',
+  '../NodeList-dom' /*=====,
 	'../request',
-	'../_base/declare' =====*/,
-], function (
-  module,
-  require,
-  watch,
-  util,
-  handlers,
-  lang,
-  ioQuery,
-  query,
-  has,
-  dom,
-  domConstruct,
-  win /*=====, NodeList, request, declare =====*/
-) {
-  var mid = module.id.replace(/[\/\.\-]/g, "_"),
-    onload = mid + "_onload";
+	'../_base/declare' =====*/
+], function (module, require, watch, util, handlers, lang, ioQuery, query, has, dom, domConstruct, win /*=====, NodeList, request, declare =====*/) {
+  var mid = module.id.replace(/[\/\.\-]/g, '_'),
+    onload = mid + '_onload';
 
   if (!win.global[onload]) {
     win.global[onload] = function () {
@@ -61,14 +48,13 @@ define([
         }
 
         // restore original action + target
-        dfd._originalAction &&
-          formNode.setAttribute("action", dfd._originalAction);
+        dfd._originalAction && formNode.setAttribute('action', dfd._originalAction);
         if (dfd._originalMethod) {
-          formNode.setAttribute("method", dfd._originalMethod);
+          formNode.setAttribute('method', dfd._originalMethod);
           formNode.method = dfd._originalMethod;
         }
         if (dfd._originalTarget) {
-          formNode.setAttribute("target", dfd._originalTarget);
+          formNode.setAttribute('target', dfd._originalTarget);
           formNode.target = dfd._originalTarget;
         }
       }
@@ -92,28 +78,18 @@ define([
     }
 
     if (!uri) {
-      if (has("config-useXDomain") && !has("config-dojoBlankHtmlUrl")) {
+      if (has('config-useXDomain') && !has('config-dojoBlankHtmlUrl')) {
         console.warn(
-          "dojo/request/iframe: When using cross-domain Dojo builds," +
-            " please save dojo/resources/blank.html to your domain and set dojoConfig.dojoBlankHtmlUrl" +
-            " to the path on your domain to blank.html"
+          'dojo/request/iframe: When using cross-domain Dojo builds,' +
+            ' please save dojo/resources/blank.html to your domain and set dojoConfig.dojoBlankHtmlUrl' +
+            ' to the path on your domain to blank.html'
         );
       }
-      uri =
-        has("config-dojoBlankHtmlUrl") ||
-        require.toUrl("dojo/resources/blank.html");
+      uri = has('config-dojoBlankHtmlUrl') || require.toUrl('dojo/resources/blank.html');
     }
 
     var frame = domConstruct.place(
-      '<iframe id="' +
-        name +
-        '" name="' +
-        name +
-        '" src="' +
-        uri +
-        '" onload="' +
-        onloadstr +
-        '" style="position: absolute; left: 1px; top: 1px; height: 1px; width: 1px; visibility: hidden">',
+      '<iframe id="' + name + '" name="' + name + '" src="' + uri + '" onload="' + onloadstr + '" style="position: absolute; left: 1px; top: 1px; height: 1px; width: 1px; visibility: hidden">',
       win.body()
     );
 
@@ -137,7 +113,7 @@ define([
         frame.location.replace(src);
       }
     } catch (e) {
-      console.log("dojo/request/iframe.setSrc: ", e);
+      console.log('dojo/request/iframe.setSrc: ', e);
     }
   }
 
@@ -147,12 +123,8 @@ define([
     }
     var name = iframeNode.name;
     if (name) {
-      var iframes = win.doc.getElementsByTagName("iframe");
-      if (
-        iframeNode.document &&
-        iframes[name].contentWindow &&
-        iframes[name].contentWindow.document
-      ) {
+      var iframes = win.doc.getElementsByTagName('iframe');
+      if (iframeNode.document && iframes[name].contentWindow && iframes[name].contentWindow.document) {
         return iframes[name].contentWindow.document;
       } else if (win.doc.frames[name] && win.doc.frames[name].document) {
         return win.doc.frames[name].document;
@@ -163,14 +135,14 @@ define([
 
   function createForm() {
     return domConstruct.create(
-      "form",
+      'form',
       {
-        name: mid + "_form",
+        name: mid + '_form',
         style: {
-          position: "absolute",
-          top: "-1000px",
-          left: "-1000px",
-        },
+          position: 'absolute',
+          top: '-1000px',
+          left: '-1000px'
+        }
       },
       win.body()
     );
@@ -186,11 +158,7 @@ define([
       }
       do {
         dfd = iframe._currentDfd = iframe._dfdQueue.shift();
-      } while (
-        dfd &&
-        (dfd.canceled || (dfd.isCanceled && dfd.isCanceled())) &&
-        iframe._dfdQueue.length
-      );
+      } while (dfd && (dfd.canceled || (dfd.isCanceled && dfd.isCanceled())) && iframe._dfdQueue.length);
 
       if (!dfd || dfd.canceled || (dfd.isCanceled && dfd.isCanceled())) {
         iframe._currentDfd = null;
@@ -205,14 +173,10 @@ define([
         data = options.data || null,
         queryStr;
 
-      if (!dfd._legacy && options.method === "POST" && !formNode) {
+      if (!dfd._legacy && options.method === 'POST' && !formNode) {
         formNode = dfd._tmpForm = createForm();
-      } else if (
-        options.method === "GET" &&
-        formNode &&
-        response.url.indexOf("?") > -1
-      ) {
-        queryStr = response.url.slice(response.url.indexOf("?") + 1);
+      } else if (options.method === 'GET' && formNode && response.url.indexOf('?') > -1) {
+        queryStr = response.url.slice(response.url.indexOf('?') + 1);
         data = lang.mixin(ioQuery.queryToObject(queryStr), data);
       }
 
@@ -225,14 +189,14 @@ define([
 
           // Append the form node or some browsers won't work
           if (!parentNode) {
-            formNode.style.position = "absolute";
-            formNode.style.left = "-1000px";
-            formNode.style.top = "-1000px";
+            formNode.style.position = 'absolute';
+            formNode.style.left = '-1000px';
+            formNode.style.top = '-1000px';
             win.body().appendChild(formNode);
           }
 
           if (!formNode.name) {
-            formNode.name = mid + "_form";
+            formNode.name = mid + '_form';
           }
         }
 
@@ -241,11 +205,11 @@ define([
         if (data) {
           var createInput = function (name, value) {
             domConstruct.create(
-              "input",
+              'input',
               {
-                type: "hidden",
+                type: 'hidden',
                 name: name,
-                value: value,
+                value: value
               },
               formNode
             );
@@ -269,16 +233,16 @@ define([
 
         //IE requires going through getAttributeNode instead of just getAttribute in some form cases,
         //so use it for all.  See #2844
-        var actionNode = formNode.getAttributeNode("action"),
-          methodNode = formNode.getAttributeNode("method"),
-          targetNode = formNode.getAttributeNode("target");
+        var actionNode = formNode.getAttributeNode('action'),
+          methodNode = formNode.getAttributeNode('method'),
+          targetNode = formNode.getAttributeNode('target');
 
         if (response.url) {
           dfd._originalAction = actionNode ? actionNode.value : null;
           if (actionNode) {
             actionNode.value = response.url;
           } else {
-            formNode.setAttribute("action", response.url);
+            formNode.setAttribute('action', response.url);
           }
         }
 
@@ -287,14 +251,14 @@ define([
           if (methodNode) {
             methodNode.value = options.method;
           } else {
-            formNode.setAttribute("method", options.method);
+            formNode.setAttribute('method', options.method);
           }
         } else {
           if (!methodNode || !methodNode.value) {
             if (methodNode) {
               methodNode.value = options.method;
             } else {
-              formNode.setAttribute("method", options.method);
+              formNode.setAttribute('method', options.method);
             }
           }
         }
@@ -303,27 +267,26 @@ define([
         if (targetNode) {
           targetNode.value = iframe._iframeName;
         } else {
-          formNode.setAttribute("target", iframe._iframeName);
+          formNode.setAttribute('target', iframe._iframeName);
         }
         formNode.target = iframe._iframeName;
 
-        notify && notify.emit("send", response, dfd.promise.cancel);
+        notify && notify.emit('send', response, dfd.promise.cancel);
         iframe._notifyStart(response);
         formNode.submit();
       } else {
         // otherwise we post a GET string by changing URL location for the
         // iframe
 
-        var extra = "";
+        var extra = '';
         if (response.options.data) {
           extra = response.options.data;
-          if (typeof extra !== "string") {
+          if (typeof extra !== 'string') {
             extra = ioQuery.objectToQuery(extra);
           }
         }
-        var tmpUrl =
-          response.url + (response.url.indexOf("?") > -1 ? "&" : "?") + extra;
-        notify && notify.emit("send", response, dfd.promise.cancel);
+        var tmpUrl = response.url + (response.url.indexOf('?') > -1 ? '&' : '?') + extra;
+        notify && notify.emit('send', response, dfd.promise.cancel);
         iframe._notifyStart(response);
         iframe.setSrc(iframe._frame, tmpUrl, true);
       }
@@ -346,20 +309,20 @@ define([
           doc = iframe.doc(iframe._frame),
           handleAs = options.handleAs;
 
-        if (handleAs !== "html") {
-          if (handleAs === "xml") {
+        if (handleAs !== 'html') {
+          if (handleAs === 'xml') {
             // IE6-8 have to parse the XML manually. See http://bugs.dojotoolkit.org/ticket/6334
-            if (doc.documentElement.tagName.toLowerCase() === "html") {
-              query("a", doc.documentElement).orphan();
+            if (doc.documentElement.tagName.toLowerCase() === 'html') {
+              query('a', doc.documentElement).orphan();
               var xmlText = doc.documentElement.innerText;
-              xmlText = xmlText.replace(/>\s+</g, "><");
+              xmlText = xmlText.replace(/>\s+</g, '><');
               response.text = lang.trim(xmlText);
             } else {
               response.data = doc;
             }
           } else {
             // 'json' and 'javascript' and 'text'
-            response.text = doc.getElementsByTagName("textarea")[0].value; // text
+            response.text = doc.getElementsByTagName('textarea')[0].value; // text
           }
           handlers(response);
         } else {
@@ -375,7 +338,7 @@ define([
     } else if (this._finished) {
       this.resolve(response);
     } else {
-      this.reject(new Error("Invalid dojo/request/iframe request state"));
+      this.reject(new Error('Invalid dojo/request/iframe request state'));
     }
   }
   function last(response) {
@@ -383,33 +346,22 @@ define([
   }
 
   var defaultOptions = {
-    method: "POST",
+    method: 'POST'
   };
   function iframe(url, options, returnDeferred) {
-    var response = util.parseArgs(
-      url,
-      util.deepCreate(defaultOptions, options),
-      true
-    );
+    var response = util.parseArgs(url, util.deepCreate(defaultOptions, options), true);
     url = response.url;
     options = response.options;
 
-    if (options.method !== "GET" && options.method !== "POST") {
-      throw new Error(options.method + " not supported by dojo/request/iframe");
+    if (options.method !== 'GET' && options.method !== 'POST') {
+      throw new Error(options.method + ' not supported by dojo/request/iframe');
     }
 
     if (!iframe._frame) {
-      iframe._frame = iframe.create(iframe._iframeName, onload + "();");
+      iframe._frame = iframe.create(iframe._iframeName, onload + '();');
     }
 
-    var dfd = util.deferred(
-      response,
-      null,
-      isValid,
-      isReady,
-      handleResponse,
-      last
-    );
+    var dfd = util.deferred(response, null, isValid, isReady, handleResponse, last);
     dfd._callNext = function () {
       if (!this._calledNext) {
         this._calledNext = true;
@@ -477,13 +429,13 @@ define([
   iframe.setSrc = setSrc;
 
   // TODO: Make these truly private in 2.0
-  iframe._iframeName = mid + "_IoIframe";
+  iframe._iframeName = mid + '_IoIframe';
   iframe._notifyStart = function () {};
   iframe._dfdQueue = [];
   iframe._currentDfd = null;
   iframe._fireNextRequest = fireNextRequest;
 
-  util.addCommonMethods(iframe, ["GET", "POST"]);
+  util.addCommonMethods(iframe, ['GET', 'POST']);
 
   return iframe;
 });

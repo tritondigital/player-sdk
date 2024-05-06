@@ -4,13 +4,7 @@
  * Use by HTML5 technology ONLY
  */
 
-define([
-  "dojo/_base/declare",
-  "dojo/on",
-  "dojo/Evented",
-  "dojo/_base/lang",
-  "sdk/modules/NowPlayingApi",
-], function (declare, on, Evented, lang, NowPlayingApi) {
+define(['dojo/_base/declare', 'dojo/on', 'dojo/Evented', 'dojo/_base/lang', 'sdk/modules/NowPlayingApi'], function (declare, on, Evented, lang, NowPlayingApi) {
   var aSyncCuePointDispatcher = declare([], {
     POLLING_DELAY: 5000,
 
@@ -23,7 +17,7 @@ define([
      * @ignore
      */
     constructor: function (cfg) {
-      console.log("aSyncCuePointDispatcher::constructor");
+      console.log('aSyncCuePointDispatcher::constructor');
 
       this.mount = null;
 
@@ -58,8 +52,8 @@ define([
       this._onEmptyCuePointHandler = lang.hitch(this, this._onEmptyCuePoint);
 
       if (target != null) {
-        on(target, "cue-point", this._onCuePointHandler);
-        on(target, "cue-point-empty", this._onEmptyCuePointHandler);
+        on(target, 'cue-point', this._onCuePointHandler);
+        on(target, 'cue-point-empty', this._onEmptyCuePointHandler);
       }
     },
 
@@ -111,34 +105,23 @@ define([
     },
 
     _getNowPlaying: function (mount) {
-      this.nowPlayingApi.load({
-        mount: mount,
-        hd: false,
-        numberToFetch: 1,
-        eventType: "track",
-        mode: "nowPlaying",
-      });
+      this.nowPlayingApi.load({ mount: mount, hd: false, numberToFetch: 1, eventType: 'track', mode: 'nowPlaying' });
     },
 
     _onCuePoint: function (e) {
       this.currentCuePoint = e.data.cuePoint;
       this.currentCuePoint.adUrl = null; //Because of Server-Side replacement, the adUrl is removed for now.
-      this.currentCuePoint.cueTimeDuration =
-        parseInt(this.currentCuePoint.cueTimeDuration) > 0
-          ? parseInt(this.currentCuePoint.cueTimeDuration)
-          : 15000;
+      this.currentCuePoint.cueTimeDuration = parseInt(this.currentCuePoint.cueTimeDuration) > 0 ? parseInt(this.currentCuePoint.cueTimeDuration) : 15000;
 
       this.currentMount = e.data.mount;
 
       var eventType = this.currentCuePoint.type;
       var eventTimestamp = this.currentCuePoint.timestamp;
 
-      if (eventType == "ad") {
-        console.log(
-          "this.currentCuePoint.adType = " + this.currentCuePoint.adType
-        );
+      if (eventType == 'ad') {
+        console.log('this.currentCuePoint.adType = ' + this.currentCuePoint.adType);
 
-        if (this.currentCuePoint.adType == "endbreak") return;
+        if (this.currentCuePoint.adType == 'endbreak') return;
 
         this._onAdBreak(eventTimestamp);
       } else {
@@ -147,16 +130,11 @@ define([
 
         if (this._cuePoint.length > 0) {
           for (var i = 0; i < this._cuePoint.length; i++) {
-            if (
-              this._cuePoint[i].artist == artist &&
-              this._cuePoint[i].title == title
-            )
-              return;
+            if (this._cuePoint[i].artist == artist && this._cuePoint[i].title == title) return;
           }
         }
 
-        if (artist != undefined && title != undefined)
-          this._onTrack(artist, title);
+        if (artist != undefined && title != undefined) this._onTrack(artist, title);
       }
     },
 
@@ -165,10 +143,7 @@ define([
 
       this._cuePoint.push({ artist: artistname, title: songtitle });
 
-      this._trackCuePointCallback({
-        mount: this.currentMount,
-        cuePoint: this.currentCuePoint,
-      });
+      this._trackCuePointCallback({ mount: this.currentMount, cuePoint: this.currentCuePoint });
     },
 
     _onEmptyCuePoint: function () {
@@ -181,15 +156,11 @@ define([
     },
 
     _onAdBreak: function (adTimestamp) {
-      console.log("onAdBreak - adTimestamp : " + adTimestamp);
+      console.log('onAdBreak - adTimestamp : ' + adTimestamp);
 
       var isAlreadySent = this._adBreakChecker(adTimestamp);
 
-      if (isAlreadySent == false)
-        this._adBreakCuePointCallback({
-          mount: this.currentMount,
-          cuePoint: this.currentCuePoint,
-        });
+      if (isAlreadySent == false) this._adBreakCuePointCallback({ mount: this.currentMount, cuePoint: this.currentCuePoint });
     },
 
     _adBreakChecker: function (adTimestamp) {
@@ -208,7 +179,7 @@ define([
 
       this._adBreaks.push({ timestamp: adTimestamp });
       return false;
-    },
+    }
   });
 
   return aSyncCuePointDispatcher;

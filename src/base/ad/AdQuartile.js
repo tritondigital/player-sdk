@@ -1,18 +1,12 @@
 /**
  * Ad Quartile
  */
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var adQuartile = declare([], {
-    quartileMap: [
-      "start",
-      "firstQuartile",
-      "midpoint",
-      "thirdQuartile",
-      "complete",
-    ],
+    quartileMap: ['start', 'firstQuartile', 'midpoint', 'thirdQuartile', 'complete'],
 
     constructor: function () {
-      console.log("adQuartile::constructor");
+      console.log('adQuartile::constructor');
     },
 
     getQuartileByIndex: function (index) {
@@ -28,7 +22,7 @@ define(["dojo/_base/declare"], function (declare) {
 
     length: function () {
       return this.quartileMap.length;
-    },
+    }
   });
 
   return adQuartile;

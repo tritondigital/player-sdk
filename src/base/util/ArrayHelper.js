@@ -1,4 +1,4 @@
-var _ = require("lodash");
+var _ = require('lodash');
 
 module.exports = {
   toSafeArray: function (value) {
@@ -11,5 +11,5 @@ module.exports = {
     }
 
     return [];
-  },
+  }
 };

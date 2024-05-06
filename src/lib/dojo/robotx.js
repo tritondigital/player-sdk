@@ -1,16 +1,4 @@
-define([
-  "require",
-  "doh/main",
-  "./aspect",
-  "./dom-construct",
-  "./dom-style",
-  "./_base/kernel",
-  "./_base/lang",
-  "./on",
-  "./robot",
-  "./sniff",
-  "./_base/window",
-], function (
+define(['require', 'doh/main', './aspect', './dom-construct', './dom-style', './_base/kernel', './_base/lang', './on', './robot', './sniff', './_base/window'], function (
   require,
   doh,
   aspect,
@@ -23,7 +11,7 @@ define([
   has,
   win
 ) {
-  kernel.experimental("dojo.robotx");
+  kernel.experimental('dojo.robotx');
 
   // module:
   //		dojo.robotx
@@ -48,48 +36,42 @@ define([
     // returns:
     //		A Deferred that fires when everything has finished initializing
 
-    require(["./domReady!"], function () {
+    require(['./domReady!'], function () {
       var emptyStyle = {
-        overflow: "hidden",
-        margin: "0px",
-        borderWidth: "0px",
-        height: "100%",
-        width: "100%",
+        overflow: 'hidden',
+        margin: '0px',
+        borderWidth: '0px',
+        height: '100%',
+        width: '100%'
       };
       style.set(document.documentElement, emptyStyle);
       style.set(document.body, emptyStyle);
 
       // Create the iframe for the external document.   Put it above the firebug-lite div (if such a div exists).
       // console.log("creating iframe for external document");
-      iframe = document.createElement("iframe");
-      iframe.setAttribute("ALLOWTRANSPARENCY", "true");
-      iframe.scrolling = has("ie") ? "yes" : "auto";
-      var scrollRoot =
-        document.compatMode == "BackCompat"
-          ? document.body
-          : document.documentElement;
-      var consoleHeight =
-        (document.getElementById("firebug") || {}).offsetHeight || 0;
+      iframe = document.createElement('iframe');
+      iframe.setAttribute('ALLOWTRANSPARENCY', 'true');
+      iframe.scrolling = has('ie') ? 'yes' : 'auto';
+      var scrollRoot = document.compatMode == 'BackCompat' ? document.body : document.documentElement;
+      var consoleHeight = (document.getElementById('firebug') || {}).offsetHeight || 0;
       style.set(iframe, {
-        border: "0px none",
-        padding: "0px",
-        margin: "0px",
-        width: "100%",
-        height: consoleHeight
-          ? scrollRoot.clientHeight - consoleHeight + "px"
-          : "100%",
+        border: '0px none',
+        padding: '0px',
+        margin: '0px',
+        width: '100%',
+        height: consoleHeight ? scrollRoot.clientHeight - consoleHeight + 'px' : '100%'
       });
       iframe.src = url;
 
       // Code to handle load event on iframe.  Seems like this should happen before setting iframe src on line above?
       // Also, can't we use on() in all cases, even for old IE?
       if (iframe.attachEvent !== undefined) {
-        iframe.attachEvent("onload", onIframeLoad);
+        iframe.attachEvent('onload', onIframeLoad);
       } else {
-        on(iframe, "load", onIframeLoad);
+        on(iframe, 'load', onIframeLoad);
       }
 
-      construct.place(iframe, win.body(), "first");
+      construct.place(iframe, win.body(), 'first');
     });
   }
 
@@ -103,7 +85,7 @@ define([
     // If dojo is present in the test case, then at least make a best effort to wait for it to load.
     // The test must handle other race conditions like initial data queries or asynchronous parses by itself.
     if (iframe.contentWindow.require) {
-      iframe.contentWindow.require(["dojo/ready"], function (ready) {
+      iframe.contentWindow.require(['dojo/ready'], function (ready) {
         ready(Infinity, function () {
           setTimeout(function () {
             urlLoaded.resolve(true);
@@ -146,8 +128,8 @@ define([
       //		URL to open. Any of the test's dojo.doc calls (e.g. dojo.byId()), and any dijit.registry calls
       //		(e.g. dijit.byId()) will point to elements and widgets inside this application.
 
-      doh.registerGroup("initialize robot", {
-        name: "load " + url,
+      doh.registerGroup('initialize robot', {
+        name: 'load ' + url,
         timeout: 100000, // could take more than 10s so setting to 100s
         runTest: function () {
           // Setup module level urlLoaded Deferred that will be resolved by onIframeLoad(), after the iframe
@@ -156,7 +138,7 @@ define([
           attachIframe(url);
 
           return urlLoaded;
-        },
+        }
       });
     },
 
@@ -179,7 +161,7 @@ define([
       submitActions();
 
       return urlLoaded;
-    },
+    }
   });
 
   return robot;

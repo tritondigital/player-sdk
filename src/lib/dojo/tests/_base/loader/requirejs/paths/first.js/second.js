@@ -1,8 +1,8 @@
-define(["./first"], function () {
+define(['./first'], function () {
   return function (id, parentRequire, loaded) {
     loaded({
-      name: "first",
-      secondName: "second",
+      name: 'first',
+      secondName: 'second'
     });
   };
 });

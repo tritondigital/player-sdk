@@ -1,10 +1,4 @@
-define([
-  /*===== "./_base/declare", =====*/ "./_base/lang",
-  "./i18n",
-  "./i18n!./cldr/nls/number",
-  "./string",
-  "./regexp",
-], function (/*===== declare, =====*/ lang, i18n, nlsNumber, dstring, dregexp) {
+define([/*===== "./_base/declare", =====*/ './_base/lang', './i18n', './i18n!./cldr/nls/number', './string', './regexp'], function (/*===== declare, =====*/ lang, i18n, nlsNumber, dstring, dregexp) {
   // module:
   //		dojo/number
 
@@ -12,7 +6,7 @@ define([
     // summary:
     //		localized formatting and parsing routines for Number
   };
-  lang.setObject("dojo.number", number);
+  lang.setObject('dojo.number', number);
 
   /*=====
 number.__FormatOptions = declare(null, {
@@ -36,10 +30,7 @@ number.__FormatOptions = declare(null, {
 });
 =====*/
 
-  number.format = function (
-    /*Number*/ value,
-    /*number.__FormatOptions?*/ options
-  ) {
+  number.format = function (/*Number*/ value, /*number.__FormatOptions?*/ options) {
     // summary:
     //		Format a Number as a String, using locale-specific settings
     // description:
@@ -53,10 +44,9 @@ number.__FormatOptions = declare(null, {
 
     options = lang.mixin({}, options || {});
     var locale = i18n.normalizeLocale(options.locale),
-      bundle = i18n.getLocalization("dojo.cldr", "number", locale);
+      bundle = i18n.getLocalization('dojo.cldr', 'number', locale);
     options.customs = bundle;
-    var pattern =
-      options.pattern || bundle[(options.type || "decimal") + "Format"];
+    var pattern = options.pattern || bundle[(options.type || 'decimal') + 'Format'];
     if (isNaN(value) || Math.abs(value) == Infinity) {
       return null;
     } // null
@@ -66,11 +56,7 @@ number.__FormatOptions = declare(null, {
   //number._numberPatternRE = /(?:[#0]*,?)*[#0](?:\.0*#*)?/; // not precise, but good enough
   number._numberPatternRE = /[#0,]*[#0](?:\.0*#*)?/; // not precise, but good enough
 
-  number._applyPattern = function (
-    /*Number*/ value,
-    /*String*/ pattern,
-    /*number.__FormatOptions?*/ options
-  ) {
+  number._applyPattern = function (/*Number*/ value, /*String*/ pattern, /*number.__FormatOptions?*/ options) {
     // summary:
     //		Apply pattern to format value as a string using options. Gives no
     //		consideration to local customs.
@@ -88,53 +74,39 @@ number.__FormatOptions = declare(null, {
     options = options || {};
     var group = options.customs.group,
       decimal = options.customs.decimal,
-      patternList = pattern.split(";"),
+      patternList = pattern.split(';'),
       positivePattern = patternList[0];
-    pattern = patternList[value < 0 ? 1 : 0] || "-" + positivePattern;
+    pattern = patternList[value < 0 ? 1 : 0] || '-' + positivePattern;
 
     //TODO: only test against unescaped
-    if (pattern.indexOf("%") != -1) {
+    if (pattern.indexOf('%') != -1) {
       value *= 100;
-    } else if (pattern.indexOf("\u2030") != -1) {
+    } else if (pattern.indexOf('\u2030') != -1) {
       value *= 1000; // per mille
-    } else if (pattern.indexOf("\u00a4") != -1) {
+    } else if (pattern.indexOf('\u00a4') != -1) {
       group = options.customs.currencyGroup || group; //mixins instead?
       decimal = options.customs.currencyDecimal || decimal; // Should these be mixins instead?
       pattern = pattern.replace(/\u00a4{1,3}/, function (match) {
-        var prop = ["symbol", "currency", "displayName"][match.length - 1];
-        return options[prop] || options.currency || "";
+        var prop = ['symbol', 'currency', 'displayName'][match.length - 1];
+        return options[prop] || options.currency || '';
       });
-    } else if (pattern.indexOf("E") != -1) {
-      throw new Error("exponential notation not supported");
+    } else if (pattern.indexOf('E') != -1) {
+      throw new Error('exponential notation not supported');
     }
 
     //TODO: support @ sig figs?
     var numberPatternRE = number._numberPatternRE;
     var numberPattern = positivePattern.match(numberPatternRE);
     if (!numberPattern) {
-      throw new Error(
-        "unable to find a number expression in pattern: " + pattern
-      );
+      throw new Error('unable to find a number expression in pattern: ' + pattern);
     }
     if (options.fractional === false) {
       options.places = 0;
     }
-    return pattern.replace(
-      numberPatternRE,
-      number._formatAbsolute(value, numberPattern[0], {
-        decimal: decimal,
-        group: group,
-        places: options.places,
-        round: options.round,
-      })
-    );
+    return pattern.replace(numberPatternRE, number._formatAbsolute(value, numberPattern[0], { decimal: decimal, group: group, places: options.places, round: options.round }));
   };
 
-  number.round = function (
-    /*Number*/ value,
-    /*Number?*/ places,
-    /*Number?*/ increment
-  ) {
+  number.round = function (/*Number*/ value, /*Number?*/ places, /*Number?*/ increment) {
     // summary:
     //		Rounds to the nearest value with the given number of decimal places, away from zero
     // description:
@@ -196,11 +168,7 @@ number.__FormatAbsoluteOptions = declare(null, {
 });
 =====*/
 
-  number._formatAbsolute = function (
-    /*Number*/ value,
-    /*String*/ pattern,
-    /*number.__FormatAbsoluteOptions?*/ options
-  ) {
+  number._formatAbsolute = function (/*Number*/ value, /*String*/ pattern, /*number.__FormatAbsoluteOptions?*/ options) {
     // summary:
     //		Apply numeric pattern to absolute value using options. Gives no
     //		consideration to local customs.
@@ -216,8 +184,8 @@ number.__FormatAbsoluteOptions = declare(null, {
       options.places = 6;
     } // avoid a loop; pick a limit
 
-    var patternParts = pattern.split("."),
-      comma = typeof options.places == "string" && options.places.indexOf(","),
+    var patternParts = pattern.split('.'),
+      comma = typeof options.places == 'string' && options.places.indexOf(','),
       maxPlaces = options.places;
     if (comma) {
       maxPlaces = options.places.substring(comma + 1);
@@ -228,19 +196,16 @@ number.__FormatAbsoluteOptions = declare(null, {
       value = number.round(value, maxPlaces, options.round);
     }
 
-    var valueParts = String(Math.abs(value)).split("."),
-      fractional = valueParts[1] || "";
+    var valueParts = String(Math.abs(value)).split('.'),
+      fractional = valueParts[1] || '';
     if (patternParts[1] || options.places) {
       if (comma) {
         options.places = options.places.substring(0, comma);
       }
       // Pad fractional with trailing zeros
-      var pad =
-        options.places !== undefined
-          ? options.places
-          : patternParts[1] && patternParts[1].lastIndexOf("0") + 1;
+      var pad = options.places !== undefined ? options.places : patternParts[1] && patternParts[1].lastIndexOf('0') + 1;
       if (pad > fractional.length) {
-        valueParts[1] = dstring.pad(fractional, pad, "0", true);
+        valueParts[1] = dstring.pad(fractional, pad, '0', true);
       }
 
       // Truncate fractional
@@ -254,8 +219,8 @@ number.__FormatAbsoluteOptions = declare(null, {
     }
 
     // Pad whole with leading zeros
-    var patternDigits = patternParts[0].replace(",", "");
-    pad = patternDigits.indexOf("0");
+    var patternDigits = patternParts[0].replace(',', '');
+    pad = patternDigits.indexOf('0');
     if (pad != -1) {
       pad = patternDigits.length - pad;
       if (pad > valueParts[0].length) {
@@ -263,19 +228,19 @@ number.__FormatAbsoluteOptions = declare(null, {
       }
 
       // Truncate whole
-      if (patternDigits.indexOf("#") == -1) {
+      if (patternDigits.indexOf('#') == -1) {
         valueParts[0] = valueParts[0].substr(valueParts[0].length - pad);
       }
     }
 
     // Add group separators
-    var index = patternParts[0].lastIndexOf(","),
+    var index = patternParts[0].lastIndexOf(','),
       groupSize,
       groupSize2;
     if (index != -1) {
       groupSize = patternParts[0].length - index - 1;
       var remainder = patternParts[0].substr(0, index);
-      index = remainder.lastIndexOf(",");
+      index = remainder.lastIndexOf(',');
       if (index != -1) {
         groupSize2 = remainder.length - index - 1;
       }
@@ -284,15 +249,15 @@ number.__FormatAbsoluteOptions = declare(null, {
     for (var whole = valueParts[0]; whole; ) {
       var off = whole.length - groupSize;
       pieces.push(off > 0 ? whole.substr(off) : whole);
-      whole = off > 0 ? whole.slice(0, off) : "";
+      whole = off > 0 ? whole.slice(0, off) : '';
       if (groupSize2) {
         groupSize = groupSize2;
         delete groupSize2;
       }
     }
-    valueParts[0] = pieces.reverse().join(options.group || ",");
+    valueParts[0] = pieces.reverse().join(options.group || ',');
 
-    return valueParts.join(options.decimal || ".");
+    return valueParts.join(options.decimal || '.');
   };
 
   /*=====
@@ -326,20 +291,19 @@ number.__RegexpOptions = declare(null, {
   number._parseInfo = function (/*Object?*/ options) {
     options = options || {};
     var locale = i18n.normalizeLocale(options.locale),
-      bundle = i18n.getLocalization("dojo.cldr", "number", locale),
-      pattern =
-        options.pattern || bundle[(options.type || "decimal") + "Format"],
+      bundle = i18n.getLocalization('dojo.cldr', 'number', locale),
+      pattern = options.pattern || bundle[(options.type || 'decimal') + 'Format'],
       //TODO: memoize?
       group = bundle.group,
       decimal = bundle.decimal,
       factor = 1;
 
-    if (pattern.indexOf("%") != -1) {
+    if (pattern.indexOf('%') != -1) {
       factor /= 100;
-    } else if (pattern.indexOf("\u2030") != -1) {
+    } else if (pattern.indexOf('\u2030') != -1) {
       factor /= 1000; // per mille
     } else {
-      var isCurrency = pattern.indexOf("\u00a4") != -1;
+      var isCurrency = pattern.indexOf('\u00a4') != -1;
       if (isCurrency) {
         group = bundle.currencyGroup || group;
         decimal = bundle.currencyDecimal || decimal;
@@ -347,55 +311,53 @@ number.__RegexpOptions = declare(null, {
     }
 
     //TODO: handle quoted escapes
-    var patternList = pattern.split(";");
+    var patternList = pattern.split(';');
     if (patternList.length == 1) {
-      patternList.push("-" + patternList[0]);
+      patternList.push('-' + patternList[0]);
     }
 
     var re = dregexp.buildGroupRE(
       patternList,
       function (pattern) {
-        pattern = "(?:" + dregexp.escapeString(pattern, ".") + ")";
+        pattern = '(?:' + dregexp.escapeString(pattern, '.') + ')';
         return pattern.replace(number._numberPatternRE, function (format) {
           var flags = {
               signed: false,
-              separator: options.strict ? group : [group, ""],
+              separator: options.strict ? group : [group, ''],
               fractional: options.fractional,
               decimal: decimal,
-              exponent: false,
+              exponent: false
             },
-            parts = format.split("."),
+            parts = format.split('.'),
             places = options.places;
 
           // special condition for percent (factor != 1)
           // allow decimal places even if not specified in pattern
           if (parts.length == 1 && factor != 1) {
-            parts[1] = "###";
+            parts[1] = '###';
           }
           if (parts.length == 1 || places === 0) {
             flags.fractional = false;
           } else {
             if (places === undefined) {
-              places = options.pattern
-                ? parts[1].lastIndexOf("0") + 1
-                : Infinity;
+              places = options.pattern ? parts[1].lastIndexOf('0') + 1 : Infinity;
             }
             if (places && options.fractional == undefined) {
               flags.fractional = true;
             } // required fractional, unless otherwise specified
             if (!options.places && places < parts[1].length) {
-              places += "," + parts[1].length;
+              places += ',' + parts[1].length;
             }
             flags.places = places;
           }
-          var groups = parts[0].split(",");
+          var groups = parts[0].split(',');
           if (groups.length > 1) {
             flags.groupSize = groups.pop().length;
             if (groups.length > 1) {
               flags.groupSize2 = groups.pop().length;
             }
           }
-          return "(" + number._realNumberRegexp(flags) + ")";
+          return '(' + number._realNumberRegexp(flags) + ')';
         });
       },
       true
@@ -403,38 +365,28 @@ number.__RegexpOptions = declare(null, {
 
     if (isCurrency) {
       // substitute the currency symbol for the placeholder in the pattern
-      re = re.replace(
-        /([\s\xa0]*)(\u00a4{1,3})([\s\xa0]*)/g,
-        function (match, before, target, after) {
-          var prop = ["symbol", "currency", "displayName"][target.length - 1],
-            symbol = dregexp.escapeString(
-              options[prop] || options.currency || ""
-            );
-          before = before ? "[\\s\\xa0]" : "";
-          after = after ? "[\\s\\xa0]" : "";
-          if (!options.strict) {
-            if (before) {
-              before += "*";
-            }
-            if (after) {
-              after += "*";
-            }
-            return "(?:" + before + symbol + after + ")?";
+      re = re.replace(/([\s\xa0]*)(\u00a4{1,3})([\s\xa0]*)/g, function (match, before, target, after) {
+        var prop = ['symbol', 'currency', 'displayName'][target.length - 1],
+          symbol = dregexp.escapeString(options[prop] || options.currency || '');
+        before = before ? '[\\s\\xa0]' : '';
+        after = after ? '[\\s\\xa0]' : '';
+        if (!options.strict) {
+          if (before) {
+            before += '*';
           }
-          return before + symbol + after;
+          if (after) {
+            after += '*';
+          }
+          return '(?:' + before + symbol + after + ')?';
         }
-      );
+        return before + symbol + after;
+      });
     }
 
     //TODO: substitute localized sign/percent/permille/etc.?
 
     // normalize whitespace and return
-    return {
-      regexp: re.replace(/[\xa0 ]/g, "[\\s\\xa0]"),
-      group: group,
-      decimal: decimal,
-      factor: factor,
-    }; // Object
+    return { regexp: re.replace(/[\xa0 ]/g, '[\\s\\xa0]'), group: group, decimal: decimal, factor: factor }; // Object
   };
 
   /*=====
@@ -456,10 +408,7 @@ number.__ParseOptions = declare(null, {
 	//		or explicit 'places' parameter.  The value [true,false] makes the fractional portion optional.
 });
 =====*/
-  number.parse = function (
-    /*String*/ expression,
-    /*number.__ParseOptions?*/ options
-  ) {
+  number.parse = function (/*String*/ expression, /*number.__ParseOptions?*/ options) {
     // summary:
     //		Convert a properly formatted string to a primitive Number, using
     //		locale-specific settings.
@@ -472,7 +421,7 @@ number.__ParseOptions = declare(null, {
     // expression:
     //		A string representation of a Number
     var info = number._parseInfo(options),
-      results = new RegExp("^" + info.regexp + "$").exec(expression);
+      results = new RegExp('^' + info.regexp + '$').exec(expression);
     if (!results) {
       return NaN; //NaN
     }
@@ -488,9 +437,7 @@ number.__ParseOptions = declare(null, {
 
     // Transform it to something Javascript can parse as a number.  Normalize
     // decimal point and strip out group separators or alternate forms of whitespace
-    absoluteMatch = absoluteMatch
-      .replace(new RegExp("[" + info.group + "\\s\\xa0" + "]", "g"), "")
-      .replace(info.decimal, ".");
+    absoluteMatch = absoluteMatch.replace(new RegExp('[' + info.group + '\\s\\xa0' + ']', 'g'), '').replace(info.decimal, '.');
     // Adjust for negative sign, percent, etc. as necessary
     return absoluteMatch * info.factor; //Number
   };
@@ -527,19 +474,19 @@ number.__RealNumberRegexpFlags = declare(null, {
     // assign default values to missing parameters
     flags = flags || {};
     //TODO: use mixin instead?
-    if (!("places" in flags)) {
+    if (!('places' in flags)) {
       flags.places = Infinity;
     }
-    if (typeof flags.decimal != "string") {
-      flags.decimal = ".";
+    if (typeof flags.decimal != 'string') {
+      flags.decimal = '.';
     }
-    if (!("fractional" in flags) || /^0/.test(flags.places)) {
+    if (!('fractional' in flags) || /^0/.test(flags.places)) {
       flags.fractional = [true, false];
     }
-    if (!("exponent" in flags)) {
+    if (!('exponent' in flags)) {
       flags.exponent = [true, false];
     }
-    if (!("eSigned" in flags)) {
+    if (!('eSigned' in flags)) {
       flags.eSigned = [true, false];
     }
 
@@ -547,13 +494,13 @@ number.__RealNumberRegexpFlags = declare(null, {
       decimalRE = dregexp.buildGroupRE(
         flags.fractional,
         function (q) {
-          var re = "";
+          var re = '';
           if (q && flags.places !== 0) {
-            re = "\\" + flags.decimal;
+            re = '\\' + flags.decimal;
             if (flags.places == Infinity) {
-              re = "(?:" + re + "\\d+)?";
+              re = '(?:' + re + '\\d+)?';
             } else {
-              re += "\\d{" + flags.places + "}";
+              re += '\\d{' + flags.places + '}';
             }
           }
           return re;
@@ -563,15 +510,15 @@ number.__RealNumberRegexpFlags = declare(null, {
 
     var exponentRE = dregexp.buildGroupRE(flags.exponent, function (q) {
       if (q) {
-        return "([eE]" + number._integerRegexp({ signed: flags.eSigned }) + ")";
+        return '([eE]' + number._integerRegexp({ signed: flags.eSigned }) + ')';
       }
-      return "";
+      return '';
     });
 
     var realRE = integerRE + decimalRE;
     // allow for decimals without integers, e.g. .25
     if (decimalRE) {
-      realRE = "(?:(?:" + realRE + ")|(?:" + decimalRE + "))";
+      realRE = '(?:(?:' + realRE + ')|(?:' + decimalRE + '))';
     }
     return realRE + exponentRE; // String
   };
@@ -599,19 +546,19 @@ number.__IntegerRegexpFlags = declare(null, {
 
     // assign default values to missing parameters
     flags = flags || {};
-    if (!("signed" in flags)) {
+    if (!('signed' in flags)) {
       flags.signed = [true, false];
     }
-    if (!("separator" in flags)) {
-      flags.separator = "";
-    } else if (!("groupSize" in flags)) {
+    if (!('separator' in flags)) {
+      flags.separator = '';
+    } else if (!('groupSize' in flags)) {
       flags.groupSize = 3;
     }
 
     var signRE = dregexp.buildGroupRE(
       flags.signed,
       function (q) {
-        return q ? "[-+]" : "";
+        return q ? '[-+]' : '';
       },
       true
     );
@@ -620,45 +567,24 @@ number.__IntegerRegexpFlags = declare(null, {
       flags.separator,
       function (sep) {
         if (!sep) {
-          return "(?:\\d+)";
+          return '(?:\\d+)';
         }
 
         sep = dregexp.escapeString(sep);
-        if (sep == " ") {
-          sep = "\\s";
-        } else if (sep == "\xa0") {
-          sep = "\\s\\xa0";
+        if (sep == ' ') {
+          sep = '\\s';
+        } else if (sep == '\xa0') {
+          sep = '\\s\\xa0';
         }
 
         var grp = flags.groupSize,
           grp2 = flags.groupSize2;
         //TODO: should we continue to enforce that numbers with separators begin with 1-9?  See #6933
         if (grp2) {
-          var grp2RE =
-            "(?:0|[1-9]\\d{0," +
-            (grp2 - 1) +
-            "}(?:[" +
-            sep +
-            "]\\d{" +
-            grp2 +
-            "})*[" +
-            sep +
-            "]\\d{" +
-            grp +
-            "})";
-          return grp - grp2 > 0
-            ? "(?:" + grp2RE + "|(?:0|[1-9]\\d{0," + (grp - 1) + "}))"
-            : grp2RE;
+          var grp2RE = '(?:0|[1-9]\\d{0,' + (grp2 - 1) + '}(?:[' + sep + ']\\d{' + grp2 + '})*[' + sep + ']\\d{' + grp + '})';
+          return grp - grp2 > 0 ? '(?:' + grp2RE + '|(?:0|[1-9]\\d{0,' + (grp - 1) + '}))' : grp2RE;
         }
-        return (
-          "(?:0|[1-9]\\d{0," +
-          (grp - 1) +
-          "}(?:[" +
-          sep +
-          "]\\d{" +
-          grp +
-          "})*)"
-        );
+        return '(?:0|[1-9]\\d{0,' + (grp - 1) + '}(?:[' + sep + ']\\d{' + grp + '})*)';
       },
       true
     );

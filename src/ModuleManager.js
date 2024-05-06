@@ -3,22 +3,22 @@
  */
 
 define([
-  "./modules/base/CoreModule",
-  "dojo/_base/array",
-  "dojo/_base/declare",
-  "dojo/_base/Deferred",
-  "dojo/_base/lang",
-  "dojo/on",
-  "sdk/modules/base/UserRegPlayerMediator",
-  "sdk/base/util/GoogleIma",
-  "sdk/base/util/analytics/GAEventRequest",
-  "sdk/modules/SyncBanners",
-  "sdk/modules/MediaPlayer",
-  "sdk/modules/NowPlayingApi",
-  "sdk/modules/Npe",
-  "sdk/modules/PlayerWebAdmin",
-  "sdk/modules/TargetSpot",
-  "sdk/modules/UserRegistration",
+  './modules/base/CoreModule',
+  'dojo/_base/array',
+  'dojo/_base/declare',
+  'dojo/_base/Deferred',
+  'dojo/_base/lang',
+  'dojo/on',
+  'sdk/modules/base/UserRegPlayerMediator',
+  'sdk/base/util/GoogleIma',
+  'sdk/base/util/analytics/GAEventRequest',
+  'sdk/modules/SyncBanners',
+  'sdk/modules/MediaPlayer',
+  'sdk/modules/NowPlayingApi',
+  'sdk/modules/Npe',
+  'sdk/modules/PlayerWebAdmin',
+  'sdk/modules/TargetSpot',
+  'sdk/modules/UserRegistration'
 ], function (
   coreModule,
   array,
@@ -41,26 +41,15 @@ define([
 
   var moduleManager = declare([coreModule], {
     constructor: function (config, target) {
-      console.log("moduleManager::constructor");
+      console.log('moduleManager::constructor');
 
       //this.coreModules array keep a reference to the loaded modules. It contains: [ { id:'moduleId', module:moduleInstance }, ... ]
       this.coreModules = [];
 
-      this.modulesQueue =
-        this.config && this.config.coreModules
-          ? lang.clone(this.config.coreModules)
-          : [];
+      this.modulesQueue = this.config && this.config.coreModules ? lang.clone(this.config.coreModules) : [];
 
-      this.moduleReadyHandler = on(
-        this.target,
-        "module-ready",
-        lang.hitch(this, this._onModuleComplete)
-      );
-      this.moduleErrorHandler = on(
-        this.target,
-        "module-error",
-        lang.hitch(this, this._onModuleComplete)
-      );
+      this.moduleReadyHandler = on(this.target, 'module-ready', lang.hitch(this, this._onModuleComplete));
+      this.moduleErrorHandler = on(this.target, 'module-error', lang.hitch(this, this._onModuleComplete));
 
       this.inherited(arguments); //this does not work if "use strict" is set
 
@@ -70,7 +59,7 @@ define([
     },
 
     loadModules: function () {
-      console.log("%cmoduleManager::loadModules", "background:#000;color:#fff");
+      console.log('%cmoduleManager::loadModules', 'background:#000;color:#fff');
       var self = this;
       if (this.modulesQueue.length == 0) return;
 
@@ -78,38 +67,36 @@ define([
       this.analyticsLoadTimeInterval = setInterval(function () {
         self.analyticsLoadTime += 10;
       }, 10);
+
       for (var i = 0; i < this.config.coreModules.length; i++) {
-        this.loadModule(
-          this.config.coreModules[i].id,
-          this._getModuleConfigById(this.config.coreModules[i].id)
-        );
+        this.loadModule(this.config.coreModules[i].id, this._getModuleConfigById(this.config.coreModules[i].id));
       }
     },
 
     loadModule: function (moduleId, moduleConfig) {
-      console.log("moduleManager::loadModule - moduleId:" + moduleId);
+      console.log('moduleManager::loadModule - moduleId:' + moduleId);
 
       var moduleInstance = null;
       switch (moduleId) {
-        case "SyncBanners":
+        case 'SyncBanners':
           moduleInstance = SyncBanners;
           break;
-        case "MediaPlayer":
+        case 'MediaPlayer':
           moduleInstance = MediaPlayer;
           break;
-        case "Npe":
+        case 'Npe':
           moduleInstance = Npe;
           break;
-        case "NowPlayingApi":
+        case 'NowPlayingApi':
           moduleInstance = NowPlayingApi;
           break;
-        case "PlayerWebAdmin":
+        case 'PlayerWebAdmin':
           moduleInstance = PlayerWebAdmin;
           break;
-        case "TargetSpot":
+        case 'TargetSpot':
           moduleInstance = TargetSpot;
           break;
-        case "UserRegistration":
+        case 'UserRegistration':
           moduleInstance = UserRegistration;
         default:
       }
@@ -158,15 +145,11 @@ define([
 
     //module completed = Ready or Error
     _onModuleComplete: function (e) {
-      console.log(
-        "moduleManager::_checkModulesComplete - module Id = " +
-          e.data.id +
-          " - modulesQueue.length = " +
-          this.modulesQueue.length
-      );
+      console.log('moduleManager::_checkModulesComplete - module Id = ' + e.data.id + ' - modulesQueue.length = ' + this.modulesQueue.length);
 
       this._removeCurrentModuleFromQueue(e.data.id);
       var self = this;
+
       //analytics vars
       var dimensions, metrics, tech, adBlock, sbm, hls, audioAdaptive, idSync;
 
@@ -175,72 +158,42 @@ define([
         this.moduleErrorHandler.remove();
 
         //UserRegistration - MediaPlayer Mediator
-        if (
-          this.getModuleById("UserRegistration") &&
-          this.getModuleById("MediaPlayer")
-        ) {
-          var mediator = new UserRegPlayerMediator(
-            lang.hitch(this, this.getModuleById),
-            this.target
-          );
+        if (this.getModuleById('UserRegistration') && this.getModuleById('MediaPlayer')) {
+          var mediator = new UserRegPlayerMediator(lang.hitch(this, this.getModuleById), this.target);
         }
 
-        var mediaPlayerModule = this.getModuleById("MediaPlayer");
+        var mediaPlayerModule = this.getModuleById('MediaPlayer');
         //analytics
         var sendAnalyticsInit = function (label) {
           //send analytics init
           if (mediaPlayerModule) {
             dimensions = {};
-            dimensions[GAEventRequest.DIM_HLS] = mediaPlayerModule
-              ? mediaPlayerModule.hls
-              : false;
-            dimensions[GAEventRequest.DIM_SBM] =
-              mediaPlayerModule.config.sbm &&
-              mediaPlayerModule.config.sbm.active
-                ? mediaPlayerModule.config.sbm.active
-                : true;
+            dimensions[GAEventRequest.DIM_HLS] = mediaPlayerModule ? mediaPlayerModule.hls : false;
+            dimensions[GAEventRequest.DIM_SBM] = mediaPlayerModule.config.sbm && mediaPlayerModule.config.sbm.active ? mediaPlayerModule.config.sbm.active : true;
             dimensions[GAEventRequest.DIM_TECH] = mediaPlayerModule.tech.type;
-            dimensions[GAEventRequest.DIM_ADBLOCK] =
-              self.config.adBlockerDetected;
-            dimensions[GAEventRequest.DIM_AUDIO_ADAPTIVE] =
-              mediaPlayerModule.audioAdaptive;
-            dimensions[GAEventRequest.DIM_IDSYNC] = mediaPlayerModule.config
-              .idSync
-              ? true
-              : false;
+            dimensions[GAEventRequest.DIM_ADBLOCK] = self.config.adBlockerDetected;
+            dimensions[GAEventRequest.DIM_AUDIO_ADAPTIVE] = mediaPlayerModule.audioAdaptive;
+            dimensions[GAEventRequest.DIM_IDSYNC] = mediaPlayerModule.config.idSync ? true : false;
 
             metrics = {};
             metrics[GAEventRequest.METRIC_LOAD_TIME] = self.analyticsLoadTime;
 
-            GAEventRequest.requestGA(
-              GAEventRequest.CATEGORY_INIT,
-              GAEventRequest.ACTION_CONFIG,
-              label,
-              dimensions,
-              metrics
-            );
+            GAEventRequest.requestGA(GAEventRequest.CATEGORY_INIT, GAEventRequest.ACTION_CONFIG, label, dimensions, metrics);
           }
           clearInterval(self.analyticsLoadTimeInterval);
         };
 
         //load ima library
-        if (
-          mediaPlayerModule != undefined &&
-          mediaPlayerModule.tech.type == "Html5" &&
-          !this.config.adBlockerDetected
-        ) {
+        if (mediaPlayerModule != undefined && mediaPlayerModule.tech.type == 'Html5' && !this.config.adBlockerDetected) {
           var imaHelper = new GoogleIma();
           var imaDeferred = imaHelper.init();
 
           imaDeferred.then(
             function () {
               //Success !
-              console.log(
-                "%cmoduleManager::_onModuleComplete - all modules have been loaded : PLAYER-READY",
-                "background:#990000;color:#fff"
-              );
+              console.log('%cmoduleManager::_onModuleComplete - all modules have been loaded : PLAYER-READY', 'background:#990000;color:#fff');
 
-              self.emit("player-ready");
+              self.emit('player-ready');
 
               if (!this.hasLoadModuleError) {
                 sendAnalyticsInit(GAEventRequest.LABEL_SUCCESS);
@@ -250,7 +203,8 @@ define([
             },
             function (err) {
               //Error
-              self.emit("player-ready");
+              self.emit('player-ready');
+
               if (!this.hasLoadModuleError) {
                 sendAnalyticsInit(GAEventRequest.LABEL_SUCCESS);
               } else {
@@ -259,12 +213,10 @@ define([
             }
           );
         } else {
-          console.log(
-            "%cmoduleManager::_onModuleComplete - all modules have been loaded : PLAYER-READY",
-            "background:#990000;color:#fff"
-          );
+          console.log('%cmoduleManager::_onModuleComplete - all modules have been loaded : PLAYER-READY', 'background:#990000;color:#fff');
 
-          this.emit("player-ready");
+          this.emit('player-ready');
+
           if (mediaPlayerModule && !this.hasLoadModuleError) {
             sendAnalyticsInit(GAEventRequest.LABEL_SUCCESS);
           } else {
@@ -273,9 +225,7 @@ define([
         }
 
         if (this.config.adBlockerDetected) {
-          this.emit("ad-blocker-detected", {
-            message: "Ad Blocker is activated",
-          });
+          this.emit('ad-blocker-detected', { message: 'Ad Blocker is activated' });
         }
       }
     },
@@ -302,7 +252,7 @@ define([
       }
 
       return moduleConfig;
-    },
+    }
   });
 
   return moduleManager;

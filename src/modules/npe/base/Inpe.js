@@ -1,4 +1,4 @@
-var Platform = require("sdk/base/util/Platform");
+var Platform = require('sdk/base/util/Platform');
 
 /**
  * NPE Object base class
@@ -10,13 +10,7 @@ var Platform = require("sdk/base/util/Platform");
  * The Inpe is the base class of all NPE class in the api.
  */
 
-define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "dojo/_base/array",
-  "dojo/on",
-  "dojo/Evented",
-], function (declare, lang, array, on, Evented) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/on', 'dojo/Evented'], function (declare, lang, array, on, Evented) {
   var Inpe = declare([Evented], {
     constructor: function (data, platformId) {
       this.data = data;
@@ -46,31 +40,27 @@ define([
     },
 
     getDynamicArtistUrl: function (id) {
-      return this.getDynamicUrl() + "artist/" + id;
+      return this.getDynamicUrl() + 'artist/' + id;
     },
 
     getDynamicAlbumUrl: function (id) {
-      return this.getDynamicUrl() + "album/" + id;
+      return this.getDynamicUrl() + 'album/' + id;
     },
 
     getDynamicTrackUrl: function (id) {
-      return this.getDynamicUrl() + "track/" + id;
+      return this.getDynamicUrl() + 'track/' + id;
     },
 
     getDynamicArtistPictureUrl: function (artistId, pictureId) {
-      return (
-        this.getDynamicUrl() + "artist/" + artistId + "/picture/" + pictureId
-      );
+      return this.getDynamicUrl() + 'artist/' + artistId + '/picture/' + pictureId;
     },
 
     getDynamicAlbumPictureUrl: function (albumId, pictureId) {
-      return (
-        this.getDynamicUrl() + "album/" + albumId + "/picture/" + pictureId
-      );
+      return this.getDynamicUrl() + 'album/' + albumId + '/picture/' + pictureId;
     },
 
     notify: function (type, event) {
-      console.log("Inpe::notify - type:" + type);
+      console.log('Inpe::notify - type:' + type);
 
       this.emit(type, event);
     },
@@ -81,12 +71,9 @@ define([
      */
     getRequestArgs: function () {
       return {
-        handleAs: "json",
+        handleAs: 'json',
         preventCache: false,
-        headers: {
-          "X-Requested-With": null,
-          "Content-Type": "text/plain; charset=utf-8",
-        },
+        headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' }
       };
     },
 
@@ -102,18 +89,12 @@ define([
       array.forEach(
         this.listeners,
         function (item, index) {
-          if (item.eventName == eventName && item.callback == callback)
-            itemIndex = index;
+          if (item.eventName == eventName && item.callback == callback) itemIndex = index;
         },
         this
       );
 
-      if (itemIndex == -1)
-        this.listeners.push({
-          eventName: eventName,
-          callback: callback,
-          listener: on(this, eventName, lang.hitch(this, callback)),
-        });
+      if (itemIndex == -1) this.listeners.push({ eventName: eventName, callback: callback, listener: on(this, eventName, lang.hitch(this, callback)) });
     },
 
     /**
@@ -127,8 +108,7 @@ define([
       array.forEach(
         this.listeners,
         function (item, index) {
-          if (item.eventName == eventName && item.callback == callback)
-            itemIndex = index;
+          if (item.eventName == eventName && item.callback == callback) itemIndex = index;
         },
         this
       );
@@ -137,7 +117,7 @@ define([
         this.listeners[itemIndex].listener.remove();
         this.listeners.splice(itemIndex, 1);
       }
-    },
+    }
   });
 
   return Inpe;

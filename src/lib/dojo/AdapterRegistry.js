@@ -1,10 +1,8 @@
-define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
+define(['./_base/kernel', './_base/lang'], function (dojo, lang) {
   // module:
   //		dojo/AdapterRegistry
 
-  var AdapterRegistry = (dojo.AdapterRegistry = function (
-    /*Boolean?*/ returnWrappers
-  ) {
+  var AdapterRegistry = (dojo.AdapterRegistry = function (/*Boolean?*/ returnWrappers) {
     // summary:
     //		A registry to make contextual calling/searching easier.
     // description:
@@ -38,13 +36,7 @@ define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
   });
 
   lang.extend(AdapterRegistry, {
-    register: function (
-      /*String*/ name,
-      /*Function*/ check,
-      /*Function*/ wrap,
-      /*Boolean?*/ directReturn,
-      /*Boolean?*/ override
-    ) {
+    register: function (/*String*/ name, /*Function*/ check, /*Function*/ wrap, /*Boolean?*/ directReturn, /*Boolean?*/ override) {
       // summary:
       //		register a check function to determine if the wrap function or
       //		object gets selected
@@ -65,12 +57,7 @@ define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
       //		If override is given and true, the check function will be given
       //		highest priority. Otherwise, it will be the lowest priority
       //		adapter.
-      this.pairs[override ? "unshift" : "push"]([
-        name,
-        check,
-        wrap,
-        directReturn,
-      ]);
+      this.pairs[override ? 'unshift' : 'push']([name, check, wrap, directReturn]);
     },
 
     match: function (/* ... */) {
@@ -89,7 +76,7 @@ define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
           }
         }
       }
-      throw new Error("No match found");
+      throw new Error('No match found');
     },
 
     unregister: function (name) {
@@ -112,7 +99,7 @@ define(["./_base/kernel", "./_base/lang"], function (dojo, lang) {
         }
       }
       return false;
-    },
+    }
   });
 
   return AdapterRegistry;

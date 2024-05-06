@@ -1,35 +1,23 @@
 define([
-  "./_base/lang",
-  "./Evented",
-  "./_base/kernel",
-  "./_base/array",
-  "./aspect",
-  "./_base/fx",
-  "./dom",
-  "./dom-style",
-  "./dom-geometry",
-  "./ready",
-  "require", // for context sensitive loading of Toggler
-], function (
-  lang,
-  Evented,
-  dojo,
-  arrayUtil,
-  aspect,
-  baseFx,
-  dom,
-  domStyle,
-  geom,
-  ready,
-  require
-) {
+  './_base/lang',
+  './Evented',
+  './_base/kernel',
+  './_base/array',
+  './aspect',
+  './_base/fx',
+  './dom',
+  './dom-style',
+  './dom-geometry',
+  './ready',
+  'require' // for context sensitive loading of Toggler
+], function (lang, Evented, dojo, arrayUtil, aspect, baseFx, dom, domStyle, geom, ready, require) {
   // module:
   //		dojo/fx
 
   // For back-compat, remove in 2.0.
   if (!dojo.isAsync) {
     ready(0, function () {
-      var requires = ["./fx/Toggler"];
+      var requires = ['./fx/Toggler'];
       require(requires); // use indirection so modules not rolled into a build
     });
   }
@@ -45,7 +33,7 @@ define([
         this[evt].apply(this, args || []);
       }
       return this;
-    },
+    }
   };
 
   var _chain = function (animations) {
@@ -68,29 +56,19 @@ define([
   _chain.prototype = new Evented();
   lang.extend(_chain, {
     _onAnimate: function () {
-      this._fire("onAnimate", arguments);
+      this._fire('onAnimate', arguments);
     },
     _onEnd: function () {
       this._onAnimateCtx.remove();
       this._onEndCtx.remove();
       this._onAnimateCtx = this._onEndCtx = null;
       if (this._index + 1 == this._animations.length) {
-        this._fire("onEnd");
+        this._fire('onEnd');
       } else {
         // switch animations
         this._current = this._animations[++this._index];
-        this._onAnimateCtx = aspect.after(
-          this._current,
-          "onAnimate",
-          lang.hitch(this, "_onAnimate"),
-          true
-        );
-        this._onEndCtx = aspect.after(
-          this._current,
-          "onEnd",
-          lang.hitch(this, "_onEnd"),
-          true
-        );
+        this._onAnimateCtx = aspect.after(this._current, 'onAnimate', lang.hitch(this, '_onAnimate'), true);
+        this._onEndCtx = aspect.after(this._current, 'onEnd', lang.hitch(this, '_onEnd'), true);
         this._current.play(0, true);
       }
     },
@@ -98,30 +76,30 @@ define([
       if (!this._current) {
         this._current = this._animations[(this._index = 0)];
       }
-      if (!gotoStart && this._current.status() == "playing") {
+      if (!gotoStart && this._current.status() == 'playing') {
         return this;
       }
       var beforeBegin = aspect.after(
           this._current,
-          "beforeBegin",
+          'beforeBegin',
           lang.hitch(this, function () {
-            this._fire("beforeBegin");
+            this._fire('beforeBegin');
           }),
           true
         ),
         onBegin = aspect.after(
           this._current,
-          "onBegin",
+          'onBegin',
           lang.hitch(this, function (arg) {
-            this._fire("onBegin", arguments);
+            this._fire('onBegin', arguments);
           }),
           true
         ),
         onPlay = aspect.after(
           this._current,
-          "onPlay",
+          'onPlay',
           lang.hitch(this, function (arg) {
-            this._fire("onPlay", arguments);
+            this._fire('onPlay', arguments);
             beforeBegin.remove();
             onBegin.remove();
             onPlay.remove();
@@ -130,21 +108,11 @@ define([
       if (this._onAnimateCtx) {
         this._onAnimateCtx.remove();
       }
-      this._onAnimateCtx = aspect.after(
-        this._current,
-        "onAnimate",
-        lang.hitch(this, "_onAnimate"),
-        true
-      );
+      this._onAnimateCtx = aspect.after(this._current, 'onAnimate', lang.hitch(this, '_onAnimate'), true);
       if (this._onEndCtx) {
         this._onEndCtx.remove();
       }
-      this._onEndCtx = aspect.after(
-        this._current,
-        "onEnd",
-        lang.hitch(this, "_onEnd"),
-        true
-      );
+      this._onEndCtx = aspect.after(this._current, 'onEnd', lang.hitch(this, '_onEnd'), true);
       this._current.play.apply(this._current, arguments);
       return this;
     },
@@ -152,9 +120,9 @@ define([
       if (this._current) {
         var e = aspect.after(
           this._current,
-          "onPause",
+          'onPause',
           lang.hitch(this, function (arg) {
-            this._fire("onPause", arguments);
+            this._fire('onPause', arguments);
             e.remove();
           }),
           true
@@ -190,9 +158,9 @@ define([
         }
         var e = aspect.after(
           this._current,
-          "onStop",
+          'onStop',
           lang.hitch(this, function (arg) {
-            this._fire("onStop", arguments);
+            this._fire('onStop', arguments);
             e.remove();
           }),
           true
@@ -202,7 +170,7 @@ define([
       return this;
     },
     status: function () {
-      return this._current ? this._current.status() : "stopped";
+      return this._current ? this._current.status() : 'stopped';
     },
     destroy: function () {
       if (this._onAnimateCtx) {
@@ -211,7 +179,7 @@ define([
       if (this._onEndCtx) {
         this._onEndCtx.remove();
       }
-    },
+    }
   });
   lang.extend(_chain, _baseObj);
 
@@ -252,41 +220,25 @@ define([
         if (this.duration < duration) {
           this.duration = duration;
         }
-        this._connects.push(
-          aspect.after(a, "onEnd", lang.hitch(this, "_onEnd"), true)
-        );
+        this._connects.push(aspect.after(a, 'onEnd', lang.hitch(this, '_onEnd'), true));
       },
       this
     );
 
-    this._pseudoAnimation = new baseFx.Animation({
-      curve: [0, 1],
-      duration: this.duration,
-    });
+    this._pseudoAnimation = new baseFx.Animation({ curve: [0, 1], duration: this.duration });
     var self = this;
-    arrayUtil.forEach(
-      [
-        "beforeBegin",
-        "onBegin",
-        "onPlay",
-        "onAnimate",
-        "onPause",
-        "onStop",
-        "onEnd",
-      ],
-      function (evt) {
-        self._connects.push(
-          aspect.after(
-            self._pseudoAnimation,
-            evt,
-            function () {
-              self._fire(evt, arguments);
-            },
-            true
-          )
-        );
-      }
-    );
+    arrayUtil.forEach(['beforeBegin', 'onBegin', 'onPlay', 'onAnimate', 'onPause', 'onStop', 'onEnd'], function (evt) {
+      self._connects.push(
+        aspect.after(
+          self._pseudoAnimation,
+          evt,
+          function () {
+            self._fire(evt, arguments);
+          },
+          true
+        )
+      );
+    });
   };
   lang.extend(_combine, {
     _doAction: function (action, args) {
@@ -297,7 +249,7 @@ define([
     },
     _onEnd: function () {
       if (++this._finished > this._animations.length) {
-        this._fire("onEnd");
+        this._fire('onEnd');
       }
     },
     _call: function (action, args) {
@@ -306,13 +258,13 @@ define([
     },
     play: function (/*int?*/ delay, /*Boolean?*/ gotoStart) {
       this._finished = 0;
-      this._doAction("play", arguments);
-      this._call("play", arguments);
+      this._doAction('play', arguments);
+      this._call('play', arguments);
       return this;
     },
     pause: function () {
-      this._doAction("pause", arguments);
-      this._call("pause", arguments);
+      this._doAction('pause', arguments);
+      this._call('pause', arguments);
       return this;
     },
     gotoPercent: function (/*Decimal*/ percent, /*Boolean?*/ andPlay) {
@@ -320,12 +272,12 @@ define([
       arrayUtil.forEach(this._animations, function (a) {
         a.gotoPercent(a.duration < ms ? 1 : ms / a.duration, andPlay);
       });
-      this._call("gotoPercent", arguments);
+      this._call('gotoPercent', arguments);
       return this;
     },
     stop: function (/*boolean?*/ gotoEnd) {
-      this._doAction("stop", arguments);
-      this._call("stop", arguments);
+      this._doAction('stop', arguments);
+      this._call('stop', arguments);
       return this;
     },
     status: function () {
@@ -335,7 +287,7 @@ define([
       arrayUtil.forEach(this._connects, function (handle) {
         handle.remove();
       });
-    },
+    }
   });
   lang.extend(_combine, _baseObj);
 
@@ -401,33 +353,33 @@ define([
                 // start at current [computed] height, but use 1px rather than 0
                 // because 0 causes IE to display the whole panel
                 o = s.overflow;
-                s.overflow = "hidden";
-                if (s.visibility == "hidden" || s.display == "none") {
-                  s.height = "1px";
-                  s.display = "";
-                  s.visibility = "";
+                s.overflow = 'hidden';
+                if (s.visibility == 'hidden' || s.display == 'none') {
+                  s.height = '1px';
+                  s.display = '';
+                  s.visibility = '';
                   return 1;
                 } else {
-                  var height = domStyle.get(node, "height");
+                  var height = domStyle.get(node, 'height');
                   return Math.max(height, 1);
                 }
               },
               end: function () {
                 return node.scrollHeight;
-              },
-            },
-          },
+              }
+            }
+          }
         },
         args
       )
     );
 
     var fini = function () {
-      s.height = "auto";
+      s.height = 'auto';
       s.overflow = o;
     };
-    aspect.after(anim, "onStop", fini, true);
-    aspect.after(anim, "onEnd", fini, true);
+    aspect.after(anim, 'onStop', fini, true);
+    aspect.after(anim, 'onEnd', fini, true);
 
     return anim; // dojo/_base/fx.Animation
   };
@@ -456,9 +408,9 @@ define([
         {
           properties: {
             height: {
-              end: 1, // 0 causes IE to display the whole panel
-            },
-          },
+              end: 1 // 0 causes IE to display the whole panel
+            }
+          }
         },
         args
       )
@@ -466,21 +418,21 @@ define([
 
     aspect.after(
       anim,
-      "beforeBegin",
+      'beforeBegin',
       function () {
         o = s.overflow;
-        s.overflow = "hidden";
-        s.display = "";
+        s.overflow = 'hidden';
+        s.display = '';
       },
       true
     );
     var fini = function () {
       s.overflow = o;
-      s.height = "auto";
-      s.display = "none";
+      s.height = 'auto';
+      s.display = 'none';
     };
-    aspect.after(anim, "onStop", fini, true);
-    aspect.after(anim, "onEnd", fini, true);
+    aspect.after(anim, 'onStop', fini, true);
+    aspect.after(anim, 'onEnd', fini, true);
 
     return anim; // dojo/_base/fx.Animation
   };
@@ -510,15 +462,15 @@ define([
       return function () {
         var cs = domStyle.getComputedStyle(n);
         var pos = cs.position;
-        top = pos == "absolute" ? n.offsetTop : parseInt(cs.top) || 0;
-        left = pos == "absolute" ? n.offsetLeft : parseInt(cs.left) || 0;
-        if (pos != "absolute" && pos != "relative") {
+        top = pos == 'absolute' ? n.offsetTop : parseInt(cs.top) || 0;
+        left = pos == 'absolute' ? n.offsetLeft : parseInt(cs.left) || 0;
+        if (pos != 'absolute' && pos != 'relative') {
           var ret = geom.position(n, true);
           top = ret.y;
           left = ret.x;
-          n.style.position = "absolute";
-          n.style.top = top + "px";
-          n.style.left = left + "px";
+          n.style.position = 'absolute';
+          n.style.top = top + 'px';
+          n.style.left = left + 'px';
         }
       };
     })(node);
@@ -529,13 +481,13 @@ define([
         {
           properties: {
             top: args.top || 0,
-            left: args.left || 0,
-          },
+            left: args.left || 0
+          }
         },
         args
       )
     );
-    aspect.after(anim, "beforeBegin", init, true);
+    aspect.after(anim, 'beforeBegin', init, true);
 
     return anim; // dojo/_base/fx.Animation
   };

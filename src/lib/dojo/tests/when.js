@@ -1,11 +1,6 @@
-define([
-  "doh/main",
-  "dojo/Deferred",
-  "dojo/promise/Promise",
-  "dojo/when",
-], function (doh, Deferred, Promise, when) {
+define(['doh/main', 'dojo/Deferred', 'dojo/promise/Promise', 'dojo/when'], function (doh, Deferred, Promise, when) {
   var tests = {
-    "when() returns the same promise without callbacks": function (t) {
+    'when() returns the same promise without callbacks': function (t) {
       var obj = {};
       var promise1 = when(obj);
       t.t(promise1 instanceof Promise);
@@ -14,14 +9,13 @@ define([
       t.t(this.deferred.promise === promise2);
     },
 
-    "when() doesn't convert to promise if errback is passed but no callback":
-      function (t) {
-        var obj = {};
-        var result = when(obj, null, function () {});
-        t.t(result === obj);
-      },
+    "when() doesn't convert to promise if errback is passed but no callback": function (t) {
+      var obj = {};
+      var result = when(obj, null, function () {});
+      t.t(result === obj);
+    },
 
-    "when() with a result value": function (t) {
+    'when() with a result value': function (t) {
       var obj = {};
       var received;
       when(obj, function (result) {
@@ -30,7 +24,7 @@ define([
       t.t(received === obj);
     },
 
-    "when() with a result value, returns result of callback": function (t) {
+    'when() with a result value, returns result of callback': function (t) {
       var obj1 = {},
         obj2 = {};
       var received;
@@ -42,7 +36,7 @@ define([
       t.t(returned === obj2);
     },
 
-    "when() with a promise that gets resolved": function (t) {
+    'when() with a promise that gets resolved': function (t) {
       var obj = {};
       var received;
       when(this.deferred.promise, function (result) {
@@ -52,7 +46,7 @@ define([
       t.t(received === obj);
     },
 
-    "when() with a promise that gets rejected": function (t) {
+    'when() with a promise that gets rejected': function (t) {
       var obj = {};
       var received;
       when(this.deferred.promise, null, function (result) {
@@ -62,7 +56,7 @@ define([
       t.t(received === obj);
     },
 
-    "when() with a promise that gets progress": function (t) {
+    'when() with a promise that gets progress': function (t) {
       var obj = {};
       var received;
       when(this.deferred.promise, null, null, function (result) {
@@ -72,7 +66,7 @@ define([
       t.t(received === obj);
     },
 
-    "when() with chaining of the result": function (t) {
+    'when() with chaining of the result': function (t) {
       function square(n) {
         return n * n;
       }
@@ -87,12 +81,12 @@ define([
       t.is(received, 16);
     },
 
-    "when() converts foreign promises": function (t) {
+    'when() converts foreign promises': function (t) {
       var _callback;
       var foreign = {
         then: function (cb) {
           _callback = cb;
-        },
+        }
       };
       var promise = when(foreign);
 
@@ -104,7 +98,7 @@ define([
       _callback(obj);
       t.t(promise instanceof Promise);
       t.t(received === obj);
-    },
+    }
   };
 
   var wrapped = [];
@@ -112,7 +106,7 @@ define([
     wrapped.push({
       name: name,
       setUp: setUp,
-      runTest: tests[name],
+      runTest: tests[name]
     });
   }
 
@@ -120,5 +114,5 @@ define([
     this.deferred = new Deferred();
   }
 
-  doh.register("tests.when", wrapped);
+  doh.register('tests.when', wrapped);
 });

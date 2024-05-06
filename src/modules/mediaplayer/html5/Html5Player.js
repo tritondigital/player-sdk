@@ -13,27 +13,27 @@
  * - Status
  */
 
-var OsPlatform = require("platform");
-var Hls = require("hls.js");
-var PlaybackState = require("sdk/base/playback/PlaybackState");
-var MediaElement = require("sdk/base/util/MediaElement");
+var OsPlatform = require('platform');
+var Hls = require('hls.js');
+var PlaybackState = require('sdk/base/playback/PlaybackState');
+var MediaElement = require('sdk/base/util/MediaElement');
 var params;
 
-define([
-  "dojo/_base/declare",
-  "dojo/on",
-  "dojo/Evented",
-  "dojo/_base/array",
-  "dojo/_base/lang",
-  "dojo/dom-attr",
-  "dojo/query",
-  "dojo/has",
-], function (declare, on, Evented, array, lang, domAttr, query, has) {
+define(['dojo/_base/declare', 'dojo/on', 'dojo/Evented', 'dojo/_base/array', 'dojo/_base/lang', 'dojo/dom-attr', 'dojo/query', 'dojo/has'], function (
+  declare,
+  on,
+  Evented,
+  array,
+  lang,
+  domAttr,
+  query,
+  has
+) {
   var html5Player = declare([Evented], {
     MAX_CONNECTION_LATENCY: 5000,
 
     constructor: function () {
-      console.log("html5Player::constructor");
+      console.log('html5Player::constructor');
 
       this.inherited(arguments);
 
@@ -123,8 +123,8 @@ define([
 
       if (this.mediaNode == undefined) return;
 
-      this.emit("html5-playback-status", {
-        type: PlaybackState.ENDED,
+      this.emit('html5-playback-status', {
+        type: PlaybackState.ENDED
       });
 
       this.mediaNode.pause();
@@ -158,10 +158,10 @@ define([
 
       if (this.mediaNode.paused)
         this.mediaNode.play().catch(function (e) {
-          if (e.name === "NotAllowedError") {
-            context.emit("html5-playback-status", {
+          if (e.name === 'NotAllowedError') {
+            context.emit('html5-playback-status', {
               type: PlaybackState.PLAY_NOT_ALLOWED,
-              mediaNode: this.audioNode,
+              mediaNode: this.audioNode
             });
           }
         });
@@ -190,7 +190,7 @@ define([
     setVolume: function (volumePercent) {
       if (this.mediaNode == undefined) return;
 
-      console.log("volumePercent = " + volumePercent);
+      console.log('volumePercent = ' + volumePercent);
 
       this.volume = volumePercent;
       this.mediaNode.volume = volumePercent;
@@ -230,20 +230,25 @@ define([
       this.mediaNode.load();
     },
 
+    changePlayBackRate: function (rate) {
+      if (this.mediaNode == undefined) return;
+      this.mediaNode.playbackRate = rate;
+    },
+
     _emptyMediaNode: function () {
       // domAttr.set( this.audioSource, 'src', '' );
       // domAttr.set( this.mediaNode, 'src', '' );
-      this.mediaNode.src = "";
+      this.mediaNode.src = '';
       this.mediaNode.load();
     },
 
     _removeMediaSource: function () {
-      if (domAttr.has(this.audioSource, "src")) {
-        domAttr.remove(this.audioSource, "src");
+      if (domAttr.has(this.audioSource, 'src')) {
+        domAttr.remove(this.audioSource, 'src');
       }
 
-      if (domAttr.has(this.mediaNode, "src")) {
-        domAttr.remove(this.mediaNode, "src");
+      if (domAttr.has(this.mediaNode, 'src')) {
+        domAttr.remove(this.mediaNode, 'src');
       }
     },
 
@@ -252,20 +257,20 @@ define([
       if (this.isStopped || this.isPaused) return;
 
       /* HACK: Firefox does not support canPlayThrough/canPlay event */
-      if (has("mozilla") && this.mediaNode && this.mediaNode.paused) {
+      if (has('mozilla') && this.mediaNode && this.mediaNode.paused) {
         this.mediaNode.play().catch(function (e) {
-          if (e.name === "NotAllowedError") {
-            context.emit("html5-playback-status", {
+          if (e.name === 'NotAllowedError') {
+            context.emit('html5-playback-status', {
               type: PlaybackState.PLAY_NOT_ALLOWED,
-              mediaNode: this.audioNode,
+              mediaNode: this.audioNode
             });
           }
         });
       }
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.DATA_LOADING,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //The user agent can render the media data at the current playback position for the first time.
     },
 
@@ -273,17 +278,17 @@ define([
       var context = this;
       if (this.isStopped || this.isPaused) return;
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.CAN_PLAY,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //The user agent can resume playback of the media data, but estimates that if playback were to be started now, the media resource could not be rendered at the current playback rate up to its end without having to stop for further buffering of content.
 
       if (this.mediaNode && this.mediaNode.paused) {
         this.mediaNode.play().catch(function (e) {
-          if (e.name === "NotAllowedError") {
-            context.emit("html5-playback-status", {
+          if (e.name === 'NotAllowedError') {
+            context.emit('html5-playback-status', {
               type: PlaybackState.PLAY_NOT_ALLOWED,
-              mediaNode: this.audioNode,
+              mediaNode: this.audioNode
             });
           }
         });
@@ -294,17 +299,17 @@ define([
       var context = this;
       if (this.isStopped || this.isPaused) return;
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.CAN_PLAY_THROUGH,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //The user agent estimates that if playback were to be started now, the media resource could be rendered at the current playback rate all the way to its end without having to stop for further buffering.
 
       if (this.mediaNode && this.mediaNode.paused) {
         this.mediaNode.play().catch(function (e) {
-          if (e.name === "NotAllowedError") {
-            context.emit("html5-playback-status", {
+          if (e.name === 'NotAllowedError') {
+            context.emit('html5-playback-status', {
               type: PlaybackState.PLAY_NOT_ALLOWED,
-              mediaNode: this.audioNode,
+              mediaNode: this.audioNode
             });
           }
         });
@@ -314,27 +319,27 @@ define([
     _onWaiting: function () {
       if (this.isStopped || this.isPaused) return;
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.WAITING,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //Playback has stopped because the next frame is not available, but the user agent expects that frame to become available in due course.
     },
 
     _onEmptied: function () {
       if (this.isStopped || this.isPaused) return;
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.EMPTIED,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //A media element whose networkState was previously not in the NETWORK_EMPTY state has just switched to that state (either because of a fatal error during load that's about to be reported, or because the load() method was invoked while the resource selection algorithm was already running).
     },
 
     _onAbort: function () {
       if (this.isStopped || this.isPaused) return;
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.ABORT,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //The user agent stops fetching the media data before it is completely downloaded, but not due to an error.
     },
 
@@ -342,21 +347,18 @@ define([
       this._removeMediaListeners();
 
       if (this.isStopped || this.isPaused) {
-        this.emit("html5-playback-status", {
+        this.emit('html5-playback-status', {
           type: PlaybackState.STOP,
-          mediaNode: this.mediaNode,
+          mediaNode: this.mediaNode
         });
         //this._removeMediaSource();
         return;
       }
 
       //if this.mediaNode.readyState == 0 (HAVE_NOTHING) --> No information regarding the media resource is available. No data for the current playback position is available SO STREAMING ERROR
-      this.emit("html5-playback-status", {
-        type:
-          this.mediaNode.readyState == 3
-            ? PlaybackState.STOP
-            : PlaybackState.ERROR,
-        mediaNode: this.mediaNode,
+      this.emit('html5-playback-status', {
+        type: this.mediaNode.readyState == 3 ? PlaybackState.STOP : PlaybackState.ERROR,
+        mediaNode: this.mediaNode
       }); //An error occurs while fetching the media data.
 
       //this._removeMediaSource();
@@ -365,9 +367,9 @@ define([
     _onLoadedmetadata: function () {
       if (this.isStopped || this.isPaused) return;
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.EMPTIED,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //The user agent has just determined the duration and dimensions of the media resource and the text tracks are ready.
     },
 
@@ -375,19 +377,16 @@ define([
       if (this.isStopped || this.isPaused) return;
 
       //HACK DUE TO ENDED & STOP EVENTS NOT FIRED ON ANDROID
-      if (
-        this.mediaNode.currentTime.toFixed(1) ==
-        this.mediaNode.duration.toFixed(1)
-      ) {
+      if (this.mediaNode.currentTime.toFixed(1) == this.mediaNode.duration.toFixed(1)) {
         this.isStopped = true;
-        this.emit("html5-playback-status", {
+        this.emit('html5-playback-status', {
           type: PlaybackState.ENDED,
-          mediaNode: this.mediaNode,
+          mediaNode: this.mediaNode
         });
       } else {
-        this.emit("html5-playback-status", {
+        this.emit('html5-playback-status', {
           type: PlaybackState.TIME_UPDATE,
-          mediaNode: this.mediaNode,
+          mediaNode: this.mediaNode
         });
       }
     },
@@ -395,9 +394,9 @@ define([
     _onLoadStart: function () {
       if (this.isStopped || this.isPaused) return;
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.LOAD_START,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //The user agent begins looking for media data, as part of the resource selection algorithm.
     },
 
@@ -406,30 +405,30 @@ define([
 
       this._removeMediaListeners();
 
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.ENDED,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //Playback has stopped because the end of the media resource was reached.
     },
 
     _onPlay: function () {
-      this.emit("html5-playback-status", {
+      this.emit('html5-playback-status', {
         type: PlaybackState.PLAY,
-        mediaNode: this.mediaNode,
+        mediaNode: this.mediaNode
       }); //The element is no longer paused. Fired after the play() method has returned, or when the autoplay attribute has caused playback to begin.
     },
 
     _onPause: function () {
       if (this.isStopped) {
         //this._removeMediaSource();
-        this.emit("html5-playback-status", {
+        this.emit('html5-playback-status', {
           type: PlaybackState.STOP,
-          mediaNode: this.mediaNode,
+          mediaNode: this.mediaNode
         });
       } else {
-        this.emit("html5-playback-status", {
+        this.emit('html5-playback-status', {
           type: PlaybackState.PAUSE,
-          mediaNode: this.mediaNode,
+          mediaNode: this.mediaNode
         }); //The element has been paused. Fired after the pause() method has returned.
       }
     },
@@ -463,55 +462,25 @@ define([
 		},*/
 
     _initMediaListeners: function (isLive) {
-      this._errorHandler = on(this.mediaNode, "error", this._onErrorHandler);
+      this._errorHandler = on(this.mediaNode, 'error', this._onErrorHandler);
 
       // if ( OsPlatform.name !== 'Android Browser' ) {
       // 	this._sourceErrorHandler = on( this.audioSource, 'error', this._onErrorHandler ); //Hack to handle 403 Forbidden error
       // }
 
-      this._loadDataHandler = on(
-        this.mediaNode,
-        "loadeddata",
-        this._onLoadDataHandler
-      );
-      this._loadStartHandler = on(
-        this.mediaNode,
-        "loadstart",
-        this._onLoadStartHandler
-      );
-      this._canPlayHandler = on(
-        this.mediaNode,
-        "canplay",
-        this._onCanPlayHandler
-      );
-      this._canPlayThroughHandler = on(
-        this.mediaNode,
-        "canplaythrough",
-        this._onCanPlayThroughHandler
-      );
-      this._waitingHandler = on(
-        this.mediaNode,
-        "waiting",
-        this._onWaitingHandler
-      );
-      this._emptiedHandler = on(
-        this.mediaNode,
-        "emptied",
-        this._onEmptiedHandler
-      );
-      this._abortHandler = on(this.mediaNode, "abort", this._onAbortHandler);
-      this._endedHandler = on(this.mediaNode, "ended", this._onEndedHandler);
-      this._playHandler = on(this.mediaNode, "play", this._onPlayHandler);
-      this._pauseHandler = on(this.mediaNode, "pause", this._onPauseHandler);
-      this._loadedMetadataHandler = on(
-        this.mediaNode,
-        "loadedmetadata",
-        this._onLoadedMetadataHandler
-      );
+      this._loadDataHandler = on(this.mediaNode, 'loadeddata', this._onLoadDataHandler);
+      this._loadStartHandler = on(this.mediaNode, 'loadstart', this._onLoadStartHandler);
+      this._canPlayHandler = on(this.mediaNode, 'canplay', this._onCanPlayHandler);
+      this._canPlayThroughHandler = on(this.mediaNode, 'canplaythrough', this._onCanPlayThroughHandler);
+      this._waitingHandler = on(this.mediaNode, 'waiting', this._onWaitingHandler);
+      this._emptiedHandler = on(this.mediaNode, 'emptied', this._onEmptiedHandler);
+      this._abortHandler = on(this.mediaNode, 'abort', this._onAbortHandler);
+      this._endedHandler = on(this.mediaNode, 'ended', this._onEndedHandler);
+      this._playHandler = on(this.mediaNode, 'play', this._onPlayHandler);
+      this._pauseHandler = on(this.mediaNode, 'pause', this._onPauseHandler);
+      this._loadedMetadataHandler = on(this.mediaNode, 'loadedmetadata', this._onLoadedMetadataHandler);
 
-      this._timeUpdateHandler = !isLive
-        ? on(this.mediaNode, "timeupdate", this._onTimeUpdateHandler)
-        : null;
+      this._timeUpdateHandler = !isLive ? on(this.mediaNode, 'timeupdate', this._onTimeUpdateHandler) : null;
 
       //this._suspendHandler = on( this.mediaNode, 'suspend', this._onSuspendHandler );
       //this._stalledHandler = on( this.mediaNode, 'stalled', this._onStalledHandler );
@@ -519,7 +488,7 @@ define([
     },
 
     _removeMediaListeners: function () {
-      this.params.mediaNode.src = "";
+      this.params.mediaNode.src = '';
       this._errorHandler.remove();
       //this._sourceErrorHandler.remove();
       this._loadDataHandler.remove();
@@ -538,7 +507,7 @@ define([
       //this._progressHandler.remove();
       //this._suspendHandler.remove();
       //this._stalledHandler.remove();
-    },
+    }
   });
 
   return html5Player;

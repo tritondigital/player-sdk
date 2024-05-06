@@ -42,37 +42,21 @@
  * @authors Triton Digital (c)
  */
 //
-var declare = require("dojo/_base/declare");
-var lang = require("dojo/_base/lang");
-var on = require("dojo/on");
-var Evented = require("dojo/Evented");
-var array = require("dojo/_base/array");
-var ModuleManager = require("sdk/ModuleManager");
-var BannerCapabilityFlags = require("sdk/base/ad/BannerCapabilityFlags");
-var BlockAdBlock = require("sdk/base/util/BlockAdBlock");
-var GAEventRequest = require("sdk/base/util/analytics/GAEventRequest");
-var i18n = require("sdk/base/util/I18n");
+var declare = require('dojo/_base/declare');
+var lang = require('dojo/_base/lang');
+var on = require('dojo/on');
+var Evented = require('dojo/Evented');
+var array = require('dojo/_base/array');
+var ModuleManager = require('sdk/ModuleManager');
+var BannerCapabilityFlags = require('sdk/base/ad/BannerCapabilityFlags');
+var BlockAdBlock = require('sdk/base/util/BlockAdBlock');
+var GAEventRequest = require('sdk/base/util/analytics/GAEventRequest');
+var i18n = require('sdk/base/util/I18n');
 
-var MediaElement = require("sdk/base/util/MediaElement");
-
-// unlock html audio
-var touchmove = false;
-var InitMediaElement = function () {
-  if (!touchmove) {
-    document.removeEventListener("touchend", InitMediaElement, false);
-    document.removeEventListener("touchmove", isTouchWithMove, false);
-    MediaElement.init();
-  }
-  touchmove = false;
-};
-var isTouchWithMove = function () {
-  touchmove = true;
-};
-document.addEventListener("touchend", InitMediaElement, false);
-document.addEventListener("touchmove", isTouchWithMove, false);
+var MediaElement = require('sdk/base/util/MediaElement');
 
 window.TDSdk = declare([], {
-  NAME: "TDSdk",
+  NAME: 'TDSdk',
 
   /**
    * TdPlayerApi constructor, instantiate the ModuleManager
@@ -82,59 +66,41 @@ window.TDSdk = declare([], {
    * @ignore
    */
   constructor: function (playerConfig) {
-    console.log(
-      "TDSdk::constructor - v" +
-        this.version.value +
-        "." +
-        this.version.build +
-        "." +
-        this.version.flag +
-        " - codename: " +
-        this.version.codename
-    );
+    console.log('TDSdk::constructor - v' + this.version.value + '.' + this.version.build + '.' + this.version.flag + ' - codename: ' + this.version.codename);
 
     this.listeners = [];
     this.target = new Evented();
     this.abBlockProcessFinish = false;
     this.MediaElement = MediaElement;
+
     this._initGoogleAnalytics();
 
-    on(this.target, "module-ready", lang.hitch(this, this._onModuleReady));
+    on(this.target, 'module-ready', lang.hitch(this, this._onModuleReady));
 
     var blockAdBlock = new BlockAdBlock();
 
-    if (typeof blockAdBlock.fab === "undefined") {
+    if (typeof blockAdBlock.fab === 'undefined') {
       this._onAdBlock(playerConfig, true);
     } else {
-      blockAdBlock.fab.onDetected(
-        lang.hitch(this, this._onAdBlock, playerConfig, true)
-      );
-      blockAdBlock.fab.onNotDetected(
-        lang.hitch(this, this._onAdBlock, playerConfig, false)
-      );
+      blockAdBlock.fab.onDetected(lang.hitch(this, this._onAdBlock, playerConfig, true));
+      blockAdBlock.fab.onNotDetected(lang.hitch(this, this._onAdBlock, playerConfig, false));
       blockAdBlock.fab.check();
     }
 
     if (playerConfig.playerReady) {
-      this.addEventListener("player-ready", playerConfig.playerReady);
+      this.addEventListener('player-ready', playerConfig.playerReady);
     }
 
     if (playerConfig.configurationError) {
-      this.addEventListener(
-        "configuration-error",
-        playerConfig.configurationError
-      );
+      this.addEventListener('configuration-error', playerConfig.configurationError);
     }
 
     if (playerConfig.moduleError) {
-      this.addEventListener("module-error", playerConfig.moduleError);
+      this.addEventListener('module-error', playerConfig.moduleError);
     }
 
     if (playerConfig.adBlockerDetected) {
-      this.addEventListener(
-        "ad-blocker-detected",
-        playerConfig.adBlockerDetected
-      );
+      this.addEventListener('ad-blocker-detected', playerConfig.adBlockerDetected);
     }
 
     this.loadModules();
@@ -158,7 +124,7 @@ window.TDSdk = declare([], {
   _parseConfig: function (playerConfig, isBlocked) {
     if (!playerConfig || !playerConfig.coreModules) {
       return {
-        coreModules: [],
+        coreModules: []
       };
     }
 
@@ -166,7 +132,7 @@ window.TDSdk = declare([], {
     var companionAdSelectionSettings = {};
 
     var filteredArr = array.filter(playerConfig.coreModules, function (item) {
-      return item.id == "SyncBanners";
+      return item.id == 'SyncBanners';
     });
 
     if (filteredArr.length && !isBlocked) {
@@ -176,7 +142,7 @@ window.TDSdk = declare([], {
         syncBanners.elements,
         function (element) {
           if (element.width != undefined && element.height != undefined) {
-            var token = element.width + "x" + element.height;
+            var token = element.width + 'x' + element.height;
             if (array.indexOf(BannerCapabilityFlags, token) != -1) {
               banners.push(token);
             }
@@ -187,7 +153,7 @@ window.TDSdk = declare([], {
     }
 
     filteredArr = array.filter(playerConfig.coreModules, function (item) {
-      return item.id == "MediaPlayer";
+      return item.id == 'MediaPlayer';
     });
 
     if (filteredArr.length) {
@@ -196,8 +162,8 @@ window.TDSdk = declare([], {
 
       //Remove ad module if adBlock
       if (mediaPlayer.adBlockerDetected && mediaPlayer.plugins != undefined) {
-        this._removeMediaplayerPlugins("vastAd", mediaPlayer.plugins);
-        this._removeMediaplayerPlugins("mediaAd", mediaPlayer.plugins);
+        this._removeMediaplayerPlugins('vastAd', mediaPlayer.plugins);
+        this._removeMediaplayerPlugins('mediaAd', mediaPlayer.plugins);
       }
 
       mediaPlayer.companionAdSelectionSettings = companionAdSelectionSettings; //IMA SDK settings
@@ -207,21 +173,15 @@ window.TDSdk = declare([], {
       }
 
       mediaPlayer.defaultTrackingParameters.banners =
-        mediaPlayer.defaultTrackingParameters.banners != undefined
-          ? this._unique(
-              mediaPlayer.defaultTrackingParameters.banners.concat(banners)
-            )
-          : banners;
+        mediaPlayer.defaultTrackingParameters.banners != undefined ? this._unique(mediaPlayer.defaultTrackingParameters.banners.concat(banners)) : banners;
 
       mediaPlayer.defaultTrackingParameters.log = {};
-      mediaPlayer.defaultTrackingParameters.log.tdsdk =
-        "js-" + this.version.value.substring(0, 3);
+      mediaPlayer.defaultTrackingParameters.log.tdsdk = 'js-' + this.version.value.substring(0, 3);
       mediaPlayer.defaultTrackingParameters.log.pname = this.NAME;
-      mediaPlayer.defaultTrackingParameters.log.pversion =
-        this.version.value.substring(0, 3);
+      mediaPlayer.defaultTrackingParameters.log.pversion = this.version.value.substring(0, 3);
     }
 
-    if (playerConfig.analytics && typeof playerConfig.analytics === "object") {
+    if (playerConfig.analytics && typeof playerConfig.analytics === 'object') {
       if (playerConfig.analytics.active) {
         GAEventRequest.setProperties(
           playerConfig.analytics.active,
@@ -241,12 +201,13 @@ window.TDSdk = declare([], {
     } else {
       GAEventRequest.setActive(false);
     }
+
     //overide locale
-    if (typeof playerConfig.locale === "string") {
+    if (typeof playerConfig.locale === 'string') {
       i18n.setLocalization(playerConfig.locale);
     }
 
-    console.log("TDSdk::_parseConfig - playerConfig:");
+    console.log('TDSdk::_parseConfig - playerConfig:');
 
     return playerConfig;
   },
@@ -272,15 +233,12 @@ window.TDSdk = declare([], {
    * Ad Blocker handler
    */
   _onAdBlock: function (playerConfig, isBlocked) {
-    console.log("_onAdBlock", isBlocked);
+    console.log('_onAdBlock', isBlocked);
     if (!playerConfig) return;
 
     this.abBlockProcessFinish = true;
     playerConfig.adBlockerDetected = isBlocked;
-    this.moduleManager = new ModuleManager(
-      this._parseConfig(playerConfig, isBlocked),
-      this.target
-    );
+    this.moduleManager = new ModuleManager(this._parseConfig(playerConfig, isBlocked), this.target);
 
     /**
      * if this.loadModules() public function has been previously called, we call this.moduleManager.loadModules() now.
@@ -331,8 +289,8 @@ window.TDSdk = declare([], {
   },
 
   _initGoogleAnalytics: function () {
-    console.log("_initGoogleAnalytics");
-    GAEventRequest.av = this.version.value + "." + this.version.build;
+    console.log('_initGoogleAnalytics');
+    GAEventRequest.av = this.version.value + '.' + this.version.build;
     GAEventRequest.aid = this.version.value;
   },
 
@@ -348,8 +306,7 @@ window.TDSdk = declare([], {
     array.forEach(
       this.listeners,
       function (item, index) {
-        if (item.eventName == eventName && item.callback == callback)
-          itemIndex = index;
+        if (item.eventName == eventName && item.callback == callback) itemIndex = index;
       },
       this
     );
@@ -358,7 +315,7 @@ window.TDSdk = declare([], {
       this.listeners.push({
         eventName: eventName,
         callback: callback,
-        listener: on(this.target, eventName, lang.hitch(this, callback)),
+        listener: on(this.target, eventName, lang.hitch(this, callback))
       });
   },
 
@@ -373,8 +330,7 @@ window.TDSdk = declare([], {
     array.forEach(
       this.listeners,
       function (item, index) {
-        if (item.eventName == eventName && item.callback == callback)
-          itemIndex = index;
+        if (item.eventName == eventName && item.callback == callback) itemIndex = index;
       },
       this
     );
@@ -402,13 +358,13 @@ window.TDSdk = declare([], {
    * Version number of the Td Player Api
    */
   version: {
-    value: "@tdversion@",
-    build: "@tdbuild@",
-    codename: "bitter lime",
+    value: '@tdversion@',
+    build: '@tdbuild@',
+    codename: 'bitter lime'
   },
 
   flash: {
     available: swfobject.getFlashPlayerVersion().major > 0,
-    version: swfobject.getFlashPlayerVersion(),
-  },
+    version: swfobject.getFlashPlayerVersion()
+  }
 });

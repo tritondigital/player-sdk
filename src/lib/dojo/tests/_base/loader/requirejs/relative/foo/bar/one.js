@@ -1,13 +1,8 @@
-define("foo/bar/one", [
-  "require",
-  "./two",
-  "../three",
-  "text!./message.txt",
-], function (require, two, three, message) {
+define('foo/bar/one', ['require', './two', '../three', 'text!./message.txt'], function (require, two, three, message) {
   return {
-    name: "one",
+    name: 'one',
     twoName: two.name,
     threeName: three.name,
-    message: message,
+    message: message
   };
 });

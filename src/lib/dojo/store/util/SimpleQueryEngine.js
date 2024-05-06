@@ -1,6 +1,4 @@
-define(["../../_base/array" /*=====, "../api/Store" =====*/], function (
-  arrayUtil /*=====, Store =====*/
-) {
+define(['../../_base/array' /*=====, "../api/Store" =====*/], function (arrayUtil /*=====, Store =====*/) {
   // module:
   //		dojo/store/util/SimpleQueryEngine
 
@@ -51,9 +49,9 @@ define(["../../_base/array" /*=====, "../api/Store" =====*/], function (
     // create our matching query function
     switch (typeof query) {
       default:
-        throw new Error("Can not query with a " + typeof query);
-      case "object":
-      case "undefined":
+        throw new Error('Can not query with a ' + typeof query);
+      case 'object':
+      case 'undefined':
         var queryObject = query;
         query = function (object) {
           for (var key in queryObject) {
@@ -70,16 +68,14 @@ define(["../../_base/array" /*=====, "../api/Store" =====*/], function (
           return true;
         };
         break;
-      case "string":
+      case 'string':
         // named query
         if (!this[query]) {
-          throw new Error(
-            "No filter function " + query + " was found in store"
-          );
+          throw new Error('No filter function ' + query + ' was found in store');
         }
         query = this[query];
       // fall through
-      case "function":
+      case 'function':
       // fall through
     }
     function execute(array) {
@@ -89,17 +85,14 @@ define(["../../_base/array" /*=====, "../api/Store" =====*/], function (
       var sortSet = options && options.sort;
       if (sortSet) {
         results.sort(
-          typeof sortSet == "function"
+          typeof sortSet == 'function'
             ? sortSet
             : function (a, b) {
                 for (var sort, i = 0; (sort = sortSet[i]); i++) {
                   var aValue = a[sort.attribute];
                   var bValue = b[sort.attribute];
                   if (aValue != bValue) {
-                    return !!sort.descending ==
-                      (aValue == null || aValue > bValue)
-                      ? -1
-                      : 1;
+                    return !!sort.descending == (aValue == null || aValue > bValue) ? -1 : 1;
                   }
                 }
                 return 0;
@@ -109,10 +102,7 @@ define(["../../_base/array" /*=====, "../api/Store" =====*/], function (
       // now we paginate
       if (options && (options.start || options.count)) {
         var total = results.length;
-        results = results.slice(
-          options.start || 0,
-          (options.start || 0) + (options.count || Infinity)
-        );
+        results = results.slice(options.start || 0, (options.start || 0) + (options.count || Infinity));
         results.total = total;
       }
       return results;

@@ -3,6 +3,6 @@
 //automatically get an exports object assigned
 define(function () {
   return function () {
-    return "simpleReturn";
+    return 'simpleReturn';
   };
 });

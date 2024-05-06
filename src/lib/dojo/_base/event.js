@@ -1,9 +1,4 @@
-define(["./kernel", "../on", "../has", "../dom-geometry"], function (
-  dojo,
-  on,
-  has,
-  dom
-) {
+define(['./kernel', '../on', '../has', '../dom-geometry'], function (dojo, on, has, dom) {
   // module:
   //		dojo/_base/event
 
@@ -44,7 +39,7 @@ define(["./kernel", "../on", "../has", "../dom-geometry"], function (
       //		passed event
       // evt: Event
       //		The event object. If omitted, window.event is used on IE.
-      if (has("dom-addeventlistener") || (evt && evt.preventDefault)) {
+      if (has('dom-addeventlistener') || (evt && evt.preventDefault)) {
         evt.preventDefault();
         evt.stopPropagation();
       } else {
@@ -52,10 +47,10 @@ define(["./kernel", "../on", "../has", "../dom-geometry"], function (
         evt.cancelBubble = true;
         on._preventDefault.call(evt);
       }
-    },
+    }
   };
 
-  if (has("extend-dojo")) {
+  if (has('extend-dojo')) {
     dojo.fixEvent = ret.fix;
     dojo.stopEvent = ret.stop;
   }

@@ -1,22 +1,14 @@
-define(["./tracer", "../has", "../_base/lang", "../_base/array"], function (
-  tracer,
-  has,
-  lang,
-  arrayUtil
-) {
+define(['./tracer', '../has', '../_base/lang', '../_base/array'], function (tracer, has, lang, arrayUtil) {
   function logError(error, rejection, deferred) {
-    var stack = "";
+    var stack = '';
     if (error && error.stack) {
       stack += error.stack;
     }
     if (rejection && rejection.stack) {
-      stack +=
-        "\n    ----------------------------------------\n    rejected" +
-        rejection.stack.split("\n").slice(1).join("\n").replace(/^\s+/, " ");
+      stack += '\n    ----------------------------------------\n    rejected' + rejection.stack.split('\n').slice(1).join('\n').replace(/^\s+/, ' ');
     }
     if (deferred && deferred.stack) {
-      stack +=
-        "\n    ----------------------------------------\n" + deferred.stack;
+      stack += '\n    ----------------------------------------\n' + deferred.stack;
     }
     console.error(error, stack);
   }
@@ -47,7 +39,7 @@ define(["./tracer", "../has", "../_base/lang", "../_base/array"], function (
         error: error,
         rejection: rejection,
         deferred: deferred,
-        timestamp: new Date().getTime(),
+        timestamp: new Date().getTime()
       });
     }
 
@@ -68,10 +60,7 @@ define(["./tracer", "../has", "../_base/lang", "../_base/array"], function (
     });
 
     if (errors.length) {
-      activeTimeout = setTimeout(
-        logRejected,
-        errors[0].timestamp + unhandledWait - now
-      );
+      activeTimeout = setTimeout(logRejected, errors[0].timestamp + unhandledWait - now);
     } else {
       activeTimeout = false;
     }
@@ -91,28 +80,24 @@ define(["./tracer", "../has", "../_base/lang", "../_base/array"], function (
     //		Sets up instrumentation of rejected deferreds so unhandled
     //		errors are logged to the console.
 
-    var usage = has("config-useDeferredInstrumentation");
+    var usage = has('config-useDeferredInstrumentation');
     if (usage) {
-      tracer.on("resolved", lang.hitch(console, "log", "resolved"));
-      tracer.on("rejected", lang.hitch(console, "log", "rejected"));
-      tracer.on("progress", lang.hitch(console, "log", "progress"));
+      tracer.on('resolved', lang.hitch(console, 'log', 'resolved'));
+      tracer.on('rejected', lang.hitch(console, 'log', 'rejected'));
+      tracer.on('progress', lang.hitch(console, 'log', 'progress'));
 
       var args = [];
-      if (typeof usage === "string") {
-        args = usage.split(",");
+      if (typeof usage === 'string') {
+        args = usage.split(',');
         usage = args.shift();
       }
-      if (usage === "report-rejections") {
+      if (usage === 'report-rejections') {
         Deferred.instrumentRejected = reportRejections;
-      } else if (
-        usage === "report-unhandled-rejections" ||
-        usage === true ||
-        usage === 1
-      ) {
+      } else if (usage === 'report-unhandled-rejections' || usage === true || usage === 1) {
         Deferred.instrumentRejected = trackUnhandledRejections;
         unhandledWait = parseInt(args[0], 10) || unhandledWait;
       } else {
-        throw new Error("Unsupported instrumentation usage <" + usage + ">");
+        throw new Error('Unsupported instrumentation usage <' + usage + '>');
       }
     }
   };

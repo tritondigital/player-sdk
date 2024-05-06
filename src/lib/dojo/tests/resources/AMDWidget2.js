@@ -1,4 +1,4 @@
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   return declare(null, {
     constructor: function (args, node) {
       this.params = args;
@@ -7,6 +7,6 @@ define(["dojo/_base/declare"], function (declare) {
     method1: function (value) {
       value++;
       return value;
-    },
+    }
   });
 });

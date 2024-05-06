@@ -1,11 +1,4 @@
-define([
-  "exports",
-  "./sniff",
-  "./_base/lang",
-  "./dom",
-  "./dom-style",
-  "./dom-prop",
-], function (exports, has, lang, dom, style, prop) {
+define(['exports', './sniff', './_base/lang', './dom', './dom-style', './dom-prop'], function (exports, has, lang, dom, style, prop) {
   // module:
   //		dojo/dom-attr
   // summary:
@@ -26,16 +19,16 @@ define([
   var forcePropNames = {
       innerHTML: 1,
       className: 1,
-      htmlFor: has("ie"),
-      value: 1,
+      htmlFor: has('ie'),
+      value: 1
     },
     attrNames = {
       // original attribute names
-      classname: "class",
-      htmlfor: "for",
+      classname: 'class',
+      htmlfor: 'for',
       // for IE
-      tabindex: "tabIndex",
-      readonly: "readOnly",
+      tabindex: 'tabIndex',
+      readonly: 'readOnly'
     };
 
   function _hasAttr(node, name) {
@@ -61,10 +54,7 @@ define([
     //		given element, and false otherwise
 
     var lc = name.toLowerCase();
-    return (
-      forcePropNames[prop.names[lc] || name] ||
-      _hasAttr(dom.byId(node), attrNames[lc] || name)
-    ); // Boolean
+    return forcePropNames[prop.names[lc] || name] || _hasAttr(dom.byId(node), attrNames[lc] || name); // Boolean
   };
 
   exports.get = function getAttr(/*DOMNode|String*/ node, /*String*/ name) {
@@ -92,14 +82,11 @@ define([
       forceProp = forcePropNames[propName],
       value = node[propName]; // should we access this attribute via a property or via getAttribute()?
 
-    if (forceProp && typeof value != "undefined") {
+    if (forceProp && typeof value != 'undefined') {
       // node's property
       return value; // Anything
     }
-    if (
-      propName != "href" &&
-      (typeof value == "boolean" || lang.isFunction(value))
-    ) {
+    if (propName != 'href' && (typeof value == 'boolean' || lang.isFunction(value))) {
       // node's property
       return value; // Anything
     }
@@ -109,11 +96,7 @@ define([
     return _hasAttr(node, attrName) ? node.getAttribute(attrName) : null; // Anything
   };
 
-  exports.set = function setAttr(
-    /*DOMNode|String*/ node,
-    /*String|Object*/ name,
-    /*String?*/ value
-  ) {
+  exports.set = function setAttr(/*DOMNode|String*/ node, /*String|Object*/ name, /*String?*/ value) {
     // summary:
     //		Sets an attribute on an HTML element.
     // description:
@@ -190,13 +173,13 @@ define([
     var lc = name.toLowerCase(),
       propName = prop.names[lc] || name,
       forceProp = forcePropNames[propName];
-    if (propName == "style" && typeof value != "string") {
+    if (propName == 'style' && typeof value != 'string') {
       // inline'd type check
       // special case: setting a style
       style.set(node, value);
       return node; // DomNode
     }
-    if (forceProp || typeof value == "boolean" || lang.isFunction(value)) {
+    if (forceProp || typeof value == 'boolean' || lang.isFunction(value)) {
       return prop.set(node, name, value);
     }
     // node's attribute
@@ -204,10 +187,7 @@ define([
     return node; // DomNode
   };
 
-  exports.remove = function removeAttr(
-    /*DOMNode|String*/ node,
-    /*String*/ name
-  ) {
+  exports.remove = function removeAttr(/*DOMNode|String*/ node, /*String*/ name) {
     // summary:
     //		Removes an attribute from an HTML element.
     // node: DOMNode|String
@@ -218,10 +198,7 @@ define([
     dom.byId(node).removeAttribute(attrNames[name.toLowerCase()] || name);
   };
 
-  exports.getNodeProp = function getNodeProp(
-    /*DomNode|String*/ node,
-    /*String*/ name
-  ) {
+  exports.getNodeProp = function getNodeProp(/*DomNode|String*/ node, /*String*/ name) {
     // summary:
     //		Returns an effective value of a property or an attribute.
     // node: DOMNode|String
@@ -234,7 +211,7 @@ define([
     node = dom.byId(node);
     var lc = name.toLowerCase(),
       propName = prop.names[lc] || name;
-    if (propName in node && propName != "href") {
+    if (propName in node && propName != 'href') {
       // node's property
       return node[propName]; // Anything
     }

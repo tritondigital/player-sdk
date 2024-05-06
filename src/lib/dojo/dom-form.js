@@ -1,9 +1,4 @@
-define(["./_base/lang", "./dom", "./io-query", "./json"], function (
-  lang,
-  dom,
-  ioq,
-  json
-) {
+define(['./_base/lang', './dom', './io-query', './json'], function (lang, dom, ioq, json) {
   // module:
   //		dojo/dom-form
 
@@ -19,7 +14,7 @@ define(["./_base/lang", "./dom", "./io-query", "./json"], function (
     }
 
     var val = obj[name];
-    if (typeof val == "string") {
+    if (typeof val == 'string') {
       // inline'd type check
       obj[name] = [val, value];
     } else if (lang.isArray(val)) {
@@ -29,7 +24,7 @@ define(["./_base/lang", "./dom", "./io-query", "./json"], function (
     }
   }
 
-  var exclude = "file|submit|image|reset|button";
+  var exclude = 'file|submit|image|reset|button';
 
   var form = {
     // summary:
@@ -50,9 +45,9 @@ define(["./_base/lang", "./dom", "./io-query", "./json"], function (
       inputNode = dom.byId(inputNode);
       if (inputNode) {
         var _in = inputNode.name,
-          type = (inputNode.type || "").toLowerCase();
+          type = (inputNode.type || '').toLowerCase();
         if (_in && type && !inputNode.disabled) {
-          if (type == "radio" || type == "checkbox") {
+          if (type == 'radio' || type == 'checkbox') {
             if (inputNode.checked) {
               ret = inputNode.value;
             }
@@ -61,10 +56,7 @@ define(["./_base/lang", "./dom", "./io-query", "./json"], function (
             var nodes = [inputNode.firstChild];
             while (nodes.length) {
               for (var node = nodes.pop(); node; node = node.nextSibling) {
-                if (
-                  node.nodeType == 1 &&
-                  node.tagName.toLowerCase() == "option"
-                ) {
+                if (node.nodeType == 1 && node.tagName.toLowerCase() == 'option') {
                   if (node.selected) {
                     ret.push(node.value);
                   }
@@ -125,11 +117,11 @@ define(["./_base/lang", "./dom", "./io-query", "./json"], function (
       for (var i = 0, l = elems.length; i < l; ++i) {
         var item = elems[i],
           _in = item.name,
-          type = (item.type || "").toLowerCase();
+          type = (item.type || '').toLowerCase();
         if (_in && type && exclude.indexOf(type) < 0 && !item.disabled) {
           setValue(ret, _in, form.fieldToObject(item));
-          if (type == "image") {
-            ret[_in + ".x"] = ret[_in + ".y"] = ret[_in].x = ret[_in].y = 0;
+          if (type == 'image') {
+            ret[_in + '.x'] = ret[_in + '.y'] = ret[_in].x = ret[_in].y = 0;
           }
         }
       }
@@ -146,10 +138,7 @@ define(["./_base/lang", "./dom", "./io-query", "./json"], function (
       return ioq.objectToQuery(form.toObject(formNode)); // String
     },
 
-    toJson: function formToJson(
-      /*DOMNode|String*/ formNode,
-      /*Boolean?*/ prettyPrint
-    ) {
+    toJson: function formToJson(/*DOMNode|String*/ formNode, /*Boolean?*/ prettyPrint) {
       // summary:
       //		Create a serialized JSON string from a form node or string
       //		ID identifying the form to serialize
@@ -158,7 +147,7 @@ define(["./_base/lang", "./dom", "./io-query", "./json"], function (
       // returns: String
 
       return json.stringify(form.toObject(formNode), null, prettyPrint ? 4 : 0); // String
-    },
+    }
   };
 
   return form;

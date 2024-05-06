@@ -1,9 +1,5 @@
-define(["../_base/lang", "./Promise", "../Evented"], function (
-  lang,
-  Promise,
-  Evented
-) {
-  "use strict";
+define(['../_base/lang', './Promise', '../Evented'], function (lang, Promise, Evented) {
+  'use strict';
 
   // module:
   //		dojo/promise/tracer
@@ -56,13 +52,13 @@ define(["../_base/lang", "./Promise", "../Evented"], function (
     var args = lang._toArray(arguments);
     this.then(
       function (value) {
-        emitAsync(["resolved", value].concat(args));
+        emitAsync(['resolved', value].concat(args));
       },
       function (error) {
-        emitAsync(["rejected", error].concat(args));
+        emitAsync(['rejected', error].concat(args));
       },
       function (update) {
-        emitAsync(["progress", update].concat(args));
+        emitAsync(['progress', update].concat(args));
       }
     );
     return this;
@@ -82,7 +78,7 @@ define(["../_base/lang", "./Promise", "../Evented"], function (
 
     var args = lang._toArray(arguments);
     this.otherwise(function (error) {
-      emitAsync(["rejected", error].concat(args));
+      emitAsync(['rejected', error].concat(args));
     });
     return this;
   };

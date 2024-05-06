@@ -1,20 +1,13 @@
-require([
-  "require",
-  "doh/main",
-  "dojo/request",
-  "dojo/node!http",
-  "dojo/node!url",
-  "dojo/Deferred",
-], function (require, doh, request, http, url, Deferred) {
+require(['require', 'doh/main', 'dojo/request', 'dojo/node!http', 'dojo/node!url', 'dojo/Deferred'], function (require, doh, request, http, url, Deferred) {
   var serverPort = 8142,
-    serverUrl = "http://localhost:8124";
+    serverUrl = 'http://localhost:8124';
 
   var responseDataMap = {
     fooBar: '{ "foo": "bar" }',
-    invalidJson: "<not>JSON</not>",
+    invalidJson: '<not>JSON</not>'
   };
   function getRequestUrl(dataKey) {
-    return serverUrl + "?dataKey=" + dataKey;
+    return serverUrl + '?dataKey=' + dataKey;
   }
   function getResponseData(request) {
     var parseQueryString = true;
@@ -26,8 +19,8 @@ require([
     var body = getResponseData(request);
 
     response.writeHead(200, {
-      "Content-Length": body.length,
-      "Content-Type": "application/json",
+      'Content-Length': body.length,
+      'Content-Type': 'application/json'
     });
     response.write(body);
     response.end();
@@ -39,20 +32,20 @@ require([
   function tearDown() {
     server.close();
   }
-  server.on("listening", function () {
+  server.on('listening', function () {
     var tests = [
       {
-        name: "test",
+        name: 'test',
         runTest: function (t) {
           var d = new doh.Deferred();
 
           request
-            .get(getRequestUrl("fooBar"), {
-              handleAs: "json",
+            .get(getRequestUrl('fooBar'), {
+              handleAs: 'json'
             })
             .then(
               d.getTestCallback(function (data) {
-                t.is({ foo: "bar" }, data);
+                t.is({ foo: 'bar' }, data);
               }),
               function (err) {
                 d.errback(err);
@@ -60,20 +53,20 @@ require([
             );
 
           return d;
-        },
+        }
       },
       {
-        name: "test-handler-exception",
+        name: 'test-handler-exception',
         runTest: function (t) {
           var d = new doh.Deferred();
 
           request
-            .get(getRequestUrl("invalidJson"), {
-              handleAs: "json",
+            .get(getRequestUrl('invalidJson'), {
+              handleAs: 'json'
             })
             .then(
               function () {
-                d.errback(new Error("Expected a handler exception."));
+                d.errback(new Error('Expected a handler exception.'));
               },
               d.getTestCallback(function (err) {
                 doh.assertTrue(err instanceof SyntaxError);
@@ -81,11 +74,11 @@ require([
             );
 
           return d;
-        },
-      },
+        }
+      }
     ];
 
-    doh.register("tests.request.node", tests, setUp, tearDown);
+    doh.register('tests.request.node', tests, setUp, tearDown);
     doh.run();
   });
   server.listen(8124);

@@ -1,17 +1,12 @@
-var Platform = require("sdk/base/util/Platform");
+var Platform = require('sdk/base/util/Platform');
 
-define([
-  "dojo/_base/declare",
-  "dojo/_base/lang",
-  "sdk/modules/base/CoreModule",
-  "sdk/base/util/XhrProvider",
-], function (declare, lang, coreModule, XhrProvider) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'sdk/modules/base/CoreModule', 'sdk/base/util/XhrProvider'], function (declare, lang, coreModule, XhrProvider) {
   /**
    * @namespace tdapi/modules/PlayerWebAdmin
    */
   var module = declare([coreModule], {
     constructor: function (config, target) {
-      console.log("playerWebAdmin::constructor");
+      console.log('playerWebAdmin::constructor');
 
       this.platform = new Platform(config.platformId);
 
@@ -19,9 +14,9 @@ define([
     },
 
     start: function () {
-      console.log("playerWebAdmin::start");
+      console.log('playerWebAdmin::start');
 
-      this.emit("module-ready", { id: "PlayerWebAdmin", module: this });
+      this.emit('module-ready', { id: 'PlayerWebAdmin', module: this });
     },
 
     /**
@@ -34,9 +29,7 @@ define([
      * Also, dojo/request/script error function is not working: http://bugs.dojotoolkit.org/ticket/16138
      */
     load: function (mount, streamid) {
-      console.log(
-        "playerWebAdmin::load - mount=" + mount + ", streamid=" + streamid
-      );
+      console.log('playerWebAdmin::load - mount=' + mount + ', streamid=' + streamid);
 
       var successCallback = lang.hitch(this, this._onLoadComplete);
       var errorCallback = lang.hitch(this, this._onLoadError);
@@ -46,38 +39,28 @@ define([
       xhrProv.request(
         this.platform.endpoint.playerWebAdmin,
         requestArgs.query,
-        {
-          handleAs: "xml",
-          preventCache: true,
-          query: requestArgs.query,
-          headers: {
-            "X-Requested-With": null,
-            "Content-Type": "text/plain; charset=utf-8",
-          },
-        },
+        { handleAs: 'xml', preventCache: true, query: requestArgs.query, headers: { 'X-Requested-With': null, 'Content-Type': 'text/plain; charset=utf-8' } },
         function (query, data) {
           successCallback(mount, JSON.parse(data));
         },
         function (query, error) {
-          errorCallback(mount, "An unexpected error occurred: " + error);
+          errorCallback(mount, 'An unexpected error occurred: ' + error);
         }
       );
     },
 
     _onLoadError: function (mount, error) {
-      console.error(
-        "playerWebAdmin::_onLoadError - mount=" + mount + " - error=" + error
-      );
+      console.error('playerWebAdmin::_onLoadError - mount=' + mount + ' - error=' + error);
 
-      this.emit("pwa-data-error", { mount: mount, error: error });
+      this.emit('pwa-data-error', { mount: mount, error: error });
     },
 
     _onLoadComplete: function (mount, data) {
-      console.log("playerWebAdmin::_onLoadComplete - mount=" + mount);
-      console.log("playerWebAdmin::pwa-data-loaded");
+      console.log('playerWebAdmin::_onLoadComplete - mount=' + mount);
+      console.log('playerWebAdmin::pwa-data-loaded');
       console.log(data);
 
-      this.emit("pwa-data-loaded", { mount: mount, config: data });
+      this.emit('pwa-data-loaded', { mount: mount, config: data });
     },
 
     /**
@@ -87,14 +70,14 @@ define([
      */
     _getRequestArgs: function (mount, streamid) {
       return {
-        jsonp: "callback",
+        jsonp: 'callback',
         preventCache: true,
         query: {
           callsign: mount,
-          streamid: streamid,
-        },
+          streamid: streamid
+        }
       };
-    },
+    }
   });
 
   return module;

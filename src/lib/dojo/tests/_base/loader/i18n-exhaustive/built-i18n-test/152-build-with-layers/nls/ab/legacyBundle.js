@@ -1,5 +1,1 @@
-({
-  abValueOnly: "abValueOnly",
-  legacyBundle: "legacyBundle-ab",
-  rootValueOnly: "rootValueOnly",
-});
+({ abValueOnly: 'abValueOnly', legacyBundle: 'legacyBundle-ab', rootValueOnly: 'rootValueOnly' });

@@ -1,4 +1,4 @@
-define(["./router/RouterBase"], function (RouterBase) {
+define(['./router/RouterBase'], function (RouterBase) {
   // module:
   //		dojo/router
 

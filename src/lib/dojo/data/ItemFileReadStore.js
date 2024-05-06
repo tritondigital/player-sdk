@@ -1,14 +1,4 @@
-define([
-  "../_base/kernel",
-  "../_base/lang",
-  "../_base/declare",
-  "../_base/array",
-  "../_base/xhr",
-  "../Evented",
-  "./util/filter",
-  "./util/simpleFetch",
-  "../date/stamp",
-], function (
+define(['../_base/kernel', '../_base/lang', '../_base/declare', '../_base/array', '../_base/xhr', '../Evented', './util/filter', './util/simpleFetch', '../date/stamp'], function (
   kernel,
   lang,
   declare,
@@ -22,7 +12,7 @@ define([
   // module:
   //		dojo/data/ItemFileReadStore
 
-  var ItemFileReadStore = declare("dojo.data.ItemFileReadStore", [Evented], {
+  var ItemFileReadStore = declare('dojo.data.ItemFileReadStore', [Evented], {
     // summary:
     //		The ItemFileReadStore implements the dojo/data/api/Read API and reads
     //		data from JSON files that have contents in this format --
@@ -63,26 +53,23 @@ define([
       this._jsonData = keywordParameters.data;
       this.data = null;
       this._datatypeMap = keywordParameters.typeMap || {};
-      if (!this._datatypeMap["Date"]) {
+      if (!this._datatypeMap['Date']) {
         //If no default mapping for dates, then set this as default.
         //We use the dojo/date/stamp here because the ISO format is the 'dojo way'
         //of generically representing dates.
-        this._datatypeMap["Date"] = {
+        this._datatypeMap['Date'] = {
           type: Date,
           deserialize: function (value) {
             return dateStamp.fromISOString(value);
-          },
+          }
         };
       }
-      this._features = {
-        "dojo.data.api.Read": true,
-        "dojo.data.api.Identity": true,
-      };
+      this._features = { 'dojo.data.api.Read': true, 'dojo.data.api.Identity': true };
       this._itemsByIdentity = null;
-      this._storeRefPropName = "_S"; // Default name for the store reference to attach to every item.
-      this._itemNumPropName = "_0"; // Default Item Id for isItem to attach to every item.
-      this._rootItemPropName = "_RI"; // Default Item Id for isItem to attach to every item.
-      this._reverseRefMap = "_RRM"; // Default attribute for constructing a reverse reference map for use with reference integrity
+      this._storeRefPropName = '_S'; // Default name for the store reference to attach to every item.
+      this._itemNumPropName = '_0'; // Default Item Id for isItem to attach to every item.
+      this._rootItemPropName = '_RI'; // Default Item Id for isItem to attach to every item.
+      this._reverseRefMap = '_RRM'; // Default attribute for constructing a reverse reference map for use with reference integrity
       this._loadInProgress = false; //Got to track the initial load to prevent duelling loads of the dataset.
       this._queuedFetches = [];
       if (keywordParameters.urlPreventCache !== undefined) {
@@ -94,16 +81,16 @@ define([
       if (keywordParameters.clearOnClose) {
         this.clearOnClose = true;
       }
-      if ("failOk" in keywordParameters) {
+      if ('failOk' in keywordParameters) {
         this.failOk = keywordParameters.failOk ? true : false;
       }
     },
 
-    url: "", // use "" rather than undefined for the benefit of the parser (#3539)
+    url: '', // use "" rather than undefined for the benefit of the parser (#3539)
 
     //Internal var, crossCheckUrl.  Used so that setting either url or _jsonFileUrl, can still trigger a reload
     //when clearOnClose and close is used.
-    _ccUrl: "",
+    _ccUrl: '',
 
     data: null, // define this so that the parser can populate it
 
@@ -140,7 +127,7 @@ define([
       // item:
       //		The item to test for being contained by the store.
       if (!this.isItem(item)) {
-        throw new Error(this.declaredClass + ": Invalid item argument.");
+        throw new Error(this.declaredClass + ': Invalid item argument.');
       }
     },
 
@@ -149,26 +136,19 @@ define([
       //		This function tests whether the item passed in is indeed a valid 'attribute' like type for the store.
       // attribute:
       //		The attribute to test for being contained by the store.
-      if (typeof attribute !== "string") {
-        throw new Error(this.declaredClass + ": Invalid attribute argument.");
+      if (typeof attribute !== 'string') {
+        throw new Error(this.declaredClass + ': Invalid attribute argument.');
       }
     },
 
-    getValue: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* value? */ defaultValue
-    ) {
+    getValue: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* value? */ defaultValue) {
       // summary:
       //		See dojo/data/api/Read.getValue()
       var values = this.getValues(item, attribute);
       return values.length > 0 ? values[0] : defaultValue; // mixed
     },
 
-    getValues: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute
-    ) {
+    getValues: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute) {
       // summary:
       //		See dojo/data/api/Read.getValues()
 
@@ -185,22 +165,14 @@ define([
       var attributes = [];
       for (var key in item) {
         // Save off only the real item attributes, not the special id marks for O(1) isItem.
-        if (
-          key !== this._storeRefPropName &&
-          key !== this._itemNumPropName &&
-          key !== this._rootItemPropName &&
-          key !== this._reverseRefMap
-        ) {
+        if (key !== this._storeRefPropName && key !== this._itemNumPropName && key !== this._rootItemPropName && key !== this._reverseRefMap) {
           attributes.push(key);
         }
       }
       return attributes; // Array
     },
 
-    hasAttribute: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute
-    ) {
+    hasAttribute: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute) {
       // summary:
       //		See dojo/data/api/Read.hasAttribute()
       this._assertIsItem(item);
@@ -208,26 +180,17 @@ define([
       return attribute in item;
     },
 
-    containsValue: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* anything */ value
-    ) {
+    containsValue: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* anything */ value) {
       // summary:
       //		See dojo/data/api/Read.containsValue()
       var regexp = undefined;
-      if (typeof value === "string") {
+      if (typeof value === 'string') {
         regexp = filterUtil.patternToRegExp(value, false);
       }
       return this._containsValue(item, attribute, value, regexp); //boolean.
     },
 
-    _containsValue: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* anything */ value,
-      /* RegExp?*/ regexp
-    ) {
+    _containsValue: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* anything */ value, /* RegExp?*/ regexp) {
       // summary:
       //		Internal function for looking at the values contained by the item.
       // description:
@@ -243,31 +206,22 @@ define([
       // regexp:
       //		Optional regular expression generated off value if value was of string type to handle wildcarding.
       //		If present and attribute values are string, then it can be used for comparison instead of 'value'
-      return array.some(
-        this.getValues(item, attribute),
-        function (possibleValue) {
-          if (
-            possibleValue !== null &&
-            !lang.isObject(possibleValue) &&
-            regexp
-          ) {
-            if (possibleValue.toString().match(regexp)) {
-              return true; // Boolean
-            }
-          } else if (value === possibleValue) {
+      return array.some(this.getValues(item, attribute), function (possibleValue) {
+        if (possibleValue !== null && !lang.isObject(possibleValue) && regexp) {
+          if (possibleValue.toString().match(regexp)) {
             return true; // Boolean
           }
+        } else if (value === possibleValue) {
+          return true; // Boolean
         }
-      );
+      });
     },
 
     isItem: function (/* anything */ something) {
       // summary:
       //		See dojo/data/api/Read.isItem()
       if (something && something[this._storeRefPropName] === this) {
-        if (
-          this._arrayOfAllItems[something[this._itemNumPropName]] === something
-        ) {
+        if (this._arrayOfAllItems[something[this._itemNumPropName]] === something) {
           return true;
         }
       }
@@ -310,11 +264,7 @@ define([
       return null; //null
     },
 
-    filter: function (
-      /* Object */ requestArgs,
-      /* item[] */ arrayOfItems,
-      /* Function */ findCallback
-    ) {
+    filter: function (/* Object */ requestArgs, /* item[] */ arrayOfItems, /* Function */ findCallback) {
       // summary:
       //		This method handles the basic filtering needs for ItemFile* based stores.
       var items = [],
@@ -323,16 +273,14 @@ define([
 
       if (requestArgs.query) {
         var value,
-          ignoreCase = requestArgs.queryOptions
-            ? requestArgs.queryOptions.ignoreCase
-            : false;
+          ignoreCase = requestArgs.queryOptions ? requestArgs.queryOptions.ignoreCase : false;
 
         //See if there are any string values that can be regexp parsed first to avoid multiple regexp gens on the
         //same value for each item examined.  Much more efficient.
         var regexpList = {};
         for (key in requestArgs.query) {
           value = requestArgs.query[key];
-          if (typeof value === "string") {
+          if (typeof value === 'string') {
             regexpList[key] = filterUtil.patternToRegExp(value, ignoreCase);
           } else if (value instanceof RegExp) {
             regexpList[key] = value;
@@ -346,9 +294,7 @@ define([
           } else {
             for (key in requestArgs.query) {
               value = requestArgs.query[key];
-              if (
-                !this._containsValue(candidateItem, key, value, regexpList[key])
-              ) {
+              if (!this._containsValue(candidateItem, key, value, regexpList[key])) {
                 match = false;
               }
             }
@@ -374,21 +320,13 @@ define([
       }
     },
 
-    _fetchItems: function (
-      /* Object */ keywordArgs,
-      /* Function */ findCallback,
-      /* Function */ errorCallback
-    ) {
+    _fetchItems: function (/* Object */ keywordArgs, /* Function */ findCallback, /* Function */ errorCallback) {
       // summary:
       //		See dojo/data/util.simpleFetch.fetch()
       var self = this;
 
       if (this._loadFinished) {
-        this.filter(
-          keywordArgs,
-          this._getItemsArray(keywordArgs.queryOptions),
-          findCallback
-        );
+        this.filter(keywordArgs, this._getItemsArray(keywordArgs.queryOptions), findCallback);
       } else {
         //Do a check on the JsonFileUrl and crosscheck it.
         //If it doesn't match the cross-check, it needs to be updated
@@ -397,11 +335,7 @@ define([
         //compatibility.  People use _jsonFileUrl (even though officially
         //private.
         if (this._jsonFileUrl !== this._ccUrl) {
-          kernel.deprecated(
-            this.declaredClass + ": ",
-            "To change the url, set the url property of the store," +
-              " not _jsonFileUrl.  _jsonFileUrl support will be removed in 2.0"
-          );
+          kernel.deprecated(this.declaredClass + ': ', 'To change the url, set the url property of the store,' + ' not _jsonFileUrl.  _jsonFileUrl support will be removed in 2.0');
           this._ccUrl = this._jsonFileUrl;
           this.url = this._jsonFileUrl;
         } else if (this.url !== this._ccUrl) {
@@ -420,18 +354,14 @@ define([
           //a load is in progress, we have to defer the fetching to be
           //invoked in the callback.
           if (this._loadInProgress) {
-            this._queuedFetches.push({
-              args: keywordArgs,
-              filter: lang.hitch(self, "filter"),
-              findCallback: lang.hitch(self, findCallback),
-            });
+            this._queuedFetches.push({ args: keywordArgs, filter: lang.hitch(self, 'filter'), findCallback: lang.hitch(self, findCallback) });
           } else {
             this._loadInProgress = true;
             var getArgs = {
               url: self._jsonFileUrl,
-              handleAs: "json-comment-optional",
+              handleAs: 'json-comment-optional',
               preventCache: this.urlPreventCache,
-              failOk: this.failOk,
+              failOk: this.failOk
             };
             var getHandler = xhr.get(getArgs);
             getHandler.addCallback(function (data) {
@@ -440,11 +370,7 @@ define([
                 self._loadFinished = true;
                 self._loadInProgress = false;
 
-                self.filter(
-                  keywordArgs,
-                  self._getItemsArray(keywordArgs.queryOptions),
-                  findCallback
-                );
+                self.filter(keywordArgs, self._getItemsArray(keywordArgs.queryOptions), findCallback);
                 self._handleQueuedFetches();
               } catch (e) {
                 self._loadFinished = true;
@@ -481,22 +407,12 @@ define([
             this._loadFinished = true;
             this._getItemsFromLoadedData(this._jsonData);
             this._jsonData = null;
-            self.filter(
-              keywordArgs,
-              this._getItemsArray(keywordArgs.queryOptions),
-              findCallback
-            );
+            self.filter(keywordArgs, this._getItemsArray(keywordArgs.queryOptions), findCallback);
           } catch (e) {
             errorCallback(e, keywordArgs);
           }
         } else {
-          errorCallback(
-            new Error(
-              this.declaredClass +
-                ": No JSON source data was provided as either URL or a nested Javascript object."
-            ),
-            keywordArgs
-          );
+          errorCallback(new Error(this.declaredClass + ': No JSON source data was provided as either URL or a nested Javascript object.'), keywordArgs);
         }
       }
     },
@@ -513,11 +429,7 @@ define([
             delayedFilter = fData.filter,
             delayedFindCallback = fData.findCallback;
           if (delayedFilter) {
-            delayedFilter(
-              delayedQuery,
-              this._getItemsArray(delayedQuery.queryOptions),
-              delayedFindCallback
-            );
+            delayedFilter(delayedQuery, this._getItemsArray(delayedQuery.queryOptions), delayedFindCallback);
           } else {
             this.fetchItemByIdentity(delayedQuery);
           }
@@ -545,18 +457,8 @@ define([
         //so that the store knows it can get data.  Without one of those being set,
         //the next fetch will trigger an error.
 
-        if (
-          (this._jsonFileUrl == "" || this._jsonFileUrl == null) &&
-          (this.url == "" || this.url == null) &&
-          this.data == null
-        ) {
-          console.debug(
-            this.declaredClass +
-              ": WARNING!  Data reload " +
-              " information has not been provided." +
-              "  Please set 'url' or 'data' to the appropriate value before" +
-              " the next fetch"
-          );
+        if ((this._jsonFileUrl == '' || this._jsonFileUrl == null) && (this.url == '' || this.url == null) && this.data == null) {
+          console.debug(this.declaredClass + ': WARNING!  Data reload ' + ' information has not been provided.' + "  Please set 'url' or 'data' to the appropriate value before" + ' the next fetch');
         }
         this._arrayOfAllItems = [];
         this._arrayOfTopLevelItems = [];
@@ -597,20 +499,18 @@ define([
         // 	|	true == valueIsAnItem({foo:42});
         return (
           aValue !== null &&
-          typeof aValue === "object" &&
+          typeof aValue === 'object' &&
           (!lang.isArray(aValue) || addingArrays) &&
           !lang.isFunction(aValue) &&
           (aValue.constructor == Object || lang.isArray(aValue)) &&
-          typeof aValue._reference === "undefined" &&
-          typeof aValue._type === "undefined" &&
-          typeof aValue._value === "undefined" &&
+          typeof aValue._reference === 'undefined' &&
+          typeof aValue._type === 'undefined' &&
+          typeof aValue._value === 'undefined' &&
           self.hierarchical
         );
       }
 
-      function addItemAndSubItemsToArrayOfAllItems(
-        /* dojo/data/api/Item */ anItem
-      ) {
+      function addItemAndSubItemsToArrayOfAllItems(/* dojo/data/api/Item */ anItem) {
         self._arrayOfAllItems.push(anItem);
         for (var attribute in anItem) {
           var valueForAttribute = anItem[attribute];
@@ -683,13 +583,13 @@ define([
       // Step 3: Build unique property names to use for the _storeRefPropName and _itemNumPropName
       // This should go really fast, it will generally never even run the loop.
       while (allAttributeNames[this._storeRefPropName]) {
-        this._storeRefPropName += "_";
+        this._storeRefPropName += '_';
       }
       while (allAttributeNames[this._itemNumPropName]) {
-        this._itemNumPropName += "_";
+        this._itemNumPropName += '_';
       }
       while (allAttributeNames[this._reverseRefMap]) {
-        this._reverseRefMap += "_";
+        this._reverseRefMap += '_';
       }
 
       // Step 4: Some data files specify an optional 'identifier', which is
@@ -701,7 +601,7 @@ define([
       var identifier = dataObject.identifier;
       if (identifier) {
         this._itemsByIdentity = {};
-        this._features["dojo.data.api.Identity"] = identifier;
+        this._features['dojo.data.api.Identity'] = identifier;
         for (i = 0; i < this._arrayOfAllItems.length; ++i) {
           item = this._arrayOfAllItems[i];
           arrayOfValues = item[identifier];
@@ -712,28 +612,28 @@ define([
             if (this._jsonFileUrl) {
               throw new Error(
                 this.declaredClass +
-                  ":  The json data as specified by: [" +
+                  ':  The json data as specified by: [' +
                   this._jsonFileUrl +
-                  "] is malformed.  Items within the list have identifier: [" +
+                  '] is malformed.  Items within the list have identifier: [' +
                   identifier +
-                  "].  Value collided: [" +
+                  '].  Value collided: [' +
                   identity +
-                  "]"
+                  ']'
               );
             } else if (this._jsonData) {
               throw new Error(
                 this.declaredClass +
-                  ":  The json data provided by the creation arguments is malformed.  Items within the list have identifier: [" +
+                  ':  The json data provided by the creation arguments is malformed.  Items within the list have identifier: [' +
                   identifier +
-                  "].  Value collided: [" +
+                  '].  Value collided: [' +
                   identity +
-                  "]"
+                  ']'
               );
             }
           }
         }
       } else {
-        this._features["dojo.data.api.Identity"] = Number;
+        this._features['dojo.data.api.Identity'] = Number;
       }
 
       // Step 5: Walk through all the items, and set each item's properties
@@ -765,24 +665,18 @@ define([
           arrayOfValues = item[key]; // example: [{_reference:{name:'Miss Piggy'}}]
           for (var j = 0; j < arrayOfValues.length; ++j) {
             value = arrayOfValues[j]; // example: {_reference:{name:'Miss Piggy'}}
-            if (value !== null && typeof value == "object") {
-              if ("_type" in value && "_value" in value) {
+            if (value !== null && typeof value == 'object') {
+              if ('_type' in value && '_value' in value) {
                 var type = value._type; // examples: 'Date', 'Color', or 'ComplexNumber'
                 var mappingObj = this._datatypeMap[type]; // examples: Date, dojo.Color, foo.math.ComplexNumber, {type: dojo.Color, deserialize(value){ return new dojo.Color(value)}}
                 if (!mappingObj) {
-                  throw new Error(
-                    "dojo.data.ItemFileReadStore: in the typeMap constructor arg, no object class was specified for the datatype '" +
-                      type +
-                      "'"
-                  );
+                  throw new Error("dojo.data.ItemFileReadStore: in the typeMap constructor arg, no object class was specified for the datatype '" + type + "'");
                 } else if (lang.isFunction(mappingObj)) {
                   arrayOfValues[j] = new mappingObj(value._value);
                 } else if (lang.isFunction(mappingObj.deserialize)) {
                   arrayOfValues[j] = mappingObj.deserialize(value._value);
                 } else {
-                  throw new Error(
-                    "dojo.data.ItemFileReadStore: Value provided in typeMap was neither a constructor, nor a an object with a deserialize function"
-                  );
+                  throw new Error('dojo.data.ItemFileReadStore: Value provided in typeMap was neither a constructor, nor a an object with a deserialize function');
                 }
               }
               if (value._reference) {
@@ -790,8 +684,7 @@ define([
                 if (!lang.isObject(referenceDescription)) {
                   // example: 'Miss Piggy'
                   // from an item like: { name:['Kermit'], friends:[{_reference:'Miss Piggy'}]}
-                  arrayOfValues[j] =
-                    this._getItemByIdentity(referenceDescription);
+                  arrayOfValues[j] = this._getItemByIdentity(referenceDescription);
                 } else {
                   // example: {name:'Miss Piggy'}
                   // from an item like: { name:['Kermit'], friends:[{_reference:{name:'Miss Piggy'}}] }
@@ -799,9 +692,7 @@ define([
                     var candidateItem = this._arrayOfAllItems[k],
                       found = true;
                     for (var refKey in referenceDescription) {
-                      if (
-                        candidateItem[refKey] != referenceDescription[refKey]
-                      ) {
+                      if (candidateItem[refKey] != referenceDescription[refKey]) {
                         found = false;
                       }
                     }
@@ -830,11 +721,7 @@ define([
       }
     },
 
-    _addReferenceToMap: function (
-      /*item*/ refItem,
-      /*item*/ parentItem,
-      /*string*/ attribute
-    ) {
+    _addReferenceToMap: function (/*item*/ refItem, /*item*/ parentItem, /*string*/ attribute) {
       // summary:
       //		Method to add an reference map entry for an item and attribute.
       // description:
@@ -851,7 +738,7 @@ define([
     getIdentity: function (/* dojo/data/api/Item */ item) {
       // summary:
       //		See dojo/data/api/Identity.getIdentity()
-      var identifier = this._features["dojo.data.api.Identity"];
+      var identifier = this._features['dojo.data.api.Identity'];
       if (identifier === Number) {
         return item[this._itemNumPropName]; // Number
       } else {
@@ -878,11 +765,7 @@ define([
         //compatibility.  People use _jsonFileUrl (even though officially
         //private.
         if (this._jsonFileUrl !== this._ccUrl) {
-          kernel.deprecated(
-            this.declaredClass + ": ",
-            "To change the url, set the url property of the store," +
-              " not _jsonFileUrl.  _jsonFileUrl support will be removed in 2.0"
-          );
+          kernel.deprecated(this.declaredClass + ': ', 'To change the url, set the url property of the store,' + ' not _jsonFileUrl.  _jsonFileUrl support will be removed in 2.0');
           this._ccUrl = this._jsonFileUrl;
           this.url = this._jsonFileUrl;
         } else if (this.url !== this._ccUrl) {
@@ -903,9 +786,9 @@ define([
             this._loadInProgress = true;
             var getArgs = {
               url: self._jsonFileUrl,
-              handleAs: "json-comment-optional",
+              handleAs: 'json-comment-optional',
               preventCache: this.urlPreventCache,
-              failOk: this.failOk,
+              failOk: this.failOk
             };
             var getHandler = xhr.get(getArgs);
             getHandler.addCallback(function (data) {
@@ -929,9 +812,7 @@ define([
             getHandler.addErrback(function (error) {
               self._loadInProgress = false;
               if (keywordArgs.onError) {
-                var scope = keywordArgs.scope
-                  ? keywordArgs.scope
-                  : kernel.global;
+                var scope = keywordArgs.scope ? keywordArgs.scope : kernel.global;
                 keywordArgs.onError.call(scope, error);
               }
             });
@@ -980,7 +861,7 @@ define([
       // summary:
       //		See dojo/data/api/Identity.getIdentityAttributes()
 
-      var identifier = this._features["dojo.data.api.Identity"];
+      var identifier = this._features['dojo.data.api.Identity'];
       if (identifier === Number) {
         // If (identifier === Number) it means getIdentity() just returns
         // an integer item-number for each item.  The dojo/data/api/Identity
@@ -1004,11 +885,7 @@ define([
       //compatibility.  People use _jsonFileUrl (even though officially
       //private.
       if (this._jsonFileUrl !== this._ccUrl) {
-        kernel.deprecated(
-          this.declaredClass + ": ",
-          "To change the url, set the url property of the store," +
-            " not _jsonFileUrl.  _jsonFileUrl support will be removed in 2.0"
-        );
+        kernel.deprecated(this.declaredClass + ': ', 'To change the url, set the url property of the store,' + ' not _jsonFileUrl.  _jsonFileUrl support will be removed in 2.0');
         this._ccUrl = this._jsonFileUrl;
         this.url = this._jsonFileUrl;
       } else if (this.url !== this._ccUrl) {
@@ -1025,10 +902,10 @@ define([
       if (this._jsonFileUrl) {
         var getArgs = {
           url: this._jsonFileUrl,
-          handleAs: "json-comment-optional",
+          handleAs: 'json-comment-optional',
           preventCache: this.urlPreventCache,
           failOk: this.failOk,
-          sync: true,
+          sync: true
         };
         var getHandler = xhr.get(getArgs);
         getHandler.addCallback(function (data) {
@@ -1046,10 +923,7 @@ define([
               //Okay, we hit an error state we can't recover from.  A forced load occurred
               //while an async load was occurring.  Since we cannot block at this point, the best
               //that can be managed is to throw an error.
-              throw new Error(
-                this.declaredClass +
-                  ":  Unable to perform a synchronous load, an async load is in progress."
-              );
+              throw new Error(this.declaredClass + ':  Unable to perform a synchronous load, an async load is in progress.');
             }
           } catch (e) {
             console.log(e);
@@ -1064,7 +938,7 @@ define([
         self._jsonData = null;
         self._loadFinished = true;
       }
-    },
+    }
   });
   //Mix in the simple fetch implementation to this class.
   lang.extend(ItemFileReadStore, simpleFetch);

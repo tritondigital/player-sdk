@@ -122,14 +122,10 @@ var LazyLoad = function (doc) {
       // True if this browser supports disabling async mode on dynamically
       // created script nodes. See
       // http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
-      async: doc.createElement("script").async === true,
+      async: doc.createElement('script').async === true
     };
 
-    (env.webkit = /AppleWebKit\//.test(ua)) ||
-      (env.ie = /MSIE|Trident/.test(ua)) ||
-      (env.opera = /Opera/.test(ua)) ||
-      (env.gecko = /Gecko\//.test(ua)) ||
-      (env.unknown = true);
+    (env.webkit = /AppleWebKit\//.test(ua)) || (env.ie = /MSIE|Trident/.test(ua)) || (env.opera = /Opera/.test(ua)) || (env.gecko = /Gecko\//.test(ua)) || (env.unknown = true);
   }
 
   /**
@@ -158,7 +154,7 @@ var LazyLoad = function (doc) {
     var _finish = function () {
         finish(type);
       },
-      isCSS = type === "css",
+      isCSS = type === 'css',
       nodes = [],
       i,
       len,
@@ -173,7 +169,7 @@ var LazyLoad = function (doc) {
       // If urls is a string, wrap it in an array. Otherwise assume it's an
       // array and create a copy of it so modifications won't be made to the
       // original.
-      urls = typeof urls === "string" ? [urls] : urls.concat();
+      urls = typeof urls === 'string' ? [urls] : urls.concat();
 
       // Create a request object for each URL. If multiple URLs are specified,
       // the callback will only be executed after all URLs have been loaded.
@@ -191,7 +187,7 @@ var LazyLoad = function (doc) {
           urls: urls,
           callback: callback,
           obj: obj,
-          context: context,
+          context: context
         });
       } else {
         // Load sequentially.
@@ -200,7 +196,7 @@ var LazyLoad = function (doc) {
             urls: [urls[i]],
             callback: i === len - 1 ? callback : null, // callback is only added to the last URL
             obj: obj,
-            context: context,
+            context: context
           });
         }
       }
@@ -212,7 +208,7 @@ var LazyLoad = function (doc) {
       return;
     }
 
-    head || (head = doc.head || doc.getElementsByTagName("head")[0]);
+    head || (head = doc.head || doc.getElementsByTagName('head')[0]);
     pendingUrls = p.urls.concat();
 
     for (i = 0, len = pendingUrls.length; i < len; ++i) {
@@ -220,25 +216,20 @@ var LazyLoad = function (doc) {
 
       if (isCSS) {
         node = env.gecko
-          ? createNode("style")
-          : createNode("link", {
+          ? createNode('style')
+          : createNode('link', {
               href: url,
-              rel: "stylesheet",
+              rel: 'stylesheet'
             });
       } else {
-        node = createNode("script", { src: url });
+        node = createNode('script', { src: url });
         node.async = false;
       }
 
-      node.className = "lazyload";
-      node.setAttribute("charset", "utf-8");
+      node.className = 'lazyload';
+      node.setAttribute('charset', 'utf-8');
 
-      if (
-        env.ie &&
-        !isCSS &&
-        "onreadystatechange" in node &&
-        !("draggable" in node)
-      ) {
+      if (env.ie && !isCSS && 'onreadystatechange' in node && !('draggable' in node)) {
         node.onreadystatechange = function () {
           if (/loaded|complete/.test(node.readyState)) {
             node.onreadystatechange = null;
@@ -305,14 +296,14 @@ var LazyLoad = function (doc) {
         // We've been polling for 10 seconds and nothing's happened. Stop
         // polling and finish the pending requests to avoid blocking further
         // requests.
-        hasRules && finish("css");
+        hasRules && finish('css');
       }
 
       return;
     }
 
     // If we get here, the stylesheet has loaded.
-    finish("css");
+    finish('css');
   }
 
   /**
@@ -333,7 +324,7 @@ var LazyLoad = function (doc) {
       // Look for a stylesheet matching the pending URL.
       while (--i >= 0) {
         if (styleSheets[i].href === css.urls[0]) {
-          finish("css");
+          finish('css');
           break;
         }
       }
@@ -348,7 +339,7 @@ var LazyLoad = function (doc) {
           // indicate that the stylesheet has been removed from the document
           // before it had a chance to load. Stop polling and finish the pending
           // request to prevent blocking further requests.
-          finish("css");
+          finish('css');
         }
       }
     }
@@ -371,7 +362,7 @@ var LazyLoad = function (doc) {
     @static
     */
     css: function (urls, callback, obj, context) {
-      load("css", urls, callback, obj, context);
+      load('css', urls, callback, obj, context);
     },
 
     /**
@@ -395,8 +386,8 @@ var LazyLoad = function (doc) {
     @static
     */
     js: function (urls, callback, obj, context) {
-      load("js", urls, callback, obj, context);
-    },
+      load('js', urls, callback, obj, context);
+    }
   };
 };
 module.exports = new LazyLoad(window.document);

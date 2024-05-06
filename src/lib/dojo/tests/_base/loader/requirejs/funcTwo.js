@@ -1,7 +1,7 @@
-define("funcTwo", ["require", "funcOne"], function (require) {
+define('funcTwo', ['require', 'funcOne'], function (require) {
   var two = function (name) {
     this.name = name;
-    this.one = new (require("funcOne"))("ONE");
+    this.one = new (require('funcOne'))('ONE');
   };
 
   two.prototype.oneName = function () {

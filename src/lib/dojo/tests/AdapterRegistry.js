@@ -1,5 +1,5 @@
-define(["doh/main", "../AdapterRegistry"], function (doh, AdapterRegistry) {
-  doh.register("tests.AdapterRegistry", [
+define(['doh/main', '../AdapterRegistry'], function (doh, AdapterRegistry) {
+  doh.register('tests.AdapterRegistry', [
     function ctor(t) {
       var taa = new AdapterRegistry();
       t.is(0, taa.pairs.length);
@@ -12,20 +12,20 @@ define(["doh/main", "../AdapterRegistry"], function (doh, AdapterRegistry) {
     function register(t) {
       var taa = new AdapterRegistry();
       taa.register(
-        "blah",
+        'blah',
         function (str) {
-          return str == "blah";
+          return str == 'blah';
         },
         function () {
-          return "blah";
+          return 'blah';
         }
       );
       t.is(1, taa.pairs.length);
-      t.is("blah", taa.pairs[0][0]);
+      t.is('blah', taa.pairs[0][0]);
 
-      taa.register("thinger");
-      taa.register("prepend", null, null, true, true);
-      t.is("prepend", taa.pairs[0][0]);
+      taa.register('thinger');
+      taa.register('prepend', null, null, true, true);
+      t.is('prepend', taa.pairs[0][0]);
       t.t(taa.pairs[0][3]);
     },
 
@@ -38,7 +38,7 @@ define(["doh/main", "../AdapterRegistry"], function (doh, AdapterRegistry) {
       var taa = new AdapterRegistry();
       var threw = false;
       try {
-        taa.match("blah");
+        taa.match('blah');
       } catch (e) {
         threw = true;
       }
@@ -48,36 +48,36 @@ define(["doh/main", "../AdapterRegistry"], function (doh, AdapterRegistry) {
     function returnWrappers(t) {
       var taa = new AdapterRegistry();
       taa.register(
-        "blah",
+        'blah',
         function (str) {
-          return str == "blah";
+          return str == 'blah';
         },
         function () {
-          return "blah";
+          return 'blah';
         }
       );
-      t.is("blah", taa.match("blah"));
+      t.is('blah', taa.match('blah'));
 
       taa.returnWrappers = true;
-      t.is("blah", taa.match("blah")());
+      t.is('blah', taa.match('blah')());
     },
 
     function unregister(t) {
       var taa = new AdapterRegistry();
       taa.register(
-        "blah",
+        'blah',
         function (str) {
-          return str == "blah";
+          return str == 'blah';
         },
         function () {
-          return "blah";
+          return 'blah';
         }
       );
-      taa.register("thinger");
-      taa.register("prepend", null, null, true, true);
-      taa.unregister("prepend");
+      taa.register('thinger');
+      taa.register('prepend', null, null, true, true);
+      taa.unregister('prepend');
       t.is(2, taa.pairs.length);
-      t.is("blah", taa.pairs[0][0]);
-    },
+      t.is('blah', taa.pairs[0][0]);
+    }
   ]);
 });

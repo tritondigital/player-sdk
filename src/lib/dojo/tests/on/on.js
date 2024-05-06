@@ -1,13 +1,5 @@
-define([
-  "doh",
-  "dojo/_base/declare",
-  "dojo/Evented",
-  "dojo/has",
-  "dojo/on",
-  "dojo/query",
-  "dojo/topic",
-], function (doh, declare, Evented, has, on, query, topic) {
-  doh.register("tests.on", [
+define(['doh', 'dojo/_base/declare', 'dojo/Evented', 'dojo/has', 'dojo/on', 'dojo/query', 'dojo/topic'], function (doh, declare, Evented, has, on, query, topic) {
+  doh.register('tests.on', [
     function object(t) {
       var order = [];
       var obj = new Evented();
@@ -15,178 +7,178 @@ define([
         order.push(event.a);
         return event.a + 1;
       };
-      var signal = on.pausable(obj, "custom", function (event) {
+      var signal = on.pausable(obj, 'custom', function (event) {
         order.push(0);
         return event.a + 1;
       });
       obj.oncustom({ a: 0 });
-      var signal2 = on(obj, "custom, foo", function (event) {
+      var signal2 = on(obj, 'custom, foo', function (event) {
         order.push(event.a);
       });
-      on.emit(obj, "custom", {
-        a: 3,
+      on.emit(obj, 'custom', {
+        a: 3
       });
       signal.pause();
       var signal3 = on(
         obj,
-        "custom",
+        'custom',
         function (a) {
           order.push(3);
         },
         true
       );
-      on.emit(obj, "custom", {
-        a: 3,
+      on.emit(obj, 'custom', {
+        a: 3
       });
       signal2.remove();
       signal.resume();
-      on.emit(obj, "custom", {
-        a: 6,
+      on.emit(obj, 'custom', {
+        a: 6
       });
       signal3.remove();
       var signal4 = on(
         obj,
-        "foo, custom",
+        'foo, custom',
         function (a) {
           order.push(4);
         },
         true
       );
       signal.remove();
-      on.emit(obj, "custom", {
-        a: 7,
+      on.emit(obj, 'custom', {
+        a: 7
       });
       t.is(order, [0, 0, 3, 0, 3, 3, 3, 3, 6, 0, 3, 7, 4]);
     },
     function once(t) {
       var order = [];
       var obj = new Evented();
-      obj.on("custom", function (event) {
+      obj.on('custom', function (event) {
         order.push(event.a);
       });
-      var signal = on.once(obj, "custom", function (event) {
+      var signal = on.once(obj, 'custom', function (event) {
         order.push(1);
       });
-      obj.emit("custom", { a: 0 });
+      obj.emit('custom', { a: 0 });
       obj.oncustom({ a: 2 }); // should call original method, but not listener
       t.is(order, [0, 1, 2]);
     },
     function dom(t) {
-      var div = document.body.appendChild(document.createElement("div"));
-      var span = div.appendChild(document.createElement("span"));
+      var div = document.body.appendChild(document.createElement('div'));
+      var span = div.appendChild(document.createElement('span'));
       var order = [];
-      var signal = on(div, "custom", function (event) {
+      var signal = on(div, 'custom', function (event) {
         order.push(event.a);
-        event.addedProp += "ue";
+        event.addedProp += 'ue';
       });
-      on(span, "custom", function (event) {
-        event.addedProp = "val";
+      on(span, 'custom', function (event) {
+        event.addedProp = 'val';
       });
-      on.emit(div, "custom", {
+      on.emit(div, 'custom', {
         target: div,
         currentTarget: div,
         relatedTarget: div,
-        a: 0,
+        a: 0
       });
-      on.emit(div, "otherevent", {
-        a: 0,
+      on.emit(div, 'otherevent', {
+        a: 0
       });
       t.is(
-        on.emit(span, "custom", {
+        on.emit(span, 'custom', {
           a: 1,
           bubbles: true,
-          cancelable: true,
+          cancelable: true
         }).addedProp,
-        "value"
+        'value'
       );
       t.t(
-        on.emit(span, "custom", {
+        on.emit(span, 'custom', {
           a: 1,
           bubbles: false,
-          cancelable: true,
+          cancelable: true
         })
       );
-      var signal2 = on.pausable(div, "custom", function (event) {
+      var signal2 = on.pausable(div, 'custom', function (event) {
         order.push(event.a + 1);
         event.preventDefault();
       });
       t.f(
-        on.emit(span, "custom", {
+        on.emit(span, 'custom', {
           a: 2,
           bubbles: true,
-          cancelable: true,
+          cancelable: true
         })
       );
       signal2.pause();
       t.is(
-        on.emit(span, "custom", {
+        on.emit(span, 'custom', {
           a: 4,
           bubbles: true,
-          cancelable: true,
+          cancelable: true
         }).type,
-        "custom"
+        'custom'
       );
       signal2.resume();
       signal.remove();
       t.f(
-        on.emit(span, "custom", {
+        on.emit(span, 'custom', {
           a: 4,
           bubbles: true,
-          cancelable: true,
+          cancelable: true
         })
       );
-      on(span, "custom", function (event) {
+      on(span, 'custom', function (event) {
         order.push(6);
         event.stopPropagation();
       });
       t.t(
-        on.emit(span, "custom", {
+        on.emit(span, 'custom', {
           a: 1,
           bubbles: true,
-          cancelable: true,
+          cancelable: true
         })
       );
 
       // make sure we are propagating natively created events too, and that defaultPrevented works
-      var button = span.appendChild(document.createElement("button")),
+      var button = span.appendChild(document.createElement('button')),
         defaultPrevented = false,
         signal2Fired = false;
-      signal = on(span, "click", function (event) {
+      signal = on(span, 'click', function (event) {
         event.preventDefault();
       });
-      signal2 = on(div, "click", function (event) {
+      signal2 = on(div, 'click', function (event) {
         order.push(7);
         signal2Fired = true;
         defaultPrevented = event.defaultPrevented;
       });
       button.click();
-      t.t(signal2Fired, "bubbled click event on div");
-      t.t(defaultPrevented, "defaultPrevented for click event");
+      t.t(signal2Fired, 'bubbled click event on div');
+      t.t(defaultPrevented, 'defaultPrevented for click event');
       signal.remove();
       signal2.remove();
 
       // make sure that evt.defaultPrevented gets set for synthetic events too
-      signal = on(span, "click", function (event) {
+      signal = on(span, 'click', function (event) {
         event.preventDefault();
       });
-      signal2 = on(div, "click", function (event) {
+      signal2 = on(div, 'click', function (event) {
         signal2Fired = true;
         defaultPrevented = event.defaultPrevented;
       });
       signal2Fired = false;
-      on.emit(button, "click", { bubbles: true, cancelable: true });
-      t.t(signal2Fired, "bubbled synthetic event on div");
-      t.t(defaultPrevented, "defaultPrevented set for synthetic event on div");
+      on.emit(button, 'click', { bubbles: true, cancelable: true });
+      t.t(signal2Fired, 'bubbled synthetic event on div');
+      t.t(defaultPrevented, 'defaultPrevented set for synthetic event on div');
       signal.remove();
       signal2.remove();
 
       // test out event delegation
       if (query) {
         // if dojo.query is loaded, test event delegation
-        on(div, "button:click", function () {
+        on(div, 'button:click', function () {
           order.push(8);
         });
-        on(document, "button:click", function () {}); // just make sure this doesn't throw an error
+        on(document, 'button:click', function () {}); // just make sure this doesn't throw an error
       } else {
         //just pass then
         order.push(8);
@@ -195,15 +187,15 @@ define([
       on(
         div,
         on.selector(function (node) {
-          return node.tagName == "BUTTON";
-        }, "click"),
+          return node.tagName == 'BUTTON';
+        }, 'click'),
         function () {
           order.push(9);
         }
       );
       button.click();
       t.is(order, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-      on(span, "propertychange", function () {}); // make sure it doesn't throw an error
+      on(span, 'propertychange', function () {}); // make sure it doesn't throw an error
     },
     /*
 		 This only works if the test page has the focus, so you can enable if you want to test focus functionality and allow the test page to have focus
@@ -228,36 +220,36 @@ define([
 			return d;
 		},*/
     function extensionEvent(t) {
-      var div = document.body.appendChild(document.createElement("div"));
-      var span = div.appendChild(document.createElement("span"));
-      span.setAttribute("foo", 2);
+      var div = document.body.appendChild(document.createElement('div'));
+      var span = div.appendChild(document.createElement('span'));
+      span.setAttribute('foo', 2);
       var order = [];
       var customEvent = function (target, listener) {
-        return on(target, "custom", listener);
+        return on(target, 'custom', listener);
       };
       on(div, customEvent, function (event) {
         order.push(event.a);
       });
-      on(div, on.selector("span", customEvent), function (event) {
-        order.push(+this.getAttribute("foo"));
+      on(div, on.selector('span', customEvent), function (event) {
+        order.push(+this.getAttribute('foo'));
       });
-      on.emit(div, "custom", {
-        a: 0,
+      on.emit(div, 'custom', {
+        a: 0
       });
       // should trigger selector
       t.t(
-        on.emit(span, "custom", {
+        on.emit(span, 'custom', {
           a: 1,
           bubbles: true,
-          cancelable: true,
+          cancelable: true
         })
       );
       // shouldn't trigger selector
       t.t(
-        on.emit(div, "custom", {
+        on.emit(div, 'custom', {
           a: 3,
           bubbles: true,
-          cancelable: true,
+          cancelable: true
         })
       );
       t.is(order, [0, 1, 2, 3]);
@@ -266,58 +258,58 @@ define([
       var MyClass = declare([Evented], {});
       var order = [];
       myObject = new MyClass();
-      myObject.on("custom", function (event) {
+      myObject.on('custom', function (event) {
         order.push(event.a);
       });
-      myObject.emit("custom", { a: 0 });
+      myObject.emit('custom', { a: 0 });
       t.is(order, [0]);
     },
     function pubsub(t) {
       var fooCount = 0;
-      topic.subscribe("/test/foo", function (event, secondArg) {
-        t.is("value", event.foo);
-        t.is("second", secondArg);
+      topic.subscribe('/test/foo', function (event, secondArg) {
+        t.is('value', event.foo);
+        t.is('second', secondArg);
         fooCount++;
       });
-      topic.publish("/test/foo", { foo: "value" }, "second");
+      topic.publish('/test/foo', { foo: 'value' }, 'second');
       t.is(1, fooCount);
     },
     function touch(t) {
-      console.log("has", has);
-      if (has("touch")) {
-        var div = document.body.appendChild(document.createElement("div"));
-        on(div, "touchstart", function (event) {
-          t.t("rotation" in event);
-          t.t("pageX" in event);
+      console.log('has', has);
+      if (has('touch')) {
+        var div = document.body.appendChild(document.createElement('div'));
+        on(div, 'touchstart', function (event) {
+          t.t('rotation' in event);
+          t.t('pageX' in event);
         });
-        on.emit(div, "touchstart", { changedTouches: [{ pageX: 100 }] });
+        on.emit(div, 'touchstart', { changedTouches: [{ pageX: 100 }] });
       }
     },
     function stopImmediatePropagation(t) {
-      var button = document.body.appendChild(document.createElement("button"));
-      on(button, "click", function (event) {
+      var button = document.body.appendChild(document.createElement('button'));
+      on(button, 'click', function (event) {
         event.stopImmediatePropagation();
       });
       var afterStop = false;
-      on(button, "click", function (event) {
+      on(button, 'click', function (event) {
         afterStop = true;
       });
       button.click();
       t.f(afterStop);
     },
     function eventAugmentation(t) {
-      var div = document.body.appendChild(document.createElement("div"));
-      var button = div.appendChild(document.createElement("button"));
-      on(button, "click", function (event) {
+      var div = document.body.appendChild(document.createElement('div'));
+      var button = div.appendChild(document.createElement('button'));
+      on(button, 'click', function (event) {
         event.modified = true;
         event.test = 3;
       });
       var testValue;
-      on(div, "click", function (event) {
+      on(div, 'click', function (event) {
         testValue = event.test;
       });
       button.click();
       t.is(testValue, 3);
-    },
+    }
   ]);
 });

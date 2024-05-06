@@ -3,7 +3,7 @@
 //     'dojo/_base/lang',
 //     'sdk/modules/mediaplayer/liveapi/Connection'
 // ], function ( declare, lang, Connection ) {
-var _ = require("lodash");
+var _ = require('lodash');
 
 function ConnectionIterator(streamingConnections) {
   this.streamingConnections = streamingConnections;
@@ -13,9 +13,7 @@ function ConnectionIterator(streamingConnections) {
   this.streamingConnectionIndex = 0;
 
   if (_.isEmpty(this.streamingConnections)) {
-    throw new Error(
-      "ConnectionIterator::constructor At least one connection is needed."
-    );
+    throw new Error('ConnectionIterator::constructor At least one connection is needed.');
   }
   /**
    * Reset the iterator
@@ -41,9 +39,7 @@ function ConnectionIterator(streamingConnections) {
   this.next = function () {
     this.first = false;
     this.streamingConnectionIndex++;
-    this.last =
-      _.last(this.streamingConnections) ===
-      this.streamingConnections[this.streamingConnectionIndex];
+    this.last = _.last(this.streamingConnections) === this.streamingConnections[this.streamingConnectionIndex];
 
     return this.current();
   };
@@ -61,7 +57,7 @@ function ConnectionIterator(streamingConnections) {
    * Mount has Changed
    */
   this.isLastConnectionByMount = function () {
-    var groupByMount = _.groupBy(this.streamingConnections, "mount");
+    var groupByMount = _.groupBy(this.streamingConnections, 'mount');
     var totalLoop = groupByMount[this.current().mount].length;
     if (this.totalIteration === totalLoop) {
       this.totalIteration = 1;

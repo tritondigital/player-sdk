@@ -1,25 +1,29 @@
-var _ = require("lodash");
-var expect = require("expect.js");
+var _ = require('lodash');
+var expect = require('expect.js');
 
-var PlatformInjector = require("injected!sdk/base/util/Platform");
+var PlatformInjector = require('injected!sdk/base/util/Platform');
 
 var LocationHelperMock = {
   currentProtocolIsHttps: _.noop,
   getProtocol: function getProtocol() {
-    return "http:";
-  },
+    return 'http:';
+  }
 };
 
 var Platform = PlatformInjector({
-  "sdk/base/util/LocationHelper": LocationHelperMock,
+  'sdk/base/util/LocationHelper': LocationHelperMock
 });
 
-describe("Platform", function () {
-  it("should return the prod platform if platformId is invalid", function () {
-    var platform = new Platform("bad01");
+describe('Platform', function () {
+  it('should return the right platform if platformId is valid', function () {
+    var platform = new Platform('preprod01');
 
-    expect(platform.endpoint.liveStream).to.be(
-      "playerservices.streamtheworld.com/api/livestream"
-    );
+    expect(platform.endpoint.liveStream).to.be('playerservices.preprod01.streamtheworld.net/api/livestream');
+  });
+
+  it('should return the prod platform if platformId is invalid', function () {
+    var platform = new Platform('bad01');
+
+    expect(platform.endpoint.liveStream).to.be('playerservices.streamtheworld.com/api/livestream');
   });
 });

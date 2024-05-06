@@ -1,4 +1,4 @@
-var HTTPS_PROTOCOL = "https:";
+var HTTPS_PROTOCOL = 'https:';
 
 module.exports = {
   currentProtocolIsHttps: function currentProtocolIsHttps() {
@@ -6,5 +6,5 @@ module.exports = {
   },
   getProtocol: function () {
     return window.location.protocol;
-  },
+  }
 };

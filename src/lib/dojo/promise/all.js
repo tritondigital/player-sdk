@@ -1,9 +1,5 @@
-define(["../_base/array", "../Deferred", "../when"], function (
-  array,
-  Deferred,
-  when
-) {
-  "use strict";
+define(['../_base/array', '../Deferred', '../when'], function (array, Deferred, when) {
+  'use strict';
 
   // module:
   //		dojo/promise/all
@@ -29,7 +25,7 @@ define(["../_base/array", "../Deferred", "../when"], function (
     var object, array;
     if (objectOrArray instanceof Array) {
       array = objectOrArray;
-    } else if (objectOrArray && typeof objectOrArray === "object") {
+    } else if (objectOrArray && typeof objectOrArray === 'object') {
       object = objectOrArray;
     }
 

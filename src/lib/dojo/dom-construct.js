@@ -1,11 +1,4 @@
-define([
-  "exports",
-  "./_base/kernel",
-  "./sniff",
-  "./_base/window",
-  "./dom",
-  "./dom-attr",
-], function (exports, dojo, has, win, dom, attr) {
+define(['exports', './_base/kernel', './sniff', './_base/window', './dom', './dom-attr'], function (exports, dojo, has, win, dom, attr) {
   // module:
   //		dojo/dom-construct
   // summary:
@@ -15,53 +8,43 @@ define([
 
   // support stuff for toDom()
   var tagWrap = {
-      option: ["select"],
-      tbody: ["table"],
-      thead: ["table"],
-      tfoot: ["table"],
-      tr: ["table", "tbody"],
-      td: ["table", "tbody", "tr"],
-      th: ["table", "thead", "tr"],
-      legend: ["fieldset"],
-      caption: ["table"],
-      colgroup: ["table"],
-      col: ["table", "colgroup"],
-      li: ["ul"],
+      option: ['select'],
+      tbody: ['table'],
+      thead: ['table'],
+      tfoot: ['table'],
+      tr: ['table', 'tbody'],
+      td: ['table', 'tbody', 'tr'],
+      th: ['table', 'thead', 'tr'],
+      legend: ['fieldset'],
+      caption: ['table'],
+      colgroup: ['table'],
+      col: ['table', 'colgroup'],
+      li: ['ul']
     },
     reTag = /<\s*([\w\:]+)/,
     masterNode = {},
     masterNum = 0,
-    masterName = "__" + dojo._scopeName + "ToDomId";
+    masterName = '__' + dojo._scopeName + 'ToDomId';
 
   // generate start/end tag strings to use
   // for the injection for each special tag wrap case.
   for (var param in tagWrap) {
     if (tagWrap.hasOwnProperty(param)) {
       var tw = tagWrap[param];
-      tw.pre =
-        param == "option"
-          ? '<select multiple="multiple">'
-          : "<" + tw.join("><") + ">";
-      tw.post = "</" + tw.reverse().join("></") + ">";
+      tw.pre = param == 'option' ? '<select multiple="multiple">' : '<' + tw.join('><') + '>';
+      tw.post = '</' + tw.reverse().join('></') + '>';
       // the last line is destructive: it reverses the array,
       // but we don't care at this point
     }
   }
 
   var html5domfix;
-  if (has("ie") <= 8) {
+  if (has('ie') <= 8) {
     html5domfix = function (doc) {
-      doc.__dojo_html5_tested = "yes";
-      var div = create(
-        "div",
-        { innerHTML: "<nav>a</nav>", style: { visibility: "hidden" } },
-        doc.body
-      );
+      doc.__dojo_html5_tested = 'yes';
+      var div = create('div', { innerHTML: '<nav>a</nav>', style: { visibility: 'hidden' } }, doc.body);
       if (div.childNodes.length !== 1) {
-        (
-          "abbr article aside audio canvas details figcaption figure footer header " +
-          "hgroup mark meter nav output progress section summary time video"
-        ).replace(/\b\w+\b/g, function (n) {
+        ('abbr article aside audio canvas details figcaption figure footer header ' + 'hgroup mark meter nav output progress section summary time video').replace(/\b\w+\b/g, function (n) {
           doc.createElement(n);
         });
       }
@@ -106,22 +89,22 @@ define([
     doc = doc || win.doc;
     var masterId = doc[masterName];
     if (!masterId) {
-      doc[masterName] = masterId = ++masterNum + "";
-      masterNode[masterId] = doc.createElement("div");
+      doc[masterName] = masterId = ++masterNum + '';
+      masterNode[masterId] = doc.createElement('div');
     }
 
-    if (has("ie") <= 8) {
+    if (has('ie') <= 8) {
       if (!doc.__dojo_html5_tested && doc.body) {
         html5domfix(doc);
       }
     }
 
     // make sure the frag is a string.
-    frag += "";
+    frag += '';
 
     // find the starting tag, and get node wrapper
     var match = frag.match(reTag),
-      tag = match ? match[1].toLowerCase() : "",
+      tag = match ? match[1].toLowerCase() : '',
       master = masterNode[masterId],
       wrap,
       i,
@@ -151,11 +134,7 @@ define([
     return df; // DocumentFragment
   };
 
-  exports.place = function place(
-    /*DOMNode|String*/ node,
-    /*DOMNode|String*/ refNode,
-    /*String|Number?*/ position
-  ) {
+  exports.place = function place(/*DOMNode|String*/ node, /*DOMNode|String*/ refNode, /*String|Number?*/ position) {
     // summary:
     //		Attempt to insert node into the DOM, choosing from various positioning options.
     //		Returns the first argument resolved to a DOM node.
@@ -195,13 +174,11 @@ define([
     //	|	dojo.place("<li></li>", "someUl", "first");
 
     refNode = dom.byId(refNode);
-    if (typeof node == "string") {
+    if (typeof node == 'string') {
       // inline'd type check
-      node = /^\s*</.test(node)
-        ? exports.toDom(node, refNode.ownerDocument)
-        : dom.byId(node);
+      node = /^\s*</.test(node) ? exports.toDom(node, refNode.ownerDocument) : dom.byId(node);
     }
-    if (typeof position == "number") {
+    if (typeof position == 'number') {
       // inline'd type check
       var cn = refNode.childNodes;
       if (!cn.length || cn.length <= position) {
@@ -211,20 +188,20 @@ define([
       }
     } else {
       switch (position) {
-        case "before":
+        case 'before':
           _insertBefore(node, refNode);
           break;
-        case "after":
+        case 'after':
           _insertAfter(node, refNode);
           break;
-        case "replace":
+        case 'replace':
           refNode.parentNode.replaceChild(node, refNode);
           break;
-        case "only":
+        case 'only':
           exports.empty(refNode);
           refNode.appendChild(node);
           break;
-        case "first":
+        case 'first':
           if (refNode.firstChild) {
             _insertBefore(node, refNode.firstChild);
             break;
@@ -237,12 +214,7 @@ define([
     return node; // DomNode
   };
 
-  var create = (exports.create = function create(
-    /*DOMNode|String*/ tag,
-    /*Object*/ attrs,
-    /*DOMNode|String?*/ refNode,
-    /*String?*/ pos
-  ) {
+  var create = (exports.create = function create(/*DOMNode|String*/ tag, /*Object*/ attrs, /*DOMNode|String?*/ refNode, /*String?*/ pos) {
     // summary:
     //		Create an element, allowing for optional attribute decoration
     //		and placement.
@@ -307,11 +279,12 @@ define([
     // NOTE: Since Shadow DOM might be used, this method can get fired from the wrong context.
     // In this case, Use the document from the window to prevent a null reference exception:
     var doc = win.doc || window.document;
+
     if (refNode) {
       refNode = dom.byId(refNode);
       doc = refNode.ownerDocument;
     }
-    if (typeof tag == "string") {
+    if (typeof tag == 'string') {
       // inline'd type check
       tag = doc.createElement(tag);
     }
@@ -328,7 +301,7 @@ define([
     if (node.canHaveChildren) {
       try {
         // fast path
-        node.innerHTML = "";
+        node.innerHTML = '';
         return;
       } catch (e) {
         // innerHTML is readOnly (e.g. TABLE (sub)elements in quirks mode)
@@ -368,9 +341,7 @@ define([
       // In IE quirks mode, PARAM nodes as children of OBJECT/APPLET nodes have a removeNode method that does nothing and
       // the parent node has canHaveChildren=false even though removeChild correctly removes the PARAM children.
       // In IE, SVG/strict nodes don't have a removeNode method nor a canHaveChildren boolean.
-      has("ie") && parent.canHaveChildren && "removeNode" in node
-        ? node.removeNode(false)
-        : parent.removeChild(node);
+      has('ie') && parent.canHaveChildren && 'removeNode' in node ? node.removeNode(false) : parent.removeChild(node);
     }
   }
   var destroy = (exports.destroy = function destroy(/*DOMNode|String*/ node) {

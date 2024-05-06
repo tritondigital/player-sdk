@@ -1,4 +1,4 @@
-define(["../_base/kernel", "../_base/lang"], function (dojo, lang) {
+define(['../_base/kernel', '../_base/lang'], function (dojo, lang) {
   // module:
   //		dojo/cldr/monetary
 
@@ -6,7 +6,7 @@ define(["../_base/kernel", "../_base/lang"], function (dojo, lang) {
     // summary:
     //		TODOC
   };
-  lang.setObject("dojo.cldr.monetary", monetary);
+  lang.setObject('dojo.cldr.monetary', monetary);
 
   monetary.getData = function (/*String*/ code) {
     // summary:
@@ -76,17 +76,17 @@ define(["../_base/kernel", "../_base/lang"], function (dojo, lang) {
       XPF: 0,
       YER: 0,
       ZMK: 0,
-      ZWD: 0,
+      ZWD: 0
     };
 
     var roundingData = {};
 
     var places = placesData[code],
       round = roundingData[code];
-    if (typeof places == "undefined") {
+    if (typeof places == 'undefined') {
       places = 2;
     }
-    if (typeof round == "undefined") {
+    if (typeof round == 'undefined') {
       round = 0;
     }
 

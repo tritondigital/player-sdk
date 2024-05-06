@@ -1,4 +1,4 @@
-define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
+define(['./kernel', '../has', './lang'], function (dojo, has, lang) {
   // module:
   //		dojo/_base/declare
 
@@ -7,10 +7,10 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
     opts = op.toString,
     xtor = new Function(),
     counter = 0,
-    cname = "constructor";
+    cname = 'constructor';
 
   function err(msg, cls) {
-    throw new Error("declare" + (cls ? " " + cls : "") + ": " + msg);
+    throw new Error('declare' + (cls ? ' ' + cls : '') + ': ' + msg);
   }
 
   // C3 Method Resolution Order (see http://www.python.org/download/releases/2.3/mro/)
@@ -34,22 +34,17 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
     for (; i < l; ++i) {
       base = bases[i];
       if (!base) {
-        err(
-          "mixin #" +
-            i +
-            " is unknown. Did you use dojo.require to pull it in?",
-          className
-        );
-      } else if (opts.call(base) != "[object Function]") {
-        err("mixin #" + i + " is not a callable constructor.", className);
+        err('mixin #' + i + ' is unknown. Did you use dojo.require to pull it in?', className);
+      } else if (opts.call(base) != '[object Function]') {
+        err('mixin #' + i + ' is not a callable constructor.', className);
       }
       lin = base._meta ? base._meta.bases : [base];
       top = 0;
       // add bases to the name map
       for (j = lin.length - 1; j >= 0; --j) {
         proto = lin[j].prototype;
-        if (!proto.hasOwnProperty("declaredClass")) {
-          proto.declaredClass = "uniqName_" + counter++;
+        if (!proto.hasOwnProperty('declaredClass')) {
+          proto.declaredClass = 'uniqName_' + counter++;
         }
         name = proto.declaredClass;
         if (!nameMap.hasOwnProperty(name)) {
@@ -99,11 +94,7 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
 
     // calculate the superclass offset
     base = bases[0];
-    result[0] = base
-      ? base._meta && base === result[result.length - base._meta.bases.length]
-        ? base._meta.bases.length
-        : 1
-      : 0;
+    result[0] = base ? (base._meta && base === result[result.length - base._meta.bases.length] ? base._meta.bases.length : 1) : 0;
 
     return result;
   }
@@ -121,7 +112,7 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
       cache = (this._inherited = this._inherited || {});
 
     // crack arguments
-    if (typeof args == "string") {
+    if (typeof args == 'string') {
       name = args;
       args = a;
       a = f;
@@ -148,21 +139,14 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
         if (meta.hidden[name] !== caller) {
           // error detection
           chains = meta.chains;
-          if (chains && typeof chains[name] == "string") {
-            err(
-              "calling chained method with inherited: " + name,
-              this.declaredClass
-            );
+          if (chains && typeof chains[name] == 'string') {
+            err('calling chained method with inherited: ' + name, this.declaredClass);
           }
           // find caller
           do {
             meta = base._meta;
             proto = base.prototype;
-            if (
-              meta &&
-              ((proto[name] === caller && proto.hasOwnProperty(name)) ||
-                meta.hidden[name] === caller)
-            ) {
+            if (meta && ((proto[name] === caller && proto.hasOwnProperty(name)) || meta.hidden[name] === caller)) {
               break;
             }
           } while ((base = bases[++pos])); // intentional assignment
@@ -196,11 +180,8 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
         if (meta && meta.ctor !== caller) {
           // error detection
           chains = meta.chains;
-          if (!chains || chains.constructor !== "manual") {
-            err(
-              "calling chained constructor with inherited",
-              this.declaredClass
-            );
+          if (!chains || chains.constructor !== 'manual') {
+            err('calling chained constructor with inherited', this.declaredClass);
           }
           // find caller
           while ((base = bases[++pos])) {
@@ -237,7 +218,7 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
   }
 
   function getInherited(name, args) {
-    if (typeof name == "string") {
+    if (typeof name == 'string') {
       return this.__inherited(name, args, true);
     }
     return this.__inherited(name, true);
@@ -271,7 +252,7 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
         target[name] = source[name];
       }
     }
-    if (has("bug-for-in-skips-shadowed")) {
+    if (has('bug-for-in-skips-shadowed')) {
       for (var extraNames = lang._extraNames, i = extraNames.length; i; ) {
         name = extraNames[--i];
         if (name != cname && source.hasOwnProperty(name)) {
@@ -345,19 +326,19 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
     for (name in source) {
       t = source[name];
       if ((t !== op[name] || !(name in op)) && name != cname) {
-        if (opts.call(t) == "[object Function]") {
+        if (opts.call(t) == '[object Function]') {
           // non-trivial function method => attach its name
           t.nom = name;
         }
         target[name] = t;
       }
     }
-    if (has("bug-for-in-skips-shadowed")) {
+    if (has('bug-for-in-skips-shadowed')) {
       for (var extraNames = lang._extraNames, i = extraNames.length; i; ) {
         name = extraNames[--i];
         t = source[name];
         if ((t !== op[name] || !(name in op)) && name != cname) {
-          if (opts.call(t) == "[object Function]") {
+          if (opts.call(t) == '[object Function]') {
             // non-trivial function method => attach its name
             t.nom = name;
           }
@@ -413,7 +394,7 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
           }
           // process the preamble of this class
           f = bases[i].prototype;
-          f = f.hasOwnProperty("preamble") && f.preamble;
+          f = f.hasOwnProperty('preamble') && f.preamble;
           if (f) {
             a = f.apply(this, a) || a;
           }
@@ -791,10 +772,10 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
     //	|	// B.m2
 
     // crack parameters
-    if (typeof className != "string") {
+    if (typeof className != 'string') {
       props = superclass;
       superclass = className;
-      className = "";
+      className = '';
     }
     props = props || {};
 
@@ -809,7 +790,7 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
       parents = superclass;
 
     // build a prototype
-    if (opts.call(superclass) == "[object Array]") {
+    if (opts.call(superclass) == '[object Array]') {
       // C3 MRO
       bases = c3mro(superclass, className);
       t = bases[0];
@@ -818,17 +799,14 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
     } else {
       bases = [0];
       if (superclass) {
-        if (opts.call(superclass) == "[object Function]") {
+        if (opts.call(superclass) == '[object Function]') {
           t = superclass._meta;
           bases = bases.concat(t ? t.bases : superclass);
         } else {
-          err("base class is not a callable constructor.", className);
+          err('base class is not a callable constructor.', className);
         }
       } else if (superclass !== null) {
-        err(
-          "unknown base class. Did you use dojo.require to pull it in?",
-          className
-        );
+        err('unknown base class. Did you use dojo.require to pull it in?', className);
       }
     }
     if (superclass) {
@@ -867,27 +845,16 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
         chains = mix(chains || {}, t.chains);
       }
     }
-    if (proto["-chains-"]) {
-      chains = mix(chains || {}, proto["-chains-"]);
+    if (proto['-chains-']) {
+      chains = mix(chains || {}, proto['-chains-']);
     }
 
     // build ctor
     t = !chains || !chains.hasOwnProperty(cname);
-    bases[0] = ctor =
-      chains && chains.constructor === "manual"
-        ? simpleConstructor(bases)
-        : bases.length == 1
-        ? singleConstructor(props.constructor, t)
-        : chainedConstructor(bases, t);
+    bases[0] = ctor = chains && chains.constructor === 'manual' ? simpleConstructor(bases) : bases.length == 1 ? singleConstructor(props.constructor, t) : chainedConstructor(bases, t);
 
     // add meta information to the constructor
-    ctor._meta = {
-      bases: bases,
-      hidden: props,
-      chains: chains,
-      parents: parents,
-      ctor: props.constructor,
-    };
+    ctor._meta = { bases: bases, hidden: props, chains: chains, parents: parents, ctor: props.constructor };
     ctor.superclass = superclass && superclass.prototype;
     ctor.extend = extend;
     ctor.createSubclass = createSubclass;
@@ -909,8 +876,8 @@ define(["./kernel", "../has", "./lang"], function (dojo, has, lang) {
     // build chains and add them to the prototype
     if (chains) {
       for (name in chains) {
-        if (proto[name] && typeof chains[name] == "string" && name != cname) {
-          t = proto[name] = chain(name, bases, chains[name] === "after");
+        if (proto[name] && typeof chains[name] == 'string' && name != cname) {
+          t = proto[name] = chain(name, bases, chains[name] === 'after');
           t.nom = name;
         }
       }

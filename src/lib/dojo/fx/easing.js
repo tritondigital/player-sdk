@@ -1,4 +1,4 @@
-define(["../_base/lang"], function (lang) {
+define(['../_base/lang'], function (lang) {
   // module:
   //		dojo/fx/easing
 
@@ -250,15 +250,10 @@ define(["../_base/lang"], function (lang) {
       var s = p / 4;
       if (n < 1) {
         n -= 1;
-        return (
-          -0.5 * (Math.pow(2, 10 * n) * Math.sin(((n - s) * (2 * Math.PI)) / p))
-        );
+        return -0.5 * (Math.pow(2, 10 * n) * Math.sin(((n - s) * (2 * Math.PI)) / p));
       }
       n -= 1;
-      return (
-        0.5 * (Math.pow(2, -10 * n) * Math.sin(((n - s) * (2 * Math.PI)) / p)) +
-        1
-      );
+      return 0.5 * (Math.pow(2, -10 * n) * Math.sin(((n - s) * (2 * Math.PI)) / p)) + 1;
     },
 
     bounceIn: function (/* Decimal? */ n) {
@@ -295,10 +290,10 @@ define(["../_base/lang"], function (lang) {
         return easingFuncs.bounceIn(n * 2) / 2;
       }
       return easingFuncs.bounceOut(n * 2 - 1) / 2 + 0.5; // Decimal
-    },
+    }
   };
 
-  lang.setObject("dojo.fx.easing", easingFuncs);
+  lang.setObject('dojo.fx.easing', easingFuncs);
 
   return easingFuncs;
 });

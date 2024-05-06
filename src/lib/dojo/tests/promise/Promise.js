@@ -1,6 +1,6 @@
-define(["doh/main", "dojo/Deferred"], function (doh, Deferred) {
+define(['doh/main', 'dojo/Deferred'], function (doh, Deferred) {
   var tests = {
-    "always() will be invoked for resolution and rejection": function (t) {
+    'always() will be invoked for resolution and rejection': function (t) {
       var obj = {};
       var deferred1 = new Deferred();
       var thenResult, alwaysResult;
@@ -27,7 +27,7 @@ define(["doh/main", "dojo/Deferred"], function (doh, Deferred) {
       t.t(alwaysResult2 === thenResult2);
     },
 
-    "otherwise(…) is equivalent to then(null, …)": function (t) {
+    'otherwise(…) is equivalent to then(null, …)': function (t) {
       var obj = {};
       var thenResult, otherwiseResult;
       this.deferred.then(null, function (result) {
@@ -41,15 +41,15 @@ define(["doh/main", "dojo/Deferred"], function (doh, Deferred) {
       t.t(otherwiseResult === thenResult);
     },
 
-    "trace() returns the same promise": function (t) {
+    'trace() returns the same promise': function (t) {
       var promise = this.deferred.promise.trace();
       t.t(promise === this.deferred.promise);
     },
 
-    "traceRejected() returns the same promise": function (t) {
+    'traceRejected() returns the same promise': function (t) {
       var promise = this.deferred.promise.traceRejected();
       t.t(promise === this.deferred.promise);
-    },
+    }
   };
 
   var wrapped = [];
@@ -57,7 +57,7 @@ define(["doh/main", "dojo/Deferred"], function (doh, Deferred) {
     wrapped.push({
       name: name,
       setUp: setUp,
-      runTest: tests[name],
+      runTest: tests[name]
     });
   }
 
@@ -65,5 +65,5 @@ define(["doh/main", "dojo/Deferred"], function (doh, Deferred) {
     this.deferred = new Deferred();
   }
 
-  doh.register("tests.promise.Promise", wrapped);
+  doh.register('tests.promise.Promise', wrapped);
 });

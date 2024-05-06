@@ -1,18 +1,8 @@
-define(["./_base/kernel", "./_base/Deferred", "./_base/array"], function (
-  dojo,
-  Deferred,
-  darray
-) {
+define(['./_base/kernel', './_base/Deferred', './_base/array'], function (dojo, Deferred, darray) {
   // module:
   //		dojo/DeferredList
 
-  dojo.DeferredList = function (
-    /*Array*/ list,
-    /*Boolean?*/ fireOnOneCallback,
-    /*Boolean?*/ fireOnOneErrback,
-    /*Boolean?*/ consumeErrors,
-    /*Function?*/ canceller
-  ) {
+  dojo.DeferredList = function (/*Array*/ list, /*Boolean?*/ fireOnOneCallback, /*Boolean?*/ fireOnOneErrback, /*Boolean?*/ consumeErrors, /*Function?*/ canceller) {
     // summary:
     //		Deprecated, use dojo/promise/all instead.
     //		Provides event handling for a group of Deferred objects.

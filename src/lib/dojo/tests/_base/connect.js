@@ -1,4 +1,4 @@
-dojo.provide("dojo.tests._base.connect");
+dojo.provide('dojo.tests._base.connect');
 
 hub = function () {};
 
@@ -20,9 +20,9 @@ markAndSweepTest = function (iterations) {
   // connections
   for (var i = 0; i < iterations; i++) {
     if (Math.random() < 0.5) {
-      marked.push(dojo.connect("hub", bad));
+      marked.push(dojo.connect('hub', bad));
     } else {
-      dojo.connect("hub", good);
+      dojo.connect('hub', good);
     }
   }
   // Randomize markers (only if the count isn't very high)
@@ -46,7 +46,7 @@ markAndSweepTest = function (iterations) {
 };
 
 markAndSweepSubscribersTest = function (iterations) {
-  var topic = "hubbins";
+  var topic = 'hubbins';
   var marked = [];
   // connections
   for (var i = 0; i < iterations; i++) {
@@ -76,65 +76,65 @@ markAndSweepSubscribersTest = function (iterations) {
   return failures;
 };
 
-tests.register("tests._base.connect", [
+tests.register('tests._base.connect', [
   function smokeTest(t) {
     // foo sets ok to false
     var ok = false;
     var foo = {
       foo: function () {
         ok = false;
-      },
+      }
     };
     // connected function sets ok to true
-    dojo.connect(foo, "foo", null, function () {
+    dojo.connect(foo, 'foo', null, function () {
       ok = true;
     });
     foo.foo();
     t.is(true, ok);
   },
   function basicTest(t) {
-    var out = "";
+    var out = '';
     var obj = {
       foo: function () {
-        out += "foo";
+        out += 'foo';
       },
       bar: function () {
-        out += "bar";
+        out += 'bar';
       },
       baz: function () {
-        out += "baz";
-      },
+        out += 'baz';
+      }
     };
     //
-    var foobar = dojo.connect(obj, "foo", obj, "bar");
-    dojo.connect(obj, "bar", obj, "baz");
+    var foobar = dojo.connect(obj, 'foo', obj, 'bar');
+    dojo.connect(obj, 'bar', obj, 'baz');
     //
-    out = "";
+    out = '';
     obj.foo();
-    t.is("foobarbaz", out);
+    t.is('foobarbaz', out);
     //
-    out = "";
+    out = '';
     obj.bar();
-    t.is("barbaz", out);
+    t.is('barbaz', out);
     //
-    out = "";
+    out = '';
     obj.baz();
-    t.is("baz", out);
+    t.is('baz', out);
     //
-    dojo.connect(obj, "foo", obj, "baz");
+    dojo.connect(obj, 'foo', obj, 'baz');
     dojo.disconnect(foobar);
     //
-    out = "";
+    out = '';
     obj.foo();
-    t.is("foobaz", out);
+    t.is('foobaz', out);
     //
-    out = "";
+    out = '';
     obj.bar();
-    t.is("barbaz", out);
+    t.is('barbaz', out);
     //
-    out = "";
+    out = '';
     obj.baz();
-    t.is("baz", out);
+    t.is('baz', out);
   },
   function hubConnectDisconnect1000(t) {
     t.is(0, markAndSweepTest(1000));
@@ -148,28 +148,28 @@ tests.register("tests._base.connect", [
         },
         bar: function () {
           ok = true;
-        },
+        }
       };
-    dojo.connect(obj, "foo", obj, "bar");
+    dojo.connect(obj, 'foo', obj, 'bar');
     obj.foo();
     t.is(true, ok);
   },
   function args3Test(t) {
     // make some globals
     var ok;
-    dojo.global["gFoo"] = function () {
+    dojo.global['gFoo'] = function () {
       ok = false;
     };
-    dojo.global["gOk"] = function () {
+    dojo.global['gOk'] = function () {
       ok = true;
     };
     // 3 arg shorthand for globals (a)
-    var link = dojo.connect("gFoo", null, "gOk");
+    var link = dojo.connect('gFoo', null, 'gOk');
     gFoo();
     dojo.disconnect(link);
     t.is(true, ok);
     // 3 arg shorthand for globals (b)
-    link = dojo.connect(null, "gFoo", "gOk");
+    link = dojo.connect(null, 'gFoo', 'gOk');
     gFoo();
     dojo.disconnect(link);
     t.is(true, ok);
@@ -180,19 +180,19 @@ tests.register("tests._base.connect", [
   function args2Test(t) {
     // make some globals
     var ok;
-    dojo.global["gFoo"] = function () {
+    dojo.global['gFoo'] = function () {
       ok = false;
     };
-    dojo.global["gOk"] = function () {
+    dojo.global['gOk'] = function () {
       ok = true;
     };
     // 2 arg shorthand for globals
-    var link = dojo.connect("gFoo", "gOk");
+    var link = dojo.connect('gFoo', 'gOk');
     gFoo();
     dojo.disconnect(link);
     t.is(true, ok);
     // 2 arg shorthand for globals, alternate scoping
-    link = dojo.connect("gFoo", gOk);
+    link = dojo.connect('gFoo', gOk);
     gFoo();
     dojo.disconnect(link);
     t.is(true, ok);
@@ -202,16 +202,16 @@ tests.register("tests._base.connect", [
       ok: true,
       foo: function () {
         this.ok = false;
-      },
+      }
     };
     var bar = {
       ok: false,
       bar: function () {
         this.ok = true;
-      },
+      }
     };
     // link foo.foo to bar.bar with natural scope
-    var link = dojo.connect(foo, "foo", bar, "bar");
+    var link = dojo.connect(foo, 'foo', bar, 'bar');
     foo.foo();
     t.is(false, foo.ok);
     t.is(true, bar.ok);
@@ -221,28 +221,28 @@ tests.register("tests._base.connect", [
       ok: true,
       foo: function () {
         this.ok = false;
-      },
+      }
     };
     var bar = {
       ok: false,
       bar: function () {
         this.ok = true;
-      },
+      }
     };
     // link foo.foo to bar.bar such that scope is always 'foo'
-    var link = dojo.connect(foo, "foo", bar.bar);
+    var link = dojo.connect(foo, 'foo', bar.bar);
     foo.foo();
     t.is(true, foo.ok);
     t.is(false, bar.ok);
   },
   function pubsub(t) {
     var count = 0;
-    dojo.subscribe("/test/blah", function (first, second) {
-      t.is("first", first);
-      t.is("second", second);
+    dojo.subscribe('/test/blah', function (first, second) {
+      t.is('first', first);
+      t.is('second', second);
       count++;
     });
-    dojo.publish("/test/blah", ["first", "second"]);
+    dojo.publish('/test/blah', ['first', 'second']);
     t.is(1, count);
   },
   function connectPublisher(t) {
@@ -250,17 +250,17 @@ tests.register("tests._base.connect", [
       inc: 0,
       foo: function () {
         this.inc++;
-      },
+      }
     };
     var bar = {
       inc: 0,
       bar: function () {
         this.inc++;
-      },
+      }
     };
-    var c1h = dojo.connectPublisher("/blah", foo, "foo");
-    var c2h = dojo.connectPublisher("/blah", foo, "foo");
-    dojo.subscribe("/blah", bar, "bar");
+    var c1h = dojo.connectPublisher('/blah', foo, 'foo');
+    var c2h = dojo.connectPublisher('/blah', foo, 'foo');
+    dojo.subscribe('/blah', bar, 'bar');
     foo.foo();
     t.is(1, foo.inc);
     t.is(2, bar.inc);
@@ -280,15 +280,15 @@ tests.register("tests._base.connect", [
     function listener() {}
     for (var i = 0; i < 1000; i++) {
       var foo = {};
-      dojo.connect(foo, "bar", listener);
+      dojo.connect(foo, 'bar', listener);
     }
   },
   function performanceFire() {
     var foo = {};
     function listener() {}
-    dojo.connect(foo, "bar", listener);
+    dojo.connect(foo, 'bar', listener);
     for (var i = 0; i < 100000; i++) {
       foo.bar();
     }
-  },
+  }
 ]);

@@ -1,19 +1,15 @@
-define(["../../_base/declare"], function (declare) {
+define(['../../_base/declare'], function (declare) {
   // module:
   //		dojo/data/api/Read
 
-  return declare("dojo.data.api.Read", null, {
+  return declare('dojo.data.api.Read', null, {
     // summary:
     //		This is an abstract API that data provider implementations conform to.
     //		This file defines methods signatures and intentionally leaves all the
     //		methods unimplemented.  For more information on the dojo.data APIs,
     //		please visit: http://www.dojotoolkit.org/node/98
 
-    getValue: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* value? */ defaultValue
-    ) {
+    getValue: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* value? */ defaultValue) {
       // summary:
       //		Returns a single attribute value.
       //		Returns defaultValue if and only if *item* does not have a value for *attribute*.
@@ -39,13 +35,10 @@ define(["../../_base/declare"], function (declare) {
       //		Throws an exception if *item* is not an item, or *attribute* is not a string
       // example:
       //	|	var darthVader = store.getValue(lukeSkywalker, "father");
-      throw new Error("Unimplemented API: dojo.data.api.Read.getValue");
+      throw new Error('Unimplemented API: dojo.data.api.Read.getValue');
     },
 
-    getValues: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute
-    ) {
+    getValues: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute) {
       // summary:
       //		This getValues() method works just like the getValue() method, but getValues()
       //		always returns an array rather than a single attribute value.  The array
@@ -64,7 +57,7 @@ define(["../../_base/declare"], function (declare) {
       //		Throws an exception if *item* is not an item, or *attribute* is not a string
       // example:
       //	|	var friendsOfLuke = store.getValues(lukeSkywalker, "friends");
-      throw new Error("Unimplemented API: dojo.data.api.Read.getValues");
+      throw new Error('Unimplemented API: dojo.data.api.Read.getValues');
     },
 
     getAttributes: function (/* dojo/data/api/Item */ item) {
@@ -78,13 +71,10 @@ define(["../../_base/declare"], function (declare) {
       //		Throws an exception if *item* is not an item, or *attribute* is not a string
       // example:
       //	|	var array = store.getAttributes(kermit);
-      throw new Error("Unimplemented API: dojo.data.api.Read.getAttributes");
+      throw new Error('Unimplemented API: dojo.data.api.Read.getAttributes');
     },
 
-    hasAttribute: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute
-    ) {
+    hasAttribute: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute) {
       // summary:
       //		Returns true if the given *item* has a value for the given *attribute*.
       // item:
@@ -95,14 +85,10 @@ define(["../../_base/declare"], function (declare) {
       //		Throws an exception if *item* is not an item, or *attribute* is not a string
       // example:
       //	|	var trueOrFalse = store.hasAttribute(kermit, "color");
-      throw new Error("Unimplemented API: dojo.data.api.Read.hasAttribute");
+      throw new Error('Unimplemented API: dojo.data.api.Read.hasAttribute');
     },
 
-    containsValue: function (
-      /* dojo/data/api/Item */ item,
-      /* attribute-name-string */ attribute,
-      /* anything */ value
-    ) {
+    containsValue: function (/* dojo/data/api/Item */ item, /* attribute-name-string */ attribute, /* anything */ value) {
       // summary:
       //		Returns true if the given *value* is one of the values that getValues()
       //		would return.
@@ -116,7 +102,7 @@ define(["../../_base/declare"], function (declare) {
       //		Throws an exception if *item* is not an item, or *attribute* is not a string
       // example:
       //	|	var trueOrFalse = store.containsValue(kermit, "color", "green");
-      throw new Error("Unimplemented API: dojo.data.api.Read.containsValue");
+      throw new Error('Unimplemented API: dojo.data.api.Read.containsValue');
     },
 
     isItem: function (/* anything */ something) {
@@ -129,7 +115,7 @@ define(["../../_base/declare"], function (declare) {
       // example:
       //	|	var yes = store.isItem(store.newItem());
       //	|	var no  = store.isItem("green");
-      throw new Error("Unimplemented API: dojo.data.api.Read.isItem");
+      throw new Error('Unimplemented API: dojo.data.api.Read.isItem');
     },
 
     isItemLoaded: function (/* anything */ something) {
@@ -143,7 +129,7 @@ define(["../../_base/declare"], function (declare) {
       // example:
       //	|	var yes = store.isItemLoaded(store.newItem());
       //	|	var no  = store.isItemLoaded("green");
-      throw new Error("Unimplemented API: dojo.data.api.Read.isItemLoaded");
+      throw new Error('Unimplemented API: dojo.data.api.Read.isItemLoaded');
     },
 
     loadItem: function (/* Object */ keywordArgs) {
@@ -191,7 +177,7 @@ define(["../../_base/declare"], function (declare) {
       //		For example, onItem.call(scope, item, request) vs.
       //		onItem.call(dojo.global(), item, request)
       if (!this.isItemLoaded(keywordArgs.item)) {
-        throw new Error("Unimplemented API: dojo.data.api.Read.loadItem");
+        throw new Error('Unimplemented API: dojo.data.api.Read.loadItem');
       }
     },
 
@@ -405,7 +391,7 @@ define(["../../_base/declare"], function (declare) {
       //		and then when the user presses the "Next Page" button...
       //		|	fetchArgs.start += 20;
       //		|	store.fetch(fetchArgs);  // get the next 20 items
-      throw new Error("Unimplemented API: dojo.data.api.Read.fetch");
+      throw new Error('Unimplemented API: dojo.data.api.Read.fetch');
     },
 
     getFeatures: function () {
@@ -420,7 +406,7 @@ define(["../../_base/declare"], function (declare) {
       //		interface features, like 'dojo.data.api.Read', 'dojo/data/api/Write',
       //		'dojo.data.api.Identity', and 'dojo/data/api/Attribution'.
       return {
-        "dojo.data.api.Read": true,
+        'dojo.data.api.Read': true
       };
     },
 
@@ -445,7 +431,7 @@ define(["../../_base/declare"], function (declare) {
       //	|	var request = store.fetch({onComplete: doSomething});
       //	|	...
       //	|	store.close(request);
-      throw new Error("Unimplemented API: dojo.data.api.Read.close");
+      throw new Error('Unimplemented API: dojo.data.api.Read.close');
     },
 
     getLabel: function (/* dojo/data/api/Item */ item) {
@@ -468,7 +454,7 @@ define(["../../_base/declare"], function (declare) {
       // returns:
       //		A user-readable string representing the item or undefined if no user-readable label can
       //		be generated.
-      throw new Error("Unimplemented API: dojo.data.api.Read.getLabel");
+      throw new Error('Unimplemented API: dojo.data.api.Read.getLabel');
     },
 
     getLabelAttributes: function (/* dojo/data/api/Item */ item) {
@@ -486,9 +472,7 @@ define(["../../_base/declare"], function (declare) {
       // returns:
       //		An array of attribute names that were used to generate the label, or null if public attributes
       //		were not used to generate the label.
-      throw new Error(
-        "Unimplemented API: dojo.data.api.Read.getLabelAttributes"
-      );
-    },
+      throw new Error('Unimplemented API: dojo.data.api.Read.getLabelAttributes');
+    }
   });
 });

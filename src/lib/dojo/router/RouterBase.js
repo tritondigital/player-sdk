@@ -1,8 +1,4 @@
-define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
-  declare,
-  hash,
-  topic
-) {
+define(['dojo/_base/declare', 'dojo/hash', 'dojo/topic'], function (declare, hash, topic) {
   // module:
   //		dojo/router/RouterBase
 
@@ -15,7 +11,7 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
     };
   } else {
     trim = function (str) {
-      return str.replace(/^\s\s*/, "").replace(/\s\s*$/, "");
+      return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     };
   }
 
@@ -37,7 +33,7 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
       },
       oldPath: currentPath,
       newPath: newPath,
-      params: params,
+      params: params
     };
 
     callbackArgs = [eventObj];
@@ -81,12 +77,12 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
     _routes: null,
     _routeIndex: null,
     _started: false,
-    _currentPath: "",
+    _currentPath: '',
 
     idMatch: /:(\w[\w\d]*)/g,
-    idReplacement: "([^\\/]+)",
+    idReplacement: '([^\\/]+)',
     globMatch: /\*(\w[\w\d]*)/,
-    globReplacement: "(.+)",
+    globReplacement: '(.+)',
 
     constructor: function (kwArgs) {
       // A couple of safety initializations
@@ -188,7 +184,7 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
 
       var applyChange;
 
-      if (typeof path !== "string") {
+      if (typeof path !== 'string') {
         return false;
       }
 
@@ -216,7 +212,7 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
         startingPath = hash();
 
       this._started = true;
-      this._hashchangeHandle = topic.subscribe("/dojo/hashchange", function () {
+      this._hashchangeHandle = topic.subscribe('/dojo/hashchange', function () {
         self._handlePathChange.apply(self, arguments);
       });
 
@@ -286,7 +282,7 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
       route = route.replace(this.idMatch, this.idReplacement);
       route = route.replace(this.globMatch, this.globReplacement);
       // Make sure it's an exact match
-      route = "^" + route + "$";
+      route = '^' + route + '$';
 
       return new RegExp(route);
     },
@@ -326,11 +322,7 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
       }
     },
 
-    _registerRoute: function (
-      /*String|RegExp*/ route,
-      /*Function*/ callback,
-      /*Boolean?*/ isBefore
-    ) {
+    _registerRoute: function (/*String|RegExp*/ route, /*Function*/ callback, /*Boolean?*/ isBefore) {
       var index,
         exists,
         routeObj,
@@ -343,7 +335,7 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
       // Try to fetch the route if it already exists.
       // This works thanks to stringifying of regex
       index = this._routeIndex[route];
-      exists = typeof index !== "undefined";
+      exists = typeof index !== 'undefined';
       if (exists) {
         routeObj = routes[index];
       }
@@ -353,13 +345,13 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
         routeObj = {
           route: route,
           callbackQueue: [],
-          fire: fireRoute,
+          fire: fireRoute
         };
       }
 
       callbackQueue = routeObj.callbackQueue;
 
-      if (typeof route == "string") {
+      if (typeof route == 'string') {
         routeObj.parameterNames = this._getParameterNames(route);
         routeObj.route = this._convertRouteToRegExp(route);
       }
@@ -403,9 +395,9 @@ define(["dojo/_base/declare", "dojo/hash", "dojo/topic"], function (
         },
         register: function (callback, isBefore) {
           return self.register(route, callback, isBefore);
-        },
+        }
       };
-    },
+    }
   });
 
   return RouterBase;

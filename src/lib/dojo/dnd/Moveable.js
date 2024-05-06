@@ -1,17 +1,4 @@
-define([
-  "../_base/array",
-  "../_base/declare",
-  "../_base/lang",
-  "../dom",
-  "../dom-class",
-  "../Evented",
-  "../on",
-  "../topic",
-  "../touch",
-  "./common",
-  "./Mover",
-  "../_base/window",
-], function (
+define(['../_base/array', '../_base/declare', '../_base/lang', '../dom', '../dom-class', '../Evented', '../on', '../topic', '../touch', './common', './Mover', '../_base/window'], function (
   array,
   declare,
   lang,
@@ -28,12 +15,12 @@ define([
   // module:
   //		dojo/dnd/Moveable
 
-  var Moveable = declare("dojo.dnd.Moveable", [Evented], {
+  var Moveable = declare('dojo.dnd.Moveable', [Evented], {
     // summary:
     //		an object, which makes a node movable
 
     // object attributes (for markup)
-    handle: "",
+    handle: '',
     delay: 0,
     skip: false,
 
@@ -54,10 +41,10 @@ define([
       this.skip = params.skip;
       this.mover = params.mover ? params.mover : Mover;
       this.events = [
-        on(this.handle, touch.press, lang.hitch(this, "onMouseDown")),
+        on(this.handle, touch.press, lang.hitch(this, 'onMouseDown')),
         // cancel text selection and text dragging
-        on(this.handle, "dragstart", lang.hitch(this, "onSelectStart")),
-        on(this.handle, "selectstart", lang.hitch(this, "onSelectStart")),
+        on(this.handle, 'dragstart', lang.hitch(this, 'onSelectStart')),
+        on(this.handle, 'selectstart', lang.hitch(this, 'onSelectStart'))
       ];
     },
 
@@ -86,10 +73,7 @@ define([
         return;
       }
       if (this.delay) {
-        this.events.push(
-          on(this.handle, touch.move, lang.hitch(this, "onMouseMove")),
-          on(this.handle, touch.release, lang.hitch(this, "onMouseUp"))
-        );
+        this.events.push(on(this.handle, touch.move, lang.hitch(this, 'onMouseMove')), on(this.handle, touch.release, lang.hitch(this, 'onMouseUp')));
         this._lastX = e.pageX;
         this._lastY = e.pageY;
       } else {
@@ -103,10 +87,7 @@ define([
       //		event processor for onmousemove/ontouchmove, used only for delayed drags
       // e: Event
       //		mouse/touch event
-      if (
-        Math.abs(e.pageX - this._lastX) > this.delay ||
-        Math.abs(e.pageY - this._lastY) > this.delay
-      ) {
+      if (Math.abs(e.pageX - this._lastX) > this.delay || Math.abs(e.pageY - this._lastY) > this.delay) {
         this.onMouseUp(e);
         this.onDragDetected(e);
       }
@@ -145,16 +126,16 @@ define([
     onMoveStart: function (/*Mover*/ mover) {
       // summary:
       //		called before every move operation
-      topic.publish("/dnd/move/start", mover);
-      domClass.add(win.body(), "dojoMove");
-      domClass.add(this.node, "dojoMoveItem");
+      topic.publish('/dnd/move/start', mover);
+      domClass.add(win.body(), 'dojoMove');
+      domClass.add(this.node, 'dojoMoveItem');
     },
     onMoveStop: function (/*Mover*/ mover) {
       // summary:
       //		called after every move operation
-      topic.publish("/dnd/move/stop", mover);
-      domClass.remove(win.body(), "dojoMove");
-      domClass.remove(this.node, "dojoMoveItem");
+      topic.publish('/dnd/move/stop', mover);
+      domClass.remove(win.body(), 'dojoMove');
+      domClass.remove(this.node, 'dojoMoveItem');
     },
     onFirstMove: function (/*===== mover, e =====*/) {
       // summary:
@@ -173,8 +154,8 @@ define([
       // e: Event
       this.onMoving(mover, leftTop);
       var s = mover.node.style;
-      s.left = leftTop.l + "px";
-      s.top = leftTop.t + "px";
+      s.left = leftTop.l + 'px';
+      s.top = leftTop.t + 'px';
       this.onMoved(mover, leftTop);
     },
     onMoving: function (/*===== mover, leftTop =====*/) {
@@ -190,7 +171,7 @@ define([
       // mover: Mover
       // leftTop: Object
       // default implementation does nothing
-    },
+    }
   });
 
   /*=====

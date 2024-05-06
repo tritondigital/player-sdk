@@ -1,10 +1,10 @@
 /**
  * VAST 2 Inline Ad
  */
-define(["dojo/_base/declare"], function (declare) {
+define(['dojo/_base/declare'], function (declare) {
   var vast2InlineAd = declare([], {
     constructor: function () {
-      console.log("vast2InlineAd::constructor");
+      console.log('vast2InlineAd::constructor');
 
       this.creatives = [];
 
@@ -15,8 +15,7 @@ define(["dojo/_base/declare"], function (declare) {
       var linearElement = this._getLinearElement();
 
       if (linearElement != null) {
-        linearElement.trackingEvents =
-          linearElement.trackingEvents.concat(value);
+        linearElement.trackingEvents = linearElement.trackingEvents.concat(value);
       }
     },
 
@@ -24,8 +23,7 @@ define(["dojo/_base/declare"], function (declare) {
       var linearElement = this._getLinearElement();
 
       if (linearElement != null && linearElement.videoClick != null) {
-        linearElement.videoClick.clickTrackings =
-          linearElement.videoClick.clickTrackings.concat(value);
+        linearElement.videoClick.clickTrackings = linearElement.videoClick.clickTrackings.concat(value);
       }
     },
 
@@ -37,8 +35,7 @@ define(["dojo/_base/declare"], function (declare) {
       var linearElement = this._getLinearElement();
 
       if (linearElement != null && linearElement.videoClick != null) {
-        linearElement.videoClick.customClicks =
-          linearElement.videoClick.customClicks.concat(value);
+        linearElement.videoClick.customClicks = linearElement.videoClick.customClicks.concat(value);
       }
     },
 
@@ -48,9 +45,7 @@ define(["dojo/_base/declare"], function (declare) {
         sequence = -1;
       }
 
-      return this._getLinearElement() != null
-        ? this._getLinearElement().trackingEvents
-        : null;
+      return this._getLinearElement() != null ? this._getLinearElement().trackingEvents : null;
     },
 
     getCompanionAdUrl: function (width, height, vastResourceType, sequence) {
@@ -61,13 +56,11 @@ define(["dojo/_base/declare"], function (declare) {
       var dimensionFit = false;
       var arrayLength = companionAds.length;
       for (var i = 0; i < arrayLength; i++) {
-        dimensionFit =
-          companionAds[i].width == width && companionAds[i].height == height;
+        dimensionFit = companionAds[i].width == width && companionAds[i].height == height;
 
         if (dimensionFit != true) {
           if (vastResourceType == null) return companionAds[i];
-          else if (companionAd.resourceType == vastResourceType)
-            return companionAds[i];
+          else if (companionAd.resourceType == vastResourceType) return companionAds[i];
         }
       }
 
@@ -85,8 +78,7 @@ define(["dojo/_base/declare"], function (declare) {
       for (var i = 0; i < collectionLength; i++) {
         if (this.creatives[i].companionAds.length > 0) {
           if (sequence == -1) return this.creatives[i].companionAds;
-          else if (this.creatives[i].sequence == sequence)
-            return this.creatives[i].companionAds;
+          else if (this.creatives[i].sequence == sequence) return this.creatives[i].companionAds;
         }
       }
     },
@@ -97,9 +89,7 @@ define(["dojo/_base/declare"], function (declare) {
         sequence = -1;
       }
 
-      return this._getLinearElement(sequence) != null
-        ? this._getLinearElement(sequence).mediaFiles
-        : null;
+      return this._getLinearElement(sequence) != null ? this._getLinearElement(sequence).mediaFiles : null;
     },
 
     getLinearMediaFileByIndex: function (index, sequence) {
@@ -113,9 +103,7 @@ define(["dojo/_base/declare"], function (declare) {
         index = 0;
       }
 
-      return this._getLinearElement(sequence).mediaFiles[index] != null
-        ? this._getLinearElement(sequence).mediaFiles[index]
-        : null;
+      return this._getLinearElement(sequence).mediaFiles[index] != null ? this._getLinearElement(sequence).mediaFiles[index] : null;
     },
 
     getLinearVideoClick: function (sequence) {
@@ -124,9 +112,7 @@ define(["dojo/_base/declare"], function (declare) {
         sequence = -1;
       }
 
-      return this._getLinearElement(sequence).videoClick != null
-        ? this._getLinearElement(sequence).videoClick
-        : null;
+      return this._getLinearElement(sequence).videoClick != null ? this._getLinearElement(sequence).videoClick : null;
     },
 
     getNonLinearAds: function (sequence) {
@@ -140,8 +126,7 @@ define(["dojo/_base/declare"], function (declare) {
       for (var j = 0; j < collectionLength; j++) {
         if (this.creatives[j].nonLinearAds.length > 0) {
           if (sequence == -1) return this.creatives[j].nonLinearAds;
-          else if (this.creatives[j].sequence == sequence)
-            return this.creatives[j].nonLinearAds;
+          else if (this.creatives[j].sequence == sequence) return this.creatives[j].nonLinearAds;
         }
       }
     },
@@ -152,9 +137,7 @@ define(["dojo/_base/declare"], function (declare) {
         sequence = -1;
       }
 
-      return this._getLinearElement(sequence).duration != null
-        ? this._getLinearElement(sequence).duration
-        : null;
+      return this._getLinearElement(sequence).duration != null ? this._getLinearElement(sequence).duration : null;
     },
 
     _getLinearElement: function (sequence) {
@@ -167,11 +150,10 @@ define(["dojo/_base/declare"], function (declare) {
       for (var i = 0; i < collectionLength; i++) {
         if (this.creatives[i].linearElement != null) {
           if (sequence == -1) return this.creatives[i].linearElement;
-          else if (this.creatives[i].sequence == sequence)
-            return this.creatives[i].linearElement;
+          else if (this.creatives[i].sequence == sequence) return this.creatives[i].linearElement;
         }
       }
-    },
+    }
   });
 
   return vast2InlineAd;

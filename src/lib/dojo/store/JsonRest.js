@@ -1,10 +1,10 @@
-define([
-  "../_base/xhr",
-  "../_base/lang",
-  "../json",
-  "../_base/declare",
-  "./util/QueryResults" /*=====, "./api/Store" =====*/,
-], function (xhr, lang, JSON, declare, QueryResults /*=====, Store =====*/) {
+define(['../_base/xhr', '../_base/lang', '../json', '../_base/declare', './util/QueryResults' /*=====, "./api/Store" =====*/], function (
+  xhr,
+  lang,
+  JSON,
+  declare,
+  QueryResults /*=====, Store =====*/
+) {
   // No base class, but for purposes of documentation, the base class is dojo/store/api/Store
   var base = null;
   /*===== base = Store; =====*/
@@ -18,7 +18,7 @@ var __HeaderOptions = {
 	__QueryOptions = declare(Store.QueryOptions, __HeaderOptions);
 =====*/
 
-  return declare("dojo.store.JsonRest", base, {
+  return declare('dojo.store.JsonRest', base, {
     // summary:
     //		This is a basic store for RESTful communicating with a server through JSON
     //		formatted data. It implements dojo/store/api/Store.
@@ -42,12 +42,12 @@ var __HeaderOptions = {
     //		The target base URL to use for all requests to the server. This string will be
     //		prepended to the id to generate the URL (relative or absolute) for requests
     //		sent to the server
-    target: "",
+    target: '',
 
     // idProperty: String
     //		Indicates the property to use as the identity property. The values of this
     //		property should be unique.
-    idProperty: "id",
+    idProperty: 'id',
 
     // sortParam: String
     //		The query parameter to used for holding sort information. If this is omitted, than
@@ -56,11 +56,11 @@ var __HeaderOptions = {
 
     // ascendingPrefix: String
     //		The prefix to apply to sort attribute names that are ascending
-    ascendingPrefix: "+",
+    ascendingPrefix: '+',
 
     // descendingPrefix: String
     //		The prefix to apply to sort attribute names that are ascending
-    descendingPrefix: "-",
+    descendingPrefix: '-',
 
     get: function (id, options) {
       // summary:
@@ -74,21 +74,17 @@ var __HeaderOptions = {
       // returns: Object
       //		The object in the store that matches the given id.
       options = options || {};
-      var headers = lang.mixin(
-        { Accept: this.accepts },
-        this.headers,
-        options.headers || options
-      );
-      return xhr("GET", {
+      var headers = lang.mixin({ Accept: this.accepts }, this.headers, options.headers || options);
+      return xhr('GET', {
         url: this.target + id,
-        handleAs: "json",
-        headers: headers,
+        handleAs: 'json',
+        headers: headers
       });
     },
 
     // accepts: String
     //		Defines the Accept header to use on HTTP requests
-    accepts: "application/javascript, application/json",
+    accepts: 'application/javascript, application/json',
 
     getIdentity: function (object) {
       // summary:
@@ -110,22 +106,22 @@ var __HeaderOptions = {
       //		property if a specific id is to be used.
       // returns: dojo/_base/Deferred
       options = options || {};
-      var id = "id" in options ? options.id : this.getIdentity(object);
-      var hasId = typeof id != "undefined";
-      return xhr(hasId && !options.incremental ? "PUT" : "POST", {
+      var id = 'id' in options ? options.id : this.getIdentity(object);
+      var hasId = typeof id != 'undefined';
+      return xhr(hasId && !options.incremental ? 'PUT' : 'POST', {
         url: hasId ? this.target + id : this.target,
         postData: JSON.stringify(object),
-        handleAs: "json",
+        handleAs: 'json',
         headers: lang.mixin(
           {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Accept: this.accepts,
-            "If-Match": options.overwrite === true ? "*" : null,
-            "If-None-Match": options.overwrite === false ? "*" : null,
+            'If-Match': options.overwrite === true ? '*' : null,
+            'If-None-Match': options.overwrite === false ? '*' : null
           },
           this.headers,
           options.headers
-        ),
+        )
       });
     },
 
@@ -151,9 +147,9 @@ var __HeaderOptions = {
       // options: __HeaderOptions?
       //		HTTP headers.
       options = options || {};
-      return xhr("DELETE", {
+      return xhr('DELETE', {
         url: this.target + id,
-        headers: lang.mixin({}, this.headers, options.headers),
+        headers: lang.mixin({}, this.headers, options.headers)
       });
     },
 
@@ -169,52 +165,37 @@ var __HeaderOptions = {
       //		The results of the query, extended with iterative methods.
       options = options || {};
 
-      var headers = lang.mixin(
-        { Accept: this.accepts },
-        this.headers,
-        options.headers
-      );
+      var headers = lang.mixin({ Accept: this.accepts }, this.headers, options.headers);
 
       if (options.start >= 0 || options.count >= 0) {
-        headers.Range = headers["X-Range"] = //set X-Range for Opera since it blocks "Range" header
-          "items=" +
-          (options.start || "0") +
-          "-" +
-          ("count" in options && options.count != Infinity
-            ? options.count + (options.start || 0) - 1
-            : "");
+        headers.Range = headers['X-Range'] = 'items=' + (options.start || '0') + '-' + ('count' in options && options.count != Infinity ? options.count + (options.start || 0) - 1 : ''); //set X-Range for Opera since it blocks "Range" header
       }
-      var hasQuestionMark = this.target.indexOf("?") > -1;
-      if (query && typeof query == "object") {
+      var hasQuestionMark = this.target.indexOf('?') > -1;
+      if (query && typeof query == 'object') {
         query = xhr.objectToQuery(query);
-        query = query ? (hasQuestionMark ? "&" : "?") + query : "";
+        query = query ? (hasQuestionMark ? '&' : '?') + query : '';
       }
       if (options && options.sort) {
         var sortParam = this.sortParam;
-        query +=
-          (query || hasQuestionMark ? "&" : "?") +
-          (sortParam ? sortParam + "=" : "sort(");
+        query += (query || hasQuestionMark ? '&' : '?') + (sortParam ? sortParam + '=' : 'sort(');
         for (var i = 0; i < options.sort.length; i++) {
           var sort = options.sort[i];
-          query +=
-            (i > 0 ? "," : "") +
-            (sort.descending ? this.descendingPrefix : this.ascendingPrefix) +
-            encodeURIComponent(sort.attribute);
+          query += (i > 0 ? ',' : '') + (sort.descending ? this.descendingPrefix : this.ascendingPrefix) + encodeURIComponent(sort.attribute);
         }
         if (!sortParam) {
-          query += ")";
+          query += ')';
         }
       }
-      var results = xhr("GET", {
-        url: this.target + (query || ""),
-        handleAs: "json",
-        headers: headers,
+      var results = xhr('GET', {
+        url: this.target + (query || ''),
+        handleAs: 'json',
+        headers: headers
       });
       results.total = results.then(function () {
-        var range = results.ioArgs.xhr.getResponseHeader("Content-Range");
+        var range = results.ioArgs.xhr.getResponseHeader('Content-Range');
         return range && (range = range.match(/\/(.*)/)) && +range[1];
       });
       return QueryResults(results);
-    },
+    }
   });
 });

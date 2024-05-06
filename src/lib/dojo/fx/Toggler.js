@@ -1,13 +1,8 @@
-define([
-  "../_base/lang",
-  "../_base/declare",
-  "../_base/fx",
-  "../aspect",
-], function (lang, declare, baseFx, aspect) {
+define(['../_base/lang', '../_base/declare', '../_base/fx', '../aspect'], function (lang, declare, baseFx, aspect) {
   // module:
   //		dojo/fx/Toggler
 
-  return declare("dojo.fx.Toggler", null, {
+  return declare('dojo.fx.Toggler', null, {
     // summary:
     //		A simple `dojo.Animation` toggler API.
     // description:
@@ -81,18 +76,8 @@ define([
       _t._hideArgs.duration = _t.hideDuration;
       _t.hideAnim = _t.hideFunc(_t._hideArgs);
 
-      aspect.after(
-        _t.showAnim,
-        "beforeBegin",
-        lang.hitch(_t.hideAnim, "stop", true),
-        true
-      );
-      aspect.after(
-        _t.hideAnim,
-        "beforeBegin",
-        lang.hitch(_t.showAnim, "stop", true),
-        true
-      );
+      aspect.after(_t.showAnim, 'beforeBegin', lang.hitch(_t.hideAnim, 'stop', true), true);
+      aspect.after(_t.hideAnim, 'beforeBegin', lang.hitch(_t.showAnim, 'stop', true), true);
     },
 
     show: function (delay) {
@@ -109,6 +94,6 @@ define([
       // delay: Integer?
       //		Amount of time to stall playing the hide animation
       return this.hideAnim.play(delay || 0);
-    },
+    }
   });
 });

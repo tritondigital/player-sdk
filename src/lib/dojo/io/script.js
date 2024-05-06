@@ -1,30 +1,19 @@
 define([
-  "../_base/connect",
-  /*===== "../_base/declare", =====*/ "../_base/kernel",
-  "../_base/lang",
-  "../sniff",
-  "../_base/window",
-  "../_base/xhr",
-  "../dom",
-  "../dom-construct",
-  "../request/script",
-  "../aspect",
-], function (
-  connect,
-  /*===== declare, =====*/ kernel,
-  lang,
-  has,
-  win,
-  xhr,
-  dom,
-  domConstruct,
-  _script,
-  aspect
-) {
+  '../_base/connect',
+  /*===== "../_base/declare", =====*/ '../_base/kernel',
+  '../_base/lang',
+  '../sniff',
+  '../_base/window',
+  '../_base/xhr',
+  '../dom',
+  '../dom-construct',
+  '../request/script',
+  '../aspect'
+], function (connect, /*===== declare, =====*/ kernel, lang, has, win, xhr, dom, domConstruct, _script, aspect) {
   // module:
   //		dojo/io/script
 
-  kernel.deprecated("dojo/io/script", "Use dojo/request/script.", "2.0");
+  kernel.deprecated('dojo/io/script', 'Use dojo/request/script.', '2.0');
 
   /*=====
 	var __ioArgs = declare(kernel.__IoArgs, {
@@ -86,14 +75,14 @@ define([
             ioArgs.canDelete = rDfd.canDelete;
 
             return script._canAttach(ioArgs);
-          },
+          }
         },
         true
       );
 
       // Run _validCheck at the same time dojo/request/watch runs the
       // rDfd.isValid function
-      aspect.around(rDfd, "isValid", function (isValid) {
+      aspect.around(rDfd, 'isValid', function (isValid) {
         return function (response) {
           script._validCheck(dfd);
           return isValid.call(this, response);
@@ -118,49 +107,37 @@ define([
     _makeScriptDeferred: function (/*Object*/ args, /*Function?*/ cancel) {
       // summary:
       //		sets up a Deferred object for an IO request.
-      var dfd = xhr._ioSetArgs(
-        args,
-        cancel || this._deferredCancel,
-        this._deferredOk,
-        this._deferredError
-      );
+      var dfd = xhr._ioSetArgs(args, cancel || this._deferredCancel, this._deferredOk, this._deferredError);
 
       var ioArgs = dfd.ioArgs;
-      ioArgs.id = kernel._scopeName + "IoScript" + this._counter++;
+      ioArgs.id = kernel._scopeName + 'IoScript' + this._counter++;
       ioArgs.canDelete = false;
 
       //Special setup for jsonp case
       ioArgs.jsonp = args.callbackParamName || args.jsonp;
       if (ioArgs.jsonp) {
         //Add the jsonp parameter.
-        ioArgs.query = ioArgs.query || "";
+        ioArgs.query = ioArgs.query || '';
         if (ioArgs.query.length > 0) {
-          ioArgs.query += "&";
+          ioArgs.query += '&';
         }
-        ioArgs.query +=
-          ioArgs.jsonp +
-          "=" +
-          (args.frameDoc ? "parent." : "") +
-          kernel._scopeName +
-          ".io.script.jsonp_" +
-          ioArgs.id +
-          "._jsonpCallback";
+        ioArgs.query += ioArgs.jsonp + '=' + (args.frameDoc ? 'parent.' : '') + kernel._scopeName + '.io.script.jsonp_' + ioArgs.id + '._jsonpCallback';
 
         ioArgs.frameDoc = args.frameDoc;
 
         //Setup the Deferred to have the jsonp callback.
         ioArgs.canDelete = true;
         dfd._jsonpCallback = this._jsonpCallback;
-        this["jsonp_" + ioArgs.id] = dfd;
+        this['jsonp_' + ioArgs.id] = dfd;
       }
       // Make sure this runs no matter what happens to clean things up if need be
       dfd.addBoth(function (value) {
         if (ioArgs.canDelete) {
           if (value instanceof Error) {
             // Set up a callback that will clean things up for timeouts and cancels
-            script["jsonp_" + ioArgs.id]._jsonpCallback = function () {
+            script['jsonp_' + ioArgs.id]._jsonpCallback = function () {
               // Delete the cached deferred
-              delete script["jsonp_" + ioArgs.id];
+              delete script['jsonp_' + ioArgs.id];
               if (ioArgs.requestId) {
                 // Call the dojo/request/script callback to clean itself up as well
                 kernel.global[_script._callbacksProperty][ioArgs.requestId]();
@@ -200,7 +177,7 @@ define([
       // summary:
       //		errHandler function for xhr._ioSetArgs call.
 
-      console.log("dojo.io.script error", error);
+      console.log('dojo.io.script error', error);
       return error;
     },
 
@@ -231,7 +208,7 @@ define([
           //Remove the script tag
           script.remove(deadScripts[i].id, deadScripts[i].frameDoc);
           //Clean up the deferreds
-          delete script["jsonp_" + deadScripts[i].id];
+          delete script['jsonp_' + deadScripts[i].id];
           deadScripts[i].frameDoc = null;
         }
         script._deadScripts = [];
@@ -252,7 +229,7 @@ define([
 
       //Check for finished "checkString" case.
       var checkString = ioArgs.args.checkString;
-      return checkString && eval("typeof(" + checkString + ") != 'undefined'");
+      return checkString && eval('typeof(' + checkString + ") != 'undefined'");
     },
 
     _resHandle: function (/*Deferred*/ dfd) {
@@ -263,7 +240,7 @@ define([
       } else {
         //This path should never happen since the only way we can get
         //to _resHandle is if _ioCheck is true.
-        dfd.errback(new Error("inconceivable dojo.io.script._resHandle error"));
+        dfd.errback(new Error('inconceivable dojo.io.script._resHandle error'));
       }
     },
 
@@ -285,10 +262,10 @@ define([
       if (this.ioArgs.requestId) {
         kernel.global[_script._callbacksProperty][this.ioArgs.requestId](json);
       }
-    },
+    }
   };
 
-  lang.setObject("dojo.io.script", script);
+  lang.setObject('dojo.io.script', script);
 
   /*=====
 	script.attach = function(id, url, frameDocument){

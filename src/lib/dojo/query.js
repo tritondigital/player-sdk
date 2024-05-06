@@ -1,21 +1,18 @@
-define([
-  "./_base/kernel",
-  "./has",
-  "./dom",
-  "./on",
-  "./_base/array",
-  "./_base/lang",
-  "./selector/_loader",
-  "./selector/_loader!default",
-], function (dojo, has, dom, on, array, lang, loader, defaultEngine) {
-  "use strict";
+define(['./_base/kernel', './has', './dom', './on', './_base/array', './_base/lang', './selector/_loader', './selector/_loader!default'], function (
+  dojo,
+  has,
+  dom,
+  on,
+  array,
+  lang,
+  loader,
+  defaultEngine
+) {
+  'use strict';
 
-  has.add("array-extensible", function () {
+  has.add('array-extensible', function () {
     // test to see if we can extend an array (not supported in old IE)
-    return (
-      lang.delegate([], { length: 1 }).length == 1 &&
-      !has("bug-for-in-skips-shadowed")
-    );
+    return lang.delegate([], { length: 1 }).length == 1 && !has('bug-for-in-skips-shadowed');
   });
 
   var ap = Array.prototype,
@@ -23,11 +20,7 @@ define([
     apc = ap.concat,
     forEach = array.forEach;
 
-  var tnl = function (
-    /*Array*/ a,
-    /*dojo/NodeList?*/ parent,
-    /*Function?*/ NodeListCtor
-  ) {
+  var tnl = function (/*Array*/ a, /*dojo/NodeList?*/ parent, /*Function?*/ NodeListCtor) {
     // summary:
     //		decorate an array to make it look like a `dojo/NodeList`.
     // a:
@@ -193,11 +186,11 @@ define([
     //		|		.at(1, 3, 8) // get a subset
     //		|			.style("padding", "5px")
     //		|			.forEach(console.log);
-    var isNew = this instanceof nl && has("array-extensible");
-    if (typeof array == "number") {
+    var isNew = this instanceof nl && has('array-extensible');
+    if (typeof array == 'number') {
       array = Array(array);
     }
-    var nodeArray = array && "length" in array ? array : arguments;
+    var nodeArray = array && 'length' in array ? array : arguments;
     if (isNew || !nodeArray.sort) {
       // make sure it's a real array before we pass it on to be wrapped
       var target = isNew ? this : [],
@@ -224,7 +217,7 @@ define([
   };
 
   var nl = NodeList,
-    nlp = (nl.prototype = has("array-extensible") ? [] : {}); // extend an array if it is extensible
+    nlp = (nl.prototype = has('array-extensible') ? [] : {}); // extend an array if it is extensible
 
   // expose adapters and the wrapper as private functions
 
@@ -237,23 +230,20 @@ define([
   // mass assignment
 
   // add array redirectors
-  forEach(["slice", "splice"], function (name) {
+  forEach(['slice', 'splice'], function (name) {
     var f = ap[name];
     //Use a copy of the this array via this.slice() to allow .end() to work right in the splice case.
     // CANNOT apply ._stash()/end() to splice since it currently modifies
     // the existing this array -- it would break backward compatibility if we copy the array before
     // the splice so that we can use .end(). So only doing the stash option to this._wrap for slice.
     nlp[name] = function () {
-      return this._wrap(
-        f.apply(this, arguments),
-        name == "slice" ? this : null
-      );
+      return this._wrap(f.apply(this, arguments), name == 'slice' ? this : null);
     };
   });
   // concat should be here but some browsers with native NodeList have problems with it
 
   // add array.js redirectors
-  forEach(["indexOf", "lastIndexOf", "every", "some"], function (name) {
+  forEach(['indexOf', 'lastIndexOf', 'every', 'some'], function (name) {
     var f = array[name];
     nlp[name] = function () {
       return f.apply(dojo, [this].concat(aps.call(arguments, 0)));
@@ -266,7 +256,7 @@ define([
     _NodeListCtor: nl,
     toString: function () {
       // Array.prototype.toString can't be applied to objects, so we use join
-      return this.join(",");
+      return this.join(',');
     },
     _stash: function (parent) {
       // summary:
@@ -529,7 +519,7 @@ define([
       var a = arguments,
         items = this,
         start = 0;
-      if (typeof filter == "string") {
+      if (typeof filter == 'string') {
         // inline'd type check
         items = query._filterResult(this, a[0]);
         if (a.length == 1) {
@@ -541,10 +531,7 @@ define([
       }
       return this._wrap(array.filter(items, a[start], a[start + 1]), this); // dojo/NodeList
     },
-    instantiate: function (
-      /*String|Object*/ declaredClass,
-      /*Object?*/ properties
-    ) {
+    instantiate: function (/*String|Object*/ declaredClass, /*Object?*/ properties) {
       // summary:
       //		Create a new instance of a specified class, using the
       //		specified properties and each node in the NodeList as a
@@ -552,9 +539,7 @@ define([
       // example:
       //		Grabs all buttons in the page and converts them to dijit/form/Button's.
       //	|	var buttons = query("button").instantiate(Button, {showLabel: true});
-      var c = lang.isFunction(declaredClass)
-        ? declaredClass
-        : lang.getObject(declaredClass);
+      var c = lang.isFunction(declaredClass) ? declaredClass : lang.getObject(declaredClass);
       properties = properties || {};
       return this.forEach(function (node) {
         new c(properties, node);
@@ -599,7 +584,7 @@ define([
         this
       );
       return t._stash(this); // dojo/NodeList
-    },
+    }
   });
 
   function queryForEngine(engine, NodeList) {
@@ -608,20 +593,13 @@ define([
       //		Returns nodes which match the given CSS selector, searching the
       //		entire document by default but optionally taking a node to scope
       //		the search by. Returns an instance of NodeList.
-      if (typeof root == "string") {
+      if (typeof root == 'string') {
         root = dom.byId(root);
         if (!root) {
           return new NodeList([]);
         }
       }
-      var results =
-        typeof query == "string"
-          ? engine(query, root)
-          : query
-          ? query.end && query.on
-            ? query
-            : [query]
-          : [];
+      var results = typeof query == 'string' ? engine(query, root) : query ? (query.end && query.on ? query : [query]) : [];
       if (results.end && results.on) {
         // already wrapped
         return results;
@@ -645,7 +623,7 @@ define([
           return array.indexOf(nodes, node) > -1;
         });
       };
-    if (typeof engine != "function") {
+    if (typeof engine != 'function') {
       var search = engine.search;
       engine = function (selector, root) {
         // Slick does it backwards (or everyone else does it backwards, probably the latter)
@@ -749,11 +727,7 @@ define([
     });
   };
 
-  dojo._filterQueryResult = query._filterResult = function (
-    nodes,
-    selector,
-    root
-  ) {
+  dojo._filterQueryResult = query._filterResult = function (nodes, selector, root) {
     return new NodeList(query.filter(nodes, selector, root));
   };
   dojo.NodeList = query.NodeList = NodeList;

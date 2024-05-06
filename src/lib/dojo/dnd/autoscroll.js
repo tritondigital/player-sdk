@@ -1,11 +1,4 @@
-define([
-  "../_base/lang",
-  "../sniff",
-  "../_base/window",
-  "../dom-geometry",
-  "../dom-style",
-  "../window",
-], function (lang, has, win, domGeom, domStyle, winUtils) {
+define(['../_base/lang', '../sniff', '../_base/window', '../dom-geometry', '../dom-style', '../window'], function (lang, has, win, domGeom, domStyle, winUtils) {
   // module:
   //		dojo/dnd/autoscroll
 
@@ -14,7 +7,7 @@ define([
     //		Used by dojo/dnd/Manager to scroll document or internal node when the user
     //		drags near the edge of the viewport or a scrollable node
   };
-  lang.setObject("dojo.dnd.autoscroll", exports);
+  lang.setObject('dojo.dnd.autoscroll', exports);
 
   exports.getViewport = winUtils.getBox;
 
@@ -62,10 +55,7 @@ define([
     if (e.clientX < exports.H_TRIGGER_AUTOSCROLL) {
       dx = -exports.H_AUTOSCROLL_VALUE;
     } else if (e.clientX > v.w - exports.H_TRIGGER_AUTOSCROLL) {
-      dx = Math.min(
-        exports.H_AUTOSCROLL_VALUE,
-        maxScrollLeft - html.scrollLeft
-      ); // don't scroll past edge of doc
+      dx = Math.min(exports.H_AUTOSCROLL_VALUE, maxScrollLeft - html.scrollLeft); // don't scroll past edge of doc
     }
     if (e.clientY < exports.V_TRIGGER_AUTOSCROLL) {
       dy = -exports.V_AUTOSCROLL_VALUE;
@@ -112,7 +102,7 @@ define([
         if (overflow || overflowX) {
           w = Math.min(exports.H_TRIGGER_AUTOSCROLL, b.w / 2);
           rx = e.pageX - t.x;
-          if (has("webkit") || has("opera")) {
+          if (has('webkit') || has('opera')) {
             // FIXME: this code should not be here, it should be taken into account
             // either by the event fixing code, or the domGeom.position()
             // FIXME: this code doesn't work on Opera 9.5 Beta
@@ -134,7 +124,7 @@ define([
           //console.log(b.l, b.t, t.x, t.y, n.scrollLeft, n.scrollTop);
           h = Math.min(exports.V_TRIGGER_AUTOSCROLL, b.h / 2);
           ry = e.pageY - t.y;
-          if (has("webkit") || has("opera")) {
+          if (has('webkit') || has('opera')) {
             // FIXME: this code should not be here, it should be taken into account
             // either by the event fixing code, or the domGeom.position()
             // FIXME: this code doesn't work on Opera 9.5 Beta

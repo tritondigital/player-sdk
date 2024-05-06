@@ -1,11 +1,11 @@
-define(["../../_base/lang"], function (lang) {
+define(['../../_base/lang'], function (lang) {
   // module:
   //		dojo/data/util/sorter
   // summary:
   //		TODOC
 
   var sorter = {};
-  lang.setObject("dojo.data.util.sorter", sorter);
+  lang.setObject('dojo.data.util.sorter', sorter);
 
   sorter.basicComparator = function (/*anything*/ a, /*anything*/ b) {
     // summary:
@@ -34,10 +34,7 @@ define(["../../_base/lang"], function (lang) {
     return r; //int {-1,0,1}
   };
 
-  sorter.createSortFunction = function (
-    /* attributes[] */ sortSpec,
-    /*dojo/data/api/Read*/ store
-  ) {
+  sorter.createSortFunction = function (/* attributes[] */ sortSpec, /*dojo/data/api/Read*/ store) {
     // summary:
     //		Helper function to generate the sorting function based off the list of sort attributes.
     // description:
@@ -76,7 +73,7 @@ define(["../../_base/lang"], function (lang) {
         var dir = sortAttribute.descending ? -1 : 1;
         var comp = bc;
         if (map) {
-          if (typeof attr !== "string" && "toString" in attr) {
+          if (typeof attr !== 'string' && 'toString' in attr) {
             attr = attr.toString();
           }
           comp = map[attr] || bc;

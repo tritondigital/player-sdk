@@ -2,9 +2,9 @@
 
 // a host environment specifically built for Mozilla extensions, but derived
 // from the browser host environment
-if (typeof window != "undefined") {
+if (typeof window != 'undefined') {
   dojo.isBrowser = true;
-  dojo._name = "browser";
+  dojo._name = 'browser';
 
   // FIXME: PORTME
   //	http://developer.mozilla.org/en/mozIJSSubScriptLoader
@@ -26,11 +26,11 @@ if (typeof window != "undefined") {
 
     dojo.isMozilla = dojo.isMoz = tv;
     if (dojo.isMoz) {
-      dojo.isFF = parseFloat(dua.split("Firefox/")[1]) || undefined;
+      dojo.isFF = parseFloat(dua.split('Firefox/')[1]) || undefined;
     }
 
     // FIXME
-    dojo.isQuirks = document.compatMode == "BackCompat";
+    dojo.isQuirks = document.compatMode == 'BackCompat';
 
     // FIXME
     // TODO: is the HTML LANG attribute relevant?
@@ -43,17 +43,13 @@ if (typeof window != "undefined") {
     // monkey-patch _loadUri to handle file://, chrome://, and resource:// url's
     var oldLoadUri = dojo._loadUri;
     dojo._loadUri = function (uri, cb) {
-      var handleLocal = ["file:", "chrome:", "resource:"].some(function (
-        prefix
-      ) {
+      var handleLocal = ['file:', 'chrome:', 'resource:'].some(function (prefix) {
         return String(uri).indexOf(prefix) == 0;
       });
       if (handleLocal) {
         // see:
         //		http://developer.mozilla.org/en/mozIJSSubScriptLoader
-        var l = Components.classes[
-          "@mozilla.org/moz/jssubscript-loader;1"
-        ].getService(Components.interfaces.mozIJSSubScriptLoader);
+        var l = Components.classes['@mozilla.org/moz/jssubscript-loader;1'].getService(Components.interfaces.mozIJSSubScriptLoader);
         var value = l.loadSubScript(uri, dojo.global);
         if (cb) {
           cb(value);
@@ -72,8 +68,7 @@ if (typeof window != "undefined") {
         (stat >= 200 && stat < 300) || // Boolean
         stat == 304 || // allow any 2XX response code
         stat == 1223 || // get it out of the cache
-        (!stat &&
-          (location.protocol == "file:" || location.protocol == "chrome:"))
+        (!stat && (location.protocol == 'file:' || location.protocol == 'chrome:'))
       );
     };
 
@@ -106,25 +101,17 @@ if (typeof window != "undefined") {
       }
       if (dojo.config.cacheBust) {
         //Make sure we have a string before string methods are used on uri
-        uri += "";
-        uri +=
-          (uri.indexOf("?") == -1 ? "?" : "&") +
-          String(dojo.config.cacheBust).replace(/\W+/g, "");
+        uri += '';
+        uri += (uri.indexOf('?') == -1 ? '?' : '&') + String(dojo.config.cacheBust).replace(/\W+/g, '');
       }
-      var handleLocal = ["file:", "chrome:", "resource:"].some(function (
-        prefix
-      ) {
+      var handleLocal = ['file:', 'chrome:', 'resource:'].some(function (prefix) {
         return String(uri).indexOf(prefix) == 0;
       });
       if (handleLocal) {
         // see:
         //		http://forums.mozillazine.org/viewtopic.php?p=921150#921150
-        var ioService = Components.classes[
-          "@mozilla.org/network/io-service;1"
-        ].getService(Components.interfaces.nsIIOService);
-        var scriptableStream = Components.classes[
-          "@mozilla.org/scriptableinputstream;1"
-        ].getService(Components.interfaces.nsIScriptableInputStream);
+        var ioService = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
+        var scriptableStream = Components.classes['@mozilla.org/scriptableinputstream;1'].getService(Components.interfaces.nsIScriptableInputStream);
 
         var channel = ioService.newChannel(uri, null, null);
         var input = channel.open();
@@ -134,12 +121,12 @@ if (typeof window != "undefined") {
         input.close();
         return str;
       } else {
-        http.open("GET", uri, false);
+        http.open('GET', uri, false);
         try {
           http.send(null);
           // alert(http);
           if (!dojo._isDocumentOk(http)) {
-            var err = Error("Unable to load " + uri + " status:" + http.status);
+            var err = Error('Unable to load ' + uri + ' status:' + http.status);
             err.status = http.status;
             err.responseText = http.responseText;
             throw err;
@@ -170,10 +157,7 @@ if (typeof window != "undefined") {
     };
 
     // FIXME: PORTME
-    dojo.addOnWindowUnload = function (
-      /*Object?*/ obj,
-      /*String|Function?*/ functionName
-    ) {
+    dojo.addOnWindowUnload = function (/*Object?*/ obj, /*String|Function?*/ functionName) {
       // summary:
       //		registers a function to be triggered when window.onunload fires.
       //		Be careful trying to modify the DOM or access JavaScript properties
@@ -193,10 +177,7 @@ if (typeof window != "undefined") {
     var current = null;
     dojo._defaultContext = [window, document];
 
-    dojo.pushContext = function (
-      /*Object|String?*/ g,
-      /*MDocumentElement?*/ d
-    ) {
+    dojo.pushContext = function (/*Object|String?*/ g, /*MDocumentElement?*/ d) {
       // summary:
       //		causes subsequent calls to Dojo methods to assume the
       //		passed object and, optionally, document as the default
@@ -279,11 +260,8 @@ if (typeof window != "undefined") {
     // allow multiple calls, only first one will take effect
     // A bug in khtml calls events callbacks for document for event which isnt supported
     // for example a created contextmenu event calls DOMContentLoaded, workaround
-    var type = e && e.type ? e.type.toLowerCase() : "load";
-    if (
-      arguments.callee.initialized ||
-      (type != "domcontentloaded" && type != "load")
-    ) {
+    var type = e && e.type ? e.type.toLowerCase() : 'load';
+    if (arguments.callee.initialized || (type != 'domcontentloaded' && type != 'load')) {
       return;
     }
     arguments.callee.initialized = true;
@@ -321,7 +299,7 @@ if (typeof window != "undefined") {
   //		probably need an extension-specific API
   if (!dojo.config.afterOnLoad) {
     window.addEventListener(
-      "DOMContentLoaded",
+      'DOMContentLoaded',
       function (e) {
         dojo._loadInit(e);
         // console.log("DOM content loaded", e);
@@ -335,7 +313,7 @@ if (typeof window != "undefined") {
 //in the hostenvs since hostenv_browser can read djConfig from a
 //script tag's attribute.
 (function () {
-  var mp = dojo.config["modulePaths"];
+  var mp = dojo.config['modulePaths'];
   if (mp) {
     for (var param in mp) {
       dojo.registerModulePath(param, mp[param]);
@@ -347,13 +325,11 @@ if (typeof window != "undefined") {
 if (dojo.config.isDebug) {
   // logging stub for extension logging
   console.log = function (m) {
-    var s = Components.classes["@mozilla.org/consoleservice;1"].getService(
-      Components.interfaces.nsIConsoleService
-    );
+    var s = Components.classes['@mozilla.org/consoleservice;1'].getService(Components.interfaces.nsIConsoleService);
     s.logStringMessage(m);
   };
   console.debug = function () {
-    console.log(dojo._toArray(arguments).join(" "));
+    console.log(dojo._toArray(arguments).join(' '));
   };
   // FIXME: what about the rest of the console.* methods? And is there any way to reach into firebug and log into it directly?
 }

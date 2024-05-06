@@ -1,11 +1,11 @@
-var _ = require("lodash");
+var _ = require('lodash');
 
-var ArrayHelper = require("sdk/base/util/ArrayHelper");
+var ArrayHelper = require('sdk/base/util/ArrayHelper');
 
-var AudioTrack = require("sdk/modules/mediaplayer/liveStreamConfigApi/AudioTrack");
-var VideoTrack = require("sdk/modules/mediaplayer/liveStreamConfigApi/VideoTrack");
-var Const = require("sdk/base/util/Const");
-var AUDIO_ADAPTIVE = "audio-adaptive";
+var AudioTrack = require('sdk/modules/mediaplayer/liveStreamConfigApi/AudioTrack');
+var VideoTrack = require('sdk/modules/mediaplayer/liveStreamConfigApi/VideoTrack');
+var Const = require('sdk/base/util/Const');
+var AUDIO_ADAPTIVE = 'audio-adaptive';
 
 function MediaFormat(data) {
   this.container = null;

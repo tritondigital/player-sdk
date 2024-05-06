@@ -20,11 +20,7 @@
             { "name": "Alberta", "population": "1 million" }
           ]
         },
-        {
-          "name": "United States of America",
-          "capital": "Washington DC",
-          "states": [{ "name": "Missouri" }, { "name": "Arkansas" }]
-        }
+        { "name": "United States of America", "capital": "Washington DC", "states": [{ "name": "Missouri" }, { "name": "Arkansas" }] }
       ]
     }
   ]

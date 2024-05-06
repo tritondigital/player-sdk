@@ -1,13 +1,4 @@
-define([
-  "exports",
-  "../errors/RequestError",
-  "../errors/CancelError",
-  "../Deferred",
-  "../io-query",
-  "../_base/array",
-  "../_base/lang",
-  "../promise/Promise",
-], function (
+define(['exports', '../errors/RequestError', '../errors/CancelError', '../Deferred', '../io-query', '../_base/array', '../_base/lang', '../promise/Promise'], function (
   exports,
   RequestError,
   CancelError,
@@ -22,12 +13,7 @@ define([
       var tval = target[name],
         sval = source[name];
       if (tval !== sval) {
-        if (
-          tval &&
-          typeof tval === "object" &&
-          sval &&
-          typeof sval === "object"
-        ) {
+        if (tval && typeof tval === 'object' && sval && typeof sval === 'object') {
           exports.deepCopy(tval, sval);
         } else {
           target[name] = sval;
@@ -46,7 +32,7 @@ define([
     for (name in source) {
       value = source[name];
 
-      if (value && typeof value === "object") {
+      if (value && typeof value === 'object') {
         target[name] = exports.deepCreate(value, properties[name]);
       }
     }
@@ -65,22 +51,12 @@ define([
     return response.data || response.text;
   }
 
-  exports.deferred = function deferred(
-    response,
-    cancel,
-    isValid,
-    isReady,
-    handleResponse,
-    last
-  ) {
+  exports.deferred = function deferred(response, cancel, isValid, isReady, handleResponse, last) {
     var def = new Deferred(function (reason) {
       cancel && cancel(def, response);
 
-      if (
-        !reason ||
-        (!(reason instanceof RequestError) && !(reason instanceof CancelError))
-      ) {
-        return new CancelError("Request canceled", response);
+      if (!reason || (!(reason instanceof RequestError) && !(reason instanceof CancelError))) {
+        return new CancelError('Request canceled', response);
       }
       return reason;
     });
@@ -97,10 +73,7 @@ define([
     var responsePromise = def.then(okHandler).otherwise(errHandler);
 
     if (exports.notify) {
-      responsePromise.then(
-        lang.hitch(exports.notify, "emit", "load"),
-        lang.hitch(exports.notify, "emit", "error")
-      );
+      responsePromise.then(lang.hitch(exports.notify, 'emit', 'load'), lang.hitch(exports.notify, 'emit', 'error'));
     }
 
     var dataPromise = responsePromise.then(dataHandler);
@@ -138,17 +111,13 @@ define([
   };
 
   exports.addCommonMethods = function addCommonMethods(provider, methods) {
-    array.forEach(
-      methods || ["GET", "POST", "PUT", "DELETE"],
-      function (method) {
-        provider[(method === "DELETE" ? "DEL" : method).toLowerCase()] =
-          function (url, options) {
-            options = lang.delegate(options || {});
-            options.method = method;
-            return provider(url, options);
-          };
-      }
-    );
+    array.forEach(methods || ['GET', 'POST', 'PUT', 'DELETE'], function (method) {
+      provider[(method === 'DELETE' ? 'DEL' : method).toLowerCase()] = function (url, options) {
+        options = lang.delegate(options || {});
+        options.method = method;
+        return provider(url, options);
+      };
+    });
   };
 
   exports.parseArgs = function parseArgs(url, options, skipData) {
@@ -156,24 +125,24 @@ define([
       query = options.query;
 
     if (data && !skipData) {
-      if (typeof data === "object") {
+      if (typeof data === 'object') {
         options.data = ioQuery.objectToQuery(data);
       }
     }
 
     if (query) {
-      if (typeof query === "object") {
+      if (typeof query === 'object') {
         query = ioQuery.objectToQuery(query);
       }
       if (options.preventCache) {
-        query += (query ? "&" : "") + "request.preventCache=" + +new Date();
+        query += (query ? '&' : '') + 'request.preventCache=' + +new Date();
       }
     } else if (options.preventCache) {
-      query = "request.preventCache=" + +new Date();
+      query = 'request.preventCache=' + +new Date();
     }
 
     if (url && query) {
-      url += (~url.indexOf("?") ? "&" : "?") + query;
+      url += (~url.indexOf('?') ? '&' : '?') + query;
     }
 
     return {
@@ -181,7 +150,7 @@ define([
       options: options,
       getHeader: function (headerName) {
         return null;
-      },
+      }
     };
   };
 

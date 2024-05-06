@@ -4,7 +4,7 @@ define(//begin v1.x content
 // The parentheses are optional, but make this file a valid JS expression for
 // tools to inspect
 {
-  ar: "العربية",
-  hello: "ﺎﺑﺣﺮﻣ",
+  ar: 'العربية',
+  hello: 'ﺎﺑﺣﺮﻣ'
 });
 //end v1.x content

@@ -1,20 +1,20 @@
 /* eslint-disable global-require */
-const express = require("express");
-const path = require("path");
-const compression = require("compression");
-const pkg = require(path.resolve(process.cwd(), "package.json"));
+const express = require('express');
+const path = require('path');
+const compression = require('compression');
+const pkg = require(path.resolve(process.cwd(), 'package.json'));
 
 // Dev middleware
 const addDevMiddlewares = (app, webpackConfig) => {
-  const webpack = require("webpack");
-  const webpackDevMiddleware = require("webpack-dev-middleware");
-  const webpackHotMiddleware = require("webpack-hot-middleware");
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
   const compiler = webpack(webpackConfig);
   const middleware = webpackDevMiddleware(compiler, {
     noInfo: true,
     publicPath: webpackConfig.output.publicPath,
     silent: true,
-    stats: "errors-only",
+    stats: 'errors-only'
   });
 
   app.use(middleware);
@@ -32,17 +32,17 @@ const addDevMiddlewares = (app, webpackConfig) => {
   // }
 
   app.get(/(.json)$/, (req, res) => {
-    const filename = req.path.replace(/^\//, "");
+    const filename = req.path.replace(/^\//, '');
     res.sendFile(path.join(compiler.outputPath, filename));
   });
 
   app.get(/td-sdk.min.js/, (req, res) => {
-    const filename = req.path.replace(/^\//, "");
+    const filename = req.path.replace(/^\//, '');
     res.sendFile(path.join(process.cwd(), filename));
   });
 
-  app.get("/td-sdk.js", (req, res) => {
-    fs.readFile(path.join(compiler.outputPath, "td-sdk.js"), (err, file) => {
+  app.get('/td-sdk.js', (req, res) => {
+    fs.readFile(path.join(compiler.outputPath, 'td-sdk.js'), (err, file) => {
       if (err) {
         res.sendStatus(404);
       } else {
@@ -52,12 +52,12 @@ const addDevMiddlewares = (app, webpackConfig) => {
   });
 
   app.get(/(.js|.css|.gif|.png)$/, (req, res) => {
-    const filename = req.path.replace(/^\//, "");
-    res.sendFile(path.join(process.cwd(), "dev/playground", filename));
+    const filename = req.path.replace(/^\//, '');
+    res.sendFile(path.join(process.cwd(), 'dev/playground', filename));
   });
 
-  app.get("*", (req, res) => {
-    fs.readFile(path.join(compiler.outputPath, "index.html"), (err, file) => {
+  app.get('*', (req, res) => {
+    fs.readFile(path.join(compiler.outputPath, 'index.html'), (err, file) => {
       if (err) {
         res.sendStatus(404);
       } else {
@@ -85,12 +85,12 @@ const addDevMiddlewares = (app, webpackConfig) => {
  * Front-end middleware
  */
 module.exports = (app, options) => {
-  const isProd = process.env.NODE_ENV === "production";
+  const isProd = process.env.NODE_ENV === 'production';
 
   if (isProd) {
     addProdMiddlewares(app, options);
   } else {
-    var webpackConfig = require("./config/webpack.config");
+    var webpackConfig = require('./config/webpack.config');
     //const webpackConfig = require('../../internals/webpack/webpack.dev.babel');
     addDevMiddlewares(app, webpackConfig);
   }

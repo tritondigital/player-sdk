@@ -1,7 +1,4 @@
-define([
-  "../_base/lang",
-  "../when" /*=====, "../_base/declare", "./api/Store" =====*/,
-], function (lang, when /*=====, declare, Store =====*/) {
+define(['../_base/lang', '../when' /*=====, "../_base/declare", "./api/Store" =====*/], function (lang, when /*=====, declare, Store =====*/) {
   // module:
   //		dojo/store/Cache
 
@@ -35,24 +32,16 @@ define([
       add: function (object, directives) {
         return when(masterStore.add(object, directives), function (result) {
           // now put result in cache
-          cachingStore.add(
-            object && typeof result == "object" ? result : object,
-            directives
-          );
+          cachingStore.add(object && typeof result == 'object' ? result : object, directives);
           return result; // the result from the add should be dictated by the masterStore and be unaffected by the cachingStore
         });
       },
       put: function (object, directives) {
         // first remove from the cache, so it is empty until we get a response from the master store
-        cachingStore.remove(
-          (directives && directives.id) || this.getIdentity(object)
-        );
+        cachingStore.remove((directives && directives.id) || this.getIdentity(object));
         return when(masterStore.put(object, directives), function (result) {
           // now put result in cache
-          cachingStore.put(
-            object && typeof result == "object" ? result : object,
-            directives
-          );
+          cachingStore.put(object && typeof result == 'object' ? result : object, directives);
           return result; // the result from the put should be dictated by the masterStore and be unaffected by the cachingStore
         });
       },
@@ -63,10 +52,10 @@ define([
       },
       evict: function (id) {
         return cachingStore.remove(id);
-      },
+      }
     });
   };
-  lang.setObject("dojo.store.Cache", Cache);
+  lang.setObject('dojo.store.Cache', Cache);
 
   /*=====
 var __CacheArgs = {

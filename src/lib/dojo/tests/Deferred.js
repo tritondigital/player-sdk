@@ -1,11 +1,6 @@
-define([
-  "doh/main",
-  "dojo/Deferred",
-  "dojo/promise/Promise",
-  "dojo/errors/CancelError",
-], function (doh, Deferred, Promise, CancelError) {
+define(['doh/main', 'dojo/Deferred', 'dojo/promise/Promise', 'dojo/errors/CancelError'], function (doh, Deferred, Promise, CancelError) {
   var tests = {
-    "deferred receives result after resolving": function (t) {
+    'deferred receives result after resolving': function (t) {
       var obj = {};
       var received;
       this.deferred.then(function (result) {
@@ -15,7 +10,7 @@ define([
       t.t(received === obj);
     },
 
-    "promise receives result after resolving": function (t) {
+    'promise receives result after resolving': function (t) {
       var obj = {};
       var received;
       this.deferred.promise.then(function (result) {
@@ -25,38 +20,36 @@ define([
       t.t(received === obj);
     },
 
-    "resolve() returns promise": function (t) {
+    'resolve() returns promise': function (t) {
       var obj = {};
       var returnedPromise = this.deferred.resolve(obj);
       t.t(returnedPromise instanceof Promise);
       t.t(returnedPromise === this.deferred.promise);
     },
 
-    "isResolved() returns true after resolving": function (t) {
+    'isResolved() returns true after resolving': function (t) {
       t.f(this.deferred.isResolved());
       this.deferred.resolve();
       t.t(this.deferred.isResolved());
     },
 
-    "isFulfilled() returns true after resolving": function (t) {
+    'isFulfilled() returns true after resolving': function (t) {
       t.f(this.deferred.isFulfilled());
       this.deferred.resolve();
       t.t(this.deferred.isFulfilled());
     },
 
-    "resolve() is ignored after having been fulfilled": function (t) {
+    'resolve() is ignored after having been fulfilled': function (t) {
       this.deferred.resolve();
       this.deferred.resolve();
     },
 
-    "resolve() throws error after having been fulfilled and strict": function (
-      t
-    ) {
+    'resolve() throws error after having been fulfilled and strict': function (t) {
       this.deferred.resolve();
-      t.e(Error, this.deferred, "resolve", [{}, true]);
+      t.e(Error, this.deferred, 'resolve', [{}, true]);
     },
 
-    "resolve() results are cached": function (t) {
+    'resolve() results are cached': function (t) {
       var obj = {};
       var received;
       this.deferred.resolve(obj);
@@ -66,7 +59,7 @@ define([
       t.t(received === obj);
     },
 
-    "resolve() is already bound to the deferred": function (t) {
+    'resolve() is already bound to the deferred': function (t) {
       var obj = {};
       var received;
       this.deferred.then(function (result) {
@@ -77,7 +70,7 @@ define([
       t.t(received === obj);
     },
 
-    "deferred receives result after rejecting": function (t) {
+    'deferred receives result after rejecting': function (t) {
       var obj = {};
       var received;
       this.deferred.then(null, function (result) {
@@ -87,7 +80,7 @@ define([
       t.t(received === obj);
     },
 
-    "promise receives result after rejecting": function (t) {
+    'promise receives result after rejecting': function (t) {
       var obj = {};
       var received;
       this.deferred.promise.then(null, function (result) {
@@ -97,38 +90,36 @@ define([
       t.t(received === obj);
     },
 
-    "reject() returns promise": function (t) {
+    'reject() returns promise': function (t) {
       var obj = {};
       var returnedPromise = this.deferred.reject(obj);
       t.t(returnedPromise instanceof Promise);
       t.t(returnedPromise === this.deferred.promise);
     },
 
-    "isRejected() returns true after rejecting": function (t) {
+    'isRejected() returns true after rejecting': function (t) {
       t.f(this.deferred.isRejected());
       this.deferred.reject();
       t.t(this.deferred.isRejected());
     },
 
-    "isFulfilled() returns true after rejecting": function (t) {
+    'isFulfilled() returns true after rejecting': function (t) {
       t.f(this.deferred.isFulfilled());
       this.deferred.reject();
       t.t(this.deferred.isFulfilled());
     },
 
-    "reject() is ignored after having been fulfilled": function (t) {
+    'reject() is ignored after having been fulfilled': function (t) {
       this.deferred.reject();
       this.deferred.reject();
     },
 
-    "reject() throws error after having been fulfilled and strict": function (
-      t
-    ) {
+    'reject() throws error after having been fulfilled and strict': function (t) {
       this.deferred.reject();
-      t.e(Error, this.deferred, "reject", [{}, true]);
+      t.e(Error, this.deferred, 'reject', [{}, true]);
     },
 
-    "reject() results are cached": function (t) {
+    'reject() results are cached': function (t) {
       var obj = {};
       var received;
       this.deferred.reject(obj);
@@ -138,7 +129,7 @@ define([
       t.t(received === obj);
     },
 
-    "reject() is already bound to the deferred": function (t) {
+    'reject() is already bound to the deferred': function (t) {
       var obj = {};
       var received;
       this.deferred.then(null, function (result) {
@@ -149,7 +140,7 @@ define([
       t.t(received === obj);
     },
 
-    "deferred receives result after progress": function (t) {
+    'deferred receives result after progress': function (t) {
       var obj = {};
       var received;
       this.deferred.then(null, null, function (result) {
@@ -159,7 +150,7 @@ define([
       t.t(received === obj);
     },
 
-    "promise receives result after progres": function (t) {
+    'promise receives result after progres': function (t) {
       var obj = {};
       var received;
       this.deferred.promise.then(null, null, function (result) {
@@ -169,44 +160,42 @@ define([
       t.t(received === obj);
     },
 
-    "progress() returns promise": function (t) {
+    'progress() returns promise': function (t) {
       var obj = {};
       var returnedPromise = this.deferred.progress(obj);
       t.t(returnedPromise instanceof Promise);
       t.t(returnedPromise === this.deferred.promise);
     },
 
-    "isResolved() returns false after progress": function (t) {
+    'isResolved() returns false after progress': function (t) {
       t.f(this.deferred.isResolved());
       this.deferred.progress();
       t.f(this.deferred.isResolved());
     },
 
-    "isRejected() returns false after progress": function (t) {
+    'isRejected() returns false after progress': function (t) {
       t.f(this.deferred.isRejected());
       this.deferred.progress();
       t.f(this.deferred.isRejected());
     },
 
-    "isFulfilled() returns false after progress": function (t) {
+    'isFulfilled() returns false after progress': function (t) {
       t.f(this.deferred.isFulfilled());
       this.deferred.progress();
       t.f(this.deferred.isFulfilled());
     },
 
-    "progress() is ignored after having been fulfilled": function (t) {
+    'progress() is ignored after having been fulfilled': function (t) {
       this.deferred.resolve();
       this.deferred.resolve();
     },
 
-    "progress() throws error after having been fulfilled and strict": function (
-      t
-    ) {
+    'progress() throws error after having been fulfilled and strict': function (t) {
       this.deferred.resolve();
-      t.e(Error, this.deferred, "progress", [{}, true]);
+      t.e(Error, this.deferred, 'progress', [{}, true]);
     },
 
-    "progress() results are not cached": function (t) {
+    'progress() results are not cached': function (t) {
       var obj1 = {},
         obj2 = {};
       var received = [];
@@ -219,7 +208,7 @@ define([
       t.is(1, received.length);
     },
 
-    "progress() with chaining": function (t) {
+    'progress() with chaining': function (t) {
       var obj = {};
       var inner = new Deferred();
       var received;
@@ -235,20 +224,19 @@ define([
       t.t(received === obj);
     },
 
-    "after progress(), the progback return value is emitted on the returned promise":
-      function (t) {
-        var received;
-        var promise = this.deferred.then(null, null, function (n) {
-          return n * n;
-        });
-        promise.then(null, null, function (n) {
-          received = n;
-        });
-        this.deferred.progress(2);
-        t.is(4, received);
-      },
+    'after progress(), the progback return value is emitted on the returned promise': function (t) {
+      var received;
+      var promise = this.deferred.then(null, null, function (n) {
+        return n * n;
+      });
+      promise.then(null, null, function (n) {
+        received = n;
+      });
+      this.deferred.progress(2);
+      t.is(4, received);
+    },
 
-    "progress() is already bound to the deferred": function (t) {
+    'progress() is already bound to the deferred': function (t) {
       var obj = {};
       var received;
       this.deferred.then(null, null, function (result) {
@@ -259,7 +247,7 @@ define([
       t.t(received === obj);
     },
 
-    "cancel() invokes a canceler": function (t) {
+    'cancel() invokes a canceler': function (t) {
       var invoked;
       this.canceler = function () {
         invoked = true;
@@ -268,31 +256,31 @@ define([
       t.t(invoked);
     },
 
-    "isCanceled() returns true after canceling": function (t) {
+    'isCanceled() returns true after canceling': function (t) {
       t.f(this.deferred.isCanceled());
       this.deferred.cancel();
       t.t(this.deferred.isCanceled());
     },
 
-    "isResolved() returns false after canceling": function (t) {
+    'isResolved() returns false after canceling': function (t) {
       t.f(this.deferred.isResolved());
       this.deferred.cancel();
       t.f(this.deferred.isResolved());
     },
 
-    "isRejected() returns true after canceling": function (t) {
+    'isRejected() returns true after canceling': function (t) {
       t.f(this.deferred.isRejected());
       this.deferred.cancel();
       t.t(this.deferred.isRejected());
     },
 
-    "isFulfilled() returns true after canceling": function (t) {
+    'isFulfilled() returns true after canceling': function (t) {
       t.f(this.deferred.isFulfilled());
       this.deferred.cancel();
       t.t(this.deferred.isFulfilled());
     },
 
-    "cancel() is ignored after having been fulfilled": function (t) {
+    'cancel() is ignored after having been fulfilled': function (t) {
       var canceled = false;
       this.canceler = function () {
         canceled = true;
@@ -302,14 +290,12 @@ define([
       t.f(canceled);
     },
 
-    "cancel() throws error after having been fulfilled and strict": function (
-      t
-    ) {
+    'cancel() throws error after having been fulfilled and strict': function (t) {
       this.deferred.resolve();
-      t.e(Error, this.deferred, "cancel", [null, true]);
+      t.e(Error, this.deferred, 'cancel', [null, true]);
     },
 
-    "cancel() without reason results in CancelError": function (t) {
+    'cancel() without reason results in CancelError': function (t) {
       var reason = this.deferred.cancel();
       var received;
       this.deferred.then(null, function (result) {
@@ -318,12 +304,12 @@ define([
       t.t(received, reason);
     },
 
-    "cancel() returns default reason": function (t) {
+    'cancel() returns default reason': function (t) {
       var reason = this.deferred.cancel();
       t.t(reason instanceof CancelError);
     },
 
-    "reason is passed to canceler": function (t) {
+    'reason is passed to canceler': function (t) {
       var obj = {};
       var received;
       this.canceler = function (reason) {
@@ -333,7 +319,7 @@ define([
       t.t(received === obj);
     },
 
-    "cancels with reason returned from canceler": function (t) {
+    'cancels with reason returned from canceler': function (t) {
       var obj = {};
       var received;
       this.canceler = function () {
@@ -346,7 +332,7 @@ define([
       t.t(received === obj);
     },
 
-    "cancel() returns reason from canceler": function (t) {
+    'cancel() returns reason from canceler': function (t) {
       var obj = {};
       this.canceler = function () {
         return obj;
@@ -355,45 +341,40 @@ define([
       t.t(reason === obj);
     },
 
-    "cancel() returns reason from canceler, if canceler rejects with reason":
-      function (t) {
-        var obj = {};
-        var deferred = this.deferred;
-        this.canceler = function () {
-          deferred.reject(obj);
-          return obj;
-        };
-        var reason = this.deferred.cancel();
-        t.t(reason === obj);
-      },
+    'cancel() returns reason from canceler, if canceler rejects with reason': function (t) {
+      var obj = {};
+      var deferred = this.deferred;
+      this.canceler = function () {
+        deferred.reject(obj);
+        return obj;
+      };
+      var reason = this.deferred.cancel();
+      t.t(reason === obj);
+    },
 
-    "with canceler not returning anything, returns default CancelError":
-      function (t) {
-        this.canceler = function () {};
-        var reason = this.deferred.cancel();
-        var received;
-        this.deferred.then(null, function (result) {
-          received = result;
-        });
-        t.t(received === reason);
-      },
+    'with canceler not returning anything, returns default CancelError': function (t) {
+      this.canceler = function () {};
+      var reason = this.deferred.cancel();
+      var received;
+      this.deferred.then(null, function (result) {
+        received = result;
+      });
+      t.t(received === reason);
+    },
 
-    "with canceler not returning anything, still returns passed reason":
-      function (t) {
-        var obj = {};
-        var received;
-        this.canceler = function () {};
-        var reason = this.deferred.cancel(obj);
-        t.t(reason === obj);
-        this.deferred.then(null, function (result) {
-          received = result;
-        });
-        t.t(received === reason);
-      },
+    'with canceler not returning anything, still returns passed reason': function (t) {
+      var obj = {};
+      var received;
+      this.canceler = function () {};
+      var reason = this.deferred.cancel(obj);
+      t.t(reason === obj);
+      this.deferred.then(null, function (result) {
+        received = result;
+      });
+      t.t(received === reason);
+    },
 
-    "cancel() doesn't reject promise if canceler resolves deferred": function (
-      t
-    ) {
+    "cancel() doesn't reject promise if canceler resolves deferred": function (t) {
       var deferred = this.deferred;
       var obj = {};
       var received;
@@ -407,78 +388,75 @@ define([
       t.t(received === obj);
     },
 
-    "cancel() doesn't reject promise if canceler resolves a chain of promises":
-      function (t) {
-        var deferred = this.deferred;
-        var obj = {};
-        var received;
-        this.canceler = function () {
-          deferred.resolve(obj);
-        };
-        var last = this.deferred.then().then().then();
-        last.cancel();
-        last.then(function (result) {
-          received = result;
-        });
-        t.t(received === obj);
-        t.t(this.deferred.isCanceled());
-        t.t(last.isCanceled());
-      },
+    "cancel() doesn't reject promise if canceler resolves a chain of promises": function (t) {
+      var deferred = this.deferred;
+      var obj = {};
+      var received;
+      this.canceler = function () {
+        deferred.resolve(obj);
+      };
+      var last = this.deferred.then().then().then();
+      last.cancel();
+      last.then(function (result) {
+        received = result;
+      });
+      t.t(received === obj);
+      t.t(this.deferred.isCanceled());
+      t.t(last.isCanceled());
+    },
 
-    "cancel() returns undefined if canceler resolves deferred": function (t) {
+    'cancel() returns undefined if canceler resolves deferred': function (t) {
       var deferred = this.deferred;
       var obj = {};
       this.canceler = function () {
         deferred.resolve(obj);
       };
       var result = this.deferred.cancel();
-      t.t(typeof result === "undefined");
+      t.t(typeof result === 'undefined');
     },
 
-    "cancel() doesn't change rejection value if canceler rejects deferred":
-      function (t) {
-        var deferred = this.deferred;
-        var obj = {};
-        var received;
-        this.canceler = function () {
-          deferred.reject(obj);
-        };
-        this.deferred.cancel();
-        this.deferred.then(null, function (result) {
-          received = result;
-        });
-        t.t(received === obj);
-      },
+    "cancel() doesn't change rejection value if canceler rejects deferred": function (t) {
+      var deferred = this.deferred;
+      var obj = {};
+      var received;
+      this.canceler = function () {
+        deferred.reject(obj);
+      };
+      this.deferred.cancel();
+      this.deferred.then(null, function (result) {
+        received = result;
+      });
+      t.t(received === obj);
+    },
 
-    "cancel() doesn't change rejection value if canceler rejects a chain of promises":
-      function (t) {
-        var deferred = this.deferred;
-        var obj = {};
-        var received;
-        this.canceler = function () {
-          deferred.reject(obj);
-        };
-        var last = this.deferred.then().then().then();
-        last.cancel();
-        last.then(null, function (result) {
-          received = result;
-        });
-        t.t(received === obj);
-        t.t(this.deferred.isCanceled());
-        t.t(last.isCanceled());
-      },
+    "cancel() doesn't change rejection value if canceler rejects a chain of promises": function (t) {
+      var deferred = this.deferred;
+      var obj = {};
+      var received;
+      this.canceler = function () {
+        deferred.reject(obj);
+      };
+      var last = this.deferred.then().then().then();
+      last.cancel();
+      last.then(null, function (result) {
+        received = result;
+      });
+      t.t(received === obj);
+      t.t(this.deferred.isCanceled());
+      t.t(last.isCanceled());
+    },
 
-    "cancel() returns undefined if canceler rejects deferred": function (t) {
+    'cancel() returns undefined if canceler rejects deferred': function (t) {
       var deferred = this.deferred;
       var obj = {};
       this.canceler = function () {
         deferred.reject(obj);
       };
       var result = this.deferred.cancel();
-      t.t(typeof result === "undefined");
+      t.t(typeof result === 'undefined');
     },
 
-    "cancel() a promise chain": function (t) {
+    'cancel() a promise chain': function (t) {
       var obj = {};
       var received;
       this.canceler = function (reason) {
@@ -488,7 +466,7 @@ define([
       t.t(received === obj);
     },
 
-    "cancel() a returned promise": function (t) {
+    'cancel() a returned promise': function (t) {
       var obj = {};
       var received;
       var inner = new Deferred(function (reason) {
@@ -502,7 +480,7 @@ define([
       t.t(received === obj);
     },
 
-    "cancel() is already bound to the deferred": function (t) {
+    'cancel() is already bound to the deferred': function (t) {
       var received;
       this.deferred.then(null, function (result) {
         received = result;
@@ -512,7 +490,7 @@ define([
       t.t(received instanceof CancelError);
     },
 
-    "chained then()": function (t) {
+    'chained then()': function (t) {
       function square(n) {
         return n * n;
       }
@@ -528,7 +506,7 @@ define([
       t.is(result, 16);
     },
 
-    "asynchronously chained then()": function (t) {
+    'asynchronously chained then()': function (t) {
       function asyncSquare(n) {
         var inner = new Deferred();
         setTimeout(function () {
@@ -549,7 +527,7 @@ define([
       return td;
     },
 
-    "then() is already bound to the deferred": function (t) {
+    'then() is already bound to the deferred': function (t) {
       var obj = {};
       var then = this.deferred.then;
       var received;
@@ -560,16 +538,15 @@ define([
       t.t(received === obj);
     },
 
-    "then() with progback: returned promise is not fulfilled when progress is emitted":
-      function (t) {
-        var progressed = false;
-        var promise = this.deferred.then(null, null, function () {
-          progressed = true;
-        });
-        this.deferred.progress();
-        t.t(progressed, "Progress was received.");
-        t.f(promise.isFulfilled(), "Promise is not fulfilled.");
-      },
+    'then() with progback: returned promise is not fulfilled when progress is emitted': function (t) {
+      var progressed = false;
+      var promise = this.deferred.then(null, null, function () {
+        progressed = true;
+      });
+      this.deferred.progress();
+      t.t(progressed, 'Progress was received.');
+      t.f(promise.isFulfilled(), 'Promise is not fulfilled.');
+    }
   };
 
   var wrapped = [];
@@ -577,7 +554,7 @@ define([
     wrapped.push({
       name: name,
       setUp: setUp,
-      runTest: tests[name],
+      runTest: tests[name]
     });
   }
 
@@ -589,5 +566,5 @@ define([
     });
   }
 
-  doh.register("tests.Deferred", wrapped);
+  doh.register('tests.Deferred', wrapped);
 });

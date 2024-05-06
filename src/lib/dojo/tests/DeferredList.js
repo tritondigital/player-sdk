@@ -1,5 +1,5 @@
-define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
-  doh.register("tests.DeferredList", [
+define(['../main', 'doh/main', '../DeferredList'], function (dojo, doh) {
+  doh.register('tests.DeferredList', [
     function callback(t) {
       var d1 = new dojo.Deferred();
       var d2 = new dojo.Deferred();
@@ -7,21 +7,21 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
       var fired = false;
 
       dl.addCallback(function (res) {
-        doh.debug("debug from dojo.DeferredList callback");
+        doh.debug('debug from dojo.DeferredList callback');
         return res;
       });
       dl.addCallback(function (res) {
-        console.log("res: ", res, res.length);
+        console.log('res: ', res, res.length);
         t.assertTrue(res.length == 2);
         t.assertTrue(res[0][0]);
-        t.assertEqual(res[0][1], "foo");
+        t.assertEqual(res[0][1], 'foo');
         t.assertTrue(res[1][0]);
-        t.assertEqual(res[1][1], "bar");
+        t.assertEqual(res[1][1], 'bar');
         fired = true;
         return res;
       });
-      d1.callback("foo");
-      d2.callback("bar");
+      d1.callback('foo');
+      d2.callback('bar');
       t.assertTrue(fired);
     },
 
@@ -30,11 +30,11 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
       var d2 = new dojo.Deferred();
       var dl = new dojo.DeferredList([d1, d2]);
       var fired = false;
-      var e1 = new Error("foo");
-      var e2 = new Error("bar");
+      var e1 = new Error('foo');
+      var e2 = new Error('bar');
 
       dl.addCallback(function (res) {
-        doh.debug("debug from dojo.DeferredList callback");
+        doh.debug('debug from dojo.DeferredList callback');
         return res;
       });
       dl.addCallback(function (res) {
@@ -57,10 +57,10 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
       var d2 = new dojo.Deferred();
       var dl = new dojo.DeferredList([d1, d2]);
       var fired = false;
-      var e = new Error("foo");
+      var e = new Error('foo');
 
       dl.addCallback(function (res) {
-        doh.debug("debug from dojo.DeferredList callback");
+        doh.debug('debug from dojo.DeferredList callback');
         return res;
       });
       dl.addCallback(function (res) {
@@ -69,12 +69,12 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
 
         t.assertEqual(res[0][1], e);
         t.assertTrue(res[1][0]);
-        t.assertEqual(res[1][1], "bar");
+        t.assertEqual(res[1][1], 'bar');
         fired = true;
         return res;
       });
       d1.errback(e);
-      d2.callback("bar");
+      d2.callback('bar');
       t.assertTrue(fired);
     },
 
@@ -84,38 +84,38 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
       var dl = dojo.DeferredList.prototype.gatherResults([d1, d2]);
       var fired = false;
       dl.addCallback(function (res) {
-        t.assertEqual(res[0], "foo");
-        t.assertEqual(res[1], "bar");
+        t.assertEqual(res[0], 'foo');
+        t.assertEqual(res[1], 'bar');
         fired = true;
         return res;
       });
-      d1.callback("foo");
-      d2.callback("bar");
+      d1.callback('foo');
+      d2.callback('bar');
       t.assertTrue(fired);
-    },
+    }
   ]);
 
-  doh.register("tests.DeferredList", [
+  doh.register('tests.DeferredList', [
     function callback(t) {
       var d1 = new dojo.Deferred();
       var d2 = new dojo.Deferred();
       var dl = new dojo.DeferredList([d1, d2]);
       var fired = false;
       dl.addCallback(function (res) {
-        doh.debug("debug from dojo.DeferredList callback");
+        doh.debug('debug from dojo.DeferredList callback');
         return res;
       });
       dl.addCallback(function (res) {
         t.assertTrue(res.length == 2);
         t.assertTrue(res[0][0]);
-        t.assertEqual(res[0][1], "foo");
+        t.assertEqual(res[0][1], 'foo');
         t.assertTrue(res[1][0]);
-        t.assertEqual(res[1][1], "bar");
+        t.assertEqual(res[1][1], 'bar');
         fired = true;
         return res;
       });
-      d1.callback("foo");
-      d2.callback("bar");
+      d1.callback('foo');
+      d2.callback('bar');
       t.assertTrue(fired);
     },
 
@@ -124,11 +124,11 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
       var d2 = new dojo.Deferred();
       var dl = new dojo.DeferredList([d1, d2]);
       var fired = false;
-      var e1 = new Error("foo");
-      var e2 = new Error("bar");
+      var e1 = new Error('foo');
+      var e2 = new Error('bar');
 
       dl.addCallback(function (res) {
-        doh.debug("debug from dojo.DeferredList callback");
+        doh.debug('debug from dojo.DeferredList callback');
         return res;
       });
       dl.addCallback(function (res) {
@@ -151,10 +151,10 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
       var d2 = new dojo.Deferred();
       var dl = new dojo.DeferredList([d1, d2]);
       var fired = false;
-      var e = new Error("foo");
+      var e = new Error('foo');
 
       dl.addCallback(function (res) {
-        doh.debug("debug from dojo.DeferredList callback");
+        doh.debug('debug from dojo.DeferredList callback');
         return res;
       });
       dl.addCallback(function (res) {
@@ -163,12 +163,12 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
 
         t.assertEqual(res[0][1], e);
         t.assertTrue(res[1][0]);
-        t.assertEqual(res[1][1], "bar");
+        t.assertEqual(res[1][1], 'bar');
         fired = true;
         return res;
       });
       d1.errback(e);
-      d2.callback("bar");
+      d2.callback('bar');
       t.assertTrue(fired);
     },
 
@@ -178,14 +178,14 @@ define(["../main", "doh/main", "../DeferredList"], function (dojo, doh) {
       var dl = dojo.DeferredList.prototype.gatherResults([d1, d2]);
       var fired = false;
       dl.addCallback(function (res) {
-        t.assertEqual(res[0], "foo");
-        t.assertEqual(res[1], "bar");
+        t.assertEqual(res[0], 'foo');
+        t.assertEqual(res[1], 'bar');
         fired = true;
         return res;
       });
-      d1.callback("foo");
-      d2.callback("bar");
+      d1.callback('foo');
+      d2.callback('bar');
       t.assertTrue(fired);
-    },
+    }
   ]);
 });

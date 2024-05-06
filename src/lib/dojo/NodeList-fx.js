@@ -1,10 +1,4 @@
-define(["./query", "./_base/lang", "./aspect", "./_base/fx", "./fx"], function (
-  query,
-  lang,
-  aspect,
-  baseFx,
-  coreFx
-) {
+define(['./query', './_base/lang', './aspect', './_base/fx', './fx'], function (query, lang, aspect, baseFx, coreFx) {
   // module:
   //		dojo/NodeList-fx
 
@@ -52,7 +46,7 @@ return function(){
       //		Utilizing `auto` to get the NodeList back:
       //		|	dojo.query(".titles").wipeIn({ auto:true }).onclick(someFunction);
       //
-      return this._anim(coreFx, "wipeIn", args); // dojo/_base/fx.Animation|dojo/NodeList
+      return this._anim(coreFx, 'wipeIn', args); // dojo/_base/fx.Animation|dojo/NodeList
     },
 
     wipeOut: function (args) {
@@ -71,7 +65,7 @@ return function(){
       // example:
       //		Wipe out all tables with class "blah":
       //		|	dojo.query("table.blah").wipeOut().play();
-      return this._anim(coreFx, "wipeOut", args); // dojo/_base/fx.Animation|dojo/NodeList
+      return this._anim(coreFx, 'wipeOut', args); // dojo/_base/fx.Animation|dojo/NodeList
     },
 
     slideTo: function (args) {
@@ -93,7 +87,7 @@ return function(){
       //		|		left: 40,
       //		|		top: 50
       //		|	}).play();
-      return this._anim(coreFx, "slideTo", args); // dojo/_base/fx.Animation|dojo/NodeList
+      return this._anim(coreFx, 'slideTo', args); // dojo/_base/fx.Animation|dojo/NodeList
     },
 
     fadeIn: function (args) {
@@ -112,7 +106,7 @@ return function(){
       // example:
       //		Fade in all tables with class "blah":
       //		|	dojo.query("table.blah").fadeIn().play();
-      return this._anim(baseFx, "fadeIn", args); // dojo/_base/fx.Animation|dojo/NodeList
+      return this._anim(baseFx, 'fadeIn', args); // dojo/_base/fx.Animation|dojo/NodeList
     },
 
     fadeOut: function (args) {
@@ -140,7 +134,7 @@ return function(){
       //		Using `auto`:
       //		|	dojo.query("li").fadeOut({ auto:true }).filter(filterFn).forEach(doit);
       //
-      return this._anim(baseFx, "fadeOut", args); // dojo/_base/fx.Animation|dojo/NodeList
+      return this._anim(baseFx, 'fadeOut', args); // dojo/_base/fx.Animation|dojo/NodeList
     },
 
     animateProperty: function (args) {
@@ -173,16 +167,10 @@ return function(){
       //	|			height:240
       //	|		}
       //	|	}).onclick(handler);
-      return this._anim(baseFx, "animateProperty", args); // dojo/_base/fx.Animation|dojo/NodeList
+      return this._anim(baseFx, 'animateProperty', args); // dojo/_base/fx.Animation|dojo/NodeList
     },
 
-    anim: function (
-      /*Object*/ properties,
-      /*Integer?*/ duration,
-      /*Function?*/ easing,
-      /*Function?*/ onEnd,
-      /*Integer?*/ delay
-    ) {
+    anim: function (/*Object*/ properties, /*Integer?*/ duration, /*Function?*/ easing, /*Function?*/ onEnd, /*Integer?*/ delay) {
       // summary:
       //		Animate one or more CSS properties for all nodes in this list.
       //		The returned animation object will already be playing when it
@@ -211,15 +199,15 @@ return function(){
             node: item,
             properties: properties,
             duration: duration || 350,
-            easing: easing,
+            easing: easing
           });
         })
       );
       if (onEnd) {
-        aspect.after(canim, "onEnd", onEnd, true);
+        aspect.after(canim, 'onEnd', onEnd, true);
       }
       return canim.play(delay || 0); // dojo/_base/fx.Animation
-    },
+    }
   });
 
   return NodeList;

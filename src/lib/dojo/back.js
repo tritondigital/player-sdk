@@ -1,12 +1,4 @@
-define([
-  "./_base/config",
-  "./_base/lang",
-  "./sniff",
-  "./dom",
-  "./dom-construct",
-  "./_base/window",
-  "require",
-], function (config, lang, has, dom, domConstruct, baseWindow, require) {
+define(['./_base/config', './_base/lang', './sniff', './dom', './dom-construct', './_base/window', 'require'], function (config, lang, has, dom, domConstruct, baseWindow, require) {
   // module:
   //		dojo/back
 
@@ -14,27 +6,27 @@ define([
     // summary:
     //		Browser history management resources
   };
-  has("extend-dojo") && lang.setObject("dojo.back", back);
+  has('extend-dojo') && lang.setObject('dojo.back', back);
 
   // everyone deals with encoding the hash slightly differently
 
   var getHash = (back.getHash = function () {
       var h = window.location.hash;
-      if (h.charAt(0) == "#") {
+      if (h.charAt(0) == '#') {
         h = h.substring(1);
       }
-      return has("mozilla") ? h : decodeURIComponent(h);
+      return has('mozilla') ? h : decodeURIComponent(h);
     }),
     setHash = (back.setHash = function (h) {
       if (!h) {
-        h = "";
+        h = '';
       }
       window.location.hash = encodeURIComponent(h);
       historyCounter = history.length;
     });
 
-  var initialHref = typeof window !== "undefined" ? window.location.href : "";
-  var initialHash = typeof window !== "undefined" ? getHash() : "";
+  var initialHref = typeof window !== 'undefined' ? window.location.href : '';
+  var initialHash = typeof window !== 'undefined' ? getHash() : '';
   var initialState = null;
 
   var locationTimer = null;
@@ -60,12 +52,12 @@ define([
       last = initialState;
     }
     if (last) {
-      if (last.kwArgs["back"]) {
-        last.kwArgs["back"]();
-      } else if (last.kwArgs["backButton"]) {
-        last.kwArgs["backButton"]();
-      } else if (last.kwArgs["handle"]) {
-        last.kwArgs.handle("back");
+      if (last.kwArgs['back']) {
+        last.kwArgs['back']();
+      } else if (last.kwArgs['backButton']) {
+        last.kwArgs['backButton']();
+      } else if (last.kwArgs['handle']) {
+        last.kwArgs.handle('back');
       }
     }
     forwardStack.push(current);
@@ -80,12 +72,12 @@ define([
     if (!last) {
       return;
     }
-    if (last.kwArgs["forward"]) {
+    if (last.kwArgs['forward']) {
       last.kwArgs.forward();
-    } else if (last.kwArgs["forwardButton"]) {
+    } else if (last.kwArgs['forwardButton']) {
       last.kwArgs.forwardButton();
-    } else if (last.kwArgs["handle"]) {
-      last.kwArgs.handle("forward");
+    } else if (last.kwArgs['handle']) {
+      last.kwArgs.handle('forward');
     }
     historyStack.push(last);
   }
@@ -101,7 +93,7 @@ define([
   function getUrlQuery(url) {
     // summary:
     //		private method. Do not call this directly.
-    var segments = url.split("?");
+    var segments = url.split('?');
     if (segments.length < 2) {
       return null; //null
     } else {
@@ -112,16 +104,10 @@ define([
   function loadIframeHistory() {
     // summary:
     //		private method. Do not call this directly.
-    var url =
-      (config["dojoIframeHistoryUrl"] ||
-        require.toUrl("./resources/iframe_history.html")) +
-      "?" +
-      new Date().getTime();
+    var url = (config['dojoIframeHistoryUrl'] || require.toUrl('./resources/iframe_history.html')) + '?' + new Date().getTime();
     moveForward = true;
     if (historyIframe) {
-      has("webkit")
-        ? (historyIframe.location = url)
-        : (window.frames[historyIframe.name].location = url);
+      has('webkit') ? (historyIframe.location = url) : (window.frames[historyIframe.name].location = url);
     } else {
       //console.warn("dojo/back: Not initialised. You need to call back.init() from a <script> block that lives inside the <body> tag.");
     }
@@ -134,10 +120,7 @@ define([
 
       var hash = getHash();
 
-      if (
-        (hash === initialHash || window.location.href == initialHref) &&
-        hsl == 1
-      ) {
+      if ((hash === initialHash || window.location.href == initialHref) && hsl == 1) {
         // FIXME: could this ever be a forward button?
         // we can't clear it because we still need to check for forwards. Ugg.
         // clearInterval(this.locationTimer);
@@ -173,24 +156,15 @@ define([
     //		in order for this method to work, dojo/back will need to be part of a build layer.
 
     // prevent reinit
-    if (dom.byId("dj_history")) {
+    if (dom.byId('dj_history')) {
       return;
     }
 
-    var src =
-      config["dojoIframeHistoryUrl"] ||
-      require.toUrl("./resources/iframe_history.html");
+    var src = config['dojoIframeHistoryUrl'] || require.toUrl('./resources/iframe_history.html');
     if (config.afterOnLoad) {
-      console.error(
-        "dojo/back::init() must be called before the DOM has loaded. " +
-          "Include dojo/back in a build layer."
-      );
+      console.error('dojo/back::init() must be called before the DOM has loaded. ' + 'Include dojo/back in a build layer.');
     } else {
-      document.write(
-        '<iframe style="border:0;width:1px;height:1px;position:absolute;visibility:hidden;bottom:0;right:0;" name="dj_history" id="dj_history" src="' +
-          src +
-          '"></iframe>'
-      );
+      document.write('<iframe style="border:0;width:1px;height:1px;position:absolute;visibility:hidden;bottom:0;right:0;" name="dj_history" id="dj_history" src="' + src + '"></iframe>');
     }
   };
 
@@ -298,26 +272,20 @@ define([
     var hash = null;
     var url = null;
     if (!historyIframe) {
-      if (config["useXDomain"] && !config["dojoIframeHistoryUrl"]) {
+      if (config['useXDomain'] && !config['dojoIframeHistoryUrl']) {
         console.warn(
-          "dojo/back: When using cross-domain Dojo builds," +
-            " please save iframe_history.html to your domain and set djConfig.dojoIframeHistoryUrl" +
-            " to the path on your domain to iframe_history.html"
+          'dojo/back: When using cross-domain Dojo builds,' +
+            ' please save iframe_history.html to your domain and set djConfig.dojoIframeHistoryUrl' +
+            ' to the path on your domain to iframe_history.html'
         );
       }
-      historyIframe = window.frames["dj_history"];
+      historyIframe = window.frames['dj_history'];
     }
     if (!bookmarkAnchor) {
-      bookmarkAnchor = domConstruct.create(
-        "a",
-        { style: { display: "none" } },
-        baseWindow.body()
-      );
+      bookmarkAnchor = domConstruct.create('a', { style: { display: 'none' } }, baseWindow.body());
     }
-    if (args["changeUrl"]) {
-      hash =
-        "" +
-        (args["changeUrl"] !== true ? args["changeUrl"] : new Date().getTime());
+    if (args['changeUrl']) {
+      hash = '' + (args['changeUrl'] !== true ? args['changeUrl'] : new Date().getTime());
 
       //If the current hash matches the new one, just replace the history object with
       //this new one. It doesn't make sense to track different state objects for the same
@@ -329,10 +297,7 @@ define([
       if (historyStack.length == 0 && initialState.urlHash == hash) {
         initialState = createState(url, args, hash);
         return;
-      } else if (
-        historyStack.length > 0 &&
-        historyStack[historyStack.length - 1].urlHash == hash
-      ) {
+      } else if (historyStack.length > 0 && historyStack[historyStack.length - 1].urlHash == hash) {
         historyStack[historyStack.length - 1] = createState(url, args, hash);
         return;
       }
@@ -344,16 +309,16 @@ define([
       }, 1);
       bookmarkAnchor.href = hash;
 
-      if (has("ie")) {
+      if (has('ie')) {
         url = loadIframeHistory();
 
-        var oldCB = args["back"] || args["backButton"] || args["handle"];
+        var oldCB = args['back'] || args['backButton'] || args['handle'];
 
         //The function takes handleName as a parameter, in case the
         //callback we are overriding was "handle". In that case,
         //we will need to pass the handle name to handle.
         var tcb = function (handleName) {
-          if (getHash() != "") {
+          if (getHash() != '') {
             setTimeout(function () {
               setHash(hash);
             }, 1);
@@ -363,21 +328,21 @@ define([
         };
 
         //Set interceptor function in the right place.
-        if (args["back"]) {
+        if (args['back']) {
           args.back = tcb;
-        } else if (args["backButton"]) {
+        } else if (args['backButton']) {
           args.backButton = tcb;
-        } else if (args["handle"]) {
+        } else if (args['handle']) {
           args.handle = tcb;
         }
 
-        var oldFW = args["forward"] || args["forwardButton"] || args["handle"];
+        var oldFW = args['forward'] || args['forwardButton'] || args['handle'];
 
         //The function takes handleName as a parameter, in case the
         //callback we are overriding was "handle". In that case,
         //we will need to pass the handle name to handle.
         var tfw = function (handleName) {
-          if (getHash() != "") {
+          if (getHash() != '') {
             setHash(hash);
           }
           if (oldFW) {
@@ -388,14 +353,14 @@ define([
         };
 
         //Set interceptor function in the right place.
-        if (args["forward"]) {
+        if (args['forward']) {
           args.forward = tfw;
-        } else if (args["forwardButton"]) {
+        } else if (args['forwardButton']) {
           args.forwardButton = tfw;
-        } else if (args["handle"]) {
+        } else if (args['handle']) {
           args.handle = tfw;
         }
-      } else if (!has("ie")) {
+      } else if (!has('ie')) {
         // start the timer
         if (!locationTimer) {
           locationTimer = setInterval(checkLocation, 200);
@@ -428,15 +393,9 @@ define([
 
     //Check the back stack first, since it is more likely.
     //Note that only one step back or forward is supported.
-    if (
-      historyStack.length >= 2 &&
-      query == getUrlQuery(historyStack[historyStack.length - 2].url)
-    ) {
+    if (historyStack.length >= 2 && query == getUrlQuery(historyStack[historyStack.length - 2].url)) {
       handleBackButton();
-    } else if (
-      forwardStack.length > 0 &&
-      query == getUrlQuery(forwardStack[forwardStack.length - 1].url)
-    ) {
+    } else if (forwardStack.length > 0 && query == getUrlQuery(forwardStack[forwardStack.length - 1].url)) {
       handleForwardButton();
     }
   };

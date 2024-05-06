@@ -2,27 +2,23 @@
  * User Registration Player Mediator:
  * for a TdPlayerApi player instance with both modules 'MediaPlayer' and 'UserRegistration', this mediator will take actions when user logs-in, logs-out to play specific mounts (i.e. registered mounts for registered users).
  */
-define(["dojo/_base/declare", "dojo/_base/lang", "dojo/on"], function (
-  declare,
-  lang,
-  on
-) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on'], function (declare, lang, on) {
   var module = declare([], {
-    TDAS_REG_ONLY: "tdas-reg-only",
+    TDAS_REG_ONLY: 'tdas-reg-only',
 
     constructor: function (getModuleById, target) {
-      console.log("userRegPlayerMediator::constructor");
+      console.log('userRegPlayerMediator::constructor');
 
-      this.mediaPlayer = getModuleById("MediaPlayer");
-      this.userRegistration = getModuleById("UserRegistration");
+      this.mediaPlayer = getModuleById('MediaPlayer');
+      this.userRegistration = getModuleById('UserRegistration');
 
       this.mediaPlayer.addHqTag(this.TDAS_REG_ONLY);
 
-      on(target, "stream-start", lang.hitch(this, this._onStreamStarted));
-      on(target, "stream-stop", lang.hitch(this, this._onStreamStopped));
+      on(target, 'stream-start', lang.hitch(this, this._onStreamStarted));
+      on(target, 'stream-stop', lang.hitch(this, this._onStreamStopped));
 
-      on(target, "user-logged-out", lang.hitch(this, this._onUserLoggedOut));
-      on(target, "user-details", lang.hitch(this, this._onUserDetails));
+      on(target, 'user-logged-out', lang.hitch(this, this._onUserLoggedOut));
+      on(target, 'user-details', lang.hitch(this, this._onUserDetails));
 
       this.inherited(arguments);
     },
@@ -33,7 +29,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/on"], function (
      * @private
      */
     _onStreamStarted: function () {
-      this.userRegistration.triggerEvent("playerStart");
+      this.userRegistration.triggerEvent('playerStart');
     },
 
     /**
@@ -42,7 +38,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/on"], function (
      * @private
      */
     _onStreamStopped: function () {
-      this.userRegistration.triggerEvent("playerStop");
+      this.userRegistration.triggerEvent('playerStop');
     },
 
     /**
@@ -51,7 +47,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/on"], function (
      * @private
      */
     _onUserLoggedOut: function (result) {
-      console.log("userRegPlayerMediator::_onUserLoggedOut");
+      console.log('userRegPlayerMediator::_onUserLoggedOut');
       console.log(result);
 
       this._removeUserParameters();
@@ -74,7 +70,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/on"], function (
      * @private
      */
     _onUserDetails: function (result) {
-      console.log("userRegPlayerMediator::_onUserDetails");
+      console.log('userRegPlayerMediator::_onUserDetails');
       console.log(result);
 
       if (!result.data && !result.data) return;
@@ -83,8 +79,8 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/on"], function (
 
       //dob expected format is YYYY-MM-DD. result.data.dob format is: mm/dd/yyyy
       if (result.data.dob) {
-        var dobArr = result.data.dob.split("/");
-        userData.dob = dobArr[2] + "-" + dobArr[0] + "-" + dobArr[1];
+        var dobArr = result.data.dob.split('/');
+        userData.dob = dobArr[2] + '-' + dobArr[0] + '-' + dobArr[1];
       }
 
       if (result.data.gender) {
@@ -100,15 +96,12 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/on"], function (
       }
 
       if (result.data.vid) {
-        userData["tdas-vid"] =
-          this.userRegistration.tenantId.toString() +
-          "." +
-          result.data.vid.toString();
+        userData['tdas-vid'] = this.userRegistration.tenantId.toString() + '.' + result.data.vid.toString();
       }
 
       if (result.data.tdas) {
-        userData["tdas-utags"] = result.data.tdas["user-tags"];
-        userData["tdas-utcheck"] = result.data.tdas["user-tags-hash"];
+        userData['tdas-utags'] = result.data.tdas['user-tags'];
+        userData['tdas-utcheck'] = result.data.tdas['user-tags-hash'];
       }
 
       if (this.mediaPlayer.config.defaultTrackingParameters == undefined) {
@@ -116,14 +109,14 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dojo/on"], function (
       }
 
       //Merge the default tracking parameters with the user data
-      this.mediaPlayer.config.defaultTrackingParameters["user"] = userData;
+      this.mediaPlayer.config.defaultTrackingParameters['user'] = userData;
 
       this.mediaPlayer.enableHQ();
     },
 
     _removeUserParameters: function () {
-      this.mediaPlayer.config.defaultTrackingParameters["user"] = {};
-    },
+      this.mediaPlayer.config.defaultTrackingParameters['user'] = {};
+    }
   });
 
   return module;

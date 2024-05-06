@@ -1,10 +1,4 @@
-define([
-  "./query",
-  "./_base/lang",
-  "./_base/array",
-  "./dom-construct",
-  "./NodeList-dom",
-], function (dquery, lang, array, construct) {
+define(['./query', './_base/lang', './_base/array', './dom-construct', './NodeList-dom'], function (dquery, lang, array, construct) {
   // module:
   //		dojo/NodeList-manipulate
 
@@ -26,7 +20,7 @@ define([
     // description:
     //		Juse uses nodedValue so things like <br/> tags do not end up in
     //		the text as any sort of line return.
-    var text = "",
+    var text = '',
       ch = node.childNodes;
     for (var i = 0, n; (n = ch[i]); i++) {
       //Skip comments.
@@ -55,7 +49,7 @@ define([
   function makeWrapNode(/*DOMNode||String*/ html, /*DOMNode*/ refNode) {
     // summary:
     //		convert HTML into nodes if it is not already a node.
-    if (typeof html == "string") {
+    if (typeof html == 'string') {
       html = construct.toDom(html, refNode && refNode.ownerDocument);
       if (html.nodeType == 11) {
         //DocumentFragment cannot handle cloneNode, so choose first child.
@@ -69,16 +63,12 @@ define([
   }
 
   lang.extend(NodeList, {
-    _placeMultiple: function (
-      /*String||Node||NodeList*/ query,
-      /*String*/ position
-    ) {
+    _placeMultiple: function (/*String||Node||NodeList*/ query, /*String*/ position) {
       // summary:
       //		private method for inserting queried nodes into all nodes in this NodeList
       //		at different positions. Differs from NodeList.place because it will clone
       //		the nodes in this NodeList if the query matches more than one element.
-      var nl2 =
-        typeof query == "string" || query.nodeType ? dquery(query) : query;
+      var nl2 = typeof query == 'string' || query.nodeType ? dquery(query) : query;
       var toAdd = [];
       for (var i = 0; i < nl2.length; i++) {
         //Go backwards in DOM to make dom insertions easier via insertBefore
@@ -144,7 +134,7 @@ define([
       //		This code returns `<p>Hello Mars</p>`:
       //	|	var message = dojo.query("div").innerHTML();
       if (arguments.length) {
-        return this.addContent(value, "only"); // dojo/NodeList
+        return this.addContent(value, 'only'); // dojo/NodeList
       } else {
         return this[0].innerHTML; //String
       }
@@ -200,7 +190,7 @@ define([
         }
         return this; // dojo/NodeList
       } else {
-        var result = "";
+        var result = '';
         for (i = 0; (node = this[i]); i++) {
           result += getText(node);
         }
@@ -240,7 +230,7 @@ define([
           var type = node.type;
           var newValue = isArray ? value[index] : value;
 
-          if (name == "SELECT") {
+          if (name == 'SELECT') {
             var opts = node.options;
             for (var i = 0; i < opts.length; i++) {
               var opt = opts[i];
@@ -250,7 +240,7 @@ define([
                 opt.selected = opt.value == newValue;
               }
             }
-          } else if (type == "checkbox" || type == "radio") {
+          } else if (type == 'checkbox' || type == 'radio') {
             node.checked = node.value == newValue;
           } else {
             node.value = newValue;
@@ -263,8 +253,8 @@ define([
         if (!node || node.nodeType != 1) {
           return undefined;
         }
-        value = node.value || "";
-        if (node.nodeName.toUpperCase() == "SELECT" && node.multiple) {
+        value = node.value || '';
+        if (node.nodeName.toUpperCase() == 'SELECT' && node.multiple) {
           //A multivalued selectbox. Do the pain.
           value = [];
           //opts declared above in if block.
@@ -304,7 +294,7 @@ define([
       //		Results in this DOM structure:
       //	|	<div id="foo"><p>Hello Mars</p><span>append</span></div>
       //	|	<div id="bar"><p>Hello World</p><span>append</span></div>
-      return this.addContent(content, "last"); // dojo/NodeList
+      return this.addContent(content, 'last'); // dojo/NodeList
     },
 
     appendTo: function (/*String*/ query) {
@@ -328,7 +318,7 @@ define([
       //		Results in this DOM structure:
       //	|	<p>Hello Mars<span>append</span></p>
       //	|	<p>Hello World<span>append</span></p>
-      return this._placeMultiple(query, "last"); // dojo/NodeList
+      return this._placeMultiple(query, 'last'); // dojo/NodeList
     },
 
     prepend: function (/*String||DOMNode||NodeList*/ content) {
@@ -349,7 +339,7 @@ define([
       //		Results in this DOM structure:
       //	|	<div id="foo"><span>prepend</span><p>Hello Mars</p></div>
       //	|	<div id="bar"><span>prepend</span><p>Hello World</p></div>
-      return this.addContent(content, "first"); // dojo/NodeList
+      return this.addContent(content, 'first'); // dojo/NodeList
     },
 
     prependTo: function (/*String*/ query) {
@@ -373,7 +363,7 @@ define([
       //		Results in this DOM structure:
       //	|	<p><span>prepend</span>Hello Mars</p>
       //	|	<p><span>prepend</span>Hello World</p>
-      return this._placeMultiple(query, "first"); // dojo/NodeList
+      return this._placeMultiple(query, 'first'); // dojo/NodeList
     },
 
     after: function (/*String||Element||NodeList*/ content) {
@@ -395,7 +385,7 @@ define([
       //		Results in this DOM structure:
       //	|	<div id="foo"><p>Hello Mars</p></div><span>after</span>
       //	|	<div id="bar"><p>Hello World</p></div><span>after</span>
-      return this.addContent(content, "after"); // dojo/NodeList
+      return this.addContent(content, 'after'); // dojo/NodeList
     },
 
     insertAfter: function (/*String*/ query) {
@@ -419,7 +409,7 @@ define([
       //		Results in this DOM structure:
       //	|	<p>Hello Mars</p><span>after</span>
       //	|	<p>Hello World</p><span>after</span>
-      return this._placeMultiple(query, "after"); // dojo/NodeList
+      return this._placeMultiple(query, 'after'); // dojo/NodeList
     },
 
     before: function (/*String||DOMNode||NodeList*/ content) {
@@ -441,7 +431,7 @@ define([
       //		Results in this DOM structure:
       //	|	<span>before</span><div id="foo"><p>Hello Mars</p></div>
       //	|	<span>before</span><div id="bar"><p>Hello World</p></div>
-      return this.addContent(content, "before"); // dojo/NodeList
+      return this.addContent(content, 'before'); // dojo/NodeList
     },
 
     insertBefore: function (/*String*/ query) {
@@ -465,7 +455,7 @@ define([
       //		Results in this DOM structure:
       //	|	<span>before</span><p>Hello Mars</p>
       //	|	<span>before</span><p>Hello World</p>
-      return this._placeMultiple(query, "before"); // dojo/NodeList
+      return this._placeMultiple(query, 'before'); // dojo/NodeList
     },
 
     /*=====
@@ -603,11 +593,7 @@ define([
 
           //Need to convert the childNodes to an array since wrapAll modifies the
           //DOM and can change the live childNodes NodeList.
-          this._wrap(
-            lang._toArray(this[i].childNodes),
-            null,
-            this._NodeListCtor
-          ).wrapAll(clone);
+          this._wrap(lang._toArray(this[i].childNodes), null, this._NodeListCtor).wrapAll(clone);
         }
       }
       return this; // dojo/NodeList
@@ -642,7 +628,7 @@ define([
       //	|	</div>
       content = this._normalize(content, this[0]);
       for (var i = 0, node; (node = this[i]); i++) {
-        this._place(content, node, "before", i > 0);
+        this._place(content, node, 'before', i > 0);
         node.parentNode.removeChild(node);
       }
       return this; // dojo/NodeList
@@ -688,7 +674,7 @@ define([
       var nl = dquery(query);
       var content = this._normalize(this, this[0]);
       for (var i = 0, node; (node = nl[i]); i++) {
-        this._place(content, node, "before", i > 0);
+        this._place(content, node, 'before', i > 0);
         node.parentNode.removeChild(node);
       }
       return this; // dojo/NodeList
@@ -727,7 +713,7 @@ define([
         ary.push(this._cloneNode(this[i]));
       }
       return this._wrap(ary, this, this._NodeListCtor); // dojo/NodeList
-    },
+    }
   });
 
   //set up html method if one does not exist

@@ -19,7 +19,7 @@
  ******************************************************************************/
 
 // prevent re-definition of the OpenAjax object
-if (!window["OpenAjax"]) {
+if (!window['OpenAjax']) {
   OpenAjax = new (function () {
     // summary:
     //		the OpenAjax hub
@@ -27,13 +27,13 @@ if (!window["OpenAjax"]) {
     //		see http://www.openajax.org/member/wiki/OpenAjax_Hub_Specification
 
     var libs = {};
-    var ooh = "org.openajax.hub.";
+    var ooh = 'org.openajax.hub.';
 
     var h = {};
     this.hub = h;
-    h.implementer = "http://openajax.org";
-    h.implVersion = "0.6";
-    h.specVersion = "0.6";
+    h.implementer = 'http://openajax.org';
+    h.implVersion = '0.6';
+    h.specVersion = '0.6';
     h.implExtraData = {};
     h.libraries = libs;
 
@@ -42,12 +42,12 @@ if (!window["OpenAjax"]) {
         prefix: prefix,
         namespaceURI: nsURL,
         version: version,
-        extraData: extra,
+        extraData: extra
       };
-      this.publish(ooh + "registerLibrary", libs[prefix]);
+      this.publish(ooh + 'registerLibrary', libs[prefix]);
     };
     h.unregisterLibrary = function (prefix) {
-      this.publish(ooh + "unregisterLibrary", libs[prefix]);
+      this.publish(ooh + 'unregisterLibrary', libs[prefix]);
       delete libs[prefix];
     };
 
@@ -60,22 +60,15 @@ if (!window["OpenAjax"]) {
       if (!scope) {
         scope = window;
       }
-      var handle = name + "." + this._subIndex;
-      var sub = {
-        scope: scope,
-        cb: callback,
-        fcb: filter,
-        data: subscriberData,
-        sid: this._subIndex++,
-        hdl: handle,
-      };
-      var path = name.split(".");
+      var handle = name + '.' + this._subIndex;
+      var sub = { scope: scope, cb: callback, fcb: filter, data: subscriberData, sid: this._subIndex++, hdl: handle };
+      var path = name.split('.');
       this._subscribe(this._subscriptions, path, 0, sub);
       return handle;
     };
 
     h.publish = function (name, message) {
-      var path = name.split(".");
+      var path = name.split('.');
       this._pubDepth++;
       this._publish(this._subscriptions, path, 0, name, message);
       this._pubDepth--;
@@ -89,7 +82,7 @@ if (!window["OpenAjax"]) {
     };
 
     h.unsubscribe = function (sub) {
-      var path = sub.split(".");
+      var path = sub.split('.');
       var sid = path.pop();
       this._unsubscribe(this._subscriptions, path, 0, sid);
     };
@@ -99,10 +92,10 @@ if (!window["OpenAjax"]) {
       if (index == path.length) {
         tree.s.push(sub);
       } else {
-        if (typeof tree.c == "undefined") {
+        if (typeof tree.c == 'undefined') {
           tree.c = {};
         }
-        if (typeof tree.c[token] == "undefined") {
+        if (typeof tree.c[token] == 'undefined') {
           tree.c[token] = { c: {}, s: [] };
         }
         this._subscribe(tree.c[token], path, index + 1, sub);
@@ -110,16 +103,16 @@ if (!window["OpenAjax"]) {
     };
 
     h._publish = function (tree, path, index, name, msg) {
-      if (typeof tree != "undefined") {
+      if (typeof tree != 'undefined') {
         var node;
         if (index == path.length) {
           node = tree;
         } else {
           this._publish(tree.c[path[index]], path, index + 1, name, msg);
-          this._publish(tree.c["*"], path, index + 1, name, msg);
-          node = tree.c["**"];
+          this._publish(tree.c['*'], path, index + 1, name, msg);
+          node = tree.c['**'];
         }
-        if (typeof node != "undefined") {
+        if (typeof node != 'undefined') {
           var callbacks = node.s;
           var max = callbacks.length;
           for (var i = 0; i < max; i++) {
@@ -128,11 +121,11 @@ if (!window["OpenAjax"]) {
               var cb = callbacks[i].cb;
               var fcb = callbacks[i].fcb;
               var d = callbacks[i].data;
-              if (typeof cb == "string") {
+              if (typeof cb == 'string') {
                 // get a function object
                 cb = sc[cb];
               }
-              if (typeof fcb == "string") {
+              if (typeof fcb == 'string') {
                 // get a function object
                 fcb = sc[fcb];
               }
@@ -146,7 +139,7 @@ if (!window["OpenAjax"]) {
     };
 
     h._unsubscribe = function (tree, path, index, sid) {
-      if (typeof tree != "undefined") {
+      if (typeof tree != 'undefined') {
         if (index < path.length) {
           var childNode = tree.c[path[index]];
           this._unsubscribe(childNode, path, index + 1, sid);
@@ -177,12 +170,7 @@ if (!window["OpenAjax"]) {
       for (var lib in OpenAjax.hub.libraries) {
         delete OpenAjax.hub.libraries[lib];
       }
-      OpenAjax.hub.registerLibrary(
-        "OpenAjax",
-        "http://openajax.org/hub",
-        "0.6",
-        {}
-      );
+      OpenAjax.hub.registerLibrary('OpenAjax', 'http://openajax.org/hub', '0.6', {});
 
       delete OpenAjax._subscriptions;
       OpenAjax._subscriptions = { c: {}, s: [] };
@@ -194,10 +182,5 @@ if (!window["OpenAjax"]) {
   })();
 
   // Register the OpenAjax Hub itself as a library.
-  OpenAjax.hub.registerLibrary(
-    "OpenAjax",
-    "http://openajax.org/hub",
-    "0.6",
-    {}
-  );
+  OpenAjax.hub.registerLibrary('OpenAjax', 'http://openajax.org/hub', '0.6', {});
 }
