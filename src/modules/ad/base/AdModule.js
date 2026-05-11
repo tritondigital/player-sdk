@@ -74,9 +74,9 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/_base/lang', 'sdk/base/ad/AdQuart
     initAdListeners: function (html5OnDemand) {
       console.log('adModule::initAdListeners');
 
-      this.html5OnDemand = html5OnDemand;
+      this.html5OnDemand = html5OnDemand; //@FIXME MediaTagHelper required (singleton ?)
 
-      this.html5OnDemand.initHTMLElementsStyle(this.html5OnDemand.videoNode);
+      this.html5OnDemand.initHTMLElementsStyle(this.html5OnDemand.videoNode); //@FIXME We know, it's awful !!!!
 
       this.playbackOnDemandStatushandler = this.html5OnDemand.setPlaybackStatusHandler(lang.hitch(this, this._onAdPlaybackStatus));
       this.clickTrackingElementClickedHandler = this.html5OnDemand.setClickTrackingElementClickedHandler(lang.hitch(this, this._onClickTrackingElementClicked));
@@ -118,7 +118,7 @@ define(['dojo/_base/declare', 'dojo/on', 'dojo/_base/lang', 'sdk/base/ad/AdQuart
 
         this.emit(this.AD_MODULE_COUNTDOWN, { countDown: duration - currentTime });
       } else if (e.code == 'MEDIA_ENDED' || e.code == 'MEDIA_ERROR') {
-        this.html5OnDemand.stop();
+        this.html5OnDemand.stop(); ///@FIXME REALLY????????***************
 
         if (!this._destroyAdToggle) {
           this.emit(this.AD_MODULE_PLAYBACK_COMPLETE, { id: this.playerNode, type: e.adServerType, error: false });

@@ -35,7 +35,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/Defer
     LABEL_SUCCESS: 'Success',
     LABEL_ERROR: 'Error',
     LABEL_STREAM_ERROR: 'Stream Error',
-    LABEL_GEOBLOCKING: 'Geoblocking',
     LABEL_UNAVAILABLE: 'Unavailable',
     LABEL_TRACK: 'Track',
     LABEL_CUSTOM: 'Custom',
@@ -163,9 +162,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/Defer
                     case this.LABEL_STREAM_ERROR:
                       valid = this.validateStreamingConnectionStreamError(object);
                       break;
-                    case this.LABEL_GEOBLOCKING:
-                      valid = this.validateStreamingConnectionGeoblocking(object);
-                      break;
                     default:
                       valid = true;
                   }
@@ -276,18 +272,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/Defer
     },
 
     /**
-     * validateStreamingConnectionGeoblocking
-     * @param object | object
-     */
-    validateStreamingConnectionGeoblocking: function (object) {
-      console.log('GAEventRequest::validateStreamingConnectionGeoblocking');
-
-      if (!_validateNotEmptyValue(object, this.DIM_ALTERNATE_CONTENT, ['true', 'false'])) return false;
-
-      return true;
-    },
-
-    /**
      * validateStreamingConnection
      * @param object | object
      */
@@ -296,7 +280,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/_base/array', 'dojo/Defer
 
       if (!_validateObject(object, this.CATEGORY, 'Streaming')) return false;
       if (!_validateObject(object, this.ACTION, 'Connection')) return false;
-      if (!_validateObject(object, this.LABEL, ['Success', 'Unavailable', 'Stream Error', 'Geoblocking', 'Failed'])) return false;
+      if (!_validateObject(object, this.LABEL, ['Success', 'Unavailable', 'Stream Error', 'Failed'])) return false;
 
       //dimensions
       if (!_validateNotEmptyValue(object, this.DIM_MOUNT) && !_validateNotEmptyValue(object, this.DIM_STATION)) return false;

@@ -20,6 +20,8 @@ define(['dojo/_base/declare', 'require', 'dojo/_base/Deferred'], function (decla
         def.resolve();
       });
 
+      //@TODO error handling def.reject(err);
+
       return def;
     }
   });

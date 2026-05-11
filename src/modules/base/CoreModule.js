@@ -9,7 +9,6 @@ define(['dojo/_base/declare', 'dojo/on'], function (declare, on) {
   var module = declare([], {
     //Internal Api requests
     INTERNAL_REQUEST_API_FUNCTIONS: {
-      'get-alternate-content': '_onApiRequestGetAlternateContent',
       'get-vast-instream': '_onApiRequestGetVastInstream'
     },
 

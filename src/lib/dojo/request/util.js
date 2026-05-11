@@ -12,7 +12,9 @@ define(['exports', '../errors/RequestError', '../errors/CancelError', '../Deferr
     for (var name in source) {
       var tval = target[name],
         sval = source[name];
-      if (tval !== sval) {
+      // Fix CVE-2020-5258: skip copying if the property is __proto__ and the value is different to prevent prototype pollution
+      // https://github.com/dojo/dojo/commit/20a00afb68f5587946dc76fbeaa68c39bda2171d
+      if (name !== '__proto__' && tval !== sval) {
         if (tval && typeof tval === 'object' && sval && typeof sval === 'object') {
           exports.deepCopy(tval, sval);
         } else {

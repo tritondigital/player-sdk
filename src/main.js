@@ -39,7 +39,7 @@
  *     }
  *
  * </pre>
- * @authors Triton Digital (c)
+ * @authors Triton Digital - Sebastien Aurusse - Morgan Lagree
  */
 //
 var declare = require('dojo/_base/declare');

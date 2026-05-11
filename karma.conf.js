@@ -78,8 +78,7 @@ module.exports = function (config) {
     },
 
     browserConsoleLogOptions: {
-      terminal: true,
-      level: ''
+      terminal: true
     },
 
     // Continuous Integration mode
@@ -91,7 +90,9 @@ module.exports = function (config) {
     concurrency: Infinity,
 
     client: {
+      captureConsole: true, // capture console output and pipe it to the terminal where karma is running
       mocha: {
+        bail: true,
         timeout: debug ? '3600000' : '2000'
       }
     }

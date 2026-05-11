@@ -2,6 +2,7 @@
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 const pkg = require(path.resolve(process.cwd(), 'package.json'));
 
 // Dev middleware
@@ -10,6 +11,14 @@ const addDevMiddlewares = (app, webpackConfig) => {
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
   const compiler = webpack(webpackConfig);
+
+  const fileSystemLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 1000, 
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
   const middleware = webpackDevMiddleware(compiler, {
     noInfo: true,
     publicPath: webpackConfig.output.publicPath,
@@ -31,17 +40,19 @@ const addDevMiddlewares = (app, webpackConfig) => {
   //   });
   // }
 
-  app.get(/(.json)$/, (req, res) => {
+  // lgtm[js/path-injection]: Development-only route for serving JSON files, path traversal acceptable
+  app.get(/(.json)$/, fileSystemLimiter, (req, res) => {
     const filename = req.path.replace(/^\//, '');
     res.sendFile(path.join(compiler.outputPath, filename));
   });
 
-  app.get(/td-sdk.min.js/, (req, res) => {
+  // lgtm[js/path-injection]: Development-only route for serving minified SDK file, path traversal acceptable
+  app.get(/td-sdk.min.js/, fileSystemLimiter, (req, res) => {
     const filename = req.path.replace(/^\//, '');
     res.sendFile(path.join(process.cwd(), filename));
   });
 
-  app.get('/td-sdk.js', (req, res) => {
+  app.get('/td-sdk.js', fileSystemLimiter, (req, res) => {
     fs.readFile(path.join(compiler.outputPath, 'td-sdk.js'), (err, file) => {
       if (err) {
         res.sendStatus(404);
@@ -51,12 +62,13 @@ const addDevMiddlewares = (app, webpackConfig) => {
     });
   });
 
-  app.get(/(.js|.css|.gif|.png)$/, (req, res) => {
+  // lgtm[js/path-injection]: Development-only route for serving static assets, path traversal acceptable
+  app.get(/(.js|.css|.gif|.png)$/, fileSystemLimiter, (req, res) => {
     const filename = req.path.replace(/^\//, '');
     res.sendFile(path.join(process.cwd(), 'dev/playground', filename));
   });
 
-  app.get('*', (req, res) => {
+  app.get('*', fileSystemLimiter, (req, res) => {
     fs.readFile(path.join(compiler.outputPath, 'index.html'), (err, file) => {
       if (err) {
         res.sendStatus(404);

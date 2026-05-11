@@ -1,4 +1,34 @@
 # Release notes:
+#2.9.77 (Apr 1 2026)
+- Fix CVE-2020-5258 and CVE-2020-5258 on Dojo dependency
+
+#2.9.76 (Mar 26 2026)
+- Load creatives with external scripts inside iframe to load properly
+
+#2.9.75 (Mar 24 2026)
+- Removed unescaped characters from minified bundle
+
+#2.9.74 (Mar 18 2026)
+- Add all supported banner sizes in Playground
+
+#2.9.73 (Mar 12 2026)
+- Fixed dependency hash in playground that prevent its loading
+
+#2.9.72 (Feb 5 2026)
+- Added configurable burst time and hls buffer time.
+
+#2.9.70 - 2.9.71 (Feb 10 2025)
+- Fixed Timeshift rewind.
+
+#2.9.69 (Oct 11 2024)
+- Fixed Hls going into an infinate loop.
+
+#2.9.68 (Aug 01 2024)
+- Fix the issues arising when removing SAC from Player Services.
+- Timeshift status code fix.
+- WebSDK does not play HLS segments even when specifying it.
+- Fixed Inconsistent volume when chnging streams.
+
 #2.9.67 (Apr 15 2024)
 - Use URL to play timeshift.
 - Fix Timeshift display values in playground.

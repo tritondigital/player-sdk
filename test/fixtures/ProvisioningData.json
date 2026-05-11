@@ -197,14 +197,6 @@
         "mount": {
           "_text": "HLS_PLAYERSMP3"
         },
-        "alternate-content": {
-          "url": {
-            "_text": "[URL to alternate content]"
-          },
-          "mount": {
-            "_text": "[Alternate Mount Name]"
-          }
-        },
         "format": {
           "_text": "FLV"
         },

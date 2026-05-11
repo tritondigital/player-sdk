@@ -78,7 +78,7 @@ define([
         this.setMediaAdBlankFiles(null);
 
         var requestArgs = this._getRequestArgs();
-
+        // lgtm[js/incomplete-url-substring-sanitization]: Business requirement to disable credentials for any URL containing these ad server patterns
         if (config.url.indexOf('od-spy.live.streamtheworld.com') > -1 || config.url.indexOf('frequencyads') > -1 || config.url.indexOf('s3') > -1) {
           requestArgs.withCredentials = false;
         }

@@ -314,6 +314,9 @@ function getAudioNode() {
     this.audioNode = new Audio();
     this.audioNode.autoplay = false;
     this.audioNode.preload = 'none';
+    if (localStorage.getItem('currentVolume') != 0 && localStorage.getItem('currentVolume') != undefined) {
+      this.audioNode.volume = (localStorage.getItem('currentVolume'));
+    }
     attachEvents.call(this);
   }
 
@@ -330,7 +333,11 @@ module.exports = _.assign(new EventEmitter(), {
     this.audioNode.src = null;
   },
 
-  playAudio: function (url, useHlsLibrary, isLive, timeshiftOffset, timeshiftEnabled) {
+  playAudio: function (url, useHlsLibrary, isLive, timeshiftOffset, timeshiftEnabled, hlsBufferLength) {
+    // Ensure buffer length is at least 1 second
+    var bufferLength = hlsBufferLength !== undefined ? hlsBufferLength : 30;
+    bufferLength = Math.max(bufferLength, 1);
+    
     this.timeshiftEnabled = timeshiftEnabled;
     if (this.audioNode) {
       this.stop();
@@ -340,10 +347,10 @@ module.exports = _.assign(new EventEmitter(), {
     this.url = url || this.url;
     if (stwLSID) {
       if (this.url.includes('?')) {
-      	this.url = this.url + '&lsid=' + stwLSID;
+        this.url = this.url + '&lsid=' + stwLSID;
       } else {
         this.url = this.url + '?lsid=' + stwLSID;
-    	}
+      }
     }
 
     this.isLive = isLive || this.isLive;
@@ -351,9 +358,10 @@ module.exports = _.assign(new EventEmitter(), {
     this.timeshiftOffset = timeshiftOffset == undefined ? -1 : timeshiftOffset;
 
     if (useHlsLibrary) {
+      console.log('MediaElement: Creating HLS with maxBufferLength=' + bufferLength + ' seconds');
       var config = {
-        maxBufferLength: 30,
-        autoStartLoad: false
+        'maxBufferLength': bufferLength,
+        'autoStartLoad': false
       };
 
       this.hls = new Hls(config);
@@ -411,6 +419,12 @@ module.exports = _.assign(new EventEmitter(), {
   },
 
   hlsError: function (event, data) {
+    if (data.response.code === 453) {
+      this.emit('html5-playback-status', {
+        type: PlaybackState.GEOBLOCKED,
+        mediaNode: this.audioNode
+      });
+    }
     if (data.fatal) {
       console.log('MediaElement::HLS-error:' + data.type + ' - ' + data.details);
       this.stop();
@@ -473,13 +487,17 @@ module.exports = _.assign(new EventEmitter(), {
 
   //This should only happen on iOS
   seekFromLiveNative: function (seconds) {
-    let startSeconds = parseInt(new Date().getTime() / 1000) - parseInt(this.audioNode.getStartDate().getTime() / 1000);
-    //Must be the total length in seconds minus the param.
-    console.log('SEEK NATIVE!!!' + seconds);
+    if (!this.audioNode.seekable.length )
+    {
+      console.log ('Missing audioNode seekable length');
+      return;
+    }
+    const livePosition = this.audioNode.seekable.end(this.audioNode.seekable.length - 1);
+    console.log('SEEK NATIVE!!!' + seconds);  
     if (seconds >= 0) {
-      this.audioNode.currentTime = startSeconds - seconds;
+      this.audioNode.currentTime = livePosition - seconds;
     } else {
-      this.audioNode.currentTime = startSeconds + seconds;
+      this.audioNode.currentTime = livePosition + seconds;
     }
   },
 
@@ -542,6 +560,7 @@ module.exports = _.assign(new EventEmitter(), {
 
   setVolume: function (volume) {
     this.audioNode = getAudioNode.call(this);
+    localStorage.setItem('currentVolume', volume);
     this.audioNode.volume = volume;
     if (volume == 0) {
       this.mute();
