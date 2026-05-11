@@ -52,6 +52,12 @@ define([
 
       this.hls = config.hls != undefined ? config.hls : true;
       this.audioAdaptive = config.audioAdaptive != undefined ? config.audioAdaptive : false;
+      
+      var burstTime = config.burstTime != undefined ? config.burstTime : 15;
+      this.burstTime = Math.max(burstTime, 1);
+      
+      var hlsBufferLength = config.hlsBufferLength != undefined ? config.hlsBufferLength : 30;
+      this.hlsBufferLength = Math.max(hlsBufferLength, 1);
 
       this.__initSbmConfig(config);
 
@@ -271,28 +277,6 @@ define([
         this.station = this._currentLiveApiParams.station ? this._currentLiveApiParams.station : null;
       }
 
-      if (this.connection.isGeoBlocked && this.connection.alternateContent) {
-        topic.publish('api/request', 'get-alternate-content', this.connection.alternateContent);
-
-        //send analytics geoblocking event
-        var gaDimensions = {};
-        gaDimensions[GAEventRequest.DIM_MOUNT] = this.connection.mount ? this.connection.mount : '';
-        gaDimensions[GAEventRequest.DIM_STATION] = this._currentLiveApiParams.station ? this._currentLiveApiParams.station : '';
-        gaDimensions[GAEventRequest.DIM_ALTERNATE_CONTENT] = true;
-
-        GAEventRequest.requestGA(GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_GEOBLOCKING, gaDimensions);
-
-        return;
-      } else if (this.connection.isGeoBlocked) {
-        //send analytics geoblocking event
-        var gaDimensions = {};
-        gaDimensions[GAEventRequest.DIM_MOUNT] = this.connection.mount ? this.connection.mount : '';
-        gaDimensions[GAEventRequest.DIM_STATION] = this._currentLiveApiParams.station ? this._currentLiveApiParams.station : '';
-        gaDimensions[GAEventRequest.DIM_ALTERNATE_CONTENT] = false;
-
-        GAEventRequest.requestGA(GAEventRequest.CATEGORY_STREAMING, GAEventRequest.ACTION_CONNECTION, GAEventRequest.LABEL_GEOBLOCKING, gaDimensions);
-      }
-
       var params = this._currentLiveApiParams.trackingParameters || {};
 
       if (this.lowActivated && this.connection.isAudioAdaptive) params.utags = 'low-bw';
@@ -302,9 +286,9 @@ define([
       var streamUrl = this.connection.url;
       if (Object.keys(params).length > 0) {
         let sanitisedParams = this._sanitiseDistParam(streamUrl, JSON.parse(JSON.stringify(this._currentLiveApiParams.trackingParameters)));
-        streamUrl = streamUrl + '?' + ioQuery.objectToQuery(sanitisedParams) + '&burst-time=15';
+        streamUrl = streamUrl + '?' + ioQuery.objectToQuery(sanitisedParams) + '&burst-time=' + this.burstTime;
       } else {
-        streamUrl = streamUrl + '?burst-time=15';
+        streamUrl = streamUrl + '?burst-time=' + this.burstTime;
       }
 
       this.emit('stream-select');

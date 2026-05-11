@@ -72,4 +72,3 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE.md](LIC
 Execute local unit tests by running `npm run test`.
 You can also debug in a chrome test runner by changing the test script in the package.json to `npm run test:debug`.
 Test updates in Playground.
-

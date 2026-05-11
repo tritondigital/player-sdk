@@ -154,6 +154,7 @@ define([
       this.inherited(arguments);
       if (this.html5OnDemand == undefined) return;
 
+      // lgtm[js/incomplete-url-substring-sanitization]: Intentionally blocking any URL containing live.streamtheworld.com and is our trusted domain
       if (params.url.indexOf('live.streamtheworld.com') >= 0) {
         this.emit('tech-error', {
           error: this.errorCode.html5ModuleMap['tritonListenLink']

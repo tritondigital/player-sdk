@@ -29,6 +29,11 @@ define(['./kernel', '../has', '../sniff'], function (dojo, has) {
         }
       }
       while (context && (p = parts[i++])) {
+        // Fix CVE-2021-23450: skip traversal if the segment is __proto__ or constructor to prevent prototype pollution
+        // https://github.com/dojo/dojo/pull/418/files
+        if (p === '__proto__' || p === 'constructor') {
+          return undefined;
+        }
         context = p in context ? context[p] : create ? (context[p] = {}) : undefined;
       }
       return context; // mixed
@@ -190,6 +195,12 @@ define(['./kernel', '../has', '../sniff'], function (dojo, has) {
       var parts = name.split('.'),
         p = parts.pop(),
         obj = getProp(parts, true, context);
+      
+      // Fix CVE-2021-23450: skip assignment if the property is __proto__ or constructor to prevent prototype pollution
+      // https://github.com/dojo/dojo/pull/418/files
+      if (p === '__proto__' || p === 'constructor') {
+        return undefined;
+      }
       return obj && p ? (obj[p] = value) : undefined; // Object
     },
 

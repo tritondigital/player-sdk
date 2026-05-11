@@ -13,6 +13,15 @@ var ENDPOINT_MAP = {
     npe: PROTOCOL + '//npe2.listenlive.co/services/',
     see: PROTOCOL + '//see-p-elb-01.tritondigital.net/widget/{tenantId}/see.js',
     UA: 'G-QQRTXPJ64L'
+  },
+  preprod01: {
+    liveStream: 'playerservices.preprod01.streamtheworld.net/api/livestream',
+    nowPlayingHistory: PROTOCOL + '//playerservices.preprod01.streamtheworld.net/public/nowplaying',
+    playerWebAdmin: PROTOCOL + '//pwav4.preprod01.tritondigital.com/jsonconfig.php',
+    coreModuleDir: PROTOCOL + '//sdk.listenlive.co/core/swf/',
+    npe: PROTOCOL + '//nowplaying.preprod01.streamtheworld.net/services/',
+    see: PROTOCOL + '//see-stg-slb.tritondigital.net/widget/{tenantId}/see.js',
+    UA: 'G-QQRTXPJ64L'
   }
 };
 

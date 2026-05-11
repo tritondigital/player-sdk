@@ -2,7 +2,6 @@ var _ = require('lodash');
 
 var ArrayHelper = require('sdk/base/util/ArrayHelper');
 
-var AlternateContent = require('sdk/modules/mediaplayer/liveStreamConfigApi/AlternateContent');
 var Status = require('sdk/modules/mediaplayer/liveStreamConfigApi/Status');
 var Metrics = require('sdk/modules/mediaplayer/liveStreamConfigApi/Metrics');
 var Tag = require('sdk/modules/mediaplayer/liveStreamConfigApi/Tag');
@@ -26,7 +25,6 @@ function MountPoint(mountPointData) {
    * @private
    */
   function parse(context, data) {
-    context.alternateContent = data['alternate-content'] ? new AlternateContent(data['alternate-content']) : null;
     context.mount = data.mount._text || null;
     context.status = new Status(data.status);
     if (data.status['status-code']._text < 300) {
@@ -59,7 +57,7 @@ function MountPoint(mountPointData) {
 
       context.sendPageURL = data['send-page-url'] ? !!parseInt(data['send-page-url']._text) : false;
 
-      context.isAvailable = !context.status.isError && !context.status.isGeoBlocked && !_.isEmpty(context.servers);
+      context.isAvailable = !context.status.isError && !_.isEmpty(context.servers);
     }
   }
 

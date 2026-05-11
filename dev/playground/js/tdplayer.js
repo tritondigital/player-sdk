@@ -14,7 +14,9 @@ var svgns = "http://www.w3.org/2000/svg";
 var runnerRect = document.createElementNS(svgns, "rect");
 var streamDataTimeoutId = null;
 var streamingType = "station";
-var currentVolume = 0.5;
+if (localStorage.getItem('currentVolume') === undefined || localStorage.getItem('currentVolume') === 0) {
+  localStorage.setItem('currentVolume', 0.5);
+};
 var flvTagData = {};
 var totalTags = 0;
 let scope = null;
@@ -35,7 +37,7 @@ const program = {
   programInfo: "" 
 };
 
-
+// NOTE: Or 'preprod' for staging
 if (getUrlVars()["platformid"]) {
   platformid = getUrlVars()["platformid"];
   platformIdLink = platformid;
@@ -48,18 +50,21 @@ if (getUrlVars()["platformid"]) {
 
   if (platformid === "versioning") {
     platformIdLink = "versioning";
+    // platformid = "preprod";
     platformid = "prod";
   }
 } else if (location.host.startsWith("localhost")) {
   platformIdLink = "local";
+  // platformid = "preprod";
   platformid = "prod";
 } else if (
-  location.host.startsWith("playercore.preprod01.streamtheworld.net")
+  location.hostname === "sdk.staging.tritondigital.com"
 ) {
   platformid = "preprod";
   platformIdLink = platformid;
 } else if (location.href.includes("web/v/")) {
   platformid = "prod";
+  // platformid = "preprod";
   platformIdLink = "versioning";
 }
 
@@ -70,6 +75,8 @@ var hls = getUrlVars()["hls"] == "false" ? false : true;
 var forceTimeShift =  getUrlVars()["forceTimeShift"] == "true" ? true : false;
 var streamWhileMuted =  getUrlVars()["streamWhileMuted"] == "true" ? true : false;
 var audioAdaptive = getUrlVars()["audioAdaptive"] == "true" ? true : false;
+var hlsBufferLength = getUrlVars()["hlsBufferLength"] ? parseInt(getUrlVars()["hlsBufferLength"]) : 30;
+var burstTime = getUrlVars()["burstTime"] ? parseInt(getUrlVars()["burstTime"]) : 15;
 var streamAutoStart = false;
 
 var player; /* TD player instance */
@@ -163,6 +170,8 @@ function initPlayer() {
         hls: hls,
         forceHls: false,
         audioAdaptive: audioAdaptive,
+        hlsBufferLength: hlsBufferLength,
+        burstTime: burstTime,
         geoTargeting: {
           desktop: {
             isActive: true,
@@ -223,6 +232,41 @@ function initPlayer() {
             width: 728,
             height: 90,
           },
+          {
+            id: "td_synced_rectangle",
+            width: 180,
+            height: 150,
+          },
+          {
+            id: "td_synced_wide_skyscraper",
+            width: 160,
+            height: 600,
+          },
+          {
+            id: "td_synced_half_page",
+            width: 300,
+            height: 600,
+          },
+          {
+            id: "td_synced_button2",
+            width: 120,
+            height: 60,
+          },
+          {
+            id: "td_synced_microbar",
+            width: 88,
+            height: 31,
+          },
+          {
+            id: "td_synced_smartphone_banner",
+            width: 300,
+            height: 50,
+          },
+          {
+            id: "td_synced_smartphone_wide_banner",
+            width: 320,
+            height: 50,
+          },
         ],
         vastCompanionPriority: ["static", "iframe", "html"],
       },
@@ -247,6 +291,16 @@ function toggleStreamWhileMuted(checked){
 function toggleForceTimeShift(checked){
   this.forceTimeShift = checked;
   window.location.href = getWindowLocation();
+}
+
+function updateHlsBufferLength(value) {
+  hlsBufferLength = Math.max(parseInt(value) || 30, 1);
+  history.replaceState(null, '', getWindowLocation());
+}
+
+function updateBurstTime(value) {
+  burstTime = Math.max(parseInt(value) || 15, 1);
+  history.replaceState(null, '', getWindowLocation());
 }
 
 function toggleSBM(checked) {
@@ -953,14 +1007,14 @@ function playTimeshiftStream(station, mount) {
     station: station,
     mount: mount,    
     forceTimeShift: forceTimeShift,
-    timeShift: false,
+    timeShift: (this.hls || this.forceTimeShift) ? true : false,
     trackingParameters: {
       "dist": 'triton-dist-param',
       "dist-timeshift": 'timeshift-dist-param',
     }
     });
 
-  $("#volumeSlider").val(0.5);
+  $("#volumeSlider").val(localStorage.getItem('currentVolume'));
 }
 
 function playLiveAudioStream(station, mount) {
@@ -989,7 +1043,7 @@ function playLiveAudioStream(station, mount) {
     }
     });
 
-  $("#volumeSlider").val(0.5);
+  $("#volumeSlider").val(localStorage.getItem('currentVolume'));
 }
 
 function clearFlvValues() {
@@ -1086,7 +1140,6 @@ function flvPlayerButton(e) {
 
 // Volume Slider
 function flvVolumeSlider(value) {
-  this.currentVolume = value;
   player.setVolume(value);
 }
 
@@ -1113,7 +1166,7 @@ function playAudio(menuItem, streamingType) {
       playStreamByUserStation();
     }
   }
-  $("#volumeSlider").val(0.5);
+  $("#volumeSlider").val(localStorage.getItem('currentVolume'));
 }
 function extractStationName(){
   const url = $("#streamUrlUser").val();
@@ -1142,7 +1195,7 @@ function playUrl() {
     isHLS: url.indexOf("m3u8") > -1 ? true : false,
   });
 
-  $("#volumeSlider").val(0.5);
+  $("#volumeSlider").val(localStorage.getItem('currentVolume'));
 }
 
 function playStreamByUserStation() {
@@ -1165,7 +1218,7 @@ function playStreamByUserStation() {
   player.play({
     station: $("#stationUser").val(),
     trackingParameters: params,
-    timeShift: false,
+    timeShift: (this.hls || this.forceTimeShift) ? true : false,
   });
 
   if (currentStation != $("#stationUser").val()) {
@@ -1230,7 +1283,7 @@ function forward(seconds) {
   }
   let label = toLocaleDate(setTime, true)
 
-  updateTimeshiftSlider({"text": label });s
+  updateTimeshiftSlider({"text": label });
   adjustTime = setInterval(updateTime, 1000);
 }
 
@@ -1355,7 +1408,6 @@ function onPlayerReady() {
   player.addEventListener("speech-cue-point", onSpeechCuePoint);
   player.addEventListener("custom-cue-point", onCustomCuePoint);
 
-  player.addEventListener("stream-geo-blocked", onGeoBlocked);
   player.addEventListener("timeout-alert", onTimeOutAlert);
   player.addEventListener("timeout-reach", onTimeOutReach);
   player.addEventListener("npe-song", onNPESong);
@@ -1364,6 +1416,7 @@ function onPlayerReady() {
 
   player.addEventListener("stream-start", onStreamStarted);
   player.addEventListener("stream-stop", onStreamStopped);
+  player.addEventListener("stream-fail", onStreamStopped);
   player.addEventListener("timeshift-info", onTimeshiftInfo);
 
   player.addEventListener("media-playback-status", onMediaPlaybackStatus);
@@ -1431,6 +1484,13 @@ function onAdPlaybackComplete(e) {
   console.log(e);
   $("#td_synced_bigbox").empty();
   $("#td_synced_leaderboard").empty();
+  $("#td_synced_rectangle").empty();
+  $("#td_synced_wide_skyscraper").empty();
+  $("#td_synced_half_page").empty();
+  $("#td_synced_button2").empty();
+  $("#td_synced_microbar").empty();
+  $("#td_synced_smartphone_banner").empty();
+  $("#td_synced_smartphone_wide_banner").empty();
 
   if (streamAutoStart) {
     player.play({
@@ -1458,6 +1518,13 @@ function onAdPlaybackDestroy(e) {
   console.log(e);
   $("#td_synced_bigbox").empty();
   $("#td_synced_leaderboard").empty();
+  $("#td_synced_rectangle").empty();
+  $("#td_synced_wide_skyscraper").empty();
+  $("#td_synced_half_page").empty();
+  $("#td_synced_button2").empty();
+  $("#td_synced_microbar").empty();
+  $("#td_synced_smartphone_banner").empty();
+  $("#td_synced_smartphone_wide_banner").empty();
 
   setStatus("Ad Playback Destroy");
 }
@@ -1796,6 +1863,14 @@ function onStatus(e) {
 
   setStatus(e.data.status);  
   this.scope.updatePlayerStatus(e.data.code);
+  if (e.data.code == "LIVE_FAILED"){
+    $(".flv-player-button")
+      .addClass("fa-play")
+      .removeClass("fa-stop")
+      .removeClass("spinner-border");
+
+    $(".flv-player-button-parent").removeAttr("disabled");
+  }
 }
 
 function onFlvPlayerStatus(e) {
@@ -1852,12 +1927,6 @@ function SecondsToHMS(d) {
     ":" +
     (s > 0 ? (s >= 10 ? s : "0" + s) : "00")
   );
-}
-
-function onGeoBlocked(e) {
-  console.log("tdplayer::onGeoBlocked");
-
-  setStatus(e.data.text);
 }
 
 function setStatus(status) {
@@ -2290,7 +2359,8 @@ function debug(info, error) {
   if (error) console.error(info);
   else console.log("%cDEBUG : " + info, "background:#ccc");
 
-  $("#debugInformation").append(info);
+  var escapedInfo = $('<div>').text(info).html();
+  $("#debugInformation").append(escapedInfo);
   $("#debugInformation").append("<br/>");
 }
 
@@ -2478,7 +2548,11 @@ function getWindowLocation() {
     "&streamWhileMuted=" +
     streamWhileMuted +
     "&forceTimeShift=" +
-    forceTimeShift
+    forceTimeShift +
+    "&hlsBufferLength=" +
+    hlsBufferLength +
+    "&burstTime=" +
+    burstTime
   );
 }
 

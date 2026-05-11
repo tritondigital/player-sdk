@@ -12,13 +12,16 @@
     <link href="css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="css/json-pretty-print.css" rel="stylesheet" media="screen">    
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
         integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" 
+        integrity="sha384-Uz1UHyakAAz121kPY0Nx6ZGzYeUTy9zAtcpdwVmFCEwiTGPA2K6zSGgkKJEQfMhK"
+        crossorigin="anonymous">
+    </script>
     <script src="js/rectangle.js"></script>
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
@@ -49,8 +52,8 @@
 
         body{
             font-family: 'Open Sans', sans-serif;
-        }        
-
+        }   
+        
         #custom-handle{
             width: 80px;
             height: 1.6em;
@@ -287,6 +290,22 @@
                                 data-offstyle="outline-secondary" ng-checked="forceTimeShift == true"
                                 data-toggle="toggle" onchange="toggleForceTimeShift(this.checked)">
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bolder">HLS Buffer Length (seconds):</label>
+                            <input id="hls-buffer-length" type="number" class="form-control" 
+                                style="width: 100px; display: inline-block;" 
+                                ng-value="hlsBufferLength" min="1"
+                                onchange="updateHlsBufferLength(this.value)">
+                            <small class="text-muted d-block">Controls how much audio HLS.js buffers ahead (default: 30)</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bolder">Burst Time (seconds):</label>
+                            <input id="burst-time" type="number" class="form-control" 
+                                style="width: 100px; display: inline-block;" 
+                                ng-value="burstTime" min="1"
+                                onchange="updateBurstTime(this.value)">
+                            <small class="text-muted d-block">Controls server-side burst for progressive streams (default: 15)</small>
+                        </div>
                     </div>
                     <!-- <div class="accordion my-2" id="accordionExample" ng-if="tech == 'html5'">
                         <div class="accordion-item">
@@ -465,7 +484,7 @@
                         <div class="d-flex flex-wrap">
                             Timeshift
                         </div>
-                    </header>
+                    </header>                   
                     <div id="hls-rewind-containter" class="mx-4 collapse show">
                         <div class="mb-3">
                             <div class="form-check form-check-inline">
@@ -481,48 +500,48 @@
                         </div>
                         <div class="mb-3">
                             <div class="mb-3 {{streamingType == 'station' ? '' : 'd-none'}}" style="display:inline-block">
-                            <label for="hlsRewindStation" class="form-label">Timeshift Station</label>
-                            <input type="text" class="form-control" id="hlsRewindStation" placeholder="Enter a Station"
-                                value="TRITONRADIOMUSIC">
-                        </div>        
+                                <label for="hlsRewindStation" class="form-label">Timeshift Station</label>
+                                <input type="text" class="form-control" id="hlsRewindStation" placeholder="Enter a Station"
+                                    value="TRITONRADIOMUSIC">
+                            </div>        
                             <div class="mb-3 {{streamingType == 'station' ? '' : 'd-none'}}" style="display:inline-block">
-                            <label for="seekFromLive" class="form-label">Seek From Live ( in seconds )</label>  
-                            <div class="input-group">
-                            <input type="text" class="input-xs" id="seekFromLive" placeholder="Seconds to Seek From Live"
-                            value="50"/>                             
-                            <button class="btn btn-primary" style="margin-left: 5px;" onclick="seekFromLive()" ng-if="menuItem == 'hlsRewind'">
-                                <i class="fas fa-undo" aria-hidden="true"></i>
-                                Seek
-                            </button>
-                           </div> 
-                        </div> 
+                                <label for="seekFromLive" class="form-label">Seek From Live ( in seconds )</label>  
+                                <div class="input-group">
+                                <input type="text" class="input-xs" id="seekFromLive" placeholder="Seconds to Seek From Live"
+                                value="50"/>                             
+                                <button class="btn btn-primary" style="margin-left: 5px;" onclick="seekFromLive()" ng-if="menuItem == 'hlsRewind'">
+                                    <i class="fas fa-undo" aria-hidden="true"></i>
+                                    Seek
+                                </button>
+                               </div> 
+                            </div> 
                             <div class="mb-3 {{streamingType == 'url' ? '' : 'd-none'}}">
                                 <label for="streamUrlUser" class="form-label">Stream URL</label>
                                 <input type="text" class="form-control" id="streamUrlUser"
                                     placeholder="Enter a media url (audio/video)">
                             </div>
                             <div id="maximumRewindTime" ng-if="maximumRewindTime > 0" class="mb-3 {{streamingType == 'station' ? '' : 'd-none'}}">
-                            <b>The Cloud Stream Maximum Rewind Time:</b> {{maximumRewindTime}}
-                        </div>
-                        <div id="timeshiftPrograms" ng-if="timeshiftPrograms.length > 0" class="card">                            
-                            <div class="card-header">
-                                Programs
+                                <b>The Cloud Stream Maximum Rewind Time:</b> {{maximumRewindTime}}
                             </div>
-                            <div class="card-body">
-                                <button class="badge rounded-pill bg-info me-2" ng-repeat="(key, value) in timeshiftPrograms" ng-click="playProgram(value)">
-                                    {{value.title}} -- {{value.startTime }}
-                                </button>
-                                <br/>             
+                            <div id="timeshiftPrograms" ng-if="timeshiftPrograms.length > 0" class="card">                            
+                                <div class="card-header">
+                                    Programs
                                 </div>
-                            </div>
+                                <div class="card-body">
+                                    <button class="badge rounded-pill bg-info me-2" ng-repeat="(key, value) in timeshiftPrograms" ng-click="playProgram(value)">
+                                        {{value.title}} -- {{value.startTime }}
+                                    </button>
+                                    <br/>             
+                                </div>
+                            </div> 
                         </div>
                     </div>
-                </div>                  
+                </div>   
                 <div id="mediaControls" class="flex-row mt-3 collapse show"
                     ng-if="tech == 'html5' && (menuItem == 'liveStreaming' || menuItem == 'hlsRewind')">
                     <div class="mx-4">                        
                         <div class="mb-3">                                                         
-                            <button class="btn btn-primary {{(playerStatus == 'LIVE_STOP' || playerStatus == 'STATION_NOT_FOUND' || playerStatus == 'STREAM_GEO_BLOCKED' ) && (streamingType != 'presets') ? '' : 'd-none'}}"
+                            <button class="btn btn-primary {{(playerStatus == 'LIVE_STOP' || playerStatus == 'STATION_NOT_FOUND' || playerStatus == 'LIVE_FAILED') && (streamingType != 'presets') ? '' : 'd-none'}}"
                                 ng-click="playAudio()">
                                 <i class="fas fa-play" aria-hidden="true"></i>
                             </button>                            
@@ -550,11 +569,11 @@
                             <button class="btn btn-primary" onclick="rewind(10)" ng-if="menuItem == 'hlsRewind'">
                                 <i class="fas fa-undo" aria-hidden="true"></i>
                                 10s
-                            </button>
+                            </button>                           
                             <button id="hlsLiveButton" class="btn btn-primary" onclick="live()" ng-if="menuItem == 'hlsRewind'">
                                 <i class="fas fa-wifi" aria-hidden="true"></i>
                                 Live
-                            </button>
+                            </button>   
                             <button id="hlsLiveButton" class="btn btn-primary" onclick="getCloudStreamInfo()" ng-if="menuItem == 'hlsRewind'">
                                 <i class="fas fa-recycle" aria-hidden="true"></i>
                                 Get Cloud Stream Info
@@ -565,7 +584,7 @@
                                     <div id="custom-handle" class="ui-slider-handle"></div>
                                 </div>                                    
                             </div>                            
-
+                        
                             <!--Put this back if you want to test the PAUSE / Resume" functionality-->
                             <!-- <button class="btn btn-primary" type="button" value="Pause"
                                     onclick="pauseStream()">
@@ -749,18 +768,18 @@
                             </div>
                             <div class="row g-2">
                                 <div class="col-auto">
-                                <button class="btn btn-primary" type="button" onclick="playFileClicked()">Play
-                                    File</button>
-                                <button class="btn btn-primary" type="button" onclick="pauseFileClicked()">Pause
-                                    File</button>
-                                <button class="btn btn-primary" type="button" onclick="resumeFileClicked()">Resume
-                                    File</button>
-                                <button class="btn btn-primary" type="button" onclick="stopFileClicked()">Stop
-                                    File</button>
-                                <button class="btn btn-primary" type="button" onclick="backFileClicked()">Back 15
-                                    sec</button>
-                                <button class="btn btn-primary" type="button" onclick="jumpFileClicked()">Jump 15
-                                    sec</button>
+                                    <button class="btn btn-primary" type="button" onclick="playFileClicked()">Play
+                                        File</button>
+                                    <button class="btn btn-primary" type="button" onclick="pauseFileClicked()">Pause
+                                        File</button>
+                                    <button class="btn btn-primary" type="button" onclick="resumeFileClicked()">Resume
+                                        File</button>
+                                    <button class="btn btn-primary" type="button" onclick="stopFileClicked()">Stop
+                                        File</button>
+                                    <button class="btn btn-primary" type="button" onclick="backFileClicked()">Back 15
+                                        sec</button>
+                                    <button class="btn btn-primary" type="button" onclick="jumpFileClicked()">Jump 15
+                                        sec</button>
                                 </div>
                                 <div class="col-auto">
                                     <select class="form-select btn-primary" id="changePlayBackRate" onchange="changePlayBackRate(this.value)">
@@ -1014,11 +1033,56 @@
                                 <div id="td_adserver_bigbox"></div>
                             </div>
 
-                            <div id="leaderboard" 
+                            <div id="leaderboard"
                                 style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 728px; height: 90px;">
                                 <div id="td_synced_leaderboard">Synced Leaderboard (728x90)</div>
                                 <div id="td_adserver_leaderboard"></div>
                             </div>
+
+                            <div id="rectangle"
+                                style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 180px; height: 150px;">
+                                <div id="td_synced_rectangle">Synced Rectangle (180x150)</div>
+                                <div id="td_adserver_rectangle"></div>
+                            </div>
+
+                            <div id="button2"
+                                style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 120px; height: 60px;">
+                                <div id="td_synced_button2">Synced Button 2 (120x60)</div>
+                                <div id="td_adserver_button2"></div>
+                            </div>
+
+                            <div id="microbar"
+                                style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 88px; height: 31px;">
+                                <div id="td_synced_microbar">Synced Microbar (88x31)</div>
+                                <div id="td_adserver_microbar"></div>
+                            </div>
+
+                            <div id="smartphone_banner"
+                                style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 300px; height: 50px;">
+                                <div id="td_synced_smartphone_banner">Synced Smartphone Banner (300x50)</div>
+                                <div id="td_adserver_smartphone_banner"></div>
+                            </div>
+
+                            <div id="smartphone_wide_banner"
+                                style="text-align:center; border:1px dashed black; margin-top:5px;margin-left:5px; float:left; background-color: #FFFFFF; width: 320px; height: 50px;">
+                                <div id="td_synced_smartphone_wide_banner">Synced Smartphone Wide Banner (320x50)</div>
+                                <div id="td_adserver_smartphone_wide_banner"></div>
+                            </div>
+
+                        </div>
+                        <div class="flex-md-row" style="clear:both; margin-top:10px;">
+                            <div id="wide_skyscraper"
+                                style="text-align:center; border:1px dashed black; margin-left:5px; float:left; background-color: #FFFFFF; width: 160px; height: 600px;">
+                                <div id="td_synced_wide_skyscraper">Synced Wide Skyscraper (160x600)</div>
+                                <div id="td_adserver_wide_skyscraper"></div>
+                            </div>
+
+                            <div id="half_page"
+                                style="text-align:center; border:1px dashed black; margin-left:5px; float:left; background-color: #FFFFFF; width: 300px; height: 600px;">
+                                <div id="td_synced_half_page">Synced Half Page (300x600)</div>
+                                <div id="td_adserver_half_page"></div>
+                            </div>
+
                         </div>
                     </div>
                 </div> 
@@ -1177,19 +1241,15 @@
             } else if ($location.$$host == 'localhost') {
                 $scope.isLocal = true;
                 $scope.platformid = 'local';
-            } else if ($location.$$host == 'playercore.preprod01.streamtheworld.net') {
+            } else if ($location.$$host == 'sdk.staging.tritondigital.com') {
                 $scope.isLocal = false;
                 $scope.platformid = 'preprod';
             }
 
-            if ($location.absUrl().indexOf('web/v/') !== -1) {
-                $scope.isLocal = false;
-                $scope.platformid = 'prod';
-            }
-
-            $scope.apiBaseUrl = 'sdk.listenlive.co/web/';
-            $scope.tdplayerapiUrl = null;
+            $scope.apiBaseUrl = $location.$$host + '/web/';
             $scope.apiVersion = '2.9';
+            $scope.tdSdkApiUrl = '//' + $scope.apiBaseUrl + $scope.apiVersion + '/td-sdk.min.js';
+            $scope.tdplayerapiUrl = null;
 
             $scope.tech = getUrlVars()['tech'] || 'flash';
             $scope.streamingType = "station";
@@ -1200,6 +1260,8 @@
             $scope.forceTimeShift = getUrlVars()['forceTimeShift'] == 'true' ? true : false;
             $scope.streamWhileMuted = getUrlVars()['streamWhileMuted'] == 'true' ? true : false;
             $scope.audioAdaptive = getUrlVars()['audioAdaptive'] == 'true' ? true : false;
+            $scope.hlsBufferLength = getUrlVars()['hlsBufferLength'] ? parseInt(getUrlVars()['hlsBufferLength']) : 30;
+            $scope.burstTime = getUrlVars()['burstTime'] ? parseInt(getUrlVars()['burstTime']) : 15;
             $scope.streamAutoStart = false;
             $scope.GAActive = getUrlVars()['gaactive'] == "true" ? true : false;
             $scope.GADebug = getUrlVars()['gadebug'] == "true" ? true : false;
@@ -1254,24 +1316,12 @@
                 playProgram(timeshiftProgram);
             }
 
-            if ($scope.platformid == 'preprod') {
-                $scope.apiBaseUrl = 'playercore.preprod01.streamtheworld.net/tdplayerapi/';
-            }
-
-            $scope.tdSdkApiUrl = '//' + $scope.apiBaseUrl + $scope.apiVersion + '/td-sdk.min.js';
-
-            if ($location.absUrl().indexOf('web/v/') !== -1) {
-
-                var sdkBuildVersion = $location.absUrl().match(/(\d+\.)?(\d+\.)?(\*|\d+)(\-)(\d){1,4}/)[0];
-
-                $scope.apiBaseUrl = 'sdk.listenlive.co/web/v/' + sdkBuildVersion;
-                $scope.tdSdkApiUrl = '//' + $scope.apiBaseUrl + '/td-sdk.min.js';
-            }
-
-            if ($scope.platformid == 'build') {
-                $scope.tdSdkApiUrl = '../../dist/td-sdk.min.js';
-            } else if ($scope.platformid == 'local') {
+            if ($scope.platformid == 'local') {
                 $scope.tdSdkApiUrl = './td-sdk.js';
+
+            } else if ($scope.platformid == 'build') {
+                $scope.tdSdkApiUrl = '../../dist/td-sdk.min.js';
+
             }
 
             if ($scope.tcfFramework) {

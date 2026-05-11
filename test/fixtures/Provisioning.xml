@@ -50,12 +50,6 @@
 
             <mount>HLS_PLAYERSMP3</mount>
 
-            <alternate-content>
-                <url>[URL to alternate content]</url>
-                <!-- OR -->
-                <mount>[Alternate Mount Name]</mount>
-            </alternate-content>
-
             <format>FLV</format>
 
             <bitrate>80000</bitrate>

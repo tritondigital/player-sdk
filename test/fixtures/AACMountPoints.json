@@ -1,11 +1,9 @@
 [
   {
-    "alternateContent": null,
     "status": {
       "statusCode": null,
       "message": null,
-      "isError": false,
-      "isGeoBlocked": false
+      "isError": false
     },
     "tags": [],
     "transports": [
@@ -72,12 +70,10 @@
     "hasHLSTS": false
   },
   {
-    "alternateContent": null,
     "status": {
       "statusCode": null,
       "message": null,
-      "isError": false,
-      "isGeoBlocked": false
+      "isError": false
     },
     "tags": [],
     "transports": [

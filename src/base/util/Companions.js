@@ -29,6 +29,22 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'doj
       );
     },
 
+    _loadCompanionInlineIframe: function (containerId, html, width, height) {
+      var container = dom.byId(containerId, document);
+      var iframe = document.createElement('iframe');
+      iframe.style.border = 'none';
+      iframe.style.display = 'block';
+      iframe.width = width;
+      iframe.height = height;
+      container.innerHTML = '';
+      container.appendChild(iframe);
+      var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(html);
+      iframeDoc.close();
+      iframeDoc.body.style.margin = '0';
+    },
+
     /**
      * Load static companion within a container (image or swf file)
      *
@@ -134,7 +150,11 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'doj
 
       switch (vastCompanionAd.resourceType.name) {
         case 'html':
-          if (vastCompanionAd.code.indexOf('<script>') > -1 && vastCompanionAd.code.indexOf('document.write') > -1) {
+          // If the code contains a script tag with external src, we will load the code in an iframe to avoid any security issue for the publisher website.
+          var codeWithScript = /<script[^>]+src=['"][^'"]+['"]/i.test(vastCompanionAd.code);
+          if (codeWithScript) {
+            this._loadCompanionInlineIframe(containerId, vastCompanionAd.code, vastCompanionAd.width, vastCompanionAd.height);
+          } else if (vastCompanionAd.code.indexOf('<script>') > -1 && vastCompanionAd.code.indexOf('document.write') > -1) {
             dom.byId(containerId, document).innerHTML = vastCompanionAd.code;
           } else if (vastCompanionAd.code.indexOf('document.write') > -1) {
             vastCompanionAd.resourceType.name = 'iframe';
@@ -188,6 +208,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'doj
     addEventListener: function (eventName, callback) {
       //Check if the listener exist before adding it
       var itemIndex = -1;
+      //TODO: replace by array.some
       array.forEach(
         this.listeners,
         function (item, index) {
@@ -206,6 +227,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/on', 'dojo/Evented', 'doj
      */
     removeEventListener: function (eventName, callback) {
       var itemIndex = -1;
+      //TODO: replace by array.some
       array.forEach(
         this.listeners,
         function (item, index) {

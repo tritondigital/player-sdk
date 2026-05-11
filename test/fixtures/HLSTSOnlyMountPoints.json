@@ -1,14 +1,9 @@
 [
   {
-    "alternateContent": {
-      "url": "[URL to alternate content]",
-      "mount": "[Alternate Mount Name]"
-    },
     "status": {
       "statusCode": null,
       "message": null,
-      "isError": false,
-      "isGeoBlocked": false
+      "isError": false
     },
     "tags": [],
     "transports": [
@@ -85,15 +80,10 @@
     "hasHLSTS": true
   },
   {
-    "alternateContent": {
-      "url": "[URL to alternate content]",
-      "mount": "[Alternate Mount Name]"
-    },
     "status": {
       "statusCode": null,
       "message": null,
-      "isError": false,
-      "isGeoBlocked": false
+      "isError": false
     },
     "tags": [],
     "transports": [

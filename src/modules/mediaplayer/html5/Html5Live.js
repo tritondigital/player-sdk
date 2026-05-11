@@ -62,6 +62,10 @@ define([
         status: 'streamUnavailable',
         code: 'LIVE_FAILED'
       },
+      geoblocked: {
+        status: 'streamGeoBlocked',
+        code: 'HLS_STREAM_GEOBLOCKED'
+      },
       loadStart: {
         status: 'connecting',
         code: 'LIVE_CONNECTING'
@@ -113,7 +117,7 @@ define([
       this.audioNode = null;
       this.connections = null;
       this._playbackStatusCallback = null;
-      this._timeshiftInfoCallback - null;
+      this._timeshiftInfoCallback = null;
       this._cuePointCallback = null;
       this._adBreakCallback = null;
       this._hlsCuePointCallback = null;
@@ -261,10 +265,11 @@ define([
 
           // //enable hls lib only for ie11 > 8
 
+          var hlsBufferLength = this.cfg && this.cfg.hlsBufferLength;
           if (Hls.isSupported() && OsPlatform.os.family !== 'iOS' && (this._liveApiParams.isHLS || this._liveApiParams.isHLSTS)) {
-            MediaElement.playAudio(this._liveApiParams.url, true, true, this._liveApiParams.timeshiftOffset, this._liveApiParams.timeshiftEnabled);
+            MediaElement.playAudio(this._liveApiParams.url, true, true, this._liveApiParams.timeshiftOffset, this._liveApiParams.timeshiftEnabled, hlsBufferLength);
           } else {
-            MediaElement.playAudio(this._liveApiParams.url, false, true, this._liveApiParams.timeshiftOffset, this._liveApiParams.timeshiftEnabled);
+            MediaElement.playAudio(this._liveApiParams.url, false, true, this._liveApiParams.timeshiftOffset, this._liveApiParams.timeshiftEnabled, hlsBufferLength);
           }
         }
       }
@@ -477,9 +482,12 @@ define([
           this._streamStopCallback();
         }
 
-        if (e.type == PlaybackState.ERROR || e.type == PlaybackState.ENDED) {
+        if (e.type == PlaybackState.ERROR || e.type == PlaybackState.ENDED|| e.type == PlaybackState.GEOBLOCKED) {
+          e.message = 'Possible stream errors could include : <br /> - GeoBlocked <br /> - Timed out <br /> - Unsupported format <br /> - Resource Not Found';
+          e.richText = true;
+  
           this._streamFailedCallback();
-          isCloudStreaming = false;
+          this.stop();
         }
 
         if (e.type == PlaybackState.PAUSE && !isCloudStreaming) {

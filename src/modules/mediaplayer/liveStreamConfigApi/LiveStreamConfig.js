@@ -55,9 +55,7 @@ function LiveStreamConfig(platformId, osPlatform, techType, configHls, configAud
             url: getUrl(timeshift, server, mountpoint, transport, techType, extension, isProgram, programID),
             mrHost: new URL(server).hostname,
             mount: mountpoint.mount,
-            isGeoBlocked: mountpoint.status.isGeoBlocked,
             isAudioAdaptive: mountpoint.mediaFormat.isAudioAdaptive,
-            alternateContent: mountpoint.alternateContent,
             mimeType: mimeType,
             format: mountpoint.format,
             uuidEnabled: _.some(mountpoint.metrics.tags, function (m) {

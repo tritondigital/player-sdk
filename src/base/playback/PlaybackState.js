@@ -18,5 +18,6 @@ module.exports = {
   SUSPEND: 'suspend',
   TIME_UPDATE: 'timeupdate',
   WAITING: 'waiting',
-  PLAY_NOT_ALLOWED: 'playbackNotAllowed'
+  PLAY_NOT_ALLOWED: 'playbackNotAllowed',
+  GEOBLOCKED: 'geoblocked'
 };

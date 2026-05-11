@@ -80,18 +80,6 @@ define([
         status: 'gettingStationInformation',
         code: 'GETTING_STATION_INFORMATION'
       },
-      STREAM_GEO_BLOCKED: {
-        status: 'streamGeoBlocked',
-        code: 'STREAM_GEO_BLOCKED'
-      },
-      STREAM_GEO_BLOCKED_ALTERNATE: {
-        status: 'streamGeoBlockedAlternate',
-        code: 'STREAM_GEO_BLOCKED_ALTERNATE'
-      },
-      STREAM_GEO_BLOCKED_NO_ALTERNATE: {
-        status: 'streamGeoBlockedNoAlternate',
-        code: 'STREAM_GEO_BLOCKED_NO_ALTERNATE'
-      },
       STATION_NOT_FOUND: {
         status: 'stationNotFound',
         code: 'STATION_NOT_FOUND'
@@ -217,28 +205,6 @@ define([
       }
     },
 
-    _onApiRequestGetAlternateContent: function (alternateContent) {
-      console.log('MediaPlayer::_onApiRequestGetAlternateContent - alternateContent:');
-      console.log(alternateContent);
-
-      if (!alternateContent) return;
-
-      var params = this._getCurrentLiveApiParams();
-
-      if (alternateContent.mount) {
-        params.station = null;
-        params.mount = alternateContent.mount;
-        this._play(params);
-      } else if (alternateContent.url) {
-        params.station = null;
-        params.mount = null;
-        params.url = alternateContent.url;
-        this.tech.isLiveStream = true;
-        this.tech.play({
-          file: params.url
-        });
-      }
-    },
 
     _onApiRequestGetVastInstream: function (adBreakData) {
       console.log('MediaPlayer::_onApiRequestGetVastInstream - adBreakData:');
@@ -408,32 +374,7 @@ define([
           });
 
           this.tech.setConnectionIterator(null);
-
-          var isGeoBlocked = false;
-          var alternateContent = false;
-
-          _.forEach(this.liveStreamConfig.mountPointsError, function (m) {
-            if (m.status.isGeoBlocked) {
-              isGeoBlocked = true;
-            }
-
-            if (m.alternateContent) {
-              alternateContent = m.alternateContent;
-            }
-          });
-
-          if (isGeoBlocked) {
-            this._emitStreamStatusByCode(this.statusMap.STREAM_GEO_BLOCKED);
-
-            if (alternateContent) {
-              topic.publish('api/request', 'get-alternate-content', alternateContent);
-              this._emitStreamStatusByCode(this.statusMap.STREAM_GEO_BLOCKED_ALTERNATE);
-            } else {
-              this._emitStreamStatusByCode(this.statusMap.STREAM_GEO_BLOCKED_NO_ALTERNATE);
-            }
-          } else {
-            this._emitStreamStatusByCode(this.statusMap.STATION_NOT_FOUND);
-          }
+          this._emitStreamStatusByCode(this.statusMap.STATION_NOT_FOUND);
         }
         return false;
       }
@@ -1134,7 +1075,7 @@ define([
           domAttr.set(scriptTag, 'src', 'https://playerservices.preprod01.streamtheworld.net/api/idsync.js?' + queryParam);
           break;
         default:
-      domAttr.set(scriptTag, 'src', '//playerservices.live.streamtheworld.com/api/idsync.js?' + queryParam);
+          domAttr.set(scriptTag, 'src', '//playerservices.live.streamtheworld.com/api/idsync.js?' + queryParam);
           break;
       }
 
